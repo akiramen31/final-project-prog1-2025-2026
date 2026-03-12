@@ -27,9 +27,7 @@ int main(void)
 		Update(mainData);
 		Draw(mainData.renderWindow);
 	}
-
 	Cleanup(&mainData);
-
 	return EXIT_SUCCESS;
 }
 
@@ -89,7 +87,6 @@ void Cleanup(MainData* _mainData)
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-
 	if (GetCharToSave(FULL_SCREEN))
 	{
 		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
@@ -98,7 +95,6 @@ void LoadMainData(MainData* _mainData)
 	{
 		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
 	}
-	
 	_mainData->clock = sfClock_create();
 }
 
