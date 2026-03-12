@@ -198,8 +198,6 @@ sfSprite* LoadBackground(sfTexture* _texture)
 		entityManager.visual->drawPlan = 100000000000000000000000000000000000000.f;
 	}
 	sfSprite_setTexture(entityManager.visual->ptr, _texture, sfTrue);
-	sfFloatRect hitbox = sfSprite_getLocalBounds(entityManager.visual->ptr);
-	sfSprite_setScale(entityManager.visual->ptr, (sfVector2f) { SCREEN_WIDTH / hitbox.width, SCREEN_HEIGHT / hitbox.height });
 	return entityManager.visual->ptr;
 }
 
