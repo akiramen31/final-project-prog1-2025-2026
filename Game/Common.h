@@ -8,6 +8,10 @@
 #include "SFML/Graphics.h"
 #include "SFML/Audio.h"
 
+#include "Backup.h"
+#include "EntityManager.h"
+
+#define GAME_SCALE 1
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 #define BPP 32

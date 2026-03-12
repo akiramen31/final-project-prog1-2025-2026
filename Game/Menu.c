@@ -2,6 +2,7 @@
 
 void LoadMenu(void)
 {
+	//LoadBackground(GetAsset());
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow)
@@ -41,12 +42,6 @@ void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
 
 void UpdateMenu(float _dt)
 {
+
 }
 
-void DrawMenu(sfRenderWindow* _renderWindow)
-{
-}
-
-void CleanupMenu(void)
-{
-}

@@ -7,8 +7,6 @@
 void LoadGame(void);
 void PollEventGame(sfRenderWindow* _renderWindow);
 void UpdateGame(float _dt);
-void DrawGame(sfRenderWindow* _renderWindow);
-void CleanupGame(void);
 
 void KeyPressedGame(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent);
 

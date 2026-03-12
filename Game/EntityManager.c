@@ -112,22 +112,24 @@ void CleanupTempEntity(void)
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
 	}
-	free(entityManager.asset);
 
-	while (entityManager.visual->next)
+	if (entityManager.visual)
 	{
-		entityManager.visual->next = InitPointer(entityManager.visual->next);
-		if (entityManager.visual->next->type == SPRITE)
+		while (entityManager.visual->next)
 		{
-			sfSprite_destroy(entityManager.visual->next->ptr);
+			entityManager.visual->next = InitPointer(entityManager.visual->next);
+			if (entityManager.visual->next->type == SPRITE)
+			{
+				sfSprite_destroy(entityManager.visual->next->ptr);
+			}
+			else if (entityManager.visual->next->type == TEXT)
+			{
+				sfText_destroy(entityManager.visual->next->ptr);
+			}
+			VisualEntity* temp = entityManager.visual->next;
+			entityManager.visual->next = (VisualEntity*)entityManager.visual->next->next;
+			free(temp);
 		}
-		else if (entityManager.visual->next->type == TEXT)
-		{
-			sfText_destroy(entityManager.visual->next->ptr);
-		}
-		VisualEntity* temp = entityManager.visual->next;
-		entityManager.visual->next = (VisualEntity*)entityManager.visual->next->next;
-		free(temp);
 	}
 
 	for (int i = 0; i < entityManager.soundCount; i++)
@@ -141,14 +143,13 @@ void CleanupTempEntity(void)
 			sfMusic_destroy(entityManager.asset[i].ptr);
 		}
 	}
-	free(entityManager.sound);
 }
 
 void* GetAsset(char* _file)
 {
 	for (int i = 0; i < entityManager.assetCount; i++)
 	{
-		if (!strcmp(entityManager.asset[i].file, _file))
+		if (CompareString(entityManager.asset[i].file, _file))
 		{
 			return entityManager.asset[i].ptr;
 		}
@@ -197,8 +198,6 @@ sfSprite* LoadBackground(sfTexture* _texture)
 		entityManager.visual->drawPlan = 100000000000000000000000000000000000000.f;
 	}
 	sfSprite_setTexture(entityManager.visual->ptr, _texture, sfTrue);
-	sfFloatRect hitbox = sfSprite_getLocalBounds(entityManager.visual->ptr);
-	sfSprite_setScale(entityManager.visual->ptr, (sfVector2f) { SCREEN_WIDTH / hitbox.width, SCREEN_HEIGHT / hitbox.height });
 	return entityManager.visual->ptr;
 }
 

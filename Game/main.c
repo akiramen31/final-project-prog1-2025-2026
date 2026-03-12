@@ -10,7 +10,6 @@ typedef struct MainData
 void Load(MainData* _mainData);
 void PollEvent(sfRenderWindow* _renderWindow);
 void Update(MainData _mainData);
-void Draw(sfRenderWindow* _renderWindow);
 void Cleanup(MainData* _mainData);
 
 void LoadMainData(MainData* _mainData);
@@ -36,6 +35,8 @@ int main(void)
 
 void Load(MainData* _mainData)
 {
+	LoadBackup;
+	LoadEntityManager();
 	LoadMainData(_mainData);
 	SetGameState(MENU);
 }
@@ -78,53 +79,26 @@ void Update(MainData _mainData)
 	}
 }
 
-void Draw(sfRenderWindow* _renderWindow)
-{
-	sfRenderWindow_clear(_renderWindow, sfBlack);
-
-	switch (GetGameState())
-	{
-	case MENU:
-		DrawMenu(_renderWindow);
-		break;
-	case GAME:
-		DrawGame(_renderWindow);
-		break;
-	case GAME_OVER:
-		DrawGameOver(_renderWindow);
-		break;
-	default:
-		break;
-	}
-
-	sfRenderWindow_display(_renderWindow);
-}
-
 void Cleanup(MainData* _mainData)
 {
+	SaveBackup();
 	CleanupMainData(_mainData);
-
-	switch (GetGameState())
-	{
-	case MENU:
-		CleanupMenu();
-		break;
-	case GAME:
-		CleanupGame();
-		break;
-	case GAME_OVER:
-		CleanupGameOver();
-		break;
-	default:
-		break;
-	}
+	CleanupEntityManager();
 }
 
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
 
+	if (GetCharToSave(FULL_SCREEN))
+	{
+		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
+	}
+	else
+	{
+		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
+	}
+	
 	_mainData->clock = sfClock_create();
 }
 
