@@ -9,21 +9,7 @@ GameState GetGameState(void)
 
 void SetGameState(GameState _gameState)
 {
-    // Cleanup the previous gameState
-    switch (gameState)
-    {
-    case MENU:
-        CleanupMenu();
-        break;
-    case GAME:
-        CleanupGame();
-        break;
-    case GAME_OVER:
-        CleanupGameOver();
-        break;
-    default:
-        break;
-    }
+    CleanupTempEntity();
 
     gameState = _gameState;
 

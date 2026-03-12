@@ -2,6 +2,7 @@
 
 void LoadGame(void)
 {
+	//LoadBackground(GetAsset());
 }
 
 void PollEventGame(sfRenderWindow* _renderWindow)
@@ -41,12 +42,5 @@ void KeyPressedGame(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
 
 void UpdateGame(float _dt)
 {
-}
 
-void DrawGame(sfRenderWindow* _renderWindow)
-{
-}
-
-void CleanupGame(void)
-{
 }

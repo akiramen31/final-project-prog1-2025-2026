@@ -2,6 +2,7 @@
 
 void LoadGameOver(void)
 {
+	//LoadBackground(GetAsset());
 }
 
 void PollEventGameOver(sfRenderWindow* _renderWindow)
@@ -41,12 +42,5 @@ void KeyPressedGameOver(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
 
 void UpdateGameOver(float _dt)
 {
-}
 
-void DrawGameOver(sfRenderWindow* _renderWindow)
-{
-}
-
-void CleanupGameOver(void)
-{
 }
