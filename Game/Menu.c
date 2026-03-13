@@ -2,7 +2,7 @@
 
 void LoadMenu(void)
 {
-	//LoadBackground(GetAsset());
+	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow)

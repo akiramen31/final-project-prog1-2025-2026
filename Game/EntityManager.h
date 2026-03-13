@@ -53,7 +53,7 @@ void CleanupTempEntity(void);
 
 void* GetAsset(char* _file);
 
-sfSprite* LoadBackground(sfTexture* _texture);
+sfSprite* LoadBackground(sfTexture* _texture, float _scale);
 sfSprite* CreateSprite(sfTexture* _texture, sfVector2f _position, float _scale, float _drawPlan);
 sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _drawPlan);
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play);

@@ -33,7 +33,7 @@ int main(void)
 
 void Load(MainData* _mainData)
 {
-	LoadBackup;
+	LoadBackup();
 	LoadEntityManager();
 	LoadMainData(_mainData);
 	SetGameState(MENU);

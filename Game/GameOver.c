@@ -2,7 +2,7 @@
 
 void LoadGameOver(void)
 {
-	//LoadBackground(GetAsset());
+	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 4.f);
 }
 
 void PollEventGameOver(sfRenderWindow* _renderWindow)

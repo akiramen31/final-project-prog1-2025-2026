@@ -21,7 +21,6 @@ void LoadEntityManager(void)
 
 void LoadGeneralAsset(void)
 {
-	//LoadBackground(GetAsset("Assets/Sprites/background.png"));
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
@@ -178,13 +177,29 @@ void* GetAsset(char* _file)
 		entityManager.asset[entityManager.assetCount].ptr = sfFont_createFromFile(_file);
 	}
 
+	int i = 0;
+	while (_file[i])
+	{
+		i++;
+	}
+	i++;
+	buffer = calloc(i, sizeof(char));
+	if (!buffer)
+	{
+		return NULL;
+	}
+	for (int j = 0; j < i; j++)
+	{
+		buffer[j] = _file[j];
+	}
+
 	entityManager.asset[entityManager.assetCount].file = _file;
 	entityManager.assetCount++;
 	return entityManager.asset[entityManager.assetCount - 1].ptr;
 
 }
 
-sfSprite* LoadBackground(sfTexture* _texture)
+sfSprite* LoadBackground(sfTexture* _texture, float _scale)
 {
 	if (!entityManager.visual)
 	{
@@ -198,6 +213,7 @@ sfSprite* LoadBackground(sfTexture* _texture)
 		entityManager.visual->drawPlan = 100000000000000000000000000000000000000.f;
 	}
 	sfSprite_setTexture(entityManager.visual->ptr, _texture, sfTrue);
+	sfSprite_setScale(entityManager.visual->ptr, (sfVector2f) { _scale, _scale });
 	return entityManager.visual->ptr;
 }
 

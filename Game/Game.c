@@ -2,7 +2,7 @@
 
 void LoadGame(void)
 {
-	//LoadBackground(GetAsset());
+	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 }
 
 void PollEventGame(sfRenderWindow* _renderWindow)
