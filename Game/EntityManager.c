@@ -111,6 +111,7 @@ void CleanupTempEntity(void)
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
 	}
+	entityManager.assetCount = entityManager.generalAssetCount;
 
 	if (entityManager.visual)
 	{

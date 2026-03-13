@@ -3,6 +3,7 @@
 void LoadMenu(void)
 {
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
+	SetGameState(GAME);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow)

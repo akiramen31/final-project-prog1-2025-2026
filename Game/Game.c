@@ -3,6 +3,7 @@
 void LoadGame(void)
 {
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
+	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
 }
 
 void PollEventGame(sfRenderWindow* _renderWindow)
