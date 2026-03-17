@@ -137,7 +137,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.c" />
     <ClCompile Include="Backup.c" />
     <ClCompile Include="CommonFonction.c" />
     <ClCompile Include="Ennemy.c" />
@@ -149,7 +148,6 @@
     <ClCompile Include="Menu.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CommonFonction.h" />

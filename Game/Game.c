@@ -72,6 +72,7 @@ sfVector2u GetObjectUnstableCase(ObjectUnstable _object)
 			}
 		}
 	}
+	return (sfVector2u) { -1,-1 };
 }
 
 sfVector2f GetObjectUnstablePosition(ObjectUnstable _object)

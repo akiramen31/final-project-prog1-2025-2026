@@ -52,3 +52,21 @@ sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position)
 	}
 	return sfFalse;
 }
+
+sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _animation, const float _dt)
+{
+	_animation->timeActualy += _dt;
+
+	if (_animation->timeActualy > _animation->frameDuration)
+	{
+		_animation->timeActualy = 0.f;
+		_animation->rectActualy.left += _animation->rectActualy.width;
+		if (_animation->rectActualy.left > (_animation->rectActualy.width * _animation->frameCount))
+		{
+			_animation->rectActualy.left = 0;
+			return sfTrue;
+		}
+		sfSprite_setTextureRect(_sprite, _animation->rectActualy);
+	}
+	return sfFalse;
+}
