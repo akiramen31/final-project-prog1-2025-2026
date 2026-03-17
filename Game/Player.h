@@ -6,7 +6,7 @@
 typedef enum  State
 {
 	IDLE = 0,
-	WALKING = 4
+	WALK = 4
 }State;
 
 typedef struct Player
@@ -17,10 +17,14 @@ typedef struct Player
 	sfSprite* sprite;
 	Animation animation;
 	sfVector2i posGrid;
+	sfVector2f moveLength;
+
+	int playerMoveSpeedGrid;
+	sfBool isWalking;
 }Player;
 
 void LoadPlayer(void);
-void UpdatePlayer(float _dt);
+void UpdatePlayer(MovePosibility GetMovePosibility, float _dt);
 
 sfVector2i GetPlayerPositionGrid(void);
 #endif

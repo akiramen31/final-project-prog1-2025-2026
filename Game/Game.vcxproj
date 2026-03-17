@@ -138,29 +138,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backup.c" />
-    <ClCompile Include="CommonFonction.c" />
+    <ClCompile Include="Box.c" />
+    <ClCompile Include="Common.c" />
     <ClCompile Include="Ennemy.c" />
     <ClCompile Include="EntityManager.c" />
     <ClCompile Include="Game.c" />
     <ClCompile Include="GameOver.c" />
     <ClCompile Include="GameState.c" />
     <ClCompile Include="HUD.c" />
-    <ClCompile Include="LinkedList.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Player.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="CommonFonction.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="HUD.h" />
-    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
