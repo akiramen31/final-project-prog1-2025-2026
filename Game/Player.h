@@ -3,14 +3,6 @@
 
 #include "Common.h"
 
-typedef enum  Direction
-{
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP,
-}Direction;
-
 typedef enum  State
 {
 	IDLE,
