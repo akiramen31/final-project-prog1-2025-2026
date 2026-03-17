@@ -7,6 +7,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Test to stop having the .exe to create issue when comitting
+*.exe
+
 # User-specific files
 *.rsuser
 *.suo
