@@ -52,7 +52,7 @@ void CleanupEntityManager(void)
 		{
 			sfTexture_destroy(entityManager.asset[i].ptr);
 		}
-		else if (CompareString(buffer, ".wav"))
+		else if (CompareString(buffer, ".wav") || CompareString(buffer, ".ogg"))
 		{
 			sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 		}
@@ -102,7 +102,7 @@ void CleanupTempEntity(void)
 		{
 			sfTexture_destroy(entityManager.asset[i].ptr);
 		}
-		else if (CompareString(buffer, ".wav"))
+		else if (CompareString(buffer, ".wav") || CompareString(buffer, ".ogg"))
 		{
 			sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 		}
@@ -169,7 +169,7 @@ void* GetAsset(char* _file)
 	{
 		entityManager.asset[entityManager.assetCount].ptr = sfTexture_createFromFile(_file, NULL);
 	}
-	else if (CompareString(buffer, ".wav"))
+	else if (CompareString(buffer, ".wav") || CompareString(buffer, ".ogg"))
 	{
 		entityManager.asset[entityManager.assetCount].ptr = sfSoundBuffer_createFromFile(_file);
 	}
@@ -371,7 +371,7 @@ void DestroyAssetEntity(void* _entity)
 			{
 				sfTexture_destroy(entityManager.asset[i].ptr);
 			}
-			else if (CompareString(buffer, ".wav"))
+			else if (CompareString(buffer, ".wav") || CompareString(buffer, ".ogg"))
 			{
 				sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 			}
