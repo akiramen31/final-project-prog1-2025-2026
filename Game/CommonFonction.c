@@ -64,7 +64,10 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 		if (_animation->rectActualy.left > (_animation->rectActualy.width * _animation->frameCount))
 		{
 			_animation->rectActualy.left = 0;
-			return sfTrue;
+			if (!_animation->isLooping)
+			{
+				return sfTrue;
+			}
 		}
 		sfSprite_setTextureRect(_sprite, _animation->rectActualy);
 	}
