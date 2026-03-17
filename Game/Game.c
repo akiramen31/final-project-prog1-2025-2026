@@ -53,7 +53,10 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		SetGameState(MENU);
 		break;
 	case sfKeySpace:
-		SetGameState(GAME_OVER);
+		if (DEV_MODE)
+		{
+			SetGameState(GAME_OVER);
+		}
 		break;
 	default:
 		break;
