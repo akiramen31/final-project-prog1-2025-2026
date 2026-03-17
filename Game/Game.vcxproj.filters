@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Pierre">
-      <UniqueIdentifier>{9d88a6a0-5195-45ef-9bcf-97dbcbdd497e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers d%27en-tête\Pierre">
       <UniqueIdentifier>{99239888-6d98-40f8-a857-cb9834ec4e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Benjamin">
+      <UniqueIdentifier>{b662ccf7-a2a8-4cdd-aca2-17e8abda424b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Benjamin">
+      <UniqueIdentifier>{341e989d-f9ac-4690-89f0-eedd3fff5ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Pierre">
+      <UniqueIdentifier>{9d88a6a0-5195-45ef-9bcf-97dbcbdd497e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,23 +33,29 @@
     <ClCompile Include="Menu.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Game.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="GameOver.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="GameState.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Ennemy.c">
+      <Filter>Fichiers sources\Pierre</Filter>
+    </ClCompile>
     <ClCompile Include="Backup.c">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.c">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
-    <ClCompile Include="Ennemy.c">
-      <Filter>Pierre</Filter>
+    <ClCompile Include="Game.c">
+      <Filter>Fichiers sources\Benjamin</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFonction.c">
+      <Filter>Fichiers sources\Benjamin</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.c">
+      <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,23 +65,29 @@
     <ClInclude Include="Menu.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="GameOver.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Backup.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête\Pierre</Filter>
+    </ClInclude>
+    <ClInclude Include="Backup.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonFonction.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

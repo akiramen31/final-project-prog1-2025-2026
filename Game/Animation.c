@@ -1,6 +1,6 @@
 #include "Animation.h"
 
-sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt)
+sfBool UpdateAnimationAndGiveIfStop(const sfSprite* _sprite, const Animation* _animation, const float _dt)
 {
 
 }
