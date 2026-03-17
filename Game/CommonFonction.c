@@ -61,7 +61,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 	{
 		_animation->timeActualy = 0.f;
 		_animation->rectActualy.left += _animation->rectActualy.width;
-		if (_animation->rectActualy.left > (_animation->rectActualy.width * _animation->frameCount))
+		if (_animation->rectActualy.left > (_animation->rectActualy.width * (_animation->frameCount - 1)))
 		{
 			_animation->rectActualy.left = 0;
 			if (!_animation->isLooping)
