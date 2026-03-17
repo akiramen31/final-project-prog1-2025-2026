@@ -147,6 +147,7 @@
     <ClCompile Include="GameState.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Menu.c" />
+    <ClCompile Include="Player.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
