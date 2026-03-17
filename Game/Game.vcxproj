@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup.h" />
+    <ClInclude Include="box.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />

@@ -2,6 +2,7 @@
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 MovePosibility GetMovePosibility(sfVector2i _position);
+void UpdateCollider(void);
 
 Game game;
 
@@ -103,4 +104,9 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		}
 	}
 	return posibility;
+}
+
+void UpdateCollider(void)
+{
+
 }
