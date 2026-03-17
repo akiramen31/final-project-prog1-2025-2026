@@ -2,7 +2,6 @@
 #define PLAYER_H
 
 #include "Common.h"
-#include "Animation.h"
 
 typedef enum  Direction
 {

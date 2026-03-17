@@ -1,7 +1,7 @@
 #include "Game.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
-sfVector2u GetObjectUnstableCase(ObjectUnstable _object);
+sfVector2i GetObjectUnstableCase(ObjectUnstable _object);
 sfVector2f GetObjectUnstablePosition(ObjectUnstable _object);
 
 Game game;
@@ -60,7 +60,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	}
 }
 
-sfVector2u GetObjectUnstableCase(ObjectUnstable _object)
+sfVector2i GetObjectUnstableCase(ObjectUnstable _object)
 {
 	for (int row = 0; row < NB_GRID_ROW; row++)
 	{
@@ -68,16 +68,16 @@ sfVector2u GetObjectUnstableCase(ObjectUnstable _object)
 		{
 			if (game.caseState[row][column].unstable = _object)
 			{
-				return (sfVector2u) {row, column};
+				return (sfVector2i) {row, column};
 			}
 		}
 	}
-	return (sfVector2u) { -1,-1 };
+	return (sfVector2i) { -1,-1 };
 }
 
 sfVector2f GetObjectUnstablePosition(ObjectUnstable _object)
 {
-	sfVector2u objectCase = GetObjectUnstableCase(_object);
+	sfVector2i objectCase = GetObjectUnstableCase(_object);
 
 	return (sfVector2f) { GRID_BOX.left + (float)objectCase.x / NB_GRID_COLUMN * GRID_BOX.width, GRID_BOX.top + (float)objectCase.y / NB_GRID_ROW * GRID_BOX.height};
 }
