@@ -13,6 +13,7 @@ void LoadGame(void)
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
+	LoadBox();
 	for (int row = 0; row < NB_GRID_ROW; row++)
 	{
 		for (int column = 0; column < NB_GRID_COLUMN; column++)
@@ -20,6 +21,10 @@ void LoadGame(void)
 			if (row % 2 && column % 2)
 			{
 				game.caseState[row][column] = WALL;
+			}
+			else if (row > 1 && column > 1)
+			{
+
 			}
 		}
 	}

@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backup.c" />
+    <ClCompile Include="Box.c" />
     <ClCompile Include="Common.c" />
     <ClCompile Include="Ennemy.c" />
     <ClCompile Include="EntityManager.c" />
@@ -151,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup.h" />
-    <ClInclude Include="box.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />

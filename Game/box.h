@@ -3,7 +3,25 @@
 
 #include "Common.h"
 
-void LoadGame(void);
-void PollEventGame(sfEvent* _event);
-void UpdateGame(float _dt);
+#define NB_BOX 40
+
+
+
+typedef struct
+{
+	sfSprite* sprite;
+	sfVector2u position;
+	sfBool destroy;
+}BoxEntity;
+
+typedef struct
+{
+	BoxEntity entity[NB_BOX];
+	int boxCount;
+}Box;
+
+void LoadBox(void);
+void UpdateBox(float _dt);
+void SetBoxPosition(sfVector2i _position, int _index);
+void DestroyBox(sfVector2i _position);
 #endif // !BOX_H
