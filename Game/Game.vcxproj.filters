@@ -30,16 +30,10 @@
     <ClCompile Include="Backup.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="CommonFonction.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Ennemy.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="LinkedList.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Game.c">
@@ -49,6 +43,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,16 +65,10 @@
     <ClInclude Include="Backup.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="CommonFonction.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedList.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
