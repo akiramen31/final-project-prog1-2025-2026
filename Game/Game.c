@@ -1,6 +1,7 @@
 #include "Game.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
+MovePosibility GetMovePosibility(sfVector2i _position);
 
 Game game;
 
@@ -58,4 +59,48 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	default:
 		break;
 	}
+}
+
+MovePosibility GetMovePosibility(sfVector2i _position)
+{
+	MovePosibility posibility = { 0 };
+
+	if (!(_position.y % 2))
+	{
+		if (_position.x > 0)
+		{
+			if (game.caseState[_position.y][_position.x - 1] != BOX)
+			{
+				posibility.left = sfTrue;
+			}
+		}
+
+		if (_position.x < (NB_GRID_COLUMN - 1))
+		{
+			if (game.caseState[_position.y][_position.x + 1] != BOX)
+			{
+				posibility.right = sfFalse;
+			}
+		}
+	}
+
+	if (!(_position.x % 2))
+	{
+		if (_position.y > 0)
+		{
+			if (game.caseState[_position.y - 1][_position.x] != BOX)
+			{
+				posibility.down = sfTrue;
+			}
+		}
+
+		if (_position.y < (NB_GRID_ROW - 1))
+		{
+			if (game.caseState[_position.y + 1][_position.x] != BOX)
+			{
+				posibility.up = sfFalse;
+			}
+		}
+	}
+	return posibility;
 }

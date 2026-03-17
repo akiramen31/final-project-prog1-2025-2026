@@ -35,6 +35,13 @@ typedef enum  Direction
 	UP,
 }Direction;
 
+typedef struct
+{
+	sfBool down;
+	sfBool left;
+	sfBool right;
+	sfBool up;
+}MovePosibility;
 
 
 typedef struct Element
