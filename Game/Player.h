@@ -23,7 +23,7 @@ typedef struct Player
 	Direction direction;
 	State state;
 
-	
+	AssetEntity player;
 }Player;
 
 void PlayerLoad(void);

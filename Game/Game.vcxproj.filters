@@ -71,5 +71,8 @@
     <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête\Pierre</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
