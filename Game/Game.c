@@ -9,7 +9,7 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
-
+	LoadPlayer();
 	game.caseState[0][0].unstable = PLAYER;
 
 	for (int row = 0; row < NB_GRID_ROW; row++)
