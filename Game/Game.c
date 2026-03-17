@@ -39,23 +39,10 @@ void PollEventGame(sfEvent* _event)
 
 void UpdateGame(float _dt)
 {
+	UpdatePlayer(_dt);
 
-
-	if (sfKeyboard_isKeyPressed(sfKeyUp) && !sfKeyboard_isKeyPressed(sfKeyDown))
+	if (sfKeyboard_isKeyPressed(sfKeySpace)) 
 	{
-		
-	}
-	if (!sfKeyboard_isKeyPressed(sfKeyUp) && sfKeyboard_isKeyPressed(sfKeyDown))
-	{
-
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyUp) && !sfKeyboard_isKeyPressed(sfKeyDown))
-	{
-
-	}
-	if (!sfKeyboard_isKeyPressed(sfKeyUp) && sfKeyboard_isKeyPressed(sfKeyDown))
-	{
-
 	}
 }
 
