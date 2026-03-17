@@ -23,22 +23,7 @@ typedef enum
 	BOMBE_UP,
 	BOMB_DOWN,
 	EXIT
-}ObjectStable;
-
-typedef enum
-{
-	EMPTY,
-	PLAYER,
-	EXPLOSION,
-	MONSTER
-}ObjectUnstable;
-
-typedef struct
-{
-	ObjectStable stable;
-	ObjectUnstable unstable;
 }CaseContainer;
-
 
 typedef struct
 {
