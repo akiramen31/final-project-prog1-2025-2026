@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Pierre">
+      <UniqueIdentifier>{9d88a6a0-5195-45ef-9bcf-97dbcbdd497e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Pierre">
+      <UniqueIdentifier>{99239888-6d98-40f8-a857-cb9834ec4e9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -36,11 +42,8 @@
     <ClCompile Include="EntityManager.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonFonction.c">
-      <Filter>Fichiers sources</Filter>
+    <ClCompile Include="Ennemy.c">
+      <Filter>Pierre</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,11 +68,8 @@
     <ClInclude Include="EntityManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonFonction.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Ennemy.h">
+      <Filter>Fichiers d%27en-tête\Pierre</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
