@@ -57,6 +57,9 @@
     <ClCompile Include="Animation.c">
       <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
+    <ClCompile Include="Player.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

@@ -4,26 +4,26 @@
 #include "Common.h"
 #include "Animation.h"
 
-enum struct Direction
+typedef enum  Direction
 {
 	DOWN,
 	LEFT,
 	RIGHT,
 	UP,
-} ;
+}Direction;
 
-enum struct State
+typedef enum  State
 {
-	IDLE = 0,
-	WALKING = 4
-} ;
+	IDLE,
+	WALKING
+}State;
 
 typedef struct Player
 {
 	Direction direction;
 	State state;
 
-	AssetEntity player;
+	sfSprite* player;
 }Player;
 
 void PlayerLoad(void);
