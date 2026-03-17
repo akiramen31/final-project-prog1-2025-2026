@@ -2,6 +2,7 @@
 
 void EnterInGame(void);
 sfSprite* title;
+sfSound* menuMusic;
 
 void LoadMenu(void)
 {
@@ -47,6 +48,6 @@ void UpdateMenu(float _dt)
 void EnterInGame(void)
 {
 	SetIntToSave(SCORE, 0);
-
+	//sfSound_stop(menuMusic);
 	SetGameState(GAME);
 }

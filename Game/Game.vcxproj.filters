@@ -57,6 +57,9 @@
     <ClCompile Include="Animation.c">
       <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="CommonFonction.h">
       <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

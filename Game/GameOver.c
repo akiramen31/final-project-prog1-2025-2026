@@ -31,7 +31,7 @@ void KeyPressedGameOver(sfKeyEvent* _keyEvent)
 	case sfKeyEscape:
 		SetGameState(MENU);
 		break;
-	case sfKeySpace:
+	case sfKeyR:
 		SetGameState(GAME);
 		break;
 	default:
