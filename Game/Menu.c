@@ -2,15 +2,14 @@
 
 void EnterInGame(void);
 sfSprite* title;
-sfSound* menuMusic;
 
 void LoadMenu(void)
 {
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
 	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { (SCREEN_WIDTH / 2)-317, 160 }, 1.f, 10);
-	/*menuMusic = CreateSound(GetAsset("Assets/Musics/Main-Menu.ogg"), 1.f, sfFalse);
-	sfSound_setLoop(menuMusic, sfTrue);
-	sfSound_play(menuMusic);*/
+	sfMusic* menuMusic = CreateMusic("Assets/Musics/Title-Screen.ogg", 10.f, sfFalse);
+	sfMusic_setLoop(menuMusic, sfTrue);
+	sfMusic_play(menuMusic);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)
@@ -48,6 +47,5 @@ void UpdateMenu(float _dt)
 void EnterInGame(void)
 {
 	SetIntToSave(SCORE, 0);
-	//sfSound_stop(menuMusic);
 	SetGameState(GAME);
 }
