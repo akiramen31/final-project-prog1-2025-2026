@@ -11,6 +11,9 @@ void LoadGame(void)
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
+	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
+	sfMusic_setLoop(gameMusic, sfTrue);
+	sfMusic_play(gameMusic);
 	game.caseState[0][0].unstable = PLAYER;
 
 	for (int row = 0; row < NB_GRID_ROW; row++)
