@@ -25,6 +25,12 @@
     <Filter Include="Fichiers sources\Pierre">
       <UniqueIdentifier>{9d88a6a0-5195-45ef-9bcf-97dbcbdd497e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Akira">
+      <UniqueIdentifier>{6a897c49-9b48-48b3-8bf7-77853b533d9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Akira">
+      <UniqueIdentifier>{105a4612-f4ba-4ca5-902c-7209430dbdd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -54,11 +60,8 @@
     <ClCompile Include="CommonFonction.c">
       <Filter>Fichiers sources\Benjamin</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.c">
-      <Filter>Fichiers sources\Benjamin</Filter>
-    </ClCompile>
     <ClCompile Include="Player.c">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Akira</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,17 +86,14 @@
     <ClInclude Include="EntityManager.h">
       <Filter>Fichiers d%27en-tête\Benjamin</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
-    </ClInclude>
     <ClInclude Include="CommonFonction.h">
       <Filter>Fichiers d%27en-tête\Benjamin</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Fichiers d%27en-tête\Benjamin</Filter>
+    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Akira</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

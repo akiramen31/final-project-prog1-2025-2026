@@ -2,20 +2,11 @@
 #define PLAYER_H
 
 #include "Common.h"
-#include "Animation.h"
-
-typedef enum  Direction
-{
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP,
-}Direction;
 
 typedef enum  State
 {
-	IDLE,
-	WALKING
+	IDLE = 0,
+	WALKING = 4
 }State;
 
 typedef struct Player
@@ -24,6 +15,8 @@ typedef struct Player
 	State state;
 
 	sfSprite* player;
+	sfVector2i posGrid;
+	Animation animation
 }Player;
 
 void PlayerLoad(void);
