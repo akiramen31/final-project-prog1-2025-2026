@@ -2,6 +2,7 @@
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 MovePosibility GetMovePosibility(sfVector2i _position);
+void UpdateCollider(void);
 
 Game game;
 
@@ -12,6 +13,7 @@ void LoadGame(void)
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
+	LoadBox();
 	for (int row = 0; row < NB_GRID_ROW; row++)
 	{
 		for (int column = 0; column < NB_GRID_COLUMN; column++)
@@ -20,8 +22,16 @@ void LoadGame(void)
 			{
 				game.caseState[row][column] = WALL;
 			}
+			else if (row > 1 && column > 1)
+			{
+
+			}
 		}
 	}
+	LoadEnnemy();
+	AddEnnemy();
+	AddEnnemy();
+	AddEnnemy();
 }
 
 void PollEventGame(sfEvent* _event)
@@ -39,6 +49,7 @@ void PollEventGame(sfEvent* _event)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
+	UpdateEnnemy(_dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -101,4 +112,9 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		}
 	}
 	return posibility;
+}
+
+void UpdateCollider(void)
+{
+
 }

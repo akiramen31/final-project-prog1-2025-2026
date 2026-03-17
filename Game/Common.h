@@ -27,7 +27,7 @@ typedef struct Animation
 	float timeActualy;
 }Animation;
 
-typedef enum  Direction
+typedef enum Direction
 {
 	DOWN,
 	LEFT,

@@ -55,6 +55,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 {
 	_animation->timeActualy += _dt;
 
+	sfSprite_setTextureRect(_sprite, _animation->rectActualy);
 	if (_animation->timeActualy > _animation->frameDuration)
 	{
 		_animation->timeActualy = 0.f;
@@ -67,7 +68,6 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 				return sfTrue;
 			}
 		}
-		sfSprite_setTextureRect(_sprite, _animation->rectActualy);
 	}
 	return sfFalse;
 }

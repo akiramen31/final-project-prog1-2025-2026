@@ -5,6 +5,8 @@
 #include "GameState.h"
 #include "HUD.h"
 #include "Player.h"
+#include "Ennemy.h" 
+#include "Box.h"
 
 #define GRID_BOX (sfIntRect) {8, 40, 224, 128}
 #define NB_GRID_ROW 9
