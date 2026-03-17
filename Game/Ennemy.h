@@ -17,7 +17,7 @@ enum TypeEnnemy
 	DALL,
 	DENKYUN,
 	KONDORIA,
-	TOTAL_Type_Ennemy
+	TOTAL_TYPE_ENNEMY
 };
 
 typedef struct Personality
@@ -35,14 +35,17 @@ typedef struct Ennemy
 	enum Vitesse vitesse;
 	_Bool passeMuraille;
 	Personality personality;
+	Animation animation[5];
+	sfVector2i position;
+	enum Direction direction;
 }Ennemy;
 
 void LoadEnnemy(void);
-Ennemy* CreateRandomEnnemy(void);
-Ennemy* CreateSelectEnnemy(enum TypeEnnemy _type);
-
-
-
-//sfRectangleShape_getGlobalBounds;
+void CreateRandomEnnemy(Ennemy* _ennemy);
+void CreateSelectEnnemy(enum TypeEnnemy _type);
+void AddEnnemy(void);
+Ennemy* GetEnnemy(unsigned _index);
+void UpdateEnnemy(float _dt);
+unsigned GetAnimation(Ennemy* _ennemy);
 
 #endif // !ENNEMY_h
