@@ -41,19 +41,31 @@ void Load(MainData* _mainData)
 
 void PollEvent(sfRenderWindow* _renderWindow)
 {
-	switch (GetGameState())
+	sfEvent event;
+
+	while (sfRenderWindow_pollEvent(_renderWindow, &event))
 	{
-	case MENU:
-		PollEventMenu(_renderWindow);
-		break;
-	case GAME:
-		PollEventGame(_renderWindow);
-		break;
-	case GAME_OVER:
-		PollEventGameOver(_renderWindow);
-		break;
-	default:
-		break;
+		if (event.type == sfEvtClosed)
+		{
+			sfRenderWindow_close(_renderWindow);
+		}
+		else
+		{
+			switch (GetGameState())
+			{
+			case MENU:
+				PollEventMenu(_renderWindow, &event);
+				break;
+			case GAME:
+				PollEventGame(&event);
+				break;
+			case GAME_OVER:
+				PollEventGameOver(&event);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }
 

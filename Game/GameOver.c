@@ -1,33 +1,32 @@
 #include "GameOver.h"
 
+void KeyPressedGameOver(sfKeyEvent* _keyEvent);
+
 void LoadGameOver(void)
 {
-	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 4.f);
+	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
 }
 
-void PollEventGameOver(sfRenderWindow* _renderWindow)
+void PollEventGameOver(sfEvent* _event)
 {
-	sfEvent event;
-
-	while (sfRenderWindow_pollEvent(_renderWindow, &event))
+	switch (_event->type)
 	{
-		switch (event.type)
-		{
-		case sfEvtClosed:
-			sfRenderWindow_close(_renderWindow);
-			break;
-		case sfEvtKeyPressed:
-			KeyPressedGameOver(_renderWindow, event.key);
-			break;
-		default:
-			break;
-		}
+	case sfEvtKeyPressed:
+		KeyPressedGameOver(&_event->key);
+		break;
+	default:
+		break;
 	}
 }
 
-void KeyPressedGameOver(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
+void UpdateGameOver(float _dt)
 {
-	switch (_keyEvent.code)
+
+}
+
+void KeyPressedGameOver(sfKeyEvent* _keyEvent)
+{
+	switch (_keyEvent->code)
 	{
 	case sfKeyEscape:
 		SetGameState(MENU);
@@ -38,9 +37,4 @@ void KeyPressedGameOver(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
 	default:
 		break;
 	}
-}
-
-void UpdateGameOver(float _dt)
-{
-
 }

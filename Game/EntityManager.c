@@ -214,7 +214,7 @@ sfSprite* LoadBackground(sfTexture* _texture, float _scale)
 		entityManager.visual->drawPlan = 100000000000000000000000000000000000000.f;
 	}
 	sfSprite_setTexture(entityManager.visual->ptr, _texture, sfTrue);
-	sfSprite_setScale(entityManager.visual->ptr, (sfVector2f) { _scale, _scale });
+	sfSprite_setScale(entityManager.visual->ptr, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
 	return entityManager.visual->ptr;
 }
 

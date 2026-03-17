@@ -20,6 +20,10 @@ typedef enum
 typedef enum
 {
 	SCORE,
+	LIFE,
+	BOMB,
+	FIRE,
+	SPEED,
 	INT_COUNT
 
 }IntSave;

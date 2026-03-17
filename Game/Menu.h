@@ -5,9 +5,9 @@
 #include "GameState.h"
 
 void LoadMenu(void);
-void PollEventMenu(sfRenderWindow* _renderWindow);
+void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event);
 void UpdateMenu(float _dt);
 
-void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent);
+void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent);
 
 #endif // !MENU_H

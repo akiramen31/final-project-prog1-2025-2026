@@ -5,9 +5,8 @@
 #include "GameState.h"
 
 void LoadGameOver(void);
-void PollEventGameOver(sfRenderWindow* _renderWindow);
+void PollEventGameOver(sfEvent* _event);
 void UpdateGameOver(float _dt);
 
-void KeyPressedGameOver(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent);
 
 #endif // !GAME_OVER_H
