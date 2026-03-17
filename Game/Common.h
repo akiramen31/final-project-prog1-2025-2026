@@ -10,6 +10,8 @@
 
 #include "Backup.h"
 #include "EntityManager.h"
+#include "Animation.h"
+#include "CommonFonction.h"
 
 #define GAME_SCALE 1
 #define SCREEN_WIDTH 1024
