@@ -7,8 +7,8 @@ typedef struct Animation
 {
 	sfIntRect firstFrame;
 	sfBool isLooping;
-	float frameDuration;
 	unsigned frameCount;
+	float frameDuration;
 	float timeActualy;
 }Animation;
 
