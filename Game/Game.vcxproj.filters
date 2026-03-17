@@ -63,6 +63,9 @@
     <ClCompile Include="Player.c">
       <Filter>Fichiers sources\Akira</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -92,6 +95,8 @@
     <ClInclude Include="CommonFonction.h">
       <Filter>Fichiers d%27en-tête\Benjamin</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     <ClInclude Include="Player.h">
       <Filter>Fichiers d%27en-tête\Akira</Filter>
     </ClInclude>

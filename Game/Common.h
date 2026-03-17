@@ -14,7 +14,8 @@
 
 #define GAME_SCALE 1
 #define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
+#define SCREEN_HEIGHT 904
 #define BPP 32
 
+# define DEV_MODE 1
 #endif // !COMMON_H
