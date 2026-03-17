@@ -12,6 +12,15 @@ typedef struct Animation
 	float timeActualy;
 }Animation;
 
+typedef enum  Direction
+{
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP,
+}Direction;
+
+
 int GetRandomInRange(int _min, int _max);
 float GetAngleToVector(sfVector2f _vector);
 float RadToDeg(float _angleRad);
