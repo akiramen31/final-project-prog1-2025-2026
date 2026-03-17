@@ -22,6 +22,10 @@ void LoadGame(void)
 			}
 		}
 	}
+	LoadEnnemy();
+	AddEnnemy();
+	AddEnnemy();
+	AddEnnemy();
 }
 
 void PollEventGame(sfEvent* _event)
@@ -39,6 +43,7 @@ void PollEventGame(sfEvent* _event)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
+	UpdateEnnemy(_dt);
 }
 
 
