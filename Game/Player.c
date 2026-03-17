@@ -44,7 +44,7 @@ void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
 			player.playerMoveSpeedGrid--;
 		}
 	}
-	player.animation.frameDuration = (float) 1 / (8 + player.playerMoveSpeedGrid) ;
+	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 	printf("speed %d\n", player.playerMoveSpeedGrid);
 }
 
@@ -193,4 +193,9 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 sfVector2i GetPlayerPositionGrid(void)
 {
 	return player.posGrid;
+}
+
+void RespawnPlayer(void)
+{
+	player.posGrid = (sfVector2i){ 0 };
 }
