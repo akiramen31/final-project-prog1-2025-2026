@@ -17,13 +17,14 @@ typedef struct Player
 	sfSprite* sprite;
 	Animation animation;
 	sfVector2i posGrid;
+	sfVector2f moveLength;
 
-	float playerMoveSpeedGrid;
+	int playerMoveSpeedGrid;
 	sfBool isWalking;
 }Player;
 
 void LoadPlayer(void);
-void UpdatePlayer(float _dt);
+void UpdatePlayer(MovePosibility GetMovePosibility, float _dt);
 
 sfVector2i GetPlayerPositionGrid(void);
 #endif

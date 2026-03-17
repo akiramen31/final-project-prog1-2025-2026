@@ -38,10 +38,8 @@ void PollEventGame(sfEvent* _event)
 
 void UpdateGame(float _dt)
 {
-	UpdatePlayer(_dt);
+	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 }
-
-
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
 {
@@ -79,7 +77,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y][_position.x + 1] != BOX)
 			{
-				posibility.right = sfFalse;
+				posibility.right = sfTrue;
 			}
 		}
 	}
@@ -90,7 +88,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y - 1][_position.x] != BOX)
 			{
-				posibility.down = sfTrue;
+				posibility.up = sfTrue;
 			}
 		}
 
@@ -98,7 +96,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y + 1][_position.x] != BOX)
 			{
-				posibility.up = sfFalse;
+				posibility.down = sfTrue;
 			}
 		}
 	}
