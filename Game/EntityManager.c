@@ -90,6 +90,7 @@ void CleanupEntityManager(void)
 			sfMusic_destroy(entityManager.sound[i].ptr);
 		}
 	}
+	entityManager.soundCount = 0;
 	free(entityManager.sound);
 }
 
@@ -136,13 +137,14 @@ void CleanupTempEntity(void)
 	{
 		if (entityManager.sound[i].type == SOUND)
 		{
-			sfSound_destroy(entityManager.asset[i].ptr);
+			sfSound_destroy(entityManager.sound[i].ptr);
 		}
 		else if (entityManager.sound[i].type == MUSIC)
 		{
-			sfMusic_destroy(entityManager.asset[i].ptr);
+ 			sfMusic_destroy(entityManager.sound[i].ptr);
 		}
 	}
+	entityManager.soundCount = 0;
 }
 
 void* GetAsset(char* _file)
