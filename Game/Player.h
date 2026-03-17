@@ -3,18 +3,10 @@
 
 #include "Common.h"
 
-typedef enum  Direction
-{
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP,
-}Direction;
-
 typedef enum  State
 {
-	IDLE,
-	WALKING
+	IDLE = 0,
+	WALKING = 4
 }State;
 
 typedef struct Player
@@ -22,11 +14,13 @@ typedef struct Player
 	Direction direction;
 	State state;
 
-	sfSprite* player;
+	sfSprite* sprite;
+	Animation animation;
+	sfVector2i posGrid;
 }Player;
 
-void PlayerLoad(void);
-void PlayerUpdate(float _dt);
+void LoadPlayer(void);
+void UpdatePlayer(float _dt);
 
-void PlayerMove(float _dt);
+sfVector2i GetPlayerPositionGrid(void);
 #endif
