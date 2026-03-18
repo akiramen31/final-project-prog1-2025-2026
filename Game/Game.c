@@ -14,20 +14,20 @@ void LoadGame(void)
 	LoadHUD();
 	LoadPlayer();
 	LoadBox();
-	for (int row = 0; row < NB_GRID_ROW; row++)
+	for (int row = 1; row < NB_GRID_ROW; row += 2)
 	{
-		for (int column = 0; column < NB_GRID_COLUMN; column++)
+		for (int column = 1; column < NB_GRID_COLUMN; column += 2)
 		{
-			if (row % 2 && column % 2)
-			{
-				game.caseState[row][column] = WALL;
-			}
-			else if (row > 1 && column > 1)
-			{
-
-			}
+			game.caseState[row][column] = WALL;
 		}
 	}
+
+	for (int i = 0; i < NB_BOX; i++)
+	{
+		
+		SetBoxPosition((sfVector2i) {rand() % 4, rand() % 4 }, i);
+	}
+
 	LoadEnnemy();
 	AddEnnemy();
 	AddEnnemy();

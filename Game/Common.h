@@ -18,6 +18,8 @@
 
 # define DEV_MODE 1
 
+#define 
+
 typedef struct Animation
 {
 	sfIntRect rectActualy;
