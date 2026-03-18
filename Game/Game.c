@@ -13,6 +13,11 @@ void LoadGame(void)
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
+	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
+	sfMusic_setLoop(gameMusic, sfTrue);
+	sfMusic_play(gameMusic);
+	game.caseState[0][0].unstable = PLAYER;
+
 	LoadBox();
 	for (int row = 1; row < NB_GRID_ROW; row += 2)
 	{
@@ -48,11 +53,9 @@ void PollEventGame(sfEvent* _event)
 
 void UpdateGame(float _dt)
 {
-	UpdatePlayer(_dt);
+	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	UpdateEnnemy(_dt);
 }
-
-
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
 {
@@ -90,7 +93,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y][_position.x + 1] != BOX)
 			{
-				posibility.right = sfFalse;
+				posibility.right = sfTrue;
 			}
 		}
 	}
@@ -101,7 +104,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y - 1][_position.x] != BOX)
 			{
-				posibility.down = sfTrue;
+				posibility.up = sfTrue;
 			}
 		}
 
@@ -109,7 +112,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 		{
 			if (game.caseState[_position.y + 1][_position.x] != BOX)
 			{
-				posibility.up = sfFalse;
+				posibility.down = sfTrue;
 			}
 		}
 	}

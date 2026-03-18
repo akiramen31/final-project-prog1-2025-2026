@@ -5,6 +5,9 @@ void KeyPressedGameOver(sfKeyEvent* _keyEvent);
 void LoadGameOver(void)
 {
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
+	sfMusic* gameOverMusic = CreateMusic("Assets/Musics/Game-Over.ogg", 10.f, sfFalse);
+	sfMusic_setLoop(gameOverMusic, sfTrue);
+	sfMusic_play(gameOverMusic);
 }
 
 void PollEventGameOver(sfEvent* _event)
