@@ -277,7 +277,7 @@ sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
 {
 	int bufferCalcule = entityManager.soundCount + 1;
 	SoundEntity* temp = realloc(entityManager.sound, bufferCalcule * sizeof(SoundEntity));
-	if (temp)
+	if (!temp) // Add ! cause that was if (temp)
 	{
 		return NULL;
 	}
