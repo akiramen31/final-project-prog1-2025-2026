@@ -45,7 +45,6 @@ void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
 		}
 	}
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
-	printf("speed %d\n", player.playerMoveSpeedGrid);
 }
 
 void MovePlayer(MovePosibility _GetMovePosibility, float _dt)

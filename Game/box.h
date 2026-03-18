@@ -5,11 +5,10 @@
 
 #define NB_BOX 40
 
-
-
 typedef struct
 {
-	sfSprite* sprite;
+	sfSprite* spriteUp;
+	sfSprite* spriteDown;
 	sfVector2u position;
 	sfBool destroy;
 }BoxEntity;

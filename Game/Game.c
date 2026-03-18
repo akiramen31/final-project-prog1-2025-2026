@@ -25,11 +25,16 @@ void LoadGame(void)
 			game.caseState[row][column] = WALL;
 		}
 	}
-
+	sfVector2i positionRandom = { 0 , 0 };
 	for (int i = 0; i < NB_BOX; i++)
 	{
-		
-		SetBoxPosition((sfVector2i) {rand() % 4, rand() % 4 }, i);
+		do
+		{
+			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
+		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 2);
+
+		SetBoxPosition(positionRandom, i);
+		game.caseState[positionRandom.y][positionRandom.x] = BOX;
 	}
 
 	LoadEnnemy();
@@ -115,6 +120,7 @@ MovePosibility GetMovePosibility(sfVector2i _position)
 			}
 		}
 	}
+	printf("%d %d %d %d\n", posibility.left, posibility.right, posibility.up, posibility.down);
 	return posibility;
 }
 

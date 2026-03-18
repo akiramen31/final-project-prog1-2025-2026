@@ -10,7 +10,6 @@ void LoadEnnemy(void)
 void CreateRandomEnnemy(Ennemy* _ennemy)
 {
 	_ennemy->typeEnnemy = GetRandomInRange(0, TOTAL_TYPE_ENNEMY - 1);
-	printf("Type = %d\n", _ennemy->typeEnnemy);
 	switch (_ennemy->typeEnnemy)
 	{
 	case BALLOM:
@@ -97,7 +96,6 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfTrue, 5, 1.f,0.f };
 		break;
 	default:
-		printf("Erreur lort de la selection du type d'enney : %d\n", _ennemy->typeEnnemy);
 		break;
 	}
 	//_ennemy->position = ;
@@ -113,7 +111,6 @@ void AddEnnemy(void)
 	}
 	CreateRandomEnnemy(newEnnemy);
 	InsertElement(listeEnnemy, CreateElement(newEnnemy), 0);
-	printf("Ennemy cree Type = %d, life %d", newEnnemy->typeEnnemy, newEnnemy->life);
 }
 
 Ennemy* GetEnnemy(unsigned _index)
@@ -162,7 +159,6 @@ unsigned GetAnimation(Ennemy* _ennemy)
 				return 1;
 				break;
 			default:
-				printf("error de la direction = %d", _ennemy->direction);
 				break;
 			}
 		}
