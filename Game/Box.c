@@ -21,8 +21,7 @@ void UpdateBox(float _dt)
 
 void SetBoxPosition(sfVector2i _position, int _index)
 {
-
-	sfSprite_setPosition(box.entity[_index].sprite, _position)
+	sfSprite_setPosition(box.entity[_index].sprite, (sfVector2f) { FIRST_CASE.left + FIRST_CASE.width * _position.x, FIRST_CASE.top + FIRST_CASE.height * _position.y });
 }
 
 void DestroyBox(sfVector2i _position)

@@ -8,10 +8,6 @@
 #include "Ennemy.h" 
 #include "Box.h"
 
-#define FIRST_CASE (sfIntRect) {8, 40, 224, 128}
-#define NB_GRID_ROW 9
-#define NB_GRID_COLUMN 15
-
 typedef enum
 {
 	VOID,
