@@ -16,7 +16,6 @@ void LoadGame(void)
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
-	game.caseState[0][0].unstable = PLAYER;
 
 	LoadBox();
 	for (int row = 1; row < NB_GRID_ROW; row += 2)
