@@ -10,18 +10,25 @@ void LoadBox(void)
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		float scale = 4.f;
-		box.entity[i].spriteDown = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 2.f);
+		box.entity[i].spriteDown = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 41.f);
 		sfSprite_setTextureRect(box.entity[i].spriteDown, (sfIntRect){0, 4, 16, 16});
 
 		box.entity[i].spriteUp = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 1.f);
-		sfSprite_setTextureRect(box.entity[i].spriteUp, (sfIntRect) { 0, 0, 16, 4 });
+		sfSprite_setTextureRect(box.entity[i].spriteUp, (sfIntRect) { 0, 0, 16, 6 });
 		sfSprite_setOrigin(box.entity[i].spriteUp, (sfVector2f) { 0.f, 4.f});
+
 	}
 }
 
 void UpdateBox(float _dt)
 {
+	for (int i = 0; i < NB_BOX; i++)
+	{
+		if (box.entity[i].destroy)
+		{
 
+		}
+	}
 }
 
 void SetBoxPosition(sfVector2i _position, int _index)
