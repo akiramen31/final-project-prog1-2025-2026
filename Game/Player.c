@@ -53,6 +53,8 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 
 	if (player.isWalking == sfFalse)
 	{
+		State temp = player.state;
+
 		if (sfKeyboard_isKeyPressed(sfKeyQ) && sfKeyboard_isKeyPressed(sfKeyD))
 		{
 			player.direction = DOWN;
@@ -113,7 +115,14 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 			player.animation.frameCount = 3;
 		}
 
-		player.animation.rectActualy = (sfIntRect){ player.animation.rectActualy.left, (player.direction + player.state) * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT };
+		if (temp == player.state)
+		{
+			player.animation.rectActualy = (sfIntRect){ player.animation.rectActualy.left, (player.direction + player.state) * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT };
+		}
+		else
+		{
+			player.animation.rectActualy = (sfIntRect){ 0, (player.direction + player.state) * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT };
+		}
 
 		if (player.state == WALK)
 		{
