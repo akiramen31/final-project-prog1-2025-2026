@@ -7,16 +7,16 @@
 
 typedef struct
 {
-	sfSprite* spriteUp;
-	sfSprite* spriteDown;
-	sfVector2u position;
-	sfBool destroy;
-}BoxEntity;
+	sfSprite* sprite;
+	Animation animation;
+}BoxPart;
 
 typedef struct
 {
-	BoxEntity entity[NB_BOX];
-	int boxCount;
+	BoxPart up;
+	BoxPart down;
+	sfVector2u position;
+	sfBool destroy;
 }Box;
 
 void LoadBox(void);
