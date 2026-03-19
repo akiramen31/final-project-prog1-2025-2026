@@ -29,7 +29,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,58,20,22 }, sfTrue, 4, 0.2,0.f };
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,98,20,22 }, sfTrue, 4, 0.2,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,138,20,22 }, sfTrue, 4, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfTrue, 5, 0.2,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfFalse, 5, 0.2,0.f };
 		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 1, 0.2,0.f };
 		break;
 	case ONIL:
@@ -49,7 +49,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,863,20,17 }, sfTrue, 5, 0.2,0.f };
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,903,20,17 }, sfTrue, 5, 0.2,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,943,20,17 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfTrue, 4, 0.2,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfFalse, 4, 0.2,0.f };
 		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 1, 0.2,0.f };
 		break;
 	case DALL:
@@ -69,7 +69,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,258,20,24 }, sfTrue, 3, 0.2,0.f };
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,298,20,24 }, sfTrue, 3, 0.2,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,338,20,24 }, sfTrue, 3, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfTrue, 6, 0.2,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfFalse, 6, 0.2,0.f };
 		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 1, 0.2,0.f };
 		break;
 	case DENKYUN:
@@ -88,7 +88,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 0.2,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 0.2,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,774,20,25 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfFalse, 1, 0.2,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 1, 0.2,0.f };
 		break;
 	case KONDORIA:
@@ -107,8 +107,8 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2,0.f };
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfTrue, 5, 0.2,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfFalse, 2, 0.2,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2,0.f };
 		break;
 	default:
 		break;
@@ -141,7 +141,7 @@ Ennemy* GetEnnemy(unsigned _index)
 
 void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 {
-
+	
 	switch (GetEnnemy(_i)->direction)
 	{
 	case DOWN:
@@ -192,7 +192,12 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	}
 
-	UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt);
+	
+	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt))
+	{
+		free(GetEnnemy(_i));
+		RemoveElement(listeEnnemy, _i);
+	}
 }
 
 unsigned GetAnimation(Ennemy* _ennemy)
@@ -338,4 +343,9 @@ sfVector2i GetFuturPositionEnnemy(unsigned _index)
 		break;
 	}
 	return (sfVector2i) { 0, 0 };
+}
+
+void HitEnnemy(unsigned _index)
+{
+	GetEnnemy(_index)->life -= 1;
 }
