@@ -24,7 +24,7 @@ typedef struct Player
 }Player;
 
 void LoadPlayer(void);
-void UpdatePlayer(MovePosibility GetMovePosibility, float _dt);
+void UpdatePlayer(CasePosibility GetMovePosibility, float _dt);
 
 sfVector2i GetPlayerPositionGrid(void);
 #endif

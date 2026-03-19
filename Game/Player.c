@@ -7,7 +7,7 @@ Player player;
 
 float lastMove;
 
-void MovePlayer(MovePosibility _GetMovePosibility, float _dt);
+void MovePlayer(CasePosibility _GetMovePosibility, float _dt);
 
 void LoadPlayer(void)
 {
@@ -25,7 +25,7 @@ void LoadPlayer(void)
 	sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
 }
 
-void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
+void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 {
 	MovePlayer(_GetMovePosibility, _dt);
 
@@ -47,7 +47,7 @@ void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 }
 
-void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
+void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 {
 	lastMove += _dt;
 
@@ -69,7 +69,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = LEFT;
 			player.state = WALK;
-			if (_GetMovePosibility.left == sfFalse)
+			if (_GetMovePosibility.left == !0)
 			{
 				player.state = IDLE;
 			}
@@ -78,7 +78,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = RIGHT;
 			player.state = WALK;
-			if (_GetMovePosibility.right == sfFalse)
+			if (_GetMovePosibility.right == !0)
 			{
 				player.state = IDLE;
 			}
@@ -87,7 +87,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = UP;
 			player.state = WALK;
-			if (_GetMovePosibility.up == sfFalse)
+			if (_GetMovePosibility.up == !0)
 			{
 				player.state = IDLE;
 			}
@@ -96,7 +96,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = DOWN;
 			player.state = WALK;
-			if (_GetMovePosibility.down == sfFalse)
+			if (_GetMovePosibility.down == !0)
 			{
 				player.state = IDLE;
 			}
