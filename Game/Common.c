@@ -74,7 +74,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 
 sfVector2f TransformVector2iToVector2f(sfVector2i _vector)
 {
-	return (sfVector2f) { FIRST_CASE.left + FIRST_CASE.width * (_vector.x + 0.5f), FIRST_CASE.top + FIRST_CASE.height * (_vector.y + 0.5f) };
+	return (sfVector2f) { FIRST_CASE.left + FIRST_CASE.width * ((float)_vector.x + 0.5f), FIRST_CASE.top + FIRST_CASE.height * ((float)_vector.y + 1.f) };
 }
 
 
