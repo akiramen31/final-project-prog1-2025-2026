@@ -2,10 +2,12 @@
 
 #define PLAYER_HEIGHT 30
 #define PLAYER_WIDTH 20
+#define INVINCIBLE_DURATION 3
 
 Player player;
 
 float lastMove;
+float invincibleTime;
 
 void MovePlayer(CasePosibility _GetMovePosibility, float _dt);
 
@@ -26,6 +28,21 @@ void LoadPlayer(void)
 void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 {
 	MovePlayer(_GetMovePosibility, _dt);
+
+	if (player.isInvincible)
+	{
+		invincibleTime += _dt;
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 50));
+
+		if (invincibleTime >= INVINCIBLE_DURATION)
+		{
+			player.isInvincible = sfFalse;
+		}
+	}
+	else
+	{
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(0, 0, 0, 0));
+	}
 
 	if (sfKeyboard_isKeyPressed(sfKeyUp))
 	{
@@ -213,7 +230,22 @@ sfBool AskPlayerIdle(void)
 	}
 }
 
+sfBool AskPlayerInvincible(void)
+{
+	if (player.isInvincible)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
+}
+
 void RespawnPlayer(void)
 {
+	invincibleTime = 0;
+	player.isInvincible = sfTrue;
 	player.posGrid = (sfVector2i){ 0 };
+	sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 }
