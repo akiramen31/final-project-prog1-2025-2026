@@ -50,8 +50,9 @@ void LoadGame(void)
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 			casePosibility = GetMovePosibility(positionRandom);
 		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
+		AddEnnemy(positionRandom, casePosibility);
 		printf("ok2");
-		//AddEnnemy(positionRandom, casePosibility);
+		AddEnnemy(positionRandom, casePosibility);
 	}
 
 }
@@ -84,6 +85,7 @@ void UpdateGame(float _dt)
 
 	UpdateBox(_dt);
 	UpdateBomb(_dt);
+	//system("pause");
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)

@@ -38,6 +38,7 @@ typedef enum Direction
 	LEFT,
 	RIGHT,
 	UP,
+	BLOCK,
 }Direction;
 
 typedef struct
