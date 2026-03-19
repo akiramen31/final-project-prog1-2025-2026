@@ -40,14 +40,14 @@ void LoadGame(void)
 
 	LoadEnnemy();
 	CasePosibility casePosibility = { 0 };
-	for (int i = 0; i < 5/*GetIntToSave(ENNEMY_COUNT)*/; i++)
+	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
 	{
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 			casePosibility = GetMovePosibility(positionRandom);
 		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
-		//AddEnnemy(positionRandom);
+		//AddEnnemy(positionRandom, casePosibility);
 	}
 }
 
@@ -66,7 +66,10 @@ void PollEventGame(sfEvent* _event)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
-	//UpdateEnnemy(_dt);
+	for (int i = 0; i < GetNumberEnnemy(); i++)
+	{
+		UpdateEnnemy(_dt, GetMovePosibility(GetPositionEnnemy(i)), i);
+	}
 	UpdateBox(_dt);
 }
 
