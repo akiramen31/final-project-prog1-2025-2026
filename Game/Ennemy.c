@@ -17,7 +17,6 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 100;
 		_ennemy->vitesse = LENT;
-		_ennemy->direction = 0;
 
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
@@ -37,7 +36,6 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 200;
 		_ennemy->vitesse = NORMAL;
-		_ennemy->direction = 0;
 
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
@@ -57,7 +55,6 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 400;
 		_ennemy->vitesse = NORMAL;
-		_ennemy->direction = 0;
 
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
@@ -77,10 +74,9 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 600;
 		_ennemy->vitesse = NORMAL;
-		_ennemy->direction = 0;
 
-		_ennemy->personality.aggressiveness = 0;
-		_ennemy->personality.chaos = 10;
+		_ennemy->personality.aggressiveness = 1;
+		_ennemy->personality.chaos = 5;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
@@ -96,10 +92,9 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->passeMuraille = 1;
 		_ennemy->points = 1000;
 		_ennemy->vitesse = TRES_LENT;
-		_ennemy->direction = 0;
 
-		_ennemy->personality.aggressiveness = 0;
-		_ennemy->personality.chaos = 10;
+		_ennemy->personality.aggressiveness = 3;
+		_ennemy->personality.chaos = 0;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 00.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
@@ -114,6 +109,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 	default:
 		break;
 	}
+	_ennemy->direction = 0;
 	sfSprite_setScale(_ennemy->sprite, (sfVector2f) { 3, 3 });
 }
 

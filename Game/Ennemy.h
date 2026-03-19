@@ -5,7 +5,7 @@
 
 enum Vitesse
 {
-	TRES_LENT = 20,
+	TRES_LENT = 10,
 	LENT = 20,
 	NORMAL = 50
 };
