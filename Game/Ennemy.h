@@ -43,11 +43,12 @@ typedef struct Ennemy
 void LoadEnnemy(void);
 void CreateRandomEnnemy(Ennemy* _ennemy);
 void CreateSelectEnnemy(enum TypeEnnemy _type);
-void AddEnnemy(sfVector2i _position);
+void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility);
 Ennemy* GetEnnemy(unsigned _index);
-void UpdateEnnemy(float _dt);
+void UpdateEnnemy(float _dt, CasePosibility _casePosibility,int _i);
 unsigned GetAnimation(Ennemy* _ennemy);
 int GetNumberEnnemy(void);
 sfVector2i GetPositionEnnemy(unsigned _index);
+void NewChoiceDirection(CasePosibility _casePosibility, int _i);
 
 #endif // !ENNEMY_h

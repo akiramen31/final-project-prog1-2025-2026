@@ -23,7 +23,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->personality.chaos = 10;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 1000.f);
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 20 });
+		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 21 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 4, 1.f,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,58,20,22 }, sfTrue, 4, 1.f,0.f };
@@ -61,7 +61,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->personality.chaos = 10;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 1000.f);
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 21 });
+		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 23 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 3, 1.f,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,258,20,24 }, sfTrue, 3, 1.f,0.f };
@@ -80,7 +80,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->personality.chaos = 10;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 1000.f);
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 21 });
+		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 24 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 1.f,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 1.f,0.f };
@@ -97,7 +97,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->personality.chaos = 10;
 
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 1000.f);
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 20 });
+		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 21 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 1.f,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 1.f,0.f };
@@ -112,8 +112,9 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 }
 
 
-void AddEnnemy(sfVector2i _position)
+void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 {
+	printf("add ennemy\n");
 	Ennemy* newEnnemy = calloc(1, sizeof(Ennemy));
 	if (newEnnemy == NULL)
 	{
@@ -122,7 +123,9 @@ void AddEnnemy(sfVector2i _position)
 	CreateRandomEnnemy(newEnnemy);
 	sfVector2f position = TransformVector2iToVector2f(_position);
 	sfSprite_setPosition(newEnnemy->sprite, position);
+	newEnnemy->position = _position;
 	InsertElement(listeEnnemy, CreateElement(newEnnemy), 0);
+	NewChoiceDirection(_casePosibility, 0);
 }
 
 Ennemy* GetEnnemy(unsigned _index)
@@ -131,12 +134,54 @@ Ennemy* GetEnnemy(unsigned _index)
 	return element->value;
 }
 
-void UpdateEnnemy(float _dt)
+void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 {
-	for (unsigned i = 0; i < GetListSize(listeEnnemy); i++)
+
+	switch (GetEnnemy(_i)->direction)
 	{
-		UpdateAnimationAndGiveIfStop(GetEnnemy(i)->sprite, &(GetEnnemy(i)->animation[GetAnimation(GetEnnemy(i))]), _dt);
+	case DOWN:
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse });
+		break;
+	case LEFT:
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse, 0 });
+		break;
+	case RIGHT:
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse, 0 });
+		break;
+	case UP:
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse });
+		break;
+	default:
+		printf("error direction");
+		break;
 	}
+
+	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
+		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
+	{
+		switch (GetEnnemy(_i)->direction)
+		{
+		case DOWN:
+			GetEnnemy(_i)->position.x++;
+			break;
+		case LEFT:
+			GetEnnemy(_i)->position.y--;
+			break;
+		case RIGHT:
+			GetEnnemy(_i)->position.y++;
+			break;
+		case UP:
+			GetEnnemy(_i)->position.x--;
+			break;
+		default:
+			printf("error direction");
+			break;
+		}
+		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
+		NewChoiceDirection(_casePosibility, _i);
+	}
+
+	UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt);
 }
 
 unsigned GetAnimation(Ennemy* _ennemy)
@@ -188,7 +233,49 @@ int GetNumberEnnemy(void)
 
 sfVector2i GetPositionEnnemy(unsigned _index)
 {
-	sfVector2f positionF = sfSprite_getPosition(GetEnnemy(_index)->sprite);
-	sfVector2i positionI = (sfVector2i){ positionF.x, positionF.y };
+	sfVector2i positionI = GetEnnemy(_index)->position;
 	return positionI;
+}
+
+void NewChoiceDirection(CasePosibility _casePosibility, int _i)
+{
+	sfBool confirmDirection = 0;
+	while (confirmDirection == 0)
+	{
+		enum Direction temp = GetRandomInRange(0, 3);
+		switch (temp)
+		{
+		case DOWN:
+			if (_casePosibility.down)
+			{
+				GetEnnemy(_i)->direction = DOWN;
+				confirmDirection = 1;
+			}
+			break;
+		case LEFT:
+			if (_casePosibility.left)
+			{
+				GetEnnemy(_i)->direction = LEFT;
+				confirmDirection = 1;
+			}
+			break;
+		case RIGHT:
+			if (_casePosibility.right)
+			{
+				GetEnnemy(_i)->direction = RIGHT;
+				confirmDirection = 1;
+			}
+			break;
+		case UP:
+			if (_casePosibility.up)
+			{
+				GetEnnemy(_i)->direction = UP;
+				confirmDirection = 1;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
 }
