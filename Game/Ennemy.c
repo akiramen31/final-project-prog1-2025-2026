@@ -108,6 +108,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 	default:
 		break;
 	}
+	sfSprite_setScale(_ennemy->sprite, (sfVector2f) { 3, 3 });
 }
 
 
