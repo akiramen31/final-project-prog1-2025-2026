@@ -90,7 +90,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 CasePosibility GetMovePosibility(sfVector2i _position)
 {
 	CasePosibility posibility = { 0 };
-	int radiusExplosion = GetIntToSave(BOMBE_UP);
+	int radiusExplosion = GetIntToSave(FIRE);
 
 	if (!(_position.y % 2))
 	{
