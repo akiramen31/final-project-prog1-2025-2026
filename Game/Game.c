@@ -92,34 +92,52 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 	if (!(_position.y % 2))
 	{
-		for (int i = 1; i < radiusExplosion; i++)
+		if (_position.x > 0)
 		{
-			if (game.caseState[_position.y][_position.x - i] != BOX)
+			for (int i = 1; i < radiusExplosion + 1; i++)
 			{
-				posibility.left++;
+				if (game.caseState[_position.y][_position.x - i] != BOX)
+				{
+					posibility.left = i;
+				}
 			}
-			if (game.caseState[_position.y][_position.x + i] != BOX)
+		}
+		if (_position.x < NB_GRID_COLUMN - 1)
+		{
+			for (int i = 1; i < radiusExplosion + 1; i++)
 			{
-				posibility.right++;
+				if (game.caseState[_position.y][_position.x + i] != BOX)
+				{
+					posibility.right++;
+				}
 			}
 		}
 	}
 
 	if (!(_position.x % 2))
 	{
-		for (int i = 1; i < radiusExplosion; i++)
+		if (_position.y > 1)
 		{
-			if (game.caseState[_position.y - i][_position.x] != BOX)
+			for (int i = 1; i < radiusExplosion + 1; i++)
 			{
-				posibility.up++;
+				if (game.caseState[_position.y - i][_position.x] != BOX)
+				{
+					posibility.up++;
+				}
 			}
-			if (game.caseState[_position.y + i][_position.x] != BOX)
+		}
+		if (_position.y < NB_GRID_ROW - 1)
+		{
+			for (int i = 1; i < radiusExplosion + 1; i++)
 			{
-				posibility.down++;
+				if (game.caseState[_position.y + i][_position.x] != BOX)
+				{
+					posibility.down++;
+				}
 			}
 		}
 	}
-	printf("%d %d %d %d\n", posibility.left, posibility.right, posibility.up, posibility.down);
+	printf("left %d right %d up %d down %d\n", posibility.left, posibility.right, posibility.up, posibility.down);
 	return posibility;
 }
 

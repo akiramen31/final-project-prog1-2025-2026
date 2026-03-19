@@ -69,7 +69,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = LEFT;
 			player.state = WALK;
-			if (_GetMovePosibility.left == !0)
+			if (_GetMovePosibility.left == 0)
 			{
 				player.state = IDLE;
 			}
@@ -78,7 +78,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = RIGHT;
 			player.state = WALK;
-			if (_GetMovePosibility.right == !0)
+			if (_GetMovePosibility.right == 0)
 			{
 				player.state = IDLE;
 			}
@@ -87,7 +87,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = UP;
 			player.state = WALK;
-			if (_GetMovePosibility.up == !0)
+			if (_GetMovePosibility.up == 0)
 			{
 				player.state = IDLE;
 			}
@@ -96,7 +96,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = DOWN;
 			player.state = WALK;
-			if (_GetMovePosibility.down == !0)
+			if (_GetMovePosibility.down == 0)
 			{
 				player.state = IDLE;
 			}
