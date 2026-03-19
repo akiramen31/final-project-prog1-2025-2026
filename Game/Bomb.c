@@ -5,7 +5,9 @@ Bomb bombList[NUM_MAX_BOMB];
 
 sfTexture* ExplosionTexture;
 
-unsigned int bombCount = 0;
+int bombCount = 0;
+
+void SortBombList(int _index);
 
 void LoadBomb(void)
 {
@@ -24,30 +26,38 @@ void LoadBomb(void)
 void SpawnBomb(sfVector2i _bombPos)
 {
 	bombCount++;
-	if (bombCount > GetIntToSave(bombCount))
-	{
-		bombCount--;
-		return;
-	}
+	//if (bombCount > GetIntToSave(bombCount))
+	//{
+	//	bombCount--;
+	//	return;
+	//}
 	for (int i = 0; i < bombCount; i++)
 	{
 		if (bombList[i].placed == sfFalse)
 		{
 			printf("spawn bomb num %d\n", i + 1);
-			bombList[i].bombPosition = _bombPos;
+			bombList[i].position = _bombPos;
 
-			bombList[i].bombSprite = CreateSprite(bombTexture, (sfVector2f) { 200, 200 }, 4.f, 41);
+			bombList[i].sprite = CreateSprite(bombTexture, (sfVector2f) { 200, 200 }, 4.f, 41);
 
-			sfSprite_setTextureRect(bombList[i].bombSprite, (sfIntRect) { 0, 0, 16, 16 });
+			sfSprite_setTextureRect(bombList[i].sprite, (sfIntRect) { 0, 0, 16, 16 });
 
-			sfSprite_setOrigin(bombList[i].bombSprite, (sfVector2f) { 8, 16 });
-			sfSprite_setPosition(bombList[i].bombSprite, TransformVector2iToVector2f(_bombPos));
+			sfSprite_setOrigin(bombList[i].sprite, (sfVector2f) { 8, 16 });
+			sfSprite_setPosition(bombList[i].sprite, TransformVector2iToVector2f(_bombPos));
+
+			bombList[i].animation.frameCount = 3;
+			bombList[i].animation.frameDuration = 0.1f;
+			bombList[i].animation.isLooping = sfTrue;
+			bombList[i].animation.rectActualy = (sfIntRect){ 0,0,16,16 };
+
+			bombList[i].duration = 0;
+
 			bombList[i].placed = sfTrue;
 			return;
 		}
 		else
 		{
-			if (_bombPos.x == bombList[i].bombPosition.x && _bombPos.y == bombList[i].bombPosition.y)
+			if (_bombPos.x == bombList[i].position.x && _bombPos.y == bombList[i].position.y)
 			{
 				bombCount--;
 				return;
@@ -56,15 +66,50 @@ void SpawnBomb(sfVector2i _bombPos)
 	}
 }
 
-void BlowBomb(void)
+void BlowBomb(int _num, CasePosibility _colision)
 {
+	bombList[_num].blowDirectionCode = 0;
+	if (_colision.down)
+	{
+		bombList[_num].blowDirectionCode += BLOWDOWN;
+	}
+	if (_colision.right)
+	{
+		bombList[_num].blowDirectionCode += BLOWRIGHT;
+	}
+	if (_colision.up)
+	{
+		bombList[_num].blowDirectionCode += BLOWUP;
+	}
+	if (_colision.left)
+	{
+		bombList[_num].blowDirectionCode += BLOWLEFT;
+	}
+
+
+	printf("blown direction %d\n", bombList[_num].blowDirectionCode);
+	DestroyVisualEntity(bombList[_num].sprite);
+
+	SortBombList(_num);
+	bombCount--;
 }
 
-void UpdateBomb(float _dt)
+void UpdateBomb(CasePosibility _colision[], float _dt)
 {
 	for (int i = 0; i < bombCount; i++)
 	{
+		if (bombCount == 0)
+		{
+			return;
+		}
 
+		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
+		bombList[i].duration += _dt;
+
+		if (bombList[i].duration >= BLOW_TIMER_BOMB)
+		{
+			BlowBomb(i, _colision[i]);
+		}
 	}
 }
 
@@ -72,9 +117,32 @@ sfBool CheckAtLocationBomb(sfVector2i _pos)
 {
 	for (int i = 0; i < bombCount; i++)
 	{
-		if (_pos.x == bombList[i].bombPosition.x && _pos.y == bombList[i].bombPosition.y)
+		if (_pos.x == bombList[i].position.x && _pos.y == bombList[i].position.y)
 		{
 			return sfTrue;
 		}
+		else
+		{
+			return sfFalse;
+		}
 	}
+}
+
+int GetBombCount(void)
+{
+	return bombCount;
+}
+
+sfVector2i GetBombPositionGrid(int _num)
+{
+	return bombList[_num].position;
+}
+
+void SortBombList(int _index)
+{
+	for (int i = _index; i < bombCount - 1; i++)
+	{
+		bombList[i] = bombList[i + 1];
+	}
+	bombList[bombCount - 1] = (Bomb){ 0 };
 }

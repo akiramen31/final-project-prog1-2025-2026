@@ -27,4 +27,6 @@ void LoadPlayer(void);
 void UpdatePlayer(CasePosibility GetMovePosibility, float _dt);
 
 sfVector2i GetPlayerPositionGrid(void);
+sfBool AskPlayerIdle(void);
+void  RespawnPlayer(void);
 #endif

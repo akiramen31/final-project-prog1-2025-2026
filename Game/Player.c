@@ -201,6 +201,18 @@ sfVector2i GetPlayerPositionGrid(void)
 	return player.posGrid;
 }
 
+sfBool AskPlayerIdle(void)
+{
+	if (player.state == IDLE)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
+}
+
 void  RespawnPlayer(void)
 {
 	player.posGrid = (sfVector2i){ 0 };
