@@ -201,7 +201,7 @@ sfVector2i GetPlayerPositionGrid(void)
 	return player.posGrid;
 }
 
-void  RespawnPlayer(void)
+void RespawnPlayer(void)
 {
 	player.posGrid = (sfVector2i){ 0 };
 }

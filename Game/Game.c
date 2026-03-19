@@ -82,7 +82,7 @@ void UpdateGame(float _dt)
 
 	UpdateBox(_dt);
 	UpdateBomb(_dt);
-	//system("pause");
+	UpdateCollider();
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -171,5 +171,22 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
-
+	if (sfTrue)
+	{
+		sfVector2i playerPosition = GetPlayerPositionGrid();
+		int ennemyCount = GetNumberEnnemy();
+		for (int i = 0; i < ennemyCount; i++)
+		{
+			sfVector2i ennemyPosition = GetPositionEnnemy(i);
+			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y)
+			{
+				RespawnPlayer();
+				SetIntToSave(LIFE, GetIntToSave(LIFE) - 1);
+				if (GetIntToSave(LIFE) <= 0)
+				{
+					SetGameState(GAME_OVER);
+				}
+			}
+		}
+	}
 }
