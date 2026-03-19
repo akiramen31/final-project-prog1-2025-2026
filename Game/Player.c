@@ -19,8 +19,6 @@ void LoadPlayer(void)
 	sfSprite_setTextureRect(player.sprite, (sfIntRect) { 0, (player.direction + player.state)* PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT });
 	sfSprite_setOrigin(player.sprite, (sfVector2f) { PLAYER_WIDTH / 2, PLAYER_HEIGHT });
 	player.animation.isLooping = sfTrue;
-	player.playerMoveSpeedGrid = 1;
-	//player.animation.frameDuration = 2 / (4 + player.playerMoveSpeedGrid / 2);
 
 	sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
 }
@@ -167,28 +165,28 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 			if (pos.y >= 224 + 64 * player.posGrid.y)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case LEFT:
 			if (pos.x <= 64 + 64 * player.posGrid.x)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case RIGHT:
 			if (pos.x >= 64 + 64 * player.posGrid.x)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case UP:
 			if (pos.y <= 224 + 64 * player.posGrid.y)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		default:
