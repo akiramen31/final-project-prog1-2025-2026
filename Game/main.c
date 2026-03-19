@@ -17,6 +17,7 @@ void CleanupMainData(MainData* _mainData);
 
 int main(void)
 {
+	srand(_getpid());
 	MainData mainData = { 0 };
 
 	Load(&mainData);
