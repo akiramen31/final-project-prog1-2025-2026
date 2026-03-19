@@ -145,16 +145,16 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 	switch (GetEnnemy(_i)->direction)
 	{
 	case DOWN:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse*_dt });
 		break;
 	case LEFT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse, 0 });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse * _dt, 0 });
 		break;
 	case RIGHT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse, 0 });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse* _dt, 0 });
 		break;
 	case UP:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt});
 		break;
 	case BLOCK:
 		NewChoiceDirection(_casePosibility, _i);
@@ -164,6 +164,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		break;
 	}
 	printf("direction %d\n", GetEnnemy(_i)->direction);
+	printf("ancienne position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
 		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
 	{
@@ -266,7 +267,7 @@ sfVector2i GetPositionEnnemy(unsigned _index)
 void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 {
 	sfBool confirmDirection = 0;
-	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.right))
+	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.up))
 	{
 		GetEnnemy(_i)->direction = BLOCK;
 		confirmDirection = 1;
