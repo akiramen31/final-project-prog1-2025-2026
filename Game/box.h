@@ -15,7 +15,7 @@ typedef struct
 {
 	BoxPart up;
 	BoxPart down;
-	sfVector2u position;
+	sfVector2i position;
 	sfBool destroy;
 }Box;
 

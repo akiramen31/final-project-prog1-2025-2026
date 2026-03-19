@@ -1,7 +1,7 @@
 #include "Game.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
-MovePosibility GetMovePosibility(sfVector2i _position);
+CasePosibility GetMovePosibility(sfVector2i _position);
 void UpdateCollider(void);
 
 Game game;
@@ -59,6 +59,7 @@ void UpdateGame(float _dt)
 {
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	UpdateEnnemy(_dt);
+	UpdateBox(_dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -74,49 +75,49 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 			SetGameState(GAME_OVER);
 		}
 		break;
+	case sfKeyE:
+		if (DEV_MODE)
+		{
+			game.caseState[2][2] = VOID;
+			DestroyBox((sfVector2i) {2, 2});
+		}
+		break;
 	default:
 		break;
 	}
 }
 
-MovePosibility GetMovePosibility(sfVector2i _position)
+CasePosibility GetMovePosibility(sfVector2i _position)
 {
-	MovePosibility posibility = { 0 };
+	CasePosibility posibility = { 0 };
+	int radiusExplosion = GetIntToSave(BOMBE_UP);
 
 	if (!(_position.y % 2))
 	{
-		if (_position.x > 0)
+		for (int i = 1; i < radiusExplosion; i++)
 		{
-			if (game.caseState[_position.y][_position.x - 1] != BOX)
+			if (game.caseState[_position.y][_position.x - i] != BOX)
 			{
-				posibility.left = sfTrue;
+				posibility.left++;
 			}
-		}
-
-		if (_position.x < (NB_GRID_COLUMN - 1))
-		{
-			if (game.caseState[_position.y][_position.x + 1] != BOX)
+			if (game.caseState[_position.y][_position.x + i] != BOX)
 			{
-				posibility.right = sfTrue;
+				posibility.right++;
 			}
 		}
 	}
 
 	if (!(_position.x % 2))
 	{
-		if (_position.y > 0)
+		for (int i = 1; i < radiusExplosion; i++)
 		{
-			if (game.caseState[_position.y - 1][_position.x] != BOX)
+			if (game.caseState[_position.y - i][_position.x] != BOX)
 			{
-				posibility.up = sfTrue;
+				posibility.up++;
 			}
-		}
-
-		if (_position.y < (NB_GRID_ROW - 1))
-		{
-			if (game.caseState[_position.y + 1][_position.x] != BOX)
+			if (game.caseState[_position.y + i][_position.x] != BOX)
 			{
-				posibility.down = sfTrue;
+				posibility.down++;
 			}
 		}
 	}
