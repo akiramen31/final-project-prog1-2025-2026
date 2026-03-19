@@ -34,11 +34,11 @@ void LoadBomb(void)
 void SpawnBomb(sfVector2i _bombPos)
 {
 	bombCount++;
-	if (bombCount > GetIntToSave(bombCount))
-	{
-		bombCount--;
-		return;
-	}
+	//if (bombCount > GetIntToSave(bombCount))
+	//{
+	//	bombCount--;
+	//	return;
+	//}
 	for (int i = 0; i < bombCount; i++)
 	{
 		if (bombList[i].placed == sfFalse)
@@ -113,6 +113,70 @@ void BlowBomb(int _num, CasePosibility _colision)
 			sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * bombList[_num].blowDirectionCode, 16, 16 });
 			deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * bombList[_num].blowDirectionCode,16,16 };
 			deflagrationCount++;
+			break;
+		}
+	}
+
+	DestroyVisualEntity(bombList[_num].sprite);
+
+	SortBombList(_num);
+	bombCount--;
+}
+
+void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _direction)
+{
+	bombList[_num].blowDirectionCode = 0;
+	if (_colision.down)
+	{
+		bombList[_num].blowDirectionCode += BLOWDOWN;
+		if (_direction != BLOWUP)
+		{
+			CreateDeflagration(BLOWDOWN, _colision.down, bombList[_num].position);
+		}
+	}
+	if (_colision.right)
+	{
+		bombList[_num].blowDirectionCode += BLOWRIGHT;
+		if (_direction != BLOWLEFT)
+		{
+			CreateDeflagration(BLOWRIGHT, _colision.right, bombList[_num].position);
+		}
+	}
+	if (_colision.up)
+	{
+		bombList[_num].blowDirectionCode += BLOWUP;
+		if (_direction != BLOWDOWN)
+		{
+			CreateDeflagration(BLOWUP, _colision.up, bombList[_num].position);
+		}
+	}
+	if (_colision.left)
+	{
+		bombList[_num].blowDirectionCode += BLOWLEFT;
+		if (_direction != BLOWRIGHT)
+		{
+			CreateDeflagration(BLOWLEFT, _colision.left, bombList[_num].position);
+		}
+	}
+
+	bombList[_num].blowDirectionCode--;
+
+	for (int i = 0; i < NUM_MAX_DEFLAGRATION; i++)
+	{
+		if (deflagrationList[i].placed == sfFalse)
+		{
+			deflagrationList[i].sprite = CreateSprite(ExplosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 41);
+			sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
+			deflagrationList[i].animation.frameCount = 3;
+			deflagrationList[i].animation.frameDuration = 0.1f;
+			deflagrationList[i].duration = 0;
+			deflagrationList[i].placed = sfTrue;
+			deflagrationList[i].position = bombList[_num].position;
+			deflagrationList[i].position = bombList[_num].position;
+			sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * bombList[_num].blowDirectionCode, 16, 16 });
+			deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * bombList[_num].blowDirectionCode,16,16 };
+			deflagrationCount++;
+			break;
 		}
 	}
 
@@ -155,6 +219,17 @@ void UpdateBomb(CasePosibility _colision[], float _dt)
 
 			SortDeflagrationList(i);
 			deflagrationCount--;
+		}
+	}
+
+	for (int i = 0; i < bombCount; i++)
+	{
+		for (int j = 0; j < deflagrationCount; j++)
+		{
+			if (bombList[i].position.x == deflagrationList[j].position.x && bombList[i].position.y == deflagrationList[j].position.y)
+			{
+				BlowBombByDeflagration(i, _colision[i], deflagrationList[j].direction);
+			}
 		}
 	}
 }
@@ -202,7 +277,7 @@ void SortDeflagrationList(int _index)
 	deflagrationList[deflagrationCount - 1] = (Deflagration){ 0 };
 }
 
-void CreateDeflagration(Direction _direction, int _length, sfVector2i _position)
+void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _position)
 {
 	if (_length >= GetIntToSave(FIRE))
 	{
@@ -211,10 +286,10 @@ void CreateDeflagration(Direction _direction, int _length, sfVector2i _position)
 
 	int test = 2;
 
-	//if (_length > test)
-	//{
-	//	_length = test;
-	//}
+	if (_length > test)
+	{
+		_length = test;
+	}
 
 	printf("%d\n", _length);
 
@@ -234,6 +309,7 @@ void CreateDeflagration(Direction _direction, int _length, sfVector2i _position)
 				deflagrationList[i].animation.frameDuration = 0.1f;
 				deflagrationList[i].duration = 0;
 				deflagrationList[i].placed = sfTrue;
+				deflagrationList[i].direction = _direction;
 				deflagrationCount++;
 
 				switch (_direction)
