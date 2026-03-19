@@ -94,7 +94,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 	if (!(_position.y % 2))
 	{
-		for (int i = 1; i < radiusExplosion; i++)
+		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
 			if (game.caseState[_position.y][_position.x - i] != BOX)
 			{
@@ -109,7 +109,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 	if (!(_position.x % 2))
 	{
-		for (int i = 1; i < radiusExplosion; i++)
+		for (int i = 0; i < radiusExplosion + 1; i++)
 		{
 			if (game.caseState[_position.y - i][_position.x] != BOX)
 			{
