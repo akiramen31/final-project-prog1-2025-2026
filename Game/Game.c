@@ -44,14 +44,11 @@ void LoadGame(void)
 	CasePosibility casePosibility = { 0 };
 	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
 	{
-		printf("ok1\n");
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 			casePosibility = GetMovePosibility(positionRandom);
 		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
-		AddEnnemy(positionRandom, casePosibility);
-		printf("ok2");
 		AddEnnemy(positionRandom, casePosibility);
 	}
 
@@ -80,7 +77,7 @@ void UpdateGame(float _dt)
 
 	for (int i = 0; i < GetNumberEnnemy(); i++)
 	{
-		UpdateEnnemy(_dt, GetMovePosibility(GetPositionEnnemy(i)), i);
+		UpdateEnnemy(_dt, GetMovePosibility(GetFuturPositionEnnemy(i)), i);
 	}
 
 	UpdateBox(_dt);
