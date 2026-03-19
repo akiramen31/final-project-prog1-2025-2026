@@ -213,7 +213,7 @@ sfBool AskPlayerIdle(void)
 	}
 }
 
-void  RespawnPlayer(void)
+void RespawnPlayer(void)
 {
 	player.posGrid = (sfVector2i){ 0 };
 }

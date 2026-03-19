@@ -35,7 +35,7 @@ typedef struct Ennemy
 	enum Vitesse vitesse;
 	_Bool passeMuraille;
 	Personality personality;
-	Animation animation[5];
+	Animation animation[6];
 	sfVector2i position;
 	enum Direction direction;
 }Ennemy;
@@ -50,5 +50,6 @@ unsigned GetAnimation(Ennemy* _ennemy);
 int GetNumberEnnemy(void);
 sfVector2i GetPositionEnnemy(unsigned _index);
 void NewChoiceDirection(CasePosibility _casePosibility, int _i);
+sfVector2i GetFuturPositionEnnemy(unsigned _index);
 
 #endif // !ENNEMY_h

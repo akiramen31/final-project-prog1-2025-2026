@@ -30,6 +30,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,98,20,22 }, sfTrue, 4, 1.f,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,138,20,22 }, sfTrue, 4, 1.f,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfTrue, 5, 1.f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 1, 1.f,0.f };
 		break;
 	case ONIL:
 		_ennemy->life = 1;
@@ -49,6 +50,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,903,20,17 }, sfTrue, 5, 1.f,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,943,20,17 }, sfTrue, 5, 1.f,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfTrue, 4, 1.f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 1, 1.f,0.f };
 		break;
 	case DALL:
 		_ennemy->life = 1;
@@ -68,6 +70,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,298,20,24 }, sfTrue, 3, 1.f,0.f };
 		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,338,20,24 }, sfTrue, 3, 1.f,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfTrue, 6, 1.f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 1, 1.f,0.f };
 		break;
 	case DENKYUN:
 		_ennemy->life = 2;
@@ -85,6 +88,8 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 1.f,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 1.f,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,774,20,25 }, sfTrue, 5, 1.f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 1, 1.f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 1, 1.f,0.f };
 		break;
 	case KONDORIA:
 		_ennemy->life = 1;
@@ -140,38 +145,42 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 	switch (GetEnnemy(_i)->direction)
 	{
 	case DOWN:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse*_dt });
 		break;
 	case LEFT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse, 0 });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse * _dt, 0 });
 		break;
 	case RIGHT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse, 0 });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse* _dt, 0 });
 		break;
 	case UP:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt});
+		break;
+	case BLOCK:
+		NewChoiceDirection(_casePosibility, _i);
 		break;
 	default:
 		printf("error direction");
 		break;
 	}
-
+	printf("direction %d\n", GetEnnemy(_i)->direction);
+	printf("ancienne position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
 		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
 	{
 		switch (GetEnnemy(_i)->direction)
 		{
 		case DOWN:
-			GetEnnemy(_i)->position.x++;
-			break;
-		case LEFT:
-			GetEnnemy(_i)->position.y--;
-			break;
-		case RIGHT:
 			GetEnnemy(_i)->position.y++;
 			break;
-		case UP:
+		case LEFT:
 			GetEnnemy(_i)->position.x--;
+			break;
+		case RIGHT:
+			GetEnnemy(_i)->position.x++;
+			break;
+		case UP:
+			GetEnnemy(_i)->position.y--;
 			break;
 		default:
 			printf("error direction");
@@ -179,6 +188,8 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		}
 		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
 		NewChoiceDirection(_casePosibility, _i);
+		printf("new direction %d\n", GetEnnemy(_i)->direction);
+		printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	}
 
 	UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt);
@@ -192,11 +203,25 @@ unsigned GetAnimation(Ennemy* _ennemy)
 		{
 			if (_ennemy->life == 2)
 			{
-				return 0;
+				if (_ennemy->animation == BLOCK)
+				{
+					return 2;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			else
 			{
-				return 1;
+				if (_ennemy->animation == BLOCK)
+				{
+					return 3;
+				}
+				else
+				{
+					return 1;
+				}
 			}
 		}
 		else
@@ -215,6 +240,8 @@ unsigned GetAnimation(Ennemy* _ennemy)
 			case UP:
 				return 1;
 				break;
+			case BLOCK:
+				return 5;
 			default:
 				break;
 			}
@@ -240,6 +267,11 @@ sfVector2i GetPositionEnnemy(unsigned _index)
 void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 {
 	sfBool confirmDirection = 0;
+	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.up))
+	{
+		GetEnnemy(_i)->direction = BLOCK;
+		confirmDirection = 1;
+	}
 	while (confirmDirection == 0)
 	{
 		enum Direction temp = GetRandomInRange(0, 3);
@@ -276,6 +308,34 @@ void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 		default:
 			break;
 		}
+		printf("direction demander %d. struc up:%d down %d left %d right %d \n", GetEnnemy(_i)->direction, _casePosibility.up, _casePosibility.down, _casePosibility.left, _casePosibility.right);
 	}
-	
+
+}
+
+sfVector2i GetFuturPositionEnnemy(unsigned _index)
+{
+	enum Direction temp = GetEnnemy(_index)->direction;
+	sfVector2i positionActuel = GetEnnemy(_index)->position;
+	switch (temp)
+	{
+	case DOWN:
+		return (sfVector2i) { positionActuel.x, positionActuel.y + 1 };
+		break;
+	case LEFT:
+		return (sfVector2i) { positionActuel.x - 1, positionActuel.y };
+		break;
+	case RIGHT:
+		return (sfVector2i) { positionActuel.x + 1, positionActuel.y };
+		break;
+	case UP:
+		return (sfVector2i) { positionActuel.x, positionActuel.y - 1 };
+		break;
+	case BLOCK:
+		return positionActuel;
+		break;
+	default:
+		break;
+	}
+	return (sfVector2i) { 0, 0 };
 }
