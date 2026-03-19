@@ -44,13 +44,16 @@ void LoadGame(void)
 	CasePosibility casePosibility = { 0 };
 	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
 	{
+		printf("ok1\n");
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 			casePosibility = GetMovePosibility(positionRandom);
 		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
+		printf("ok2");
 		//AddEnnemy(positionRandom, casePosibility);
 	}
+
 }
 
 void PollEventGame(sfEvent* _event)
@@ -73,10 +76,12 @@ void UpdateGame(float _dt)
 	}
 
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
+
 	for (int i = 0; i < GetNumberEnnemy(); i++)
 	{
 		UpdateEnnemy(_dt, GetMovePosibility(GetPositionEnnemy(i)), i);
 	}
+
 	UpdateBox(_dt);
 	UpdateBomb(_dt);
 }
@@ -115,7 +120,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 	{
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX)
+			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y, _position.x - i }))
 			{
 				posibility.left = i;
 			}
@@ -126,7 +131,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		}
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX)
+			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y, _position.x + i }))
 			{
 				posibility.right = i;
 			}
@@ -141,7 +146,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 	{
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX)
+			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y - i, _position.x }))
 			{
 				posibility.up = i;
 			}
@@ -152,7 +157,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		}
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX)
+			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y + i, _position.x }))
 			{
 				posibility.down = i;
 			}
