@@ -51,5 +51,6 @@ int GetNumberEnnemy(void);
 sfVector2i GetPositionEnnemy(unsigned _index);
 void NewChoiceDirection(CasePosibility _casePosibility, int _i);
 sfVector2i GetFuturPositionEnnemy(unsigned _index);
+void HitEnnemy(unsigned _index);
 
 #endif // !ENNEMY_h
