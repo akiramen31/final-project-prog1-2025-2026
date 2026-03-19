@@ -120,7 +120,7 @@ void AddEnnemy(sfVector2i _position)
 		exit(EXIT_FAILURE);
 	}
 	CreateRandomEnnemy(newEnnemy);
-	sfVector2f position = { (float)_position.x , (float)_position.y };
+	sfVector2f position = TransformVector2iToVector2f(_position);
 	sfSprite_setPosition(newEnnemy->sprite, position);
 	InsertElement(listeEnnemy, CreateElement(newEnnemy), 0);
 }
