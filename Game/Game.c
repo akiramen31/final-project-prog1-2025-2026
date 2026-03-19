@@ -59,6 +59,7 @@ void UpdateGame(float _dt)
 {
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	UpdateEnnemy(_dt);
+	UpdateHUD(_dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
