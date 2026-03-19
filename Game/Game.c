@@ -38,9 +38,7 @@ void LoadGame(void)
 	}
 
 	LoadEnnemy();
-	AddEnnemy();
-	AddEnnemy();
-	AddEnnemy();
+	AddEnnemy((sfVector2i){100, 100});
 }
 
 void PollEventGame(sfEvent* _event)
