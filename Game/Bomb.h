@@ -10,14 +10,14 @@ typedef enum BlowDirection
 {
 	BLOWDOWN = 1,
 	BLOWRIGHT = 2,
-	BLOWTOP = 4,
+	BLOWUP = 4,
 	BLOWLEFT = 8
 }BlowDirection;
 
 typedef struct Bomb
 {
-	sfVector2i bombPosition;
-	sfSprite* bombSprite;
+	sfVector2i position;
+	sfSprite* sprite;
 	Animation animation;
 
 	int blowDirectionCode;
@@ -28,8 +28,10 @@ typedef struct Bomb
 
 void LoadBomb(void);
 void SpawnBomb(sfVector2i _bombPos);
-void UpdateBomb(float _dt);
-void BlowBomb(void);
+void UpdateBomb(CasePosibility _Colision[], float _dt);
+void BlowBomb(int i, CasePosibility _colision);
 sfBool CheckAtLocationBomb(sfVector2i _pos);
+int GetBombCount(void);
+sfVector2i GetBombPositionGrid(int _num);
 
 #endif // BOMB_H

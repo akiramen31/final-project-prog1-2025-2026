@@ -70,7 +70,10 @@ void UpdateGame(float _dt)
 {
 	if (sfKeyboard_isKeyPressed(sfKeySpace))
 	{
-		SpawnBomb(GetPlayerPositionGrid());
+		if (AskPlayerIdle())
+		{
+			SpawnBomb(GetPlayerPositionGrid());
+		}
 	}
 
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
@@ -81,8 +84,13 @@ void UpdateGame(float _dt)
 	}
 
 	UpdateBox(_dt);
-	UpdateBomb(_dt);
-	UpdateCollider();
+
+	CasePosibility casePosibilityBomb[NUM_MAX_BOMB] = { 0 };
+	for (int i = 0; i < GetBombCount(); i++)
+	{
+		casePosibilityBomb[i] = GetMovePosibility(GetBombPositionGrid(i));
+	}
+	UpdateBomb(&casePosibilityBomb[0], _dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -171,22 +179,5 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
-	if (sfTrue)
-	{
-		sfVector2i playerPosition = GetPlayerPositionGrid();
-		for (int i = GetNumberEnnemy() - 1; i >= 0; i--)
-		{
-			sfVector2i ennemyPosition = GetPositionEnnemy(i);
-			sfVector2i ennemyPositionNext = GetFuturPositionEnnemy(i);
-			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y || playerPosition.x == ennemyPositionNext.x && playerPosition.y == ennemyPositionNext.y)
-			{
-				SetIntToSave(LIFE, GetIntToSave(LIFE) - 1);
-				RespawnPlayer();
-				if (GetIntToSave(LIFE) <= 0)
-				{
-					SetGameState(GAME_OVER);
-				}
-			}
-		}
-	}
+
 }
