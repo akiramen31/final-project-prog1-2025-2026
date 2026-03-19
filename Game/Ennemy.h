@@ -5,7 +5,7 @@
 
 enum Vitesse
 {
-	TRES_LENT = 5,
+	TRES_LENT = 20,
 	LENT = 20,
 	NORMAL = 50
 };
@@ -50,6 +50,7 @@ unsigned GetAnimation(Ennemy* _ennemy);
 int GetNumberEnnemy(void);
 sfVector2i GetPositionEnnemy(unsigned _index);
 void NewChoiceDirection(CasePosibility _casePosibility, int _i);
+void NewChoiceDirectionV2(int _i);
 sfVector2i GetFuturPositionEnnemy(unsigned _index);
 void HitEnnemy(unsigned _index);
 

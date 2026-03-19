@@ -9,7 +9,7 @@ void LoadEnnemy(void)
 
 void CreateRandomEnnemy(Ennemy* _ennemy)
 {
-	_ennemy->typeEnnemy = GetRandomInRange(0, TOTAL_TYPE_ENNEMY - 1 - 1);
+	_ennemy->typeEnnemy = GetRandomInRange(0, TOTAL_TYPE_ENNEMY - 1);
 	switch (_ennemy->typeEnnemy)
 	{
 	case BALLOM:
@@ -101,14 +101,15 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 00.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2,0.f };
 		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2,0.f };
 		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfFalse, 2, 0.2,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2,0.f };
 		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 1, 0.2,0.f };
 		break;
 	default:
 		break;
@@ -141,20 +142,20 @@ Ennemy* GetEnnemy(unsigned _index)
 
 void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 {
-	
+
 	switch (GetEnnemy(_i)->direction)
 	{
 	case DOWN:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse*_dt });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse* _dt });
 		break;
 	case LEFT:
 		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse * _dt, 0 });
 		break;
 	case RIGHT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse* _dt, 0 });
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse * _dt, 0 });
 		break;
 	case UP:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt});
+		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt });
 		break;
 	case BLOCK:
 		NewChoiceDirection(_casePosibility, _i);
@@ -187,12 +188,19 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 			break;
 		}
 		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
-		NewChoiceDirection(_casePosibility, _i);
+		if (GetEnnemy(_i)->passeMuraille)
+		{
+			NewChoiceDirectionV2(_i);
+		}
+		else
+		{
+			NewChoiceDirection(_casePosibility, _i);
+		}
 		//printf("new direction %d\n", GetEnnemy(_i)->direction);
 		//printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	}
 
-	
+
 	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt))
 	{
 		free(GetEnnemy(_i));
@@ -314,6 +322,50 @@ void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 			break;
 		}
 		//printf("direction demander %d. struc up:%d down %d left %d right %d \n", GetEnnemy(_i)->direction, _casePosibility.up, _casePosibility.down, _casePosibility.left, _casePosibility.right);
+	}
+
+}
+
+void NewChoiceDirectionV2(int _i)
+{
+	sfBool confirmDirection = 0;
+	while (confirmDirection == 0)
+	{
+		enum Direction temp = GetRandomInRange(0, 3);
+		printf("temp = %d\n", temp);
+		switch (temp)
+		{
+		case DOWN:
+			if (GetEnnemy(_i)->position.y < NB_GRID_ROW - 1)
+			{
+				GetEnnemy(_i)->direction = DOWN;
+				confirmDirection = 1;
+			}
+			break;
+		case LEFT:
+			if (GetEnnemy(_i)->position.x > 0)
+			{
+				GetEnnemy(_i)->direction = LEFT;
+				confirmDirection = 1;
+			}
+			break;
+		case RIGHT:
+			if (GetEnnemy(_i)->position.x < NB_GRID_COLUMN - 1)
+			{
+				GetEnnemy(_i)->direction = RIGHT;
+				confirmDirection = 1;
+			}
+			break;
+		case UP:
+			if (GetEnnemy(_i)->position.y > 0)
+			{
+				GetEnnemy(_i)->direction = UP;
+				confirmDirection = 1;
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 }
