@@ -24,6 +24,7 @@ typedef enum
 	BOMB,
 	FIRE,
 	SPEED,
+	ENNEMY_COUNT,
 	INT_COUNT
 
 }IntSave;

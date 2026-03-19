@@ -38,7 +38,17 @@ void LoadGame(void)
 	}
 
 	LoadEnnemy();
-	AddEnnemy((sfVector2i){5, 5});
+	CasePosibility casePosibility = { 0 };
+	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
+	{
+		do
+		{
+			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
+			casePosibility = GetMovePosibility(positionRandom);
+		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
+
+		AddEnnemy(positionRandom);
+	}
 }
 
 void PollEventGame(sfEvent* _event)
