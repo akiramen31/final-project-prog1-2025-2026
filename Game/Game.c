@@ -85,7 +85,7 @@ void UpdateGame(float _dt)
 		casePosibilityBomb[i] = GetMovePosibility(GetBombPositionGrid(i));
 
 	}
-	UpdateBomb(&casePosibilityBomb[0], _dt);
+	UpdateBomb(casePosibilityBomb, _dt);
 
 	UpdateCollider();
 }

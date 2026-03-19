@@ -128,31 +128,11 @@ void BlowBomb(int _num, CasePosibility _colision)
 	bombCount--;
 }
 
-void UpdateBomb(CasePosibility _colision[], float _dt)
+sfBool UpdateBomb(CasePosibility* _colision, float _dt)
 {
-	for (int i = 0; i < bombCount; i++)
-	{
-		if (bombCount == 0)
-		{
-			return;
-		}
-
-		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
-		bombList[i].duration += _dt;
-
-		if (bombList[i].duration >= BLOW_TIMER_BOMB)
-		{
-			BlowBomb(i, _colision[i]);
-		}
-	}
 
 	for (int i = deflagrationCount - 1; i >= 0; i--)
 	{
-		if (deflagrationCount == 0)
-		{
-			return;
-		}
-
 		deflagrationList[i].duration += _dt;
 
 		if (UpdateAnimationAndGiveIfStop(deflagrationList[i].sprite, &deflagrationList[i].animation, _dt))
@@ -163,6 +143,19 @@ void UpdateBomb(CasePosibility _colision[], float _dt)
 			deflagrationCount--;
 		}
 	}
+
+	for (int i = 0; i < bombCount; i++)
+	{
+		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
+		bombList[i].duration += _dt;
+
+		if (bombList[i].duration >= BLOW_TIMER_BOMB)
+		{
+			BlowBomb(i, _colision[i]);
+			return sfTrue;
+		}
+	}
+	return sfFalse;
 }
 
 sfBool CheckAtLocationBomb(sfVector2i _pos)

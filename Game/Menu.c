@@ -11,7 +11,7 @@ void LoadMenu(void)
 	sfMusic_setLoop(menuMusic, sfTrue);
 	sfMusic_play(menuMusic);
 	SetIntToSave(SCORE, 0);
-	SetIntToSave(BOMB, 1);
+	SetIntToSave(BOMB, 5);
 	SetIntToSave(SPEED, 1);
 	SetIntToSave(ENNEMY_COUNT, 1);
 	SetIntToSave(FIRE, 1);
