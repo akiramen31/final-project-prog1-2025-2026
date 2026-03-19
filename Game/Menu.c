@@ -13,7 +13,8 @@ void LoadMenu(void)
 	SetIntToSave(SCORE, 0);
 	SetIntToSave(BOMB, 1);
 	SetIntToSave(SPEED, 1);
-	SetIntToSave(FIRE, 1);
+	SetIntToSave(ENNEMY_COUNT, 1);
+	SetIntToSave(FIRE, 10);
 	SetIntToSave(LIFE, 4);
 }
 

@@ -10,14 +10,13 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
-	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"),(sfVector2f) {0}, 4.f, 2.f);
+	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
 
-	LoadBox();
 	for (int row = 1; row < NB_GRID_ROW; row += 2)
 	{
 		for (int column = 1; column < NB_GRID_COLUMN; column += 2)
@@ -25,6 +24,8 @@ void LoadGame(void)
 			game.caseState[row][column] = WALL;
 		}
 	}
+
+	LoadBox();
 	sfVector2i positionRandom = { 0 , 0 };
 	for (int i = 0; i < NB_BOX; i++)
 	{
@@ -38,7 +39,17 @@ void LoadGame(void)
 	}
 
 	LoadEnnemy();
-	AddEnnemy((sfVector2i){5, 5});
+	CasePosibility casePosibility = { 0 };
+	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
+	{
+		do
+		{
+			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
+			casePosibility = GetMovePosibility(positionRandom);
+		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
+
+		AddEnnemy(positionRandom);
+	}
 }
 
 void PollEventGame(sfEvent* _event)
@@ -77,7 +88,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		if (DEV_MODE)
 		{
 			game.caseState[2][2] = VOID;
-			DestroyBox((sfVector2i) {2, 2});
+			DestroyBox((sfVector2i) { 2, 2 });
 		}
 		break;
 	default:
@@ -92,52 +103,55 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 	if (!(_position.y % 2))
 	{
-		if (_position.x > 0)
+		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			for (int i = 1; i < radiusExplosion + 1; i++)
+			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX)
 			{
-				if (game.caseState[_position.y][_position.x - i] != BOX)
-				{
-					posibility.left = i;
-				}
+				posibility.left = i;
+			}
+			else
+			{
+				i = radiusExplosion + 1;
 			}
 		}
-		if (_position.x < NB_GRID_COLUMN - 1)
+		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			for (int i = 1; i < radiusExplosion + 1; i++)
+			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX)
 			{
-				if (game.caseState[_position.y][_position.x + i] != BOX)
-				{
-					posibility.right++;
-				}
+				posibility.right = i;
+			}
+			else
+			{
+				i = radiusExplosion + 1;
 			}
 		}
 	}
 
 	if (!(_position.x % 2))
 	{
-		if (_position.y > 1)
+		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			for (int i = 1; i < radiusExplosion + 1; i++)
+			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX)
 			{
-				if (game.caseState[_position.y - i][_position.x] != BOX)
-				{
-					posibility.up++;
-				}
+				posibility.up = i;
+			}
+			else
+			{
+				i = radiusExplosion + 1;
 			}
 		}
-		if (_position.y < NB_GRID_ROW - 1)
+		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			for (int i = 1; i < radiusExplosion + 1; i++)
+			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX)
 			{
-				if (game.caseState[_position.y + i][_position.x] != BOX)
-				{
-					posibility.down++;
-				}
+				posibility.down = i;
+			}
+			else
+			{
+				i = radiusExplosion + 1;
 			}
 		}
 	}
-	printf("left %d right %d up %d down %d\n", posibility.left, posibility.right, posibility.up, posibility.down);
 	return posibility;
 }
 
