@@ -40,7 +40,8 @@ void UpdateBox(float _dt)
 
 void SetBoxPosition(sfVector2i _position, int _index)
 {
-	sfVector2f position = { (float)(FIRST_CASE.left + FIRST_CASE.width * _position.x), (float)(FIRST_CASE.top + FIRST_CASE.height * _position.y) };
+	sfVector2f position = { (float)(FIRST_CASE.left + FIRST_CASE.width * _position.x), 
+		(float)(FIRST_CASE.top + FIRST_CASE.height * _position.y) };
 	sfSprite_setPosition(box[_index].up.sprite, position);
 	sfSprite_setPosition(box[_index].down.sprite, position);
 	box[_index].position = _position;
