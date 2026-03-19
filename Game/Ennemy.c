@@ -119,7 +119,7 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 
 void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 {
-	printf("add ennemy\n");
+	//printf("add ennemy\n");
 	Ennemy* newEnnemy = calloc(1, sizeof(Ennemy));
 	if (newEnnemy == NULL)
 	{
@@ -163,8 +163,8 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		printf("error direction");
 		break;
 	}
-	printf("direction %d\n", GetEnnemy(_i)->direction);
-	printf("ancienne position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
+	//printf("direction %d\n", GetEnnemy(_i)->direction);
+	//printf("ancienne position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
 		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
 	{
@@ -188,8 +188,8 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		}
 		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
 		NewChoiceDirection(_casePosibility, _i);
-		printf("new direction %d\n", GetEnnemy(_i)->direction);
-		printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
+		//printf("new direction %d\n", GetEnnemy(_i)->direction);
+		//printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	}
 
 	UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt);
@@ -308,7 +308,7 @@ void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 		default:
 			break;
 		}
-		printf("direction demander %d. struc up:%d down %d left %d right %d \n", GetEnnemy(_i)->direction, _casePosibility.up, _casePosibility.down, _casePosibility.left, _casePosibility.right);
+		//printf("direction demander %d. struc up:%d down %d left %d right %d \n", GetEnnemy(_i)->direction, _casePosibility.up, _casePosibility.down, _casePosibility.left, _casePosibility.right);
 	}
 
 }
