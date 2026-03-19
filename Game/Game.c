@@ -89,6 +89,7 @@ void UpdateGame(float _dt)
 	for (int i = 0; i < GetBombCount(); i++)
 	{
 		casePosibilityBomb[i] = GetMovePosibility(GetBombPositionGrid(i));
+
 	}
 	UpdateBomb(&casePosibilityBomb[0], _dt);
 }
@@ -127,7 +128,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 	{
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y, _position.x - i }))
+			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x - i, _position.y }))
 			{
 				posibility.left = i;
 			}
@@ -138,7 +139,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		}
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y, _position.x + i }))
+			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x + i, _position.y }))
 			{
 				posibility.right = i;
 			}
@@ -153,7 +154,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 	{
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y - i, _position.x }))
+			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x, _position.y - i }))
 			{
 				posibility.up = i;
 			}
@@ -164,7 +165,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		}
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.y + i, _position.x }))
+			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x, _position.y + i }))
 			{
 				posibility.down = i;
 			}

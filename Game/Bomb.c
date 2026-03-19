@@ -72,20 +72,23 @@ void BlowBomb(int _num, CasePosibility _colision)
 	if (_colision.down)
 	{
 		bombList[_num].blowDirectionCode += BLOWDOWN;
+		CreateDeflagration(DOWN, _colision.down);
 	}
 	if (_colision.right)
 	{
 		bombList[_num].blowDirectionCode += BLOWRIGHT;
+		CreateDeflagration(RIGHT, _colision.right);
 	}
 	if (_colision.up)
 	{
 		bombList[_num].blowDirectionCode += BLOWUP;
+		CreateDeflagration(UP, _colision.up);
 	}
 	if (_colision.left)
 	{
 		bombList[_num].blowDirectionCode += BLOWLEFT;
+		CreateDeflagration(LEFT, _colision.left);
 	}
-
 
 	printf("blown direction %d\n", bombList[_num].blowDirectionCode);
 	DestroyVisualEntity(bombList[_num].sprite);
@@ -145,4 +148,28 @@ void SortBombList(int _index)
 		bombList[i] = bombList[i + 1];
 	}
 	bombList[bombCount - 1] = (Bomb){ 0 };
+}
+
+void CreateDeflagration(Direction _direction, int _length)
+{
+	switch (_direction)
+	{
+	case DOWN:
+		if (_length = 1)
+		{
+
+		}
+		break;
+	case LEFT:
+
+		break;
+	case RIGHT:
+
+		break;
+	case UP:
+
+		break;
+	default:
+		break;
+	}
 }
