@@ -70,7 +70,10 @@ void UpdateGame(float _dt)
 {
 	if (sfKeyboard_isKeyPressed(sfKeySpace))
 	{
-		SpawnBomb(GetPlayerPositionGrid());
+		if (AskPlayerIdle())
+		{
+			SpawnBomb(GetPlayerPositionGrid());
+		}
 	}
 
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
@@ -81,8 +84,13 @@ void UpdateGame(float _dt)
 	}
 
 	UpdateBox(_dt);
-	UpdateBomb(_dt);
-	//("pause");
+
+	CasePosibility casePosibilityBomb[NUM_MAX_BOMB] = { 0 };
+	for (int i = 0; i < GetBombCount(); i++)
+	{
+		casePosibilityBomb[i] = GetMovePosibility(GetBombPositionGrid(i));
+	}
+	UpdateBomb(&casePosibilityBomb[0], _dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
