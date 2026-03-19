@@ -13,6 +13,8 @@ void LoadGame(void)
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
 	LoadHUD();
 	LoadPlayer();
+	LoadBomb();
+
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
@@ -65,9 +67,15 @@ void PollEventGame(sfEvent* _event)
 
 void UpdateGame(float _dt)
 {
+	if (sfKeyboard_isKeyPressed(sfKeySpace))
+	{
+		SpawnBomb(GetPlayerPositionGrid());
+	}
+
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	//UpdateEnnemy(_dt);
 	UpdateBox(_dt);
+	UpdateBomb(_dt);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -77,7 +85,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	case sfKeyEscape:
 		SetGameState(MENU);
 		break;
-	case sfKeySpace:
+	case sfKeyEnter:
 		if (DEV_MODE)
 		{
 			SetGameState(GAME_OVER);

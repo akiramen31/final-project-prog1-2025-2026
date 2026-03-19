@@ -37,7 +37,7 @@ void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent)
 	case sfKeyEscape:
 		sfRenderWindow_close(_renderWindow);
 		break;
-	case sfKeySpace:
+	case sfKeyG:
 		EnterInGame();
 		break;
 	default:
