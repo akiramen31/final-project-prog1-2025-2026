@@ -82,7 +82,7 @@ void UpdateGame(float _dt)
 
 	UpdateBox(_dt);
 	UpdateBomb(_dt);
-	//system("pause");
+	//("pause");
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
