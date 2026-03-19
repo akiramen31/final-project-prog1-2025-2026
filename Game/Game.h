@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Ennemy.h" 
 #include "Box.h"
+#include "Bomb.h"
 
 typedef enum
 {
