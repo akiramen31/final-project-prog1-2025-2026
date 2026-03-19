@@ -3,6 +3,7 @@
 sfSprite* score[6];
 sfSprite* powerUps[3];
 sfSprite* playerLife;
+sfSprite* time[5];
 
 
 
@@ -21,9 +22,25 @@ void LoadHUD()
 	}
 	playerLife = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 136, 30 }, 3.f, 0);
 	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10, 0, 10, 12 });
+	for (int i = 0; i < 3; i++)
+	{
+		time[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 384 + (208 * i), 832 }, 4.f, 0);
+		if (i < 3)
+		{
+
+		}
+		else if (i == 3)
+		{
+			sfSprite_setTextureRect(powerUps[i], (sfIntRect) { 100, 0, 10, 12 });
+		}
+		else
+		{
+			sfSprite_setTextureRect(powerUps[i], (sfIntRect) { 0, 0, 10, 12 });
+		}
+	}
 }
 
-void UpdateHUD(float _dt)
+void UpdateHUD(float _dt, float _timer)
 {
 	//score
 	int scoreTemp = GetIntToSave(0);
@@ -41,4 +58,8 @@ void UpdateHUD(float _dt)
 	//PlayerLife
 	int lifeTemp = GetIntToSave(1);
 	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10 * lifeTemp, 0, 10, 12 });
+
+	//Time
+
+
 }

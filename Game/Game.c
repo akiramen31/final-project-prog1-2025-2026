@@ -5,6 +5,7 @@ MovePosibility GetMovePosibility(sfVector2i _position);
 void UpdateCollider(void);
 
 Game game;
+float timer;
 
 void LoadGame(void)
 {
@@ -16,7 +17,7 @@ void LoadGame(void)
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
-
+	timer = 180.f;
 	LoadBox();
 	for (int row = 1; row < NB_GRID_ROW; row += 2)
 	{
@@ -57,9 +58,10 @@ void PollEventGame(sfEvent* _event)
 
 void UpdateGame(float _dt)
 {
+	timer -= _dt;
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	UpdateEnnemy(_dt);
-	UpdateHUD(_dt);
+	UpdateHUD(_dt, timer);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
