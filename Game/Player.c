@@ -32,7 +32,7 @@ void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 	if (player.isInvincible)
 	{
 		invincibleTime += _dt;
-		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 50));
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 127));
 
 		if (invincibleTime >= INVINCIBLE_DURATION)
 		{
@@ -41,7 +41,7 @@ void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 	}
 	else
 	{
-		sfSprite_setColor(player.sprite, sfColor_fromRGBA(0, 0, 0, 0));
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 255));
 	}
 
 	if (sfKeyboard_isKeyPressed(sfKeyUp))

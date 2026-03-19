@@ -92,6 +92,8 @@ void UpdateGame(float _dt)
 
 	}
 	UpdateBomb(&casePosibilityBomb[0], _dt);
+
+	UpdateCollider();
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -180,7 +182,7 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
-	if (sfTrue)
+	if (!AskPlayerInvincible())
 	{
 		sfVector2i playerPosition = GetPlayerPositionGrid();
 		for (int i = GetNumberEnnemy() - 1; i >= 0; i--)
