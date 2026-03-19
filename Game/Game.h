@@ -26,7 +26,10 @@ typedef enum
 
 typedef struct
 {
-	CaseContainer caseState[NB_GRID_ROW][NB_GRID_COLUMN];
+	//sfSound* booster;
+	//sfSound* clic;
+	//sfSound* hover;
+	sfSound* kill;
 }Game;
 
 void LoadGame(void);
