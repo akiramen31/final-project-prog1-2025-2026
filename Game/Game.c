@@ -238,7 +238,6 @@ void UpdateCollider(void)
 			sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
 			if (deflagrationPosition.x == ennemyPosition.x && deflagrationPosition.y == ennemyPosition.y || deflagrationPosition.x == ennemyPositionNext.x && deflagrationPosition.y == ennemyPositionNext.y)
 			{
-				printf("ok");
 				HitEnnemy(i);
 				j = GetDeflagrationCount();
 			}

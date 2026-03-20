@@ -320,7 +320,6 @@ void ChooseNewDirectionV2(int _i)
 	while (confirmDirection == 0)
 	{
 		enum Direction temp = GetRandomInRange(0, 3);
-		printf("temp = %d\n", temp);
 		switch (temp)
 		{
 		case DOWN:
