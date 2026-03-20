@@ -13,27 +13,27 @@ void LoadHUD()
 	//Score
 	for (int i = 0; i < 6; i++)
 	{
-		score[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 776+(36 * i), 16 }, 4.f, 0.f);
+		score[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 776.f+(36 * i), 16.f }, 4.f, 0.f);
 		sfSprite_setTextureRect(score[i], (sfIntRect) { 0, 0, 10, 12 });
 	}
 	//PowerUps
 	for (int i = 0; i < 3; i++)
 	{
-		powerUps[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 152 + ( 208 * i), 832 }, 4.f, 0.f);
+		powerUps[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 152.f + ( 208 * i), 832.f }, 4.f, 0.f);
 		sfSprite_setTextureRect(powerUps[i], (sfIntRect) { 10, 0, 10, 12 });
 	}
 	//Life
-	playerLife = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 136, 30 }, 3.f, 0.f);
+	playerLife = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 136.f, 30.f }, 3.f, 0.f);
 	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10, 0, 10, 12 });
 	//Time
 	for (int i = 0; i <2 ; i++)
 	{
-		time[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 384 + (36 * i), 16 }, 4.f, 0.f);
+		time[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 384.f + (36 * i), 16.f }, 4.f, 0.f);
 		sfSprite_setTextureRect(time[i], (sfIntRect) { 0, 0, 10, 12 });
-		time[3 + i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 476 + (36* i), 16 }, 4.f, 0.f);
+		time[3 + i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 476.f + (36* i), 16.f }, 4.f, 0.f);
 		sfSprite_setTextureRect(time[3+i], (sfIntRect) { 0, 0, 10, 12 });
 	}
-	time[2] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 448, 16 }, 4.f, 0.f);
+	time[2] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 448.f, 16.f }, 4.f, 0.f);
 	sfSprite_setTextureRect(time[2], (sfIntRect) { 100, 0, 10, 12 });
 }
 

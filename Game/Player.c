@@ -24,7 +24,7 @@ void LoadPlayer(void)
 	sfSprite_setOrigin(player.sprite, (sfVector2f) { PLAYER_WIDTH / 2, PLAYER_HEIGHT });
 	player.animation.isLooping = sfTrue;
 
-	sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+	sfSprite_setPosition(player.sprite, (sfVector2f) { 64.f + 64 * player.posGrid.x, 224.f + 64 * player.posGrid.y });
 }
 
 void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
@@ -172,16 +172,16 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 				}
 
 
-				sfVector2i pos = (sfVector2i){ sfSprite_getPosition(player.sprite).x,sfSprite_getPosition(player.sprite).y };
+				sfVector2i pos = (sfVector2i){ (int)sfSprite_getPosition(player.sprite).x,(int)sfSprite_getPosition(player.sprite).y };
 				lastMove = 0;
-				player.moveLength = (sfVector2f){ (64 + 64 * player.posGrid.x - pos.x) / (30 - player.playerMoveSpeedGrid*2), (224 + 64 * player.posGrid.y - pos.y) / (30 - player.playerMoveSpeedGrid*2) };
+				player.moveLength = (sfVector2f){ (64.f + 64 * player.posGrid.x - pos.x) / (30 - player.playerMoveSpeedGrid*2), (224.f + 64 * player.posGrid.y - pos.y) / (30 - player.playerMoveSpeedGrid*2) };
 				player.isWalking = sfTrue;
 			}
 		}
 	}
 	else
 	{
-		sfVector2i pos = (sfVector2i){ sfSprite_getPosition(player.sprite).x,sfSprite_getPosition(player.sprite).y };
+		sfVector2i pos = { (int)sfSprite_getPosition(player.sprite).x,(int)sfSprite_getPosition(player.sprite).y };
 
 		sfSprite_move(player.sprite, player.moveLength);
 
