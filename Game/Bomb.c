@@ -51,7 +51,7 @@ void SpawnBomb(sfVector2i _bombPos)
 			//printf("spawn bomb num %d\n", i + 1);
 			bombList[i].position = _bombPos;
 
-			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 41);
+			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 43);
 
 			sfSprite_setTextureRect(bombList[i].sprite, (sfIntRect) { 0, 0, 16, 16 });
 			sfSprite_setOrigin(bombList[i].sprite, (sfVector2f) { 8, 16 });

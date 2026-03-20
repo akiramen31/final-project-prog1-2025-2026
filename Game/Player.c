@@ -253,10 +253,16 @@ sfBool AskPlayerInvincible(void)
 
 void KillPlayer(void)
 {
+
 	invincibleTime = 0;
 	player.isInvincible = sfTrue;
 	player.posGrid = (sfVector2i){ 0 };
 	sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 	AddIntToSave(LIFE, -1);
+	if (GetIntFromSave(LIFE) < 0)
+	{
+		SetIntToSave(LIFE, 0);
+	}
+
 	sfSound_play(player.killSound);
 }
