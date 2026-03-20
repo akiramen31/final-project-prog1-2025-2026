@@ -81,6 +81,24 @@ void BlowBomb(int _num, CasePosibility _colision)
 {
 	sfSound_play(explosionSound);
 	bombList[_num].blowDirectionCode = 0;
+
+	if (_colision.downBox)
+	{
+		_colision.down++;
+	}
+	if (_colision.rightBox)
+	{
+		_colision.right++;
+	}
+	if (_colision.upBox)
+	{
+		_colision.up++;
+	}
+	if (_colision.leftBox)
+	{
+		_colision.left++;
+	}
+
 	if (_colision.down)
 	{
 		bombList[_num].blowDirectionCode += BLOW_DOWN;
@@ -130,6 +148,23 @@ void BlowBomb(int _num, CasePosibility _colision)
 
 void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _direction)
 {
+	if (_colision.downBox)
+	{
+		_colision.down++;
+	}
+	if (_colision.rightBox)
+	{
+		_colision.right++;
+	}
+	if (_colision.upBox)
+	{
+		_colision.up++;
+	}
+	if (_colision.leftBox)
+	{
+		_colision.left++;
+	}
+
 	bombList[_num].blowDirectionCode = 0;
 	if (_colision.down)
 	{
