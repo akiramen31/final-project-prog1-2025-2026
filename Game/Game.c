@@ -20,7 +20,7 @@ void LoadGame(void)
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 40.f);
 
-	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
+	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", GAME_VOLUME, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
 	LoadHUD();
