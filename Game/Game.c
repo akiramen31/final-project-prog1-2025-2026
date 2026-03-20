@@ -11,36 +11,31 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
-	LoadHUD();
-	LoadPlayer();
-	LoadBomb();
+	//game.booster = CreateSound(GetAsset("Assets/Sounds/Booster.wav"), 100000.f, sfFalse);
+	//game.clic = CreateSound(GetAsset("Assets/Sounds/Clic.wav"), 100000.f, sfFalse);
+	//game.hover = CreateSound(GetAsset("Assets/Sounds/Hover.wav"), 100000.f, sfFalse);
+	game.kill = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100000.f, sfFalse);
 
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
 
-	for (int row = 1; row < NB_GRID_ROW; row += 2)
-	{
-		for (int column = 1; column < NB_GRID_COLUMN; column += 2)
-		{
-			game.caseState[row][column] = WALL;
-		}
-	}
-
+	LoadHUD();
+	LoadPlayer();
+	LoadBomb();
 	LoadBox();
+	LoadEnnemy();
+
 	sfVector2i positionRandom = { 0 , 0 };
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
-		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 2);
-
+		} while (positionRandom.x % 2 && positionRandom.y % 2 || GetIfBoxIsHere(positionRandom) || (positionRandom.y + positionRandom.x) < 2);
 		SetBoxPosition(positionRandom, i);
-		game.caseState[positionRandom.y][positionRandom.x] = BOX;
 	}
 
-	LoadEnnemy();
 	CasePosibility casePosibility = { 0 };
 	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
 	{
@@ -48,10 +43,9 @@ void LoadGame(void)
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 			casePosibility = GetMovePosibility(positionRandom);
-		} while (game.caseState[positionRandom.y][positionRandom.x] != 0 || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
+		} while (positionRandom.x % 2 && positionRandom.y % 2 || GetIfBoxIsHere(positionRandom) || (positionRandom.y + positionRandom.x) < 7 || !(casePosibility.left + casePosibility.down + casePosibility.right + casePosibility.up));
 		AddEnnemy(positionRandom, casePosibility);
 	}
-
 }
 
 void PollEventGame(sfEvent* _event)
@@ -91,7 +85,7 @@ void UpdateGame(float _dt)
 		casePosibilityBomb[i] = GetMovePosibility(GetBombPositionGrid(i));
 
 	}
-	UpdateBomb(&casePosibilityBomb[0], _dt);
+	UpdateBomb(casePosibilityBomb, _dt);
 
 	UpdateCollider();
 }
@@ -103,21 +97,30 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	case sfKeyEscape:
 		SetGameState(MENU);
 		break;
-	case sfKeyEnter:
-		if (DEV_MODE)
+	case sfKeySpace:
+		if (AskPlayerIdle())
 		{
-			SetGameState(GAME_OVER);
-		}
-		break;
-	case sfKeyE:
-		if (DEV_MODE)
-		{
-			game.caseState[2][2] = VOID;
-			DestroyBox((sfVector2i) { 2, 2 });
+			SpawnBomb(GetPlayerPositionGrid());
 		}
 		break;
 	default:
 		break;
+	}
+
+	if (DEV_MODE)
+	{
+		switch (_keyEvent->code)
+		{
+		case sfKeyEnter:
+			SetGameState(GAME_OVER);
+			break;
+		case sfKeyE:
+			DestroyBox((sfVector2i) { 2, 2 });
+			break;
+		default:
+			break;
+		}
+
 	}
 }
 
@@ -126,24 +129,28 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 	CasePosibility posibility = { 0 };
 	int radiusExplosion = GetIntToSave(FIRE);
 
+	sfVector2i positionTemp = _position;
 	if (!(_position.y % 2))
 	{
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x - i >= 0 && game.caseState[_position.y][_position.x - i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x - i, _position.y }))
+			positionTemp.x--;
+			if (_position.x - i >= 0 && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
 			{
-				posibility.left = i;
+				posibility.left++;
 			}
 			else
 			{
 				i = radiusExplosion + 1;
 			}
 		}
+		positionTemp = _position;
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.x + i < NB_GRID_COLUMN && game.caseState[_position.y][_position.x + i] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x + i, _position.y }))
+			positionTemp.x++;
+			if (_position.x + i < NB_GRID_COLUMN && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
 			{
-				posibility.right = i;
+				posibility.right++;
 			}
 			else
 			{
@@ -154,9 +161,11 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 	if (!(_position.x % 2))
 	{
+		positionTemp = _position;
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y - i >= 0 && game.caseState[_position.y - i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x, _position.y - i }))
+			positionTemp.y--;
+			if (_position.y - i >= 0 && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
 			{
 				posibility.up = i;
 			}
@@ -165,9 +174,11 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 				i = radiusExplosion + 1;
 			}
 		}
+		positionTemp = _position;
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
-			if (_position.y + i < NB_GRID_ROW && game.caseState[_position.y + i][_position.x] != BOX && !CheckAtLocationBomb((sfVector2i) { _position.x, _position.y + i }))
+			positionTemp.y++;
+			if (_position.y + i < NB_GRID_ROW && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
 			{
 				posibility.down = i;
 			}
@@ -191,8 +202,9 @@ void UpdateCollider(void)
 			sfVector2i ennemyPositionNext = GetFuturPositionEnnemy(i);
 			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y || playerPosition.x == ennemyPositionNext.x && playerPosition.y == ennemyPositionNext.y)
 			{
-				SetIntToSave(LIFE, GetIntToSave(LIFE) - 1);
+				AddIntToSave(LIFE, -1);
 				RespawnPlayer();
+				sfSound_play(game.kill);
 				if (GetIntToSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);

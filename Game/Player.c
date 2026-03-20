@@ -141,7 +141,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 
 		if (player.state == WALK)
 		{
-			if (lastMove > (1 / (10 + player.playerMoveSpeedGrid)))
+			if (lastMove > ((float)1 / (10 + player.playerMoveSpeedGrid)))
 			{
 
 				switch (player.direction)

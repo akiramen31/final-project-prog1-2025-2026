@@ -30,6 +30,7 @@ void UpdateBox(float _dt)
 			if (UpdateAnimationAndGiveIfStop(box[i].down.sprite, &box[i].down.animation, _dt) || 
 				UpdateAnimationAndGiveIfStop(box[i].up.sprite, &box[i].up.animation, _dt))
 			{
+				box[i].position = (sfVector2i){ -1,-1 };
 				sfSprite_setPosition(box[i].down.sprite, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
 				sfSprite_setPosition(box[i].up.sprite, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
 				box[i].destroy = sfFalse;
@@ -57,4 +58,16 @@ void DestroyBox(sfVector2i _position)
 			i = NB_BOX;
 		}
 	}
+}
+
+sfBool GetIfBoxIsHere(sfVector2i _position)
+{
+	for (int i = 0; i < NB_BOX; i++)
+	{
+		if (box[i].position.x == _position.x && box[i].position.y == _position.y)
+		{
+			return sfTrue;
+		}
+	}
+	return sfFalse;
 }
