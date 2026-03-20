@@ -48,7 +48,6 @@ void SpawnBomb(sfVector2i _bombPos)
 	{
 		if (bombList[i].placed == sfFalse)
 		{
-			//printf("spawn bomb num %d\n", i + 1);
 			bombList[i].position = _bombPos;
 
 			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 41);
@@ -128,8 +127,18 @@ void BlowBomb(int _num, CasePosibility _colision)
 	bombCount--;
 }
 
-sfBool UpdateBomb(CasePosibility* _colision, float _dt)
+void UpdateBomb(CasePosibility* _colision, float _dt)
 {
+	for (int i = 0; i < bombCount; i++)
+	{
+		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
+		bombList[i].duration += _dt;
+
+		if (bombList[i].duration >= BLOW_TIMER_BOMB)
+		{
+			BlowBomb(i, _colision[i]);
+		}
+	}
 
 	for (int i = deflagrationCount - 1; i >= 0; i--)
 	{
@@ -143,19 +152,6 @@ sfBool UpdateBomb(CasePosibility* _colision, float _dt)
 			deflagrationCount--;
 		}
 	}
-
-	for (int i = 0; i < bombCount; i++)
-	{
-		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
-		bombList[i].duration += _dt;
-
-		if (bombList[i].duration >= BLOW_TIMER_BOMB)
-		{
-			BlowBomb(i, _colision[i]);
-			return sfTrue;
-		}
-	}
-	return sfFalse;
 }
 
 sfBool CheckAtLocationBomb(sfVector2i _pos)
@@ -210,14 +206,6 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 	}
 
 	int test = 2;
-
-	//if (_length > test)
-	//{
-	//	_length = test;
-	//}
-
-	printf("%d\n", _length);
-
 
 	int tempLength = _length;
 
@@ -312,4 +300,14 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 			}
 		}
 	}
+}
+
+int GetDeflagrationCount(void)
+{
+	return deflagrationCount;
+}
+
+sfVector2i GetDeflagrationPosition(int _index)
+{
+	return deflagrationList[_index].position;
 }

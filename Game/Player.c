@@ -15,6 +15,8 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 
+	player.killSound = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100000.f, sfFalse);
+
 	sfTexture* playerTexture = GetAsset("Assets/Sprites/Player/Player.png");
 	player.sprite = CreateSprite(playerTexture, (sfVector2f) { 200, 200 }, 4.f, 40);
 	player.animation.rectActualy = (sfIntRect){ 0, (player.direction + player.state) * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT };
@@ -242,10 +244,12 @@ sfBool AskPlayerInvincible(void)
 	}
 }
 
-void RespawnPlayer(void)
+void KillPlayer(void)
 {
 	invincibleTime = 0;
 	player.isInvincible = sfTrue;
 	player.posGrid = (sfVector2i){ 0 };
 	sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
+	AddIntToSave(LIFE, -1);
+	sfSound_play(player.killSound);
 }

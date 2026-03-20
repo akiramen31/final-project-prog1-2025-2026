@@ -7,7 +7,7 @@ void LoadEnnemy(void)
 	listeEnnemy = CreateList();
 }
 
-void CreateRandomEnnemy(Ennemy* _ennemy)
+void CreateEnnemyRandom(Ennemy* _ennemy)
 {
 	_ennemy->typeEnnemy = GetRandomInRange(0, TOTAL_TYPE_ENNEMY - 1);
 	switch (_ennemy->typeEnnemy)
@@ -116,18 +116,17 @@ void CreateRandomEnnemy(Ennemy* _ennemy)
 
 void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 {
-	//printf("add ennemy\n");
 	Ennemy* newEnnemy = calloc(1, sizeof(Ennemy));
 	if (newEnnemy == NULL)
 	{
 		exit(EXIT_FAILURE);
 	}
-	CreateRandomEnnemy(newEnnemy);
+	CreateEnnemyRandom(newEnnemy);
 	sfVector2f position = TransformVector2iToVector2f(_position);
 	sfSprite_setPosition(newEnnemy->sprite, position);
 	newEnnemy->position = _position;
 	InsertElement(listeEnnemy, CreateElement(newEnnemy), 0);
-	NewChoiceDirection(_casePosibility, 0);
+	ChooseNewDirection(_casePosibility, 0);
 }
 
 Ennemy* GetEnnemy(unsigned _index)
@@ -154,14 +153,12 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt });
 		break;
 	case BLOCK:
-		NewChoiceDirection(_casePosibility, _i);
+		ChooseNewDirection(_casePosibility, _i);
 		break;
 	default:
 		printf("error direction");
 		break;
 	}
-	//printf("direction %d\n", GetEnnemy(_i)->direction);
-	//printf("ancienne position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
 		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
 	{
@@ -186,25 +183,23 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
 		if (GetEnnemy(_i)->passeMuraille)
 		{
-			NewChoiceDirectionV2(_i);
+			ChooseNewDirectionV2(_i);
 		}
 		else
 		{
-			NewChoiceDirection(_casePosibility, _i);
+			ChooseNewDirection(_casePosibility, _i);
 		}
-		//printf("new direction %d\n", GetEnnemy(_i)->direction);
-		//printf("position x:%d y:%d\n", GetEnnemy(_i)->position.x, GetEnnemy(_i)->position.y);
 	}
 
 
-	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetAnimation(GetEnnemy(_i))]), _dt))
+	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetEnnemyAnimation(GetEnnemy(_i))]), _dt))
 	{
 		free(GetEnnemy(_i));
 		RemoveElement(listeEnnemy, _i);
 	}
 }
 
-unsigned GetAnimation(Ennemy* _ennemy)
+unsigned GetEnnemyAnimation(Ennemy* _ennemy)
 {
 	if (_ennemy->life)
 	{
@@ -262,18 +257,18 @@ unsigned GetAnimation(Ennemy* _ennemy)
 	}
 }
 
-int GetNumberEnnemy(void)
+int GetEnnemyCount(void)
 {
 	return GetListSize(listeEnnemy);
 }
 
-sfVector2i GetPositionEnnemy(unsigned _index)
+sfVector2i GetEnnemyPosition(unsigned _index)
 {
 	sfVector2i positionI = GetEnnemy(_index)->position;
 	return positionI;
 }
 
-void NewChoiceDirection(CasePosibility _casePosibility, int _i)
+void ChooseNewDirection(CasePosibility _casePosibility, int _i)
 {
 	sfBool confirmDirection = 0;
 	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.up))
@@ -317,12 +312,11 @@ void NewChoiceDirection(CasePosibility _casePosibility, int _i)
 		default:
 			break;
 		}
-		//printf("direction demander %d. struc up:%d down %d left %d right %d \n", GetEnnemy(_i)->direction, _casePosibility.up, _casePosibility.down, _casePosibility.left, _casePosibility.right);
 	}
 
 }
 
-void NewChoiceDirectionV2(int _i)
+void ChooseNewDirectionV2(int _i)
 {
 	sfBool confirmDirection = 0;
 	while (confirmDirection == 0)
@@ -366,7 +360,7 @@ void NewChoiceDirectionV2(int _i)
 
 }
 
-sfVector2i GetFuturPositionEnnemy(unsigned _index)
+sfVector2i GetEnnemyNextPosition(unsigned _index)
 {
 	enum Direction temp = GetEnnemy(_index)->direction;
 	sfVector2i positionActuel = GetEnnemy(_index)->position;

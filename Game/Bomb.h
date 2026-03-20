@@ -43,10 +43,12 @@ typedef struct Deflagration
 
 void LoadBomb(void);
 void SpawnBomb(sfVector2i _bombPos);
-sfBool UpdateBomb(CasePosibility _Colision[], float _dt);
+void UpdateBomb(CasePosibility* _colision, float _dt);
 void BlowBomb(int i, CasePosibility _colision);
 sfBool CheckAtLocationBomb(sfVector2i _pos);
 int GetBombCount(void);
 sfVector2i GetBombPositionGrid(int _num);
 void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _position);
+int GetDeflagrationCount(void);
+sfVector2i GetDeflagrationPosition(int _index);
 #endif // BOMB_H
