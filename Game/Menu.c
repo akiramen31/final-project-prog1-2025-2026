@@ -10,12 +10,6 @@ void LoadMenu(void)
 	sfMusic* menuMusic = CreateMusic("Assets/Musics/Title-Screen.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(menuMusic, sfTrue);
 	sfMusic_play(menuMusic);
-	SetIntToSave(SCORE, 0);
-	SetIntToSave(BOMB, 5);
-	SetIntToSave(SPEED, 1);
-	SetIntToSave(ENNEMY_COUNT, 1);
-	SetIntToSave(FIRE, 1);
-	SetIntToSave(LIFE, 4);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)

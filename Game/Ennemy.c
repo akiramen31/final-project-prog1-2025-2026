@@ -190,10 +190,11 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		}
 	}
 
-
-	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetEnnemyAnimation(GetEnnemy(_i))]), _dt))
+	Ennemy* temp = GetEnnemy(_i);
+	if (UpdateAnimationAndGiveIfStop(temp->sprite, &temp->animation[GetEnnemyAnimation(temp)], _dt))
 	{
-		free(GetEnnemy(_i));
+		SetIntToSave(SCORE, GetIntToSave(SCORE) + temp->points);
+		free(temp);
 		RemoveElement(listeEnnemy, _i);
 	}
 }
