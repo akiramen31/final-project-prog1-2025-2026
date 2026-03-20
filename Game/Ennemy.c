@@ -9,13 +9,14 @@ void LoadEnnemy(void)
 
 void CreateEnnemyRandom(Ennemy* _ennemy)
 {
-	_ennemy->typeEnnemy = rand() & TOTAL_TYPE_ENNEMY;
+	_ennemy->typeEnnemy = rand() % TOTAL_TYPE_ENNEMY;
 	_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 30.f);
-
+	sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10.f, 45.f });
+	_ennemy->life = 1;
+	
 	switch (_ennemy->typeEnnemy)
 	{
 	case BALLOM:
-		_ennemy->life = 1;
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 100;
 		_ennemy->vitesse = LENT;
@@ -23,17 +24,15 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 50 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 4, 0.2f,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,58,20,22 }, sfTrue, 4, 0.2f,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,98,20,22 }, sfTrue, 4, 0.2f,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,138,20,22 }, sfTrue, 4, 0.2f,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfFalse, 5, 0.2f,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,0,20,40 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[DOWN] = (Animation){ (sfIntRect) { 0,0,20,40 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[UP] = (Animation){ (sfIntRect) { 0,40,20,40 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[LEFT] = (Animation){ (sfIntRect) { 0,80,20,40 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[RIGHT] = (Animation){ (sfIntRect) { 0,120,20,40 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,160,20,40 }, sfFalse, 5, 0.2f,0.f };
 		break;
 	case ONIL:
-		_ennemy->life = 1;
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 200;
 		_ennemy->vitesse = NORMAL;
@@ -41,17 +40,15 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 24 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 5, 0.2f,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,863,20,17 }, sfTrue, 5, 0.2f,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,903,20,17 }, sfTrue, 5, 0.2f,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,943,20,17 }, sfTrue, 5, 0.2f,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfFalse, 4, 0.2f,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,800,20,40 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[DOWN] = (Animation){ (sfIntRect) { 0,800,20,40 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[UP] = (Animation){ (sfIntRect) { 0,840,20,40 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[LEFT] = (Animation){ (sfIntRect) { 0,880,20,40 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[RIGHT] = (Animation){ (sfIntRect) { 0,920,20,40 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,960,20,40 }, sfFalse, 4, 0.2f,0.f };
 		break;
 	case DALL:
-		_ennemy->life = 1;
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 400;
 		_ennemy->vitesse = NORMAL;
@@ -59,17 +56,16 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 3, 0.2f,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,258,20,24 }, sfTrue, 3, 0.2f,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,298,20,24 }, sfTrue, 3, 0.2f,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,338,20,24 }, sfTrue, 3, 0.2f,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfFalse, 6, 0.2f,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,200,20,40 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[DOWN] = (Animation){ (sfIntRect) { 0,200,20,40 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[UP] = (Animation){ (sfIntRect) { 0,240,20,40 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[LEFT] = (Animation){ (sfIntRect) { 0,280,20,40 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[RIGHT] = (Animation){ (sfIntRect) { 0,320,20,40 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,360,20,40 }, sfFalse, 6, 0.2f,0.f };
 		break;
 	case DENKYUN:
-		_ennemy->life = 2;
+		_ennemy->life++;
 		_ennemy->passeMuraille = 0;
 		_ennemy->points = 600;
 		_ennemy->vitesse = NORMAL;
@@ -77,16 +73,12 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 1;
 		_ennemy->personality.chaos = 5;
 
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 0.2f,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 0.2f,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,774,20,25 }, sfTrue, 5, 0.2f,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfFalse, 1, 0.2f,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,600,20,40 }, sfTrue, 6, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,640,20,40 }, sfTrue, 6, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,760,20,40 }, sfFalse, 5, 0.2f,0.f };
 		break;
 	case KONDORIA:
-		_ennemy->life = 1;
 		_ennemy->passeMuraille = 1;
 		_ennemy->points = 1000;
 		_ennemy->vitesse = TRES_LENT;
@@ -94,22 +86,21 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 3;
 		_ennemy->personality.chaos = 0;
 
-		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
+		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10.f, 30.f });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2f,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2f,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2f,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2f,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2f,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 1, 0.2f,0.f };
+		_ennemy->animation[DOWN] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[UP] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[LEFT] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[RIGHT] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2f,0.f };
 		break;
 	default:
 		break;
 	}
 	_ennemy->direction = 0;
-	sfSprite_setScale(_ennemy->sprite, (sfVector2f) { 3, 3 });
+	sfSprite_setScale(_ennemy->sprite, (sfVector2f) { 3.f, 3.f });
 }
-
 
 void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 {
@@ -128,26 +119,35 @@ void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 
 Ennemy* GetEnnemy(unsigned _index)
 {
-	Element* element = GetElement(listeEnnemy, _index);
-	return element->value;
+	return GetElement(listeEnnemy, _index)->value;
 }
 
 void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 {
+	Ennemy* ennemy = GetEnnemy(_i);
 
-	switch (GetEnnemy(_i)->direction)
+	if (ennemy->invincibleTimer > 0)
+	{
+		ennemy->invincibleTimer -= _dt;
+		if (ennemy->invincibleTimer < 0)
+		{
+			ennemy->invincibleTimer = 0;
+		}
+	}
+
+	switch (ennemy->direction)
 	{
 	case DOWN:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, GetEnnemy(_i)->vitesse* _dt });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, ennemy->vitesse* _dt });
 		break;
 	case LEFT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { -GetEnnemy(_i)->vitesse * _dt, 0 });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { -ennemy->vitesse * _dt, 0 });
 		break;
 	case RIGHT:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { GetEnnemy(_i)->vitesse * _dt, 0 });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { ennemy->vitesse* _dt, 0 });
 		break;
 	case UP:
-		sfSprite_move(GetEnnemy(_i)->sprite, (sfVector2f) { 0, -GetEnnemy(_i)->vitesse * _dt });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, -ennemy->vitesse * _dt });
 		break;
 	case BLOCK:
 		ChooseNewDirection(_casePosibility, _i);
@@ -156,28 +156,28 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		printf("error direction");
 		break;
 	}
-	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - (int)sfSprite_getPosition(GetEnnemy(_i)->sprite).x)|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - (int)sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
+	if (64 < abs((int)TransformVector2iToVector2f(ennemy->position).x - (int)sfSprite_getPosition(ennemy->sprite).x) || 64 < abs((int)TransformVector2iToVector2f(ennemy->position).y - (int)sfSprite_getPosition(ennemy->sprite).y))
 	{
-		switch (GetEnnemy(_i)->direction)
+		switch (ennemy->direction)
 		{
 		case DOWN:
-			GetEnnemy(_i)->position.y++;
+			ennemy->position.y++;
 			break;
 		case LEFT:
-			GetEnnemy(_i)->position.x--;
+			ennemy->position.x--;
 			break;
 		case RIGHT:
-			GetEnnemy(_i)->position.x++;
+			ennemy->position.x++;
 			break;
 		case UP:
-			GetEnnemy(_i)->position.y--;
+			ennemy->position.y--;
 			break;
 		default:
 			printf("error direction");
 			break;
 		}
-		sfSprite_setPosition(GetEnnemy(_i)->sprite, TransformVector2iToVector2f(GetEnnemy(_i)->position));
-		if (GetEnnemy(_i)->passeMuraille)
+		sfSprite_setPosition(ennemy->sprite, TransformVector2iToVector2f(ennemy->position));
+		if (ennemy->passeMuraille)
 		{
 			ChooseNewDirectionV2(_i);
 		}
@@ -187,71 +187,40 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		}
 	}
 
-	Ennemy* temp = GetEnnemy(_i);
-	if (UpdateAnimationAndGiveIfStop(temp->sprite, &temp->animation[GetEnnemyAnimation(temp)], _dt))
+	if (UpdateAnimationAndGiveIfStop(ennemy->sprite, &ennemy->animation[GetEnnemyAnimation(ennemy)], _dt))
 	{
-		AddIntToSave(SCORE, temp->points);
-		free(temp);
+		sfSprite_setScale(ennemy->sprite, (sfVector2f) { 0, 0 });
+		AddIntToSave(SCORE, ennemy->points);
+		free(ennemy);
 		RemoveElement(listeEnnemy, _i);
 	}
 }
 
 unsigned GetEnnemyAnimation(Ennemy* _ennemy)
 {
-	if (_ennemy->life)
+	if (_ennemy->life > 0)
 	{
-		if (_ennemy->typeEnnemy == 3)
+		if (_ennemy->typeEnnemy == DENKYUN)
 		{
 			if (_ennemy->life == 2)
 			{
-				if (_ennemy->animation == BLOCK)
-				{
-					return 2;
-				}
-				else
-				{
-					return 0;
-				}
+				return 0;
 			}
 			else
 			{
-				if (_ennemy->animation == BLOCK)
-				{
-					return 3;
-				}
-				else
-				{
-					return 1;
-				}
+				return 1;
 			}
 		}
 		else
 		{
-			switch (_ennemy->direction)
-			{
-			case DOWN:
-				return 0;
-				break;
-			case LEFT:
-				return 2;
-				break;
-			case RIGHT:
-				return 3;
-				break;
-			case UP:
-				return 1;
-				break;
-			case BLOCK:
-				return 5;
-			default:
-				break;
-			}
+			return _ennemy->direction;
 		}
 	}
 	else
 	{
-		return 4;
+		return 5;
 	}
+	return 0;
 }
 
 int GetEnnemyCount(void)
@@ -261,49 +230,50 @@ int GetEnnemyCount(void)
 
 sfVector2i GetEnnemyPosition(unsigned _index)
 {
-	sfVector2i positionI = GetEnnemy(_index)->position;
-	return positionI;
+	return GetEnnemy(_index)->position;
 }
 
 void ChooseNewDirection(CasePosibility _casePosibility, int _i)
 {
-	sfBool confirmDirection = 0;
+	sfBool searchDirection = sfTrue;
+	Ennemy* ennemy = GetEnnemy(_i);
+	Direction temp = 0;
 	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.up))
 	{
-		GetEnnemy(_i)->direction = BLOCK;
-		confirmDirection = 1;
+		ennemy->direction = BLOCK;
+		return;
 	}
-	while (confirmDirection == 0)
+	while (searchDirection)
 	{
-		enum Direction temp = GetRandomInRange(0, 3);
+		Direction temp = rand() % 4;
 		switch (temp)
 		{
 		case DOWN:
 			if (_casePosibility.down)
 			{
-				GetEnnemy(_i)->direction = DOWN;
-				confirmDirection = 1;
+				ennemy->direction = DOWN;
+				searchDirection = sfFalse;
 			}
 			break;
 		case LEFT:
 			if (_casePosibility.left)
 			{
-				GetEnnemy(_i)->direction = LEFT;
-				confirmDirection = 1;
+				ennemy->direction = LEFT;
+				searchDirection = sfFalse;
 			}
 			break;
 		case RIGHT:
 			if (_casePosibility.right)
 			{
-				GetEnnemy(_i)->direction = RIGHT;
-				confirmDirection = 1;
+				ennemy->direction = RIGHT;
+				searchDirection = sfFalse;
 			}
 			break;
 		case UP:
 			if (_casePosibility.up)
 			{
-				GetEnnemy(_i)->direction = UP;
-				confirmDirection = 1;
+				ennemy->direction = UP;
+				searchDirection = sfFalse;
 			}
 			break;
 		default:
@@ -315,75 +285,76 @@ void ChooseNewDirection(CasePosibility _casePosibility, int _i)
 
 void ChooseNewDirectionV2(int _i)
 {
-	sfBool confirmDirection = 0;
-	while (confirmDirection == 0)
+	sfBool searchDirection = sfTrue;
+	Ennemy* ennemy = GetEnnemy(_i);
+	Direction temp = 0;
+	while (searchDirection)
 	{
-		enum Direction temp = GetRandomInRange(0, 3);
+		temp = rand() % 4;
 		switch (temp)
 		{
 		case DOWN:
-			if (GetEnnemy(_i)->position.y < NB_GRID_ROW - 1)
+			if (ennemy->position.y < NB_GRID_ROW - 1)
 			{
-				GetEnnemy(_i)->direction = DOWN;
-				confirmDirection = 1;
+				searchDirection = sfFalse;
 			}
 			break;
 		case LEFT:
-			if (GetEnnemy(_i)->position.x > 0)
+			if (ennemy->position.x > 0)
 			{
-				GetEnnemy(_i)->direction = LEFT;
-				confirmDirection = 1;
+				searchDirection = sfFalse;
 			}
 			break;
 		case RIGHT:
-			if (GetEnnemy(_i)->position.x < NB_GRID_COLUMN - 1)
+			if (ennemy->position.x < NB_GRID_COLUMN - 1)
 			{
-				GetEnnemy(_i)->direction = RIGHT;
-				confirmDirection = 1;
+				searchDirection = sfFalse;
 			}
 			break;
 		case UP:
-			if (GetEnnemy(_i)->position.y > 0)
+			if (ennemy->position.y > 0)
 			{
-				GetEnnemy(_i)->direction = UP;
-				confirmDirection = 1;
+				searchDirection = sfFalse;
 			}
 			break;
 		default:
 			break;
 		}
 	}
+	ennemy->direction = temp;
 
 }
 
 sfVector2i GetEnnemyNextPosition(unsigned _index)
 {
-	enum Direction temp = GetEnnemy(_index)->direction;
-	sfVector2i positionActuel = GetEnnemy(_index)->position;
-	switch (temp)
+	Ennemy* ennemy = GetEnnemy(_index);
+	sfVector2i positionNext = ennemy->position;
+	switch (ennemy->direction)
 	{
 	case DOWN:
-		return (sfVector2i) { positionActuel.x, positionActuel.y + 1 };
+		positionNext.y++;
 		break;
 	case LEFT:
-		return (sfVector2i) { positionActuel.x - 1, positionActuel.y };
+		positionNext.x--;
 		break;
 	case RIGHT:
-		return (sfVector2i) { positionActuel.x + 1, positionActuel.y };
+		positionNext.x++;
 		break;
 	case UP:
-		return (sfVector2i) { positionActuel.x, positionActuel.y - 1 };
-		break;
-	case BLOCK:
-		return positionActuel;
+		positionNext.y--;
 		break;
 	default:
 		break;
 	}
-	return (sfVector2i) { 0, 0 };
+	return positionNext;
 }
 
 void HitEnnemy(unsigned _index)
 {
-	GetEnnemy(_index)->life -= 1;
+	Ennemy* ennemy = GetEnnemy(_index);
+	if (!ennemy->invincibleTimer)
+	{
+		ennemy->invincibleTimer = ENNEMY_TIME_OF_INVINCIBLE;
+		ennemy->life -= 1;
+	}
 }
