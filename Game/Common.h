@@ -13,6 +13,7 @@
 #include "EntityManager.h"
 
 #define GAME_SCALE 1
+#define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 904
 #define BPP 32
