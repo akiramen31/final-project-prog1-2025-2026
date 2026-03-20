@@ -44,9 +44,13 @@ typedef enum Direction
 typedef struct
 {
 	int down;
+	sfBool downBox;
 	int left;
+	sfBool leftBox;
 	int right;
+	sfBool rightBox;
 	int up;
+	sfBool upBox;
 }CasePosibility;
 
 

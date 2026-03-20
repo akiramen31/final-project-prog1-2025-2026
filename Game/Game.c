@@ -142,7 +142,12 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
 			positionTemp.x--;
-			if (_position.x - i >= 0 && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			if (GetIfBoxIsHere(positionTemp))
+			{
+				posibility.leftBox = sfTrue;
+				i = radiusExplosion + 1;
+			}
+			else if (_position.x - i >= 0 && !CheckAtLocationBomb(positionTemp))
 			{
 				posibility.left++;
 			}
@@ -155,7 +160,12 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
 			positionTemp.x++;
-			if (_position.x + i < NB_GRID_COLUMN && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			if (GetIfBoxIsHere(positionTemp))
+			{
+				posibility.rightBox = sfTrue;
+				i = radiusExplosion + 1;
+			}
+			else if (_position.x + i < NB_GRID_COLUMN && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
 			{
 				posibility.right++;
 			}
@@ -172,9 +182,14 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
 			positionTemp.y--;
-			if (_position.y - i >= 0 && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			if (GetIfBoxIsHere(positionTemp))
 			{
-				posibility.up = i;
+				posibility.upBox = sfTrue;
+				i = radiusExplosion + 1;
+			}
+			else if (_position.y - i >= 0 && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			{
+				posibility.up++;
 			}
 			else
 			{
@@ -185,9 +200,14 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 		for (int i = 1; i < radiusExplosion + 1; i++)
 		{
 			positionTemp.y++;
-			if (_position.y + i < NB_GRID_ROW && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			if (GetIfBoxIsHere(positionTemp))
 			{
-				posibility.down = i;
+				posibility.downBox = sfTrue;
+				i = radiusExplosion + 1;
+			}
+			else if (_position.y + i < NB_GRID_ROW && !GetIfBoxIsHere(positionTemp) && !CheckAtLocationBomb(positionTemp))
+			{
+				posibility.down++;
 			}
 			else
 			{
