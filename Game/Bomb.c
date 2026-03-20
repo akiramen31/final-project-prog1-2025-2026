@@ -2,8 +2,8 @@
 
 sfTexture* bombTexture;
 Bomb bombList[NUM_MAX_BOMB];
-sfSound* explosionSound;
-sfSound* bombPut;
+sfSound* bombExplode;
+sfSound* bombPLace;
 sfTexture* explosionTexture;
 Deflagration deflagrationList[NUM_MAX_DEFLAGRATION];
 
@@ -31,8 +31,8 @@ void LoadBomb(void)
 
 	explosionTexture = GetAsset("Assets/Sprites/Bomb/Explosion_Coded.png");
 
-	explosionSound = CreateSound(GetAsset("Assets/Sounds/Bomb.wav"), 100000.f, sfFalse);
-	bombPut = CreateSound(GetAsset("Assets/Sounds/Placed.wav"), 100000.f, sfFalse);
+	bombExplode = CreateSound(GetAsset("Assets/Sounds/Bomb.wav"), GAME_VOLUME, sfFalse);
+	bombPLace = CreateSound(GetAsset("Assets/Sounds/Placed.wav"), GAME_VOLUME, sfFalse);
 }
 
 void SpawnBomb(sfVector2i _bombPos)
@@ -43,7 +43,7 @@ void SpawnBomb(sfVector2i _bombPos)
 		bombCount--;
 		return;
 	}
-	sfSound_play(bombPut);
+	sfSound_play(bombPLace);
 	for (int i = 0; i < bombCount; i++)
 	{
 		if (bombList[i].placed == sfFalse)
@@ -78,7 +78,7 @@ void SpawnBomb(sfVector2i _bombPos)
 
 void BlowBomb(int _num, CasePosibility _colision)
 {
-	sfSound_play(explosionSound);
+	sfSound_play(bombExplode);
 	bombList[_num].blowDirectionCode = 0;
 
 	if (_colision.downBox)
