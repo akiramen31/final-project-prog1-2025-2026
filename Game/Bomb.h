@@ -39,10 +39,15 @@ typedef struct Deflagration
 
 }Deflagration;
 
+typedef struct Explosion
+{
+	sfBool state;
+	int index;
+}Explosion;
 
 void LoadBomb(void);
 void SpawnBomb(sfVector2i _bombPos);
-sfBool UpdateBomb(CasePosibility _Colision[], float _dt);
+Explosion UpdateBomb(CasePosibility _Colision[], float _dt);
 void BlowBomb(int _num, CasePosibility _colision);
 void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _direction);
 sfBool CheckAtLocationBomb(sfVector2i _pos);
