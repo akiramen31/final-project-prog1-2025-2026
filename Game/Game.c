@@ -87,7 +87,7 @@ void UpdateGame(float _dt)
 	UpdateCollider();
 	timer -= _dt;
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
-	UpdateEnnemy(_dt);
+	//UpdateEnnemy(_dt, );
 	UpdateHUD(_dt, timer);
 }
 
