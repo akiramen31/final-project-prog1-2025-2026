@@ -21,7 +21,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 4, 0.2f,0.f };
@@ -40,7 +40,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 24 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 5, 0.2f,0.f };
@@ -59,7 +59,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 3, 0.2f,0.f };
@@ -78,7 +78,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 1;
 		_ennemy->personality.chaos = 5;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 0.2f,0.f };

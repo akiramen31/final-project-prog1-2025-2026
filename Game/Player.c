@@ -46,20 +46,27 @@ void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 255));
 	}
 
-	if (sfKeyboard_isKeyPressed(sfKeyUp))
+	if (DEV_MODE)
 	{
-		if (player.playerMoveSpeedGrid < 8)
+		if (sfKeyboard_isKeyPressed(sfKeyUp))
 		{
-			player.playerMoveSpeedGrid++;
+			if (player.playerMoveSpeedGrid < 8)
+			{
+				player.playerMoveSpeedGrid++;
+			}
+		}
+		else if (sfKeyboard_isKeyPressed(sfKeyDown))
+		{
+
+			if (player.playerMoveSpeedGrid > 1)
+			{
+				player.playerMoveSpeedGrid--;
+			}
 		}
 	}
-	else if (sfKeyboard_isKeyPressed(sfKeyDown))
+	else
 	{
-
-		if (player.playerMoveSpeedGrid > 1)
-		{
-			player.playerMoveSpeedGrid--;
-		}
+		player.playerMoveSpeedGrid = GetIntToSave(SPEED);
 	}
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 }
@@ -143,7 +150,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 
 		if (player.state == WALK)
 		{
-			if (lastMove > ((float)1 / (10 + player.playerMoveSpeedGrid)))
+			if (lastMove > (1.f / (10 + player.playerMoveSpeedGrid)))
 			{
 
 				switch (player.direction)
@@ -167,7 +174,7 @@ void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 
 				sfVector2i pos = (sfVector2i){ sfSprite_getPosition(player.sprite).x,sfSprite_getPosition(player.sprite).y };
 				lastMove = 0;
-				player.moveLength = (sfVector2f){ (64 + 64 * player.posGrid.x - pos.x) / (20 - player.playerMoveSpeedGrid), (224 + 64 * player.posGrid.y - pos.y) / (20 - player.playerMoveSpeedGrid) };
+				player.moveLength = (sfVector2f){ (64 + 64 * player.posGrid.x - pos.x) / (30 - player.playerMoveSpeedGrid*2), (224 + 64 * player.posGrid.y - pos.y) / (30 - player.playerMoveSpeedGrid*2) };
 				player.isWalking = sfTrue;
 			}
 		}
