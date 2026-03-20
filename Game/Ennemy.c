@@ -252,7 +252,6 @@ unsigned GetEnnemyAnimation(Ennemy* _ennemy)
 	{
 		return 4;
 	}
-	return 4;
 }
 
 int GetEnnemyCount(void)
