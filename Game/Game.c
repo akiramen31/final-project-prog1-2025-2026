@@ -223,7 +223,6 @@ void UpdateCollider(void)
 	for (int j = 0; j < GetDeflagrationCount(); j++)
 	{
 		sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
-		printf("%d, %d\n", deflagrationPosition.x, deflagrationPosition.y);
 		if (GetIfBoxIsHere(deflagrationPosition))
 		{
 			DestroyBox(deflagrationPosition);
