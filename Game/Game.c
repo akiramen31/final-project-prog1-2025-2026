@@ -220,6 +220,15 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
+	for (int j = 0; j < GetDeflagrationCount(); j++)
+	{
+		sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
+		if (GetIfBoxIsHere(deflagrationPosition))
+		{
+			DestroyBox(deflagrationPosition);
+		}
+	}
+
 	for (int i = 0; i < GetEnnemyCount(); i++)
 	{
 		sfVector2i ennemyPosition = GetEnnemyPosition(i);
