@@ -51,7 +51,7 @@ void SpawnBomb(sfVector2i _bombPos)
 			//printf("spawn bomb num %d\n", i + 1);
 			bombList[i].position = _bombPos;
 
-			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 43);
+			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 70.f);
 
 			sfSprite_setTextureRect(bombList[i].sprite, (sfIntRect) { 0, 0, 16, 16 });
 			sfSprite_setOrigin(bombList[i].sprite, (sfVector2f) { 8, 16 });
@@ -108,7 +108,7 @@ void BlowBomb(int _num, CasePosibility _colision)
 	{
 		if (deflagrationList[i].placed == sfFalse)
 		{
-			deflagrationList[i].sprite = CreateSprite(explosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 41);
+			deflagrationList[i].sprite = CreateSprite(explosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 20.f);
 			sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 			deflagrationList[i].animation.frameCount = 3;
 			deflagrationList[i].animation.frameDuration = 0.1f;
@@ -170,7 +170,7 @@ void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _d
 	{
 		if (deflagrationList[i].placed == sfFalse)
 		{
-			deflagrationList[i].sprite = CreateSprite(explosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 41);
+			deflagrationList[i].sprite = CreateSprite(explosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 20.f);
 			sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 			deflagrationList[i].animation.frameCount = 3;
 			deflagrationList[i].animation.frameDuration = 0.1f;
@@ -298,7 +298,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 		{
 			if (deflagrationList[i].placed == sfFalse)
 			{
-				deflagrationList[i].sprite = CreateSprite(explosionTexture, (sfVector2f) { 0 }, 4.f, 41);
+				deflagrationList[i].sprite = CreateSprite(explosionTexture, (sfVector2f) { 0 }, 4.f, 20.f);
 				sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 				deflagrationList[i].animation.frameCount = 3;
 				deflagrationList[i].animation.frameDuration = 0.1f;

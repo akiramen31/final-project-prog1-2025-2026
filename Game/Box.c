@@ -9,11 +9,11 @@ void LoadBox(void)
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		box[i] = (Box){ 0 };
-		box[i].down.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 44.f);
+		box[i].down.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 90.f);
 		sfSprite_setTextureRect(box[i].down.sprite, (sfIntRect) { 0, 4, 16, 16 });
 		box[i].down.animation = (Animation){ (sfIntRect) { 0, 4, 16, 16 }, sfFalse, 4, 0.2f, 0.f };
 
-		box[i].up.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 1.f);
+		box[i].up.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 40.f);
 		sfSprite_setTextureRect(box[i].up.sprite, (sfIntRect) { 0, 0, 16, 6 });
 		sfSprite_setOrigin(box[i].up.sprite, (sfVector2f) { 0.f, 4.f });
 		box[i].up.animation = (Animation){ (sfIntRect) { 0, 0, 16, 6 }, sfFalse, 4, 0.2f, 0.f };
