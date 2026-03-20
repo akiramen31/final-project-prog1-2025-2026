@@ -9,8 +9,8 @@ sfSprite* time[5];
 
 void LoadHUD()
 {
-	//Score
 	CreateSprite(GetAsset("Assets/Sprites/HUD/HUD.png"), (sfVector2f) { 0 }, 4.f, 10.f);
+	//Score
 	for (int i = 0; i < 6; i++)
 	{
 		score[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 776+(36 * i), 16 }, 4.f, 0.f);
