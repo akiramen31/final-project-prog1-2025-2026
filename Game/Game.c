@@ -5,6 +5,7 @@ CasePosibility GetMovePosibility(sfVector2i _position);
 void UpdateCollider(void);
 
 Game game;
+float timer;
 
 void LoadGame(void)
 {
@@ -15,10 +16,10 @@ void LoadGame(void)
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
-
 	LoadHUD();
 	LoadPlayer();
 	LoadBomb();
+	timer = 180.f;
 	LoadBox();
 	LoadEnnemy();
 
@@ -84,6 +85,10 @@ void UpdateGame(float _dt)
 	UpdateBomb(casePosibilityBomb, _dt);
 
 	UpdateCollider();
+	timer -= _dt;
+	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
+	UpdateEnnemy(_dt);
+	UpdateHUD(_dt, timer);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
