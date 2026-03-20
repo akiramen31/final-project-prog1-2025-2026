@@ -112,7 +112,6 @@ void BlowBomb(int _num, CasePosibility _colision)
 			sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 			deflagrationList[i].animation.frameCount = 3;
 			deflagrationList[i].animation.frameDuration = 0.1f;
-			deflagrationList[i].duration = 0;
 			deflagrationList[i].placed = sfTrue;
 			deflagrationList[i].position = bombList[_num].position;
 			deflagrationList[i].position = bombList[_num].position;
@@ -134,34 +133,34 @@ void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _d
 	bombList[_num].blowDirectionCode = 0;
 	if (_colision.down)
 	{
-		bombList[_num].blowDirectionCode += BLOWDOWN;
-		if (_direction != BLOWUP)
+		bombList[_num].blowDirectionCode += BLOW_DOWN;
+		if (_direction != BLOW_UP)
 		{
-			CreateDeflagration(BLOWDOWN, _colision.down, bombList[_num].position);
+			CreateDeflagration(BLOW_DOWN, _colision.down, bombList[_num].position);
 		}
 	}
 	if (_colision.right)
 	{
-		bombList[_num].blowDirectionCode += BLOWRIGHT;
-		if (_direction != BLOWLEFT)
+		bombList[_num].blowDirectionCode += BLOW_RIGHT;
+		if (_direction != BLOW_LEFT)
 		{
-			CreateDeflagration(BLOWRIGHT, _colision.right, bombList[_num].position);
+			CreateDeflagration(BLOW_RIGHT, _colision.right, bombList[_num].position);
 		}
 	}
 	if (_colision.up)
 	{
-		bombList[_num].blowDirectionCode += BLOWUP;
-		if (_direction != BLOWDOWN)
+		bombList[_num].blowDirectionCode += BLOW_UP;
+		if (_direction != BLOW_DOWN)
 		{
-			CreateDeflagration(BLOWUP, _colision.up, bombList[_num].position);
+			CreateDeflagration(BLOW_UP, _colision.up, bombList[_num].position);
 		}
 	}
 	if (_colision.left)
 	{
-		bombList[_num].blowDirectionCode += BLOWLEFT;
-		if (_direction != BLOWRIGHT)
+		bombList[_num].blowDirectionCode += BLOW_LEFT;
+		if (_direction != BLOW_RIGHT)
 		{
-			CreateDeflagration(BLOWLEFT, _colision.left, bombList[_num].position);
+			CreateDeflagration(BLOW_LEFT, _colision.left, bombList[_num].position);
 		}
 	}
 
@@ -171,11 +170,10 @@ void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _d
 	{
 		if (deflagrationList[i].placed == sfFalse)
 		{
-			deflagrationList[i].sprite = CreateSprite(ExplosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 41);
+			deflagrationList[i].sprite = CreateSprite(explosionTexture, TransformVector2iToVector2f(bombList[_num].position), 4.f, 41);
 			sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 			deflagrationList[i].animation.frameCount = 3;
 			deflagrationList[i].animation.frameDuration = 0.1f;
-			deflagrationList[i].duration = 0;
 			deflagrationList[i].placed = sfTrue;
 			deflagrationList[i].position = bombList[_num].position;
 			deflagrationList[i].position = bombList[_num].position;
@@ -192,13 +190,11 @@ void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _d
 	bombCount--;
 }
 
-sfBool UpdateBomb(CasePosibility* _colision, float _dt)
+sfBool UpdateBomb(CasePosibility _colision[], float _dt)
 {
 
 	for (int i = deflagrationCount - 1; i >= 0; i--)
 	{
-		deflagrationList[i].duration += _dt;
-
 		if (UpdateAnimationAndGiveIfStop(deflagrationList[i].sprite, &deflagrationList[i].animation, _dt))
 		{
 			DestroyVisualEntity(deflagrationList[i].sprite);
@@ -210,7 +206,7 @@ sfBool UpdateBomb(CasePosibility* _colision, float _dt)
 
 	for (int i = 0; i < bombCount; i++)
 	{
-		for (int j = 0; j < deflagrationCount; j++)
+		for (int j = deflagrationCount - 1; j >= 0; j--)
 		{
 			if (bombList[i].position.x == deflagrationList[j].position.x && bombList[i].position.y == deflagrationList[j].position.y)
 			{
@@ -218,6 +214,9 @@ sfBool UpdateBomb(CasePosibility* _colision, float _dt)
 			}
 		}
 	}
+
+	for (int i = 0; i < bombCount; i++)
+	{
 		UpdateAnimationAndGiveIfStop(bombList[i].sprite, &bombList[i].animation, _dt);
 		bombList[i].duration += _dt;
 
@@ -227,7 +226,6 @@ sfBool UpdateBomb(CasePosibility* _colision, float _dt)
 			return sfTrue;
 		}
 	}
-	return sfFalse;
 }
 
 sfBool CheckAtLocationBomb(sfVector2i _pos)
@@ -304,7 +302,6 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 				sfSprite_setOrigin(deflagrationList[i].sprite, (sfVector2f) { 8, 16 });
 				deflagrationList[i].animation.frameCount = 3;
 				deflagrationList[i].animation.frameDuration = 0.1f;
-				deflagrationList[i].duration = 0;
 				deflagrationList[i].placed = sfTrue;
 				deflagrationList[i].direction = _direction;
 				deflagrationCount++;
