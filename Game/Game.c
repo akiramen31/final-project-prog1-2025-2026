@@ -5,24 +5,21 @@ CasePosibility GetMovePosibility(sfVector2i _position);
 void UpdateCollider(void);
 
 Game game;
+float timer;
 
 void LoadGame(void)
 {
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
-	//game.booster = CreateSound(GetAsset("Assets/Sounds/Booster.wav"), 100000.f, sfFalse);
-	//game.clic = CreateSound(GetAsset("Assets/Sounds/Clic.wav"), 100000.f, sfFalse);
-	//game.hover = CreateSound(GetAsset("Assets/Sounds/Hover.wav"), 100000.f, sfFalse);
-	game.kill = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100000.f, sfFalse);
 
 	sfMusic* gameMusic = CreateMusic("Assets/Musics/Game-Music.ogg", 10.f, sfFalse);
 	sfMusic_setLoop(gameMusic, sfTrue);
 	sfMusic_play(gameMusic);
-
 	LoadHUD();
 	LoadPlayer();
 	LoadBomb();
+	timer = 180.f;
 	LoadBox();
 	LoadEnnemy();
 
@@ -72,9 +69,9 @@ void UpdateGame(float _dt)
 
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 
-	for (int i = 0; i < GetNumberEnnemy(); i++)
+	for (int i = 0; i < GetEnnemyCount(); i++)
 	{
-		UpdateEnnemy(_dt, GetMovePosibility(GetFuturPositionEnnemy(i)), i);
+		UpdateEnnemy(_dt, GetMovePosibility(GetEnnemyNextPosition(i)), i);
 	}
 
 	UpdateBox(_dt);
@@ -88,6 +85,10 @@ void UpdateGame(float _dt)
 	UpdateBomb(casePosibilityBomb, _dt);
 
 	UpdateCollider();
+	timer -= _dt;
+	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
+	UpdateEnnemy(_dt);
+	UpdateHUD(_dt, timer);
 }
 
 void KeyPressedGame(sfKeyEvent* _keyEvent)
@@ -120,7 +121,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		default:
 			break;
 		}
-
 	}
 }
 
@@ -193,22 +193,51 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
+	for (int i = 0; i < GetEnnemyCount(); i++)
+	{
+		sfVector2i ennemyPosition = GetEnnemyPosition(i);
+		sfVector2i ennemyPositionNext = GetEnnemyNextPosition(i);
+		for (int j = 0; j < GetDeflagrationCount(); j++)
+		{
+			sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
+			if (deflagrationPosition.x == ennemyPosition.x && deflagrationPosition.y == ennemyPosition.y || deflagrationPosition.x == ennemyPositionNext.x && deflagrationPosition.y == ennemyPositionNext.y)
+			{
+				printf("ok");
+				HitEnnemy(i);
+				j = GetDeflagrationCount();
+			}
+		}
+	}
+
 	if (!AskPlayerInvincible())
 	{
 		sfVector2i playerPosition = GetPlayerPositionGrid();
-		for (int i = GetNumberEnnemy() - 1; i >= 0; i--)
+		for (int i = GetEnnemyCount() - 1; i >= 0; i--)
 		{
-			sfVector2i ennemyPosition = GetPositionEnnemy(i);
-			sfVector2i ennemyPositionNext = GetFuturPositionEnnemy(i);
+			sfVector2i ennemyPosition = GetEnnemyPosition(i);
+			sfVector2i ennemyPositionNext = GetEnnemyNextPosition(i);
 			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y || playerPosition.x == ennemyPositionNext.x && playerPosition.y == ennemyPositionNext.y)
 			{
-				AddIntToSave(LIFE, -1);
-				RespawnPlayer();
-				sfSound_play(game.kill);
+				KillPlayer();
 				if (GetIntToSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);
 				}
+				return;
+			}
+		}
+
+		for (int i = 0; i < GetDeflagrationCount(); i++)
+		{
+			sfVector2i deflagrationPosition = GetDeflagrationPosition(i);
+			if (playerPosition.x == deflagrationPosition.x && playerPosition.y == deflagrationPosition.y)
+			{
+				KillPlayer();
+				if (GetIntToSave(LIFE) <= 0)
+				{
+					SetGameState(GAME_OVER);
+				}
+				return;
 			}
 		}
 	}

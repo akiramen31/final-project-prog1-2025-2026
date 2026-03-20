@@ -9,26 +9,8 @@
 #include "Box.h"
 #include "Bomb.h"
 
-typedef enum
-{
-	VOID,
-	WALL,
-	BOX,
-	FIRE_UP,
-	FULL_FIRE,
-	FIRE_DOWN,
-	SPEED_UP,
-	SPEED_DOWN,
-	BOMBE_UP,
-	BOMB_DOWN,
-	EXIT
-}CaseContainer;
-
 typedef struct
 {
-	//sfSound* booster;
-	//sfSound* clic;
-	//sfSound* hover;
 	sfSound* kill;
 }Game;
 

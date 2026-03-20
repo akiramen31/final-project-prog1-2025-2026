@@ -5,7 +5,7 @@
 #include "EntityManager.h"
 
 void LoadHUD(void);
-void UpdateHUD(float _dt);
+void UpdateHUD(float _dt, float _timer);
 
 #endif // !HUD_H
 #pragma once

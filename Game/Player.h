@@ -22,6 +22,8 @@ typedef struct Player
 	int playerMoveSpeedGrid;
 	sfBool isWalking;
 	sfBool isInvincible;
+
+	sfSound* killSound;
 }Player;
 
 void LoadPlayer(void);
@@ -30,5 +32,5 @@ void UpdatePlayer(CasePosibility GetMovePosibility, float _dt);
 sfVector2i GetPlayerPositionGrid(void);
 sfBool AskPlayerIdle(void);
 sfBool AskPlayerInvincible(void);
-void RespawnPlayer(void);
+void KillPlayer(void);
 #endif
