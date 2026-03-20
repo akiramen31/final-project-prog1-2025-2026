@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define _USE_MATH_DEFINES
+#include <process.h>
 #include <math.h>
 #include "SFML/Graphics.h"
 #include "SFML/Audio.h"
@@ -37,15 +38,16 @@ typedef enum Direction
 	LEFT,
 	RIGHT,
 	UP,
+	BLOCK,
 }Direction;
 
 typedef struct
 {
-	sfBool down;
-	sfBool left;
-	sfBool right;
-	sfBool up;
-}MovePosibility;
+	int down;
+	int left;
+	int right;
+	int up;
+}CasePosibility;
 
 
 typedef struct Element
@@ -68,6 +70,7 @@ float DegToRad(float _angleDeg);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
+sfVector2f TransformVector2iToVector2f(sfVector2i _vector);
 
 
 

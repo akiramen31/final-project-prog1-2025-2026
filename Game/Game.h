@@ -7,25 +7,11 @@
 #include "Player.h"
 #include "Ennemy.h" 
 #include "Box.h"
-
-typedef enum
-{
-	VOID,
-	WALL,
-	BOX,
-	FIRE_UP,
-	FULL_FIRE,
-	FIRE_DOWN,
-	SPEED_UP,
-	SPEED_DOWN,
-	BOMBE_UP,
-	BOMB_DOWN,
-	EXIT
-}CaseContainer;
+#include "Bomb.h"
 
 typedef struct
 {
-	CaseContainer caseState[NB_GRID_ROW][NB_GRID_COLUMN];
+	sfSound* kill;
 }Game;
 
 void LoadGame(void);

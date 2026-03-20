@@ -2,16 +2,20 @@
 
 #define PLAYER_HEIGHT 30
 #define PLAYER_WIDTH 20
+#define INVINCIBLE_DURATION 3
 
 Player player;
 
 float lastMove;
+float invincibleTime;
 
-void MovePlayer(MovePosibility _GetMovePosibility, float _dt);
+void MovePlayer(CasePosibility _GetMovePosibility, float _dt);
 
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
+
+	player.killSound = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100000.f, sfFalse);
 
 	sfTexture* playerTexture = GetAsset("Assets/Sprites/Player/Player.png");
 	player.sprite = CreateSprite(playerTexture, (sfVector2f) { 200, 200 }, 4.f, 40);
@@ -19,15 +23,28 @@ void LoadPlayer(void)
 	sfSprite_setTextureRect(player.sprite, (sfIntRect) { 0, (player.direction + player.state)* PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT });
 	sfSprite_setOrigin(player.sprite, (sfVector2f) { PLAYER_WIDTH / 2, PLAYER_HEIGHT });
 	player.animation.isLooping = sfTrue;
-	player.playerMoveSpeedGrid = 1;
-	//player.animation.frameDuration = 2 / (4 + player.playerMoveSpeedGrid / 2);
 
 	sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
 }
 
-void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
+void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 {
 	MovePlayer(_GetMovePosibility, _dt);
+
+	if (player.isInvincible)
+	{
+		invincibleTime += _dt;
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 127));
+
+		if (invincibleTime >= INVINCIBLE_DURATION)
+		{
+			player.isInvincible = sfFalse;
+		}
+	}
+	else
+	{
+		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 255));
+	}
 
 	if (sfKeyboard_isKeyPressed(sfKeyUp))
 	{
@@ -47,7 +64,7 @@ void UpdatePlayer(MovePosibility _GetMovePosibility, float _dt)
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 }
 
-void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
+void MovePlayer(CasePosibility _GetMovePosibility, float _dt)
 {
 	lastMove += _dt;
 
@@ -69,7 +86,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = LEFT;
 			player.state = WALK;
-			if (_GetMovePosibility.left == sfFalse)
+			if (_GetMovePosibility.left == 0)
 			{
 				player.state = IDLE;
 			}
@@ -78,7 +95,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = RIGHT;
 			player.state = WALK;
-			if (_GetMovePosibility.right == sfFalse)
+			if (_GetMovePosibility.right == 0)
 			{
 				player.state = IDLE;
 			}
@@ -87,7 +104,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = UP;
 			player.state = WALK;
-			if (_GetMovePosibility.up == sfFalse)
+			if (_GetMovePosibility.up == 0)
 			{
 				player.state = IDLE;
 			}
@@ -96,7 +113,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 		{
 			player.direction = DOWN;
 			player.state = WALK;
-			if (_GetMovePosibility.down == sfFalse)
+			if (_GetMovePosibility.down == 0)
 			{
 				player.state = IDLE;
 			}
@@ -126,7 +143,7 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 
 		if (player.state == WALK)
 		{
-			if (lastMove > (1 / (10 + player.playerMoveSpeedGrid)))
+			if (lastMove > ((float)1 / (10 + player.playerMoveSpeedGrid)))
 			{
 
 				switch (player.direction)
@@ -167,28 +184,28 @@ void MovePlayer(MovePosibility _GetMovePosibility, float _dt)
 			if (pos.y >= 224 + 64 * player.posGrid.y)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case LEFT:
 			if (pos.x <= 64 + 64 * player.posGrid.x)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case RIGHT:
 			if (pos.x >= 64 + 64 * player.posGrid.x)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		case UP:
 			if (pos.y <= 224 + 64 * player.posGrid.y)
 			{
 				player.isWalking = sfFalse;
-				sfSprite_setPosition(player.sprite, (sfVector2f) { 64 + 64 * player.posGrid.x, 224 + 64 * player.posGrid.y });
+				sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
 			}
 			break;
 		default:
@@ -203,7 +220,36 @@ sfVector2i GetPlayerPositionGrid(void)
 	return player.posGrid;
 }
 
-void  RespawnPlayer(void)
+sfBool AskPlayerIdle(void)
 {
+	if (player.state == IDLE)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
+}
+
+sfBool AskPlayerInvincible(void)
+{
+	if (player.isInvincible)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
+}
+
+void KillPlayer(void)
+{
+	invincibleTime = 0;
+	player.isInvincible = sfTrue;
 	player.posGrid = (sfVector2i){ 0 };
+	sfSprite_setPosition(player.sprite, TransformVector2iToVector2f(player.posGrid));
+	AddIntToSave(LIFE, -1);
+	sfSound_play(player.killSound);
 }

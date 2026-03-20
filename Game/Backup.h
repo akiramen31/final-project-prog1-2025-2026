@@ -24,6 +24,8 @@ typedef enum
 	BOMB,
 	FIRE,
 	SPEED,
+	ENNEMY_COUNT,
+	LEVEL,
 	INT_COUNT
 
 }IntSave;
@@ -41,11 +43,14 @@ void SaveBackup(void);
 
 float GetFloatToSave(FloatSave _index);
 void SetFloatToSave(FloatSave _index, float _value);
+void AddFloatToSave(FloatSave _index, float _value);
 
 char GetCharToSave(CharSave _index);
 void SetCharToSave(CharSave _index, char _value);
+void AddCharToSave(CharSave _index, char _value);
 
 int GetIntToSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);
+void AddIntToSave(IntSave _index, int _value);
 
 #endif // !BACKUP_H

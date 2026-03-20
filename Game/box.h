@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-#define NB_BOX 40
+#define NB_BOX 10
 
 typedef struct
 {
@@ -15,7 +15,7 @@ typedef struct
 {
 	BoxPart up;
 	BoxPart down;
-	sfVector2u position;
+	sfVector2i position;
 	sfBool destroy;
 }Box;
 
@@ -23,4 +23,5 @@ void LoadBox(void);
 void UpdateBox(float _dt);
 void SetBoxPosition(sfVector2i _position, int _index);
 void DestroyBox(sfVector2i _position);
+sfBool GetIfBoxIsHere(sfVector2i _position);
 #endif // !BOX_H

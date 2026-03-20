@@ -84,6 +84,10 @@ void SetFloatToSave(FloatSave _index, float _value)
 {
 	backup.valueFloat[_index] = _value;
 }
+void AddFloatToSave(FloatSave _index, float _value)
+{
+	backup.valueFloat[_index] += _value;
+}
 
 char GetCharToSave(CharSave _index)
 {
@@ -93,6 +97,10 @@ void SetCharToSave(CharSave _index, char _value)
 {
 	backup.valueChar[_index] = _value;
 }
+void AddCharToSave(CharSave _index, char _value)
+{
+	backup.valueChar[_index] += _value;
+}
 
 int GetIntToSave(IntSave _index)
 {
@@ -101,4 +109,8 @@ int GetIntToSave(IntSave _index)
 void SetIntToSave(IntSave _index, int _value)
 {
 	backup.valueInt[_index] = _value;
+}
+void AddIntToSave(IntSave _index, int _value)
+{
+	backup.valueInt[_index] += _value;
 }

@@ -72,6 +72,12 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 	return sfFalse;
 }
 
+sfVector2f TransformVector2iToVector2f(sfVector2i _vector)
+{
+	return (sfVector2f) { FIRST_CASE.left + FIRST_CASE.width * ((float)_vector.x + 0.5f),
+		FIRST_CASE.top + FIRST_CASE.height * ((float)_vector.y + 1.f) };
+}
+
 
 
 List* CreateList(void)
