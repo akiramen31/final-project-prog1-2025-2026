@@ -41,7 +41,7 @@ void LoadGame(void)
 	}
 
 	CasePosibility casePosibility = { 0 };
-	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
+	for (int i = 0; i < GetIntFromSave(ENNEMY_COUNT); i++)
 	{
 		do
 		{
@@ -133,7 +133,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 CasePosibility GetMovePosibility(sfVector2i _position)
 {
 	CasePosibility posibility = { 0 };
-	int radiusExplosion = GetIntToSave(FIRE);
+	int radiusExplosion = GetIntFromSave(FIRE);
 
 	sfVector2i positionTemp = _position;
 	if (!(_position.y % 2))
@@ -225,7 +225,7 @@ void UpdateCollider(void)
 			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y || playerPosition.x == ennemyPositionNext.x && playerPosition.y == ennemyPositionNext.y)
 			{
 				KillPlayer();
-				if (GetIntToSave(LIFE) <= 0)
+				if (GetIntFromSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);
 				}
@@ -239,7 +239,7 @@ void UpdateCollider(void)
 			if (playerPosition.x == deflagrationPosition.x && playerPosition.y == deflagrationPosition.y)
 			{
 				KillPlayer();
-				if (GetIntToSave(LIFE) <= 0)
+				if (GetIntFromSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);
 				}

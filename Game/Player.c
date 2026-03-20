@@ -66,7 +66,7 @@ void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 	}
 	else
 	{
-		player.playerMoveSpeedGrid = GetIntToSave(SPEED);
+		player.playerMoveSpeedGrid = GetIntFromSave(SPEED);
 	}
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 }

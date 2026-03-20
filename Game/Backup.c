@@ -76,7 +76,7 @@ void SaveBackup(void)
 	backup.saveFile = NULL;
 }
 
-float GetFloatToSave(FloatSave _index)
+float GetFloatFromSave(FloatSave _index)
 {
 	return backup.valueFloat[_index];
 }
@@ -89,7 +89,7 @@ void AddFloatToSave(FloatSave _index, float _value)
 	backup.valueFloat[_index] += _value;
 }
 
-char GetCharToSave(CharSave _index)
+char GetCharFromSave(CharSave _index)
 {
 	return backup.valueChar[_index];
 }
@@ -102,7 +102,7 @@ void AddCharToSave(CharSave _index, char _value)
 	backup.valueChar[_index] += _value;
 }
 
-int GetIntToSave(IntSave _index)
+int GetIntFromSave(IntSave _index)
 {
 	return backup.valueInt[_index];
 }

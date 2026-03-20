@@ -193,7 +193,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 	Ennemy* temp = GetEnnemy(_i);
 	if (UpdateAnimationAndGiveIfStop(temp->sprite, &temp->animation[GetEnnemyAnimation(temp)], _dt))
 	{
-		SetIntToSave(SCORE, GetIntToSave(SCORE) + temp->points);
+		AddIntToSave(SCORE, temp->points);
 		free(temp);
 		RemoveElement(listeEnnemy, _i);
 	}

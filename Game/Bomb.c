@@ -38,7 +38,7 @@ void LoadBomb(void)
 void SpawnBomb(sfVector2i _bombPos)
 {
 	bombCount++;
-	if (bombCount > GetIntToSave(bombCount))
+	if (bombCount > GetIntFromSave(bombCount))
 	{
 		bombCount--;
 		return;
@@ -274,9 +274,9 @@ void SortDeflagrationList(int _index)
 
 void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _position)
 {
-	if (_length >= GetIntToSave(FIRE))
+	if (_length >= GetIntFromSave(FIRE))
 	{
-		_length = GetIntToSave(FIRE);
+		_length = GetIntFromSave(FIRE);
 	}
 
 	int test = 2;
