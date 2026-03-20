@@ -9,6 +9,13 @@ float timer;
 
 void LoadGame(void)
 {
+	SetIntToSave(SCORE, 0);
+	SetIntToSave(BOMB, 1);
+	SetIntToSave(SPEED, 1);
+	SetIntToSave(ENNEMY_COUNT, 1);
+	SetIntToSave(FIRE, 1);
+	SetIntToSave(LIFE, 4);
+
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
