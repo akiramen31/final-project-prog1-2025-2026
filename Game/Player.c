@@ -18,7 +18,7 @@ void LoadPlayer(void)
 	player.killSound = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100000.f, sfFalse);
 
 	sfTexture* playerTexture = GetAsset("Assets/Sprites/Player/Player.png");
-	player.sprite = CreateSprite(playerTexture, (sfVector2f) { 200, 200 }, 4.f, 40);
+	player.sprite = CreateSprite(playerTexture, (sfVector2f) { 200, 200 }, 4.f, 60.f);
 	player.animation.rectActualy = (sfIntRect){ 0, (player.direction + player.state) * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT };
 	sfSprite_setTextureRect(player.sprite, (sfIntRect) { 0, (player.direction + player.state)* PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT });
 	sfSprite_setOrigin(player.sprite, (sfVector2f) { PLAYER_WIDTH / 2, PLAYER_HEIGHT });
