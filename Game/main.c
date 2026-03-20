@@ -100,7 +100,7 @@ void Cleanup(MainData* _mainData)
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	if (GetCharToSave(FULL_SCREEN))
+	if (GetCharFromSave(FULL_SCREEN))
 	{
 		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
 	}

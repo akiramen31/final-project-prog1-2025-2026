@@ -40,24 +40,34 @@ void LoadHUD()
 void UpdateHUD(float _dt, float _timer)
 {
 	//score
-	int scoreTemp = GetIntToSave(0);
+	int scoreTemp = GetIntFromSave(0);
 	for (int i = 0; i < 6; i++)
 	{
 		int number = (scoreTemp % (int)(pow(10, i + 1))) - (scoreTemp % (int)(pow(10, i)));
 		sfSprite_setTextureRect(score[i], (sfIntRect) { 10 * number, 0, 10, 12 });
+		if (DEV_MODE)
+		{
+			printf("%d", number);
+		}
+	}
+	if (DEV_MODE)
+	{
+		printf(" = SCORE\n");
 	}
 	//PowerUps
 	for (int i = 0; i < 3; i++)
 	{
-		int number = GetIntToSave(2+i);
-		printf("%d, %d\n", number, i);
+		int number = GetIntFromSave(2+i);
 		sfSprite_setTextureRect(powerUps[i], (sfIntRect){10 * number, 0, 10, 12});
 	}
 	//PlayerLife
-	int lifeTemp = GetIntToSave(1);
+	int lifeTemp = GetIntFromSave(1);
 	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10 * lifeTemp, 0, 10, 12 });
-
 	//Time
-
-
+	int minutesTemp = (int)_timer / 60;
+	int secondsUnitTemp = (int)_timer % 10;
+	int secondsTenTemp = ((int)_timer % 60 - secondsUnitTemp)/10;
+	sfSprite_setTextureRect(time[1], (sfIntRect){10*minutesTemp, 0, 10, 12});
+	sfSprite_setTextureRect(time[3], (sfIntRect){10*secondsTenTemp, 0, 10, 12});
+	sfSprite_setTextureRect(time[4], (sfIntRect){10*secondsUnitTemp, 0, 10, 12});
 }

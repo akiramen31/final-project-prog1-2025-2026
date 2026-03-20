@@ -21,15 +21,15 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 4, 0.2,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,58,20,22 }, sfTrue, 4, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,98,20,22 }, sfTrue, 4, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,138,20,22 }, sfTrue, 4, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfFalse, 5, 0.2,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,58,20,22 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,98,20,22 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,138,20,22 }, sfTrue, 4, 0.2f,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,178,20,22 }, sfFalse, 5, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,18,20,22 }, sfTrue, 1, 0.2f,0.f };
 		break;
 	case ONIL:
 		_ennemy->life = 1;
@@ -40,15 +40,15 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 24 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,863,20,17 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,903,20,17 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,943,20,17 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfFalse, 4, 0.2,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,863,20,17 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,903,20,17 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,943,20,17 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,982,20,17 }, sfFalse, 4, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,823,20,17 }, sfTrue, 1, 0.2f,0.f };
 		break;
 	case DALL:
 		_ennemy->life = 1;
@@ -59,15 +59,15 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 0;
 		_ennemy->personality.chaos = 10;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 3, 0.2,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,258,20,24 }, sfTrue, 3, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,298,20,24 }, sfTrue, 3, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,338,20,24 }, sfTrue, 3, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfFalse, 6, 0.2,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,258,20,24 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,298,20,24 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,338,20,24 }, sfTrue, 3, 0.2f,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,378,20,24 }, sfFalse, 6, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,218,20,24 }, sfTrue, 1, 0.2f,0.f };
 		break;
 	case DENKYUN:
 		_ennemy->life = 2;
@@ -78,14 +78,14 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->personality.aggressiveness = 1;
 		_ennemy->personality.chaos = 5;
 
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 40.f);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 42.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 0.2,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,774,20,25 }, sfTrue, 5, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfFalse, 1, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfTrue, 6, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 6, 0.2f,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,774,20,25 }, sfTrue, 5, 0.2f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,614,20,25 }, sfFalse, 1, 0.2f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,654,20,25 }, sfTrue, 1, 0.2f,0.f };
 		break;
 	case KONDORIA:
 		_ennemy->life = 1;
@@ -99,12 +99,12 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 00.f);
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10, 30 });
 
-		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2,0.f };
-		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2,0.f };
-		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 1, 0.2,0.f };
+		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[1] = (Animation){ (sfIntRect) { 0,458,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[2] = (Animation){ (sfIntRect) { 0,498,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[3] = (Animation){ (sfIntRect) { 0,538,20,22 }, sfTrue, 2, 0.2f,0.f };
+		_ennemy->animation[4] = (Animation){ (sfIntRect) { 0,578,20,22 }, sfFalse, 5, 0.2f,0.f };
+		_ennemy->animation[5] = (Animation){ (sfIntRect) { 0,416,20,22 }, sfTrue, 1, 0.2f,0.f };
 		break;
 	default:
 		break;
@@ -159,8 +159,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		printf("error direction");
 		break;
 	}
-	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - sfSprite_getPosition(GetEnnemy(_i)->sprite).x)
-		|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
+	if (64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).x - (int)sfSprite_getPosition(GetEnnemy(_i)->sprite).x)|| 64 < abs(TransformVector2iToVector2f(GetEnnemy(_i)->position).y - (int)sfSprite_getPosition(GetEnnemy(_i)->sprite).y))
 	{
 		switch (GetEnnemy(_i)->direction)
 		{
@@ -191,10 +190,11 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 		}
 	}
 
-
-	if (UpdateAnimationAndGiveIfStop(GetEnnemy(_i)->sprite, &(GetEnnemy(_i)->animation[GetEnnemyAnimation(GetEnnemy(_i))]), _dt))
+	Ennemy* temp = GetEnnemy(_i);
+	if (UpdateAnimationAndGiveIfStop(temp->sprite, &temp->animation[GetEnnemyAnimation(temp)], _dt))
 	{
-		free(GetEnnemy(_i));
+		AddIntToSave(SCORE, temp->points);
+		free(temp);
 		RemoveElement(listeEnnemy, _i);
 	}
 }
@@ -255,6 +255,7 @@ unsigned GetEnnemyAnimation(Ennemy* _ennemy)
 	{
 		return 4;
 	}
+	return 4;
 }
 
 int GetEnnemyCount(void)

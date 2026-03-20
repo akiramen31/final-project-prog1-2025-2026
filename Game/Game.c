@@ -9,6 +9,13 @@ float timer;
 
 void LoadGame(void)
 {
+	SetIntToSave(SCORE, 0);
+	SetIntToSave(BOMB, 1);
+	SetIntToSave(SPEED, 1);
+	SetIntToSave(ENNEMY_COUNT, 1);
+	SetIntToSave(FIRE, 1);
+	SetIntToSave(LIFE, 4);
+
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 2.f);
@@ -34,7 +41,7 @@ void LoadGame(void)
 	}
 
 	CasePosibility casePosibility = { 0 };
-	for (int i = 0; i < GetIntToSave(ENNEMY_COUNT); i++)
+	for (int i = 0; i < GetIntFromSave(ENNEMY_COUNT); i++)
 	{
 		do
 		{
@@ -87,7 +94,7 @@ void UpdateGame(float _dt)
 	UpdateCollider();
 	timer -= _dt;
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
-	//UpdateEnnemy(_dt, );
+
 	UpdateHUD(_dt, timer);
 }
 
@@ -127,7 +134,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 CasePosibility GetMovePosibility(sfVector2i _position)
 {
 	CasePosibility posibility = { 0 };
-	int radiusExplosion = GetIntToSave(FIRE);
+	int radiusExplosion = GetIntFromSave(FIRE);
 
 	sfVector2i positionTemp = _position;
 	if (!(_position.y % 2))
@@ -219,7 +226,7 @@ void UpdateCollider(void)
 			if (playerPosition.x == ennemyPosition.x && playerPosition.y == ennemyPosition.y || playerPosition.x == ennemyPositionNext.x && playerPosition.y == ennemyPositionNext.y)
 			{
 				KillPlayer();
-				if (GetIntToSave(LIFE) <= 0)
+				if (GetIntFromSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);
 				}
@@ -233,7 +240,7 @@ void UpdateCollider(void)
 			if (playerPosition.x == deflagrationPosition.x && playerPosition.y == deflagrationPosition.y)
 			{
 				KillPlayer();
-				if (GetIntToSave(LIFE) <= 0)
+				if (GetIntFromSave(LIFE) <= 0)
 				{
 					SetGameState(GAME_OVER);
 				}
