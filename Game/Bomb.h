@@ -5,7 +5,7 @@
 
 #define BLOW_TIMER_BOMB 3.f
 #define NUM_MAX_BOMB 8
-#define NUM_MAX_DEFLAGRATION 81
+#define NUM_MAX_DEFLAGRATION 255
 
 typedef enum BlowDirection
 {
@@ -32,7 +32,7 @@ typedef struct Deflagration
 	sfVector2i position;
 
 	sfSprite* sprite;
-	Direction direction;
+	BlowDirection direction;
 	Animation animation;
 
 	sfBool placed;
@@ -43,8 +43,11 @@ typedef struct Deflagration
 
 void LoadBomb(void);
 void SpawnBomb(sfVector2i _bombPos);
-sfBool UpdateBomb(CasePosibility _Colision[], float _dt);
-void BlowBomb(int i, CasePosibility _colision);
+void UpdateBomb(CasePosibility _Colision[], float _dt);
+void BlowBomb(int _num, CasePosibility _colision);
+void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _direction);
+
+//sfBool UpdateBomb(CasePosibility _Colision[], float _dt);
 sfBool CheckAtLocationBomb(sfVector2i _pos);
 int GetBombCount(void);
 sfVector2i GetBombPositionGrid(int _num);
