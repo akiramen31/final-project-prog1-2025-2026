@@ -48,7 +48,6 @@ void SpawnBomb(sfVector2i _bombPos)
 	{
 		if (bombList[i].placed == sfFalse)
 		{
-			//printf("spawn bomb num %d\n", i + 1);
 			bombList[i].position = _bombPos;
 
 			bombList[i].sprite = CreateSprite(bombTexture, TransformVector2iToVector2f(_bombPos), 4.f, 70.f);
@@ -285,10 +284,6 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 	{
 		_length = test;
 	}
-
-	printf("%d\n", _length);
-
-
 	int tempLength = _length;
 
 	for (int j = 0; j < _length; j++)

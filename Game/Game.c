@@ -220,6 +220,16 @@ CasePosibility GetMovePosibility(sfVector2i _position)
 
 void UpdateCollider(void)
 {
+	for (int j = 0; j < GetDeflagrationCount(); j++)
+	{
+		sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
+		printf("%d, %d\n", deflagrationPosition.x, deflagrationPosition.y);
+		if (GetIfBoxIsHere(deflagrationPosition))
+		{
+			DestroyBox(deflagrationPosition);
+		}
+	}
+
 	for (int i = 0; i < GetEnnemyCount(); i++)
 	{
 		sfVector2i ennemyPosition = GetEnnemyPosition(i);
@@ -229,7 +239,6 @@ void UpdateCollider(void)
 			sfVector2i deflagrationPosition = GetDeflagrationPosition(j);
 			if (deflagrationPosition.x == ennemyPosition.x && deflagrationPosition.y == ennemyPosition.y || deflagrationPosition.x == ennemyPositionNext.x && deflagrationPosition.y == ennemyPositionNext.y)
 			{
-				printf("ok");
 				HitEnnemy(i);
 				j = GetDeflagrationCount();
 			}

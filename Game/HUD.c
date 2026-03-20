@@ -45,14 +45,6 @@ void UpdateHUD(float _dt, float _timer)
 	{
 		int number = (scoreTemp % (int)(pow(10, i + 1))) - (scoreTemp % (int)(pow(10, i)));
 		sfSprite_setTextureRect(score[i], (sfIntRect) { 10 * number, 0, 10, 12 });
-		if (DEV_MODE)
-		{
-			printf("%d", number);
-		}
-	}
-	if (DEV_MODE)
-	{
-		printf(" = SCORE\n");
 	}
 	//PowerUps
 	for (int i = 0; i < 3; i++)
