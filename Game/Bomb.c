@@ -190,7 +190,7 @@ void BlowBombByDeflagration(int _num, CasePosibility _colision, BlowDirection _d
 	bombCount--;
 }
 
-sfBool UpdateBomb(CasePosibility _colision[], float _dt)
+Explosion UpdateBomb(CasePosibility _colision[], float _dt)
 {
 
 	for (int i = deflagrationCount - 1; i >= 0; i--)
@@ -222,10 +222,10 @@ sfBool UpdateBomb(CasePosibility _colision[], float _dt)
 		if (bombList[i].duration >= BLOW_TIMER_BOMB)
 		{
 			BlowBomb(i, _colision[i]);
-			return sfTrue;
+			return (Explosion) {sfTrue, i};
 		}
 	}
-	return sfFalse;
+	return (Explosion) { sfFalse, -1 };
 }
 
 sfBool CheckAtLocationBomb(sfVector2i _pos)
