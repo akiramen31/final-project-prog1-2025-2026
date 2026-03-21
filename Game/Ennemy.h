@@ -52,7 +52,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i 
 unsigned GetEnnemyAnimation(Ennemy* _ennemy);
 int GetEnnemyCount(void);
 sfVector2i GetEnnemyPosition(unsigned _index);
-void ChooseNewDirection(CasePosibility _casePosibility, int _i);
+void ChooseNewDirection(CasePosibility _casePosibility, int _i, sfVector2i _positionjoueur);
 void ChooseNewDirectionV2(int _i);
 sfVector2i GetEnnemyNextPosition(unsigned _index);
 void HitEnnemy(unsigned _index);

@@ -21,8 +21,8 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->points = 100;
 		_ennemy->vitesse = LENT;
 
-		_ennemy->personality.aggressiveness = 0;
-		_ennemy->personality.chaos = 10;
+		_ennemy->personality.aggressiveness = GetRandomInRange(0, 1);
+		_ennemy->personality.chaos = GetRandomInRange(5,7);
 
 
 		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,0,20,40 }, sfTrue, 1, 0.2f,0.f };
@@ -37,8 +37,8 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->points = 200;
 		_ennemy->vitesse = NORMAL;
 
-		_ennemy->personality.aggressiveness = 0;
-		_ennemy->personality.chaos = 10;
+		_ennemy->personality.aggressiveness = GetRandomInRange(1, 2);
+		_ennemy->personality.chaos = GetRandomInRange(4, 6);
 
 
 		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,800,20,40 }, sfTrue, 1, 0.2f,0.f };
@@ -53,8 +53,8 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->points = 400;
 		_ennemy->vitesse = NORMAL;
 
-		_ennemy->personality.aggressiveness = 0;
-		_ennemy->personality.chaos = 10;
+		_ennemy->personality.aggressiveness = 2;
+		_ennemy->personality.chaos = GetRandomInRange(2, 5);
 
 
 		_ennemy->animation[BLOCK] = (Animation){ (sfIntRect) { 0,200,20,40 }, sfTrue, 1, 0.2f,0.f };
@@ -70,8 +70,8 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->points = 600;
 		_ennemy->vitesse = NORMAL;
 
-		_ennemy->personality.aggressiveness = 1;
-		_ennemy->personality.chaos = 5;
+		_ennemy->personality.aggressiveness = GetRandomInRange(0, 2);
+		_ennemy->personality.chaos = GetRandomInRange(1, 9);
 
 
 		_ennemy->animation[0] = (Animation){ (sfIntRect) { 0,600,20,40 }, sfTrue, 6, 0.2f,0.f };
@@ -84,7 +84,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->vitesse = TRES_LENT;
 
 		_ennemy->personality.aggressiveness = 2;
-		_ennemy->personality.chaos = 0;
+		_ennemy->personality.chaos = 9;
 
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10.f, 30.f });
 
@@ -114,7 +114,7 @@ void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility)
 	sfSprite_setPosition(newEnnemy->sprite, position);
 	newEnnemy->position = _position;
 	InsertElement(listeEnnemy, CreateElement(newEnnemy), 0);
-	ChooseNewDirection(_casePosibility, 0);
+	ChooseNewDirection(_casePosibility, 0, (sfVector2i){0,0});
 }
 
 Ennemy* GetEnnemy(unsigned _index)
@@ -150,7 +150,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i 
 		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, -ennemy->vitesse * _dt });
 		break;
 	case BLOCK:
-		ChooseNewDirection(_casePosibility, _i);
+		ChooseNewDirection(_casePosibility, _i, _positionjoueur);
 		break;
 	default:
 		printf("error direction");
@@ -183,7 +183,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i 
 		}
 		else
 		{
-			ChooseNewDirection(_casePosibility, _i);
+			ChooseNewDirection(_casePosibility, _i, _positionjoueur);
 		}
 	}
 
@@ -233,11 +233,13 @@ sfVector2i GetEnnemyPosition(unsigned _index)
 	return GetEnnemy(_index)->position;
 }
 
-void ChooseNewDirection(CasePosibility _casePosibility, int _i)
+void ChooseNewDirection(CasePosibility _casePosibility, int _i, sfVector2i _positionjoueur)
 {
 	sfBool searchDirection = sfTrue;
 	Ennemy* ennemy = GetEnnemy(_i);
 	Direction temp = 0;
+	int distanceDown = 0;
+	int distanceLeft = 0;
 	if (!(_casePosibility.down + _casePosibility.left + _casePosibility.right + _casePosibility.up))
 	{
 		ennemy->direction = BLOCK;
@@ -245,39 +247,322 @@ void ChooseNewDirection(CasePosibility _casePosibility, int _i)
 	}
 	while (searchDirection)
 	{
-		Direction temp = rand() % 4;
-		switch (temp)
+		if (ennemy->personality.chaos >= rand() % 10)
 		{
-		case DOWN:
-			if (_casePosibility.down)
+			temp = rand() % 4;
+			switch (temp)
 			{
-				ennemy->direction = DOWN;
-				searchDirection = sfFalse;
+			case DOWN:
+				if (_casePosibility.down)
+				{
+					ennemy->direction = DOWN;
+					searchDirection = sfFalse;
+				}
+				break;
+			case LEFT:
+				if (_casePosibility.left)
+				{
+					ennemy->direction = LEFT;
+					searchDirection = sfFalse;
+				}
+				break;
+			case RIGHT:
+				if (_casePosibility.right)
+				{
+					ennemy->direction = RIGHT;
+					searchDirection = sfFalse;
+				}
+				break;
+			case UP:
+				if (_casePosibility.up)
+				{
+					ennemy->direction = UP;
+					searchDirection = sfFalse;
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		case LEFT:
-			if (_casePosibility.left)
+		}
+		else
+		{
+			distanceDown = abs(_positionjoueur.y - ennemy->position.y);
+			distanceLeft = abs(_positionjoueur.x - ennemy->position.x);
+			switch (ennemy->personality.aggressiveness)
 			{
-				ennemy->direction = LEFT;
-				searchDirection = sfFalse;
+			case 0:
+				if (distanceDown > distanceLeft)
+				{
+					if (_positionjoueur.y > ennemy->position.y)
+					{
+						if (_casePosibility.up)
+						{
+							ennemy->direction = UP;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.down)
+						{
+							ennemy->direction = DOWN;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if (_positionjoueur.x > ennemy->position.x)
+					{
+						if (_casePosibility.left)
+						{
+							ennemy->direction = LEFT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.right)
+						{
+							ennemy->direction = RIGHT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				temp = rand() % 4;
+				switch (temp)
+				{
+				case DOWN:
+					if (_casePosibility.down)
+					{
+						ennemy->direction = DOWN;
+						searchDirection = sfFalse;
+					}
+					break;
+				case LEFT:
+					if (_casePosibility.left)
+					{
+						ennemy->direction = LEFT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case RIGHT:
+					if (_casePosibility.right)
+					{
+						ennemy->direction = RIGHT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case UP:
+					if (_casePosibility.up)
+					{
+						ennemy->direction = UP;
+						searchDirection = sfFalse;
+					}
+					break;
+				default:
+					break;
+				}
+				break;
+			case 1 :
+				if (distanceDown > distanceLeft)
+				{
+					if (rand() % 2)
+					{
+						if (_casePosibility.left)
+						{
+							ennemy->direction = LEFT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.right)
+						{
+							ennemy->direction = RIGHT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if (rand() % 2)
+					{
+						if (_casePosibility.up)
+						{
+							ennemy->direction = UP;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.down)
+						{
+							ennemy->direction = DOWN;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				temp = rand() % 4;
+				switch (temp)
+				{
+				case DOWN:
+					if (_casePosibility.down)
+					{
+						ennemy->direction = DOWN;
+						searchDirection = sfFalse;
+					}
+					break;
+				case LEFT:
+					if (_casePosibility.left)
+					{
+						ennemy->direction = LEFT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case RIGHT:
+					if (_casePosibility.right)
+					{
+						ennemy->direction = RIGHT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case UP:
+					if (_casePosibility.up)
+					{
+						ennemy->direction = UP;
+						searchDirection = sfFalse;
+					}
+					break;
+				default:
+					break;
+				}
+				break;
+			case 2:
+				if (distanceDown > distanceLeft)
+				{
+					if (_positionjoueur.y > ennemy->position.y)
+					{
+						if (_casePosibility.down)
+						{
+							ennemy->direction = DOWN;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.up)
+						{
+							ennemy->direction = UP;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					if (_positionjoueur.x > ennemy->position.x)
+					{
+						if (_casePosibility.right)
+						{
+							ennemy->direction = RIGHT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.left)
+						{
+							ennemy->direction = LEFT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if (_positionjoueur.x > ennemy->position.x)
+					{
+						if (_casePosibility.right)
+						{
+							ennemy->direction = RIGHT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.left)
+						{
+							ennemy->direction = LEFT;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					if (_positionjoueur.y > ennemy->position.y)
+					{
+						if (_casePosibility.down)
+						{
+							ennemy->direction = DOWN;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+					else
+					{
+						if (_casePosibility.up)
+						{
+							ennemy->direction = UP;
+							searchDirection = sfFalse;
+							break;
+						}
+					}
+				}
+				temp = rand() % 4;
+				switch (temp)
+				{
+				case DOWN:
+					if (_casePosibility.down)
+					{
+						ennemy->direction = DOWN;
+						searchDirection = sfFalse;
+					}
+					break;
+				case LEFT:
+					if (_casePosibility.left)
+					{
+						ennemy->direction = LEFT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case RIGHT:
+					if (_casePosibility.right)
+					{
+						ennemy->direction = RIGHT;
+						searchDirection = sfFalse;
+					}
+					break;
+				case UP:
+					if (_casePosibility.up)
+					{
+						ennemy->direction = UP;
+						searchDirection = sfFalse;
+					}
+					break;
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		case RIGHT:
-			if (_casePosibility.right)
-			{
-				ennemy->direction = RIGHT;
-				searchDirection = sfFalse;
-			}
-			break;
-		case UP:
-			if (_casePosibility.up)
-			{
-				ennemy->direction = UP;
-				searchDirection = sfFalse;
-			}
-			break;
-		default:
-			break;
 		}
 	}
 
