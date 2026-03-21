@@ -10,33 +10,16 @@ void LoadPowerUp(void)
 
 }
 
-void GeneratePowerUpPositions(int _targetArray[11], sfVector2i _gridPos)
+void GeneratePowerUpPositions(sfVector2i _gridPos, int _index)
 {
-
-    int count = 0;
-
-    while (count < 11)
-    {
-        int num = (rand() % 40) + 1;
-        sfBool alreadyExists = sfFalse;
-
-        for (int i = 0; i < count; i++)
-        {
-            if (_targetArray[i] == num)
-            {
-                alreadyExists = sfTrue;
-                break;
-            }
-        }
-
-        if (!alreadyExists)
-        {
-            _targetArray[count] = num;
-            powerUpList[count].gridPos = _gridPos;
-            count++;
-        }
-    }
+    powerUpList[_index].gridPos = _gridPos;
 }
+
+PowerUpType CheckPowerUpType(int _index)
+{
+    return powerUpList[_index].powerUpType;
+}
+
 
 void CreatePowerUp(void)
 {
@@ -59,46 +42,46 @@ void CreatePowerUp(void)
         {
             if (i == 0) 
             {
-                powerUpList[i].PowerUpType = CROWN;
+                powerUpList[i].powerUpType = CROWN;
             }
          else if (i >= 1 && i <= 2) 
             {
-                powerUpList[i].PowerUpType = FIRE_UP;
+                powerUpList[i].powerUpType = FIRE_UP;
             }
             else if (i >= 3 && i <= 4) 
             {
-                powerUpList[i].PowerUpType = BOMB_UP;
+                powerUpList[i].powerUpType = BOMB_UP;
             }
             else if (i == 5) 
             {
-                powerUpList[i].PowerUpType = SPEED_UP;
+                powerUpList[i].powerUpType = SPEED_UP;
             }
             else if (i >= 6 && i <= 10) 
             {
                 int malusTypes[3] = { 2, 4, 6 };
-                powerUpList[i].PowerUpType = (PowerUpType)malusTypes[rand() % 3];
+                powerUpList[i].powerUpType = (PowerUpType)malusTypes[rand() % 3];
             }
         }
         else
         {
             if (i == 0)
             {
-                powerUpList[i].PowerUpType = CROWN;
+                powerUpList[i].powerUpType = CROWN;
             }
             else if (i >= 1 && i <= 5)
             {
                 int bonusTypes[4] = { 0, 1, 3, 5 };
-                powerUpList[i].PowerUpType = (PowerUpType)bonusTypes[rand() % 4];
+                powerUpList[i].powerUpType = (PowerUpType)bonusTypes[rand() % 4];
             }
             else if (i >= 6 && i <= 10) 
             {
                 int malusTypes[3] = { 2, 4, 6 };
-                powerUpList[i].PowerUpType = (PowerUpType)malusTypes[rand() % 3];
+                powerUpList[i].powerUpType = (PowerUpType)malusTypes[rand() % 3];
             }
         }
 
 
-        int typeIndex = (int)powerUpList[i].PowerUpType;
+        int typeIndex = (int)powerUpList[i].powerUpType;
         sfSprite_setTextureRect(powerUpList[i].sprite, (sfIntRect) { 0, 16 * typeIndex, 16, 16 });
     }
 }
@@ -172,7 +155,7 @@ PowerUpType IsPowerUpType(sfVector2i _gridPos)
     {
         if (powerUpList[i].gridPos.x == _gridPos.x && powerUpList[i].gridPos.y == _gridPos.y)
         {
-            return powerUpList[i].PowerUpType;
+            return powerUpList[i].powerUpType;
         }
     }
 }

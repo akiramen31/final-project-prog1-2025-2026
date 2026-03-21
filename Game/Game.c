@@ -24,12 +24,43 @@ void LoadGame(void)
 	LoadEnnemy();
 
 	sfVector2i positionRandom = { 0 , 0 };
+	int powerUpPosition[11];
+	for (int i = 0; i < 11; i++) 
+	{
+		powerUpPosition[i] = -1;
+	}
+	for (int i = 0; i < 11; i++)
+	{
+		sfBool isUnique = sfFalse;
+		int positionTest;
+		while (isUnique == sfFalse)
+		{
+			positionTest = rand() % 40;
+			isUnique = sfTrue;
+			for (int j = 0; j < i; j++)
+			{
+				if (powerUpPosition[j] == positionTest)
+				{
+					isUnique = sfFalse;
+					break;
+				}
+			}
+		}
+		powerUpPosition[i] = positionTest;
+	}
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 		} while (positionRandom.x % 2 && positionRandom.y % 2 || GetIfBoxIsHere(positionRandom) || (positionRandom.y + positionRandom.x) < 2);
+		for (int j = 0; j < 11; j++)
+		{
+			if (powerUpPosition[j] == i)
+			{
+				GeneratePowerUpPositions(positionRandom, j);
+			}
+		}
 		SetBoxPosition(positionRandom, i);
 	}
 

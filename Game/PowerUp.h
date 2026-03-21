@@ -26,7 +26,7 @@ typedef struct PowerUpEntity{
     sfVector2i gridPos;
     sfBool isVisible;
     sfBool isCollected;
-    PowerUpType PowerUpType;
+    PowerUpType powerUpType;
 } PowerUpEntity;
 
 void LoadPowerUp(void);
@@ -34,7 +34,7 @@ void CreatePowerUp(void);
 void CleanupPowerUp(void);
 
 void DestructionPowerUp(sfVector2i _gridPos);
-void GeneratePowerUpPositions(int _targetArray[11], sfVector2i _gridPos);
+void GeneratePowerUpPositions(sfVector2i _gridPos, int _index);
 void DropPowerUp(sfVector2i _gridPos);
 void DrawPowerUp(sfRenderWindow* _renderWindow);
 

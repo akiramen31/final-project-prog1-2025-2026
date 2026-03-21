@@ -8,6 +8,7 @@
 #include "Ennemy.h" 
 #include "Box.h"
 #include "Bomb.h"
+#include "PowerUp.h"
 
 typedef struct
 {
