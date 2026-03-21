@@ -35,7 +35,7 @@ typedef struct
 	FILE* saveFile;
 	float valueFloat[FLOAT_COUNT];
 	char valueChar[CHAR_COUNT];
-	char valueInt[INT_COUNT];
+	int valueInt[INT_COUNT];
 }Backup;
 
 void LoadBackup(void);

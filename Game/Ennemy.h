@@ -48,7 +48,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy);
 void CreateEnnemySelect(enum TypeEnnemy _type);
 void AddEnnemy(sfVector2i _position, CasePosibility _casePosibility);
 Ennemy* GetEnnemy(unsigned _index);
-void UpdateEnnemy(float _dt, CasePosibility _casePosibility,int _i);
+void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i);
 unsigned GetEnnemyAnimation(Ennemy* _ennemy);
 int GetEnnemyCount(void);
 sfVector2i GetEnnemyPosition(unsigned _index);

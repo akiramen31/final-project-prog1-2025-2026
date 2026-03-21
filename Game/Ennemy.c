@@ -13,7 +13,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 	_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/Enemies/Enemies.png"), (sfVector2f) { 0, 0 }, 1.f, 30.f);
 	sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10.f, 45.f });
 	_ennemy->life = 1;
-	
+
 	switch (_ennemy->typeEnnemy)
 	{
 	case BALLOM:

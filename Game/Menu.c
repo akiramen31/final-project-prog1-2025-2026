@@ -12,7 +12,7 @@ void LoadMenu(void)
 	SetIntToSave(LIFE, 4);
 
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
-	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { (SCREEN_WIDTH / 2)-317, 160 }, 1.f, 10.f);
+	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { (SCREEN_WIDTH / 2) - 317, 160 }, 1.f, 10.f);
 	sfMusic* menuMusic = CreateMusic("Assets/Musics/Title-Screen.ogg", GAME_VOLUME, sfFalse);
 	sfMusic_setLoop(menuMusic, sfTrue);
 	sfMusic_play(menuMusic);
