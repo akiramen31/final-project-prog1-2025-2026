@@ -35,6 +35,17 @@ typedef struct AssetEntity
 	char* file;
 }AssetEntity;
 
+typedef struct Element
+{
+	void* value;
+	struct Element* next;
+}Element;
+
+typedef struct List
+{
+	Element* first;
+}List;
+
 typedef struct EntityManager
 {
 	AssetEntity* asset;
@@ -44,12 +55,16 @@ typedef struct EntityManager
 	SoundEntity* sound;
 	int soundCount;
 
+	void** callocList;
+	int callocListCount;
+	List** listList;
+	int listListCount;
 }EntityManager;
 
 void LoadEntityManager(void);
 void Draw(sfRenderWindow* _renderWindow);
-void CleanupEntityManager(void);
-void CleanupTempEntity(void);
+void CleanupGlobal(void);
+void CleanupLocal(void);
 
 void* GetAsset(char* _file);
 
@@ -62,4 +77,15 @@ sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play);
 void DestroyVisualEntity(void* _entity);
 void DestroySoundEntity(void* _entity);
 void DestroyAssetEntity(void* _entity);
+
+void* Calloc(size_t _count, size_t _size);
+void* Realloc(void* _block, size_t _size);
+void Free(void* _ptr);
+List* CreateList(void);
+void RemoveList(List* _list);
+unsigned int GetListSize(List* _list);
+Element* CreateElement(void* _value);
+Element* GetElement(List* _list, unsigned int _index);
+void InsertElement(List* _list, Element* _element, unsigned int _index);
+void RemoveElement(List* _list, unsigned int _index);
 #endif // !ENTITY_MANAGER_H

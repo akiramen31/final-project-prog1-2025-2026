@@ -31,8 +31,8 @@ void UpdateBox(float _dt)
 				UpdateAnimationAndGiveIfStop(box[i].up.sprite, &box[i].up.animation, _dt))
 			{
 				box[i].position = (sfVector2i){ -1,-1 };
-				sfSprite_setPosition(box[i].down.sprite, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
-				sfSprite_setPosition(box[i].up.sprite, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
+				sfSprite_setScale(box[i].down.sprite, (sfVector2f) { 0, 0 });
+				sfSprite_setScale(box[i].up.sprite, (sfVector2f) { 0, 0 });
 				box[i].destroy = sfFalse;
 			}
 		}

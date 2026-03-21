@@ -9,7 +9,7 @@ GameState GetGameState(void)
 
 void SetGameState(GameState _gameState)
 {
-    CleanupTempEntity();
+    CleanupLocal();
 
     gameState = _gameState;
 

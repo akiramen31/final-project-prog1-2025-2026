@@ -94,7 +94,7 @@ void Cleanup(MainData* _mainData)
 {
 	SaveBackup();
 	CleanupMainData(_mainData);
-	CleanupEntityManager();
+	CleanupGlobal();
 }
 
 void LoadMainData(MainData* _mainData)
