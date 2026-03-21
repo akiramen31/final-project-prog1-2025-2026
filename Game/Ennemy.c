@@ -198,7 +198,7 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
 
 unsigned GetEnnemyAnimation(Ennemy* _ennemy)
 {
-	if (_ennemy->life > 0)
+	if (_ennemy->life)
 	{
 		if (_ennemy->typeEnnemy == DENKYUN)
 		{
