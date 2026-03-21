@@ -138,7 +138,7 @@ void UpdateGame(float _dt)
 
 	for (int i = 0; i < GetEnnemyCount(); i++)
 	{
-		UpdateEnnemy(_dt, GetMovePosibility(GetEnnemyNextPosition(i)), i);
+		UpdateEnnemy(_dt, GetMovePosibility(GetEnnemyNextPosition(i)), i, GetPlayerPositionGrid());
 	}
 
 	UpdateBox(_dt);

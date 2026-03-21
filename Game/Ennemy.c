@@ -83,7 +83,7 @@ void CreateEnnemyRandom(Ennemy* _ennemy)
 		_ennemy->points = 1000;
 		_ennemy->vitesse = TRES_LENT;
 
-		_ennemy->personality.aggressiveness = 3;
+		_ennemy->personality.aggressiveness = 2;
 		_ennemy->personality.chaos = 0;
 
 		sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { 10.f, 30.f });
@@ -122,7 +122,7 @@ Ennemy* GetEnnemy(unsigned _index)
 	return GetElement(listeEnnemy, _index)->value;
 }
 
-void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i)
+void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i _positionjoueur)
 {
 	Ennemy* ennemy = GetEnnemy(_i);
 
