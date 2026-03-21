@@ -9,13 +9,6 @@ float timer;
 
 void LoadGame(void)
 {
-	SetIntToSave(SCORE, 0);
-	SetIntToSave(BOMB, 1);
-	SetIntToSave(SPEED, 1);
-	SetIntToSave(ENNEMY_COUNT, 1);
-	SetIntToSave(FIRE, 1);
-	SetIntToSave(LIFE, 4);
-
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 	CreateSprite(GetAsset("Assets/Sprites/Map/Foreground.png"), (sfVector2f) { 0 }, 4.f, 40.f);
@@ -64,6 +57,42 @@ void PollEventGame(sfEvent* _event)
 	}
 }
 
+void KeyPressedGame(sfKeyEvent* _keyEvent)
+{
+	switch (_keyEvent->code)
+	{
+	case sfKeyEscape:
+		SetGameState(MENU);
+		break;
+	case sfKeySpace:
+		if (AskPlayerIdle())
+		{
+			SpawnBomb(GetPlayerPositionGrid());
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (DEV_MODE)
+	{
+		switch (_keyEvent->code)
+		{
+		case sfKeyEnter:
+			SetGameState(GAME_OVER);
+			break;
+		case sfKeyE:
+			DestroyBox((sfVector2i) { 2, 2 });
+			break;
+		case sfKeyR:
+			SetGameState(GAME);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 void UpdateGame(float _dt)
 {
 	if (sfKeyboard_isKeyPressed(sfKeySpace))
@@ -96,39 +125,6 @@ void UpdateGame(float _dt)
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 
 	UpdateHUD(_dt, timer);
-}
-
-void KeyPressedGame(sfKeyEvent* _keyEvent)
-{
-	switch (_keyEvent->code)
-	{
-	case sfKeyEscape:
-		SetGameState(MENU);
-		break;
-	case sfKeySpace:
-		if (AskPlayerIdle())
-		{
-			SpawnBomb(GetPlayerPositionGrid());
-		}
-		break;
-	default:
-		break;
-	}
-
-	if (DEV_MODE)
-	{
-		switch (_keyEvent->code)
-		{
-		case sfKeyEnter:
-			SetGameState(GAME_OVER);
-			break;
-		case sfKeyE:
-			DestroyBox((sfVector2i) { 2, 2 });
-			break;
-		default:
-			break;
-		}
-	}
 }
 
 CasePosibility GetMovePosibility(sfVector2i _position)
