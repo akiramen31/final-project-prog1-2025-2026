@@ -30,6 +30,8 @@ void CreatePowerUp(void)
         powerUpTextureRef = sfTexture_createFromFile("Assets/Sprites/Items/Items.png", NULL);
     }
 
+    int round = GetIntFromSave(ROUND);
+
     for (int i = 0; i < POWER_UP_COUNT; i++)
     {
         powerUpList[i].sprite = sfSprite_create();
@@ -38,7 +40,7 @@ void CreatePowerUp(void)
 
         powerUpList[i].isVisible = sfFalse;
         powerUpList[i].isCollected = sfFalse;
-        if (actualround == first)
+        if (round == 1)
         {
             if (i == 0) 
             {

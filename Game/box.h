@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-#define NB_BOX 1
+#define NB_BOX 40
 
 typedef struct
 {

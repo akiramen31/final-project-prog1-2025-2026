@@ -10,6 +10,7 @@ void LoadMenu(void)
 	SetIntToSave(ENNEMY_COUNT, 1);
 	SetIntToSave(FIRE, 1);
 	SetIntToSave(LIFE, 4);
+	SetIntToSave(ROUND, 1);
 
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
 	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { (SCREEN_WIDTH / 2) - 317, 160 }, 1.f, 10.f);

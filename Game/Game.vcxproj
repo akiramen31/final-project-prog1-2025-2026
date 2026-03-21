@@ -150,6 +150,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Player.c" />
+    <ClCompile Include="PowerUp.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PowerUp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
