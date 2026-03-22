@@ -84,14 +84,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-	if (sfKeyboard_isKeyPressed(sfKeySpace))
-	{
-		if (AskPlayerIdle())
-		{
-			SpawnBomb(GetPlayerPositionGrid());
-		}
-	}
-
 	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 
 	for (int i = 0; i < GetEnnemyCount(); i++)

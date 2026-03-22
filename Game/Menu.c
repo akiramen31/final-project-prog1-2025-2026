@@ -13,8 +13,10 @@ void LoadMenu(void)
 	SetIntToSave(ROUND, 1);
 
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
-	sfText* text = CreateText(GetAsset("Assets/Fonts/Bomberman.ttf"), (sfVector2f) { 0, SCREEN_HEIGHT / 1.5f }, 1.f, 5.f);
-	sfText_setString(text, "Press <Espace> to start game \n press <Echap> to quit");
+	sfText* text = CreateText(GetAsset("Assets/Fonts/Bomberman.ttf"), (sfVector2f) { SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 1.5f }, 1.f, 5.f);
+	sfText_setString(text, "Press <Espace> to start game \n		press <Echap> to quit");
+	sfText_setOrigin(text, (sfVector2f) { sfText_getGlobalBounds(text).width / 2.f, 0 });
+
 	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { SCREEN_WIDTH / 2, 160 }, 1.f, 5.f);
 	sfSprite_setOrigin(title, (sfVector2f) { sfSprite_getLocalBounds(title).width / 2, 0 });
 	sfMusic* menuMusic = CreateMusic("Assets/Musics/Title-Screen.ogg", GAME_VOLUME, sfFalse);
