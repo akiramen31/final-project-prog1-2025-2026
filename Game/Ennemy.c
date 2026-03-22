@@ -153,7 +153,6 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i 
 		ChooseNewDirection(_casePosibility, _i, _positionjoueur);
 		break;
 	default:
-		printf("error direction");
 		break;
 	}
 	if (64 < abs((int)TransformVector2iToVector2f(ennemy->position).x - (int)sfSprite_getPosition(ennemy->sprite).x) || 64 < abs((int)TransformVector2iToVector2f(ennemy->position).y - (int)sfSprite_getPosition(ennemy->sprite).y))
@@ -173,7 +172,6 @@ void UpdateEnnemy(float _dt, CasePosibility _casePosibility, int _i, sfVector2i 
 			ennemy->position.y--;
 			break;
 		default:
-			printf("error direction");
 			break;
 		}
 		sfSprite_setPosition(ennemy->sprite, TransformVector2iToVector2f(ennemy->position));

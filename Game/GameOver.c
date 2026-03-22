@@ -13,6 +13,10 @@ void LoadGameOver(void)
 	SetIntToSave(LIFE, 4);
 
 	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
+
+	sfText* text = CreateText(GetAsset("Assets/Fonts/Bomberman.ttf"), (sfVector2f) { 0, SCREEN_HEIGHT / 1.5f }, 1.f, 5.f);
+	sfText_setString(text, "Press <R> to reload game \n press <Echap> to quit");
+
 	sfMusic* gameOverMusic = CreateMusic("Assets/Musics/Game-Over.ogg", GAME_VOLUME, sfFalse);
 	sfMusic_setLoop(gameOverMusic, sfTrue);
 	sfMusic_play(gameOverMusic);

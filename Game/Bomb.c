@@ -37,12 +37,12 @@ void LoadBomb(void)
 
 void SpawnBomb(sfVector2i _bombPos)
 {
-	bombCount++;
-	if (bombCount > GetIntFromSave(bombCount))
+	if (bombCount >= GetIntFromSave(BOMB))
 	{
-		bombCount--;
 		return;
 	}
+	bombCount++;
+
 	for (int i = 0; i < bombCount; i++)
 	{
 		if (bombList[i].placed == sfFalse)
@@ -62,7 +62,7 @@ void SpawnBomb(sfVector2i _bombPos)
 			bombList[i].duration = 0;
 
 			bombList[i].placed = sfTrue;
-			sfSound_stop(bombPLace);
+       		sfSound_stop(bombPLace);
 			sfSound_play(bombPLace);
 			return;
 		}
@@ -310,22 +310,13 @@ void SortDeflagrationList(int _index)
 
 void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _position)
 {
-	if (_length >= GetIntFromSave(FIRE))
+	if (_length > GetIntFromSave(FIRE))
 	{
 		_length = GetIntFromSave(FIRE);
 	}
 
-	int test = 2;
-
-	if (_length > test)
+	for (int j = _length - 1; j >= 0; j--)
 	{
-		_length = test;
-	}
-	int tempLength = _length;
-
-	for (int j = 0; j < _length; j++)
-	{
-
 		for (int i = 0; i < NUM_MAX_DEFLAGRATION; i++)
 		{
 			if (deflagrationList[i].placed == sfFalse)
@@ -345,7 +336,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 					sfSprite_setPosition(deflagrationList[i].sprite, TransformVector2iToVector2f(_position));
 					deflagrationList[i].position = _position;
 
-					if (tempLength == 1)
+					if (_length == 1)
 					{
 						sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * 3, 16, 16 });
 						deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * 3,16,16 };
@@ -362,7 +353,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 					sfSprite_setPosition(deflagrationList[i].sprite, TransformVector2iToVector2f(_position));
 					deflagrationList[i].position = _position;
 
-					if (tempLength == 1)
+					if (_length == 1)
 					{
 						sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * 1, 16, 16 });
 						deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * 1,16,16 };
@@ -379,7 +370,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 					sfSprite_setPosition(deflagrationList[i].sprite, TransformVector2iToVector2f(_position));
 					deflagrationList[i].position = _position;
 
-					if (tempLength == 1)
+					if (_length == 1)
 					{
 						sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * 7, 16, 16 });
 						deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * 7,16,16 };
@@ -395,7 +386,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 					_position.y--;
 					sfSprite_setPosition(deflagrationList[i].sprite, TransformVector2iToVector2f(_position));
 					deflagrationList[i].position = _position;
-					if (tempLength == 1)
+					if (_length == 1)
 					{
 						sfSprite_setTextureRect(deflagrationList[i].sprite, (sfIntRect) { 0, 16 * 0, 16, 16 });
 						deflagrationList[i].animation.rectActualy = (sfIntRect){ 0, 16 * 0,16,16 };
@@ -410,7 +401,7 @@ void CreateDeflagration(BlowDirection _direction, int _length, sfVector2i _posit
 				default:
 					break;
 				}
-				tempLength--;
+				_length--;
 			}
 		}
 	}

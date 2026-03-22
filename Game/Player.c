@@ -46,28 +46,7 @@ void UpdatePlayer(CasePosibility _GetMovePosibility, float _dt)
 		sfSprite_setColor(player.sprite, sfColor_fromRGBA(255, 255, 255, 255));
 	}
 
-	if (DEV_MODE)
-	{
-		if (sfKeyboard_isKeyPressed(sfKeyUp))
-		{
-			if (player.playerMoveSpeedGrid < 8)
-			{
-				player.playerMoveSpeedGrid++;
-			}
-		}
-		else if (sfKeyboard_isKeyPressed(sfKeyDown))
-		{
-
-			if (player.playerMoveSpeedGrid > 1)
-			{
-				player.playerMoveSpeedGrid--;
-			}
-		}
-	}
-	else
-	{
-		player.playerMoveSpeedGrid = GetIntFromSave(SPEED);
-	}
+	player.playerMoveSpeedGrid = GetIntFromSave(SPEED);
 	player.animation.frameDuration = (float)1 / (8 + player.playerMoveSpeedGrid);
 }
 

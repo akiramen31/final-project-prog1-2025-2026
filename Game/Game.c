@@ -69,6 +69,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	{
 	case sfKeyEscape:
 		SetGameState(MENU);
+		return;
 		break;
 	case sfKeySpace:
 		if (AskPlayerIdle())
@@ -78,24 +79,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		break;
 	default:
 		break;
-	}
-
-	if (DEV_MODE)
-	{
-		switch (_keyEvent->code)
-		{
-		case sfKeyEnter:
-			SetGameState(GAME_OVER);
-			break;
-		case sfKeyE:
-			DestroyBox((sfVector2i) { 2, 2 });
-			break;
-		case sfKeyR:
-			SetGameState(GAME);
-			break;
-		default:
-			break;
-		}
 	}
 }
 
@@ -126,11 +109,17 @@ void UpdateGame(float _dt)
 	}
 	UpdateBomb(casePosibilityBomb, _dt);
 
-	UpdateCollider();
 	timer -= _dt;
-	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
+	if (timer < 0.f)
+	{
+		SetGameState(GAME_OVER);
+		return;
+	}
 
+	UpdatePlayer(GetMovePosibility(GetPlayerPositionGrid()), _dt);
 	UpdateHUD(_dt, timer);
+
+	UpdateCollider();
 }
 
 CasePosibility GetMovePosibility(sfVector2i _position)
@@ -256,9 +245,10 @@ void UpdateCollider(void)
 		SetExitIsAccessible();
 	}
 
-	if (LootPowerUpAndReturnIfExit(playerPosition) && GetEnnemyCount() <= 0 || timer < 0.f)
+	if (LootPowerUpAndReturnIfExit(playerPosition) && GetEnnemyCount() <= 0 )
 	{
 		SetGameState(GAME);
+		return;
 	}
 
 	if (!AskPlayerInvincible())

@@ -18,8 +18,6 @@
 #define SCREEN_HEIGHT 904
 #define BPP 32
 
-# define DEV_MODE 1
-
 #define FIRST_CASE (sfIntRect) {32, 160, 64, 64}
 #define NB_GRID_ROW 9
 #define NB_GRID_COLUMN 15 
