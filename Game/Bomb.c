@@ -62,8 +62,11 @@ void SpawnBomb(sfVector2i _bombPos)
 			bombList[i].duration = 0;
 
 			bombList[i].placed = sfTrue;
-       		sfSound_stop(bombPLace);
-			sfSound_play(bombPLace);
+			if (bombPLace)
+			{
+				sfSound_stop(bombPLace);
+				sfSound_play(bombPLace);
+			}
 			return;
 		}
 		else
