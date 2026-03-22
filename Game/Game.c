@@ -22,44 +22,19 @@ void LoadGame(void)
 	timer = 180.f;
 	LoadBox();
 	LoadEnnemy();
+	LoadPowerUp();
 
 	sfVector2i positionRandom = { 0 , 0 };
-	int powerUpPosition[11];
-	for (int i = 0; i < 11; i++) 
-	{
-		powerUpPosition[i] = -1;
-	}
-	for (int i = 0; i < 11; i++)
-	{
-		sfBool isUnique = sfFalse;
-		int positionTest;
-		while (isUnique == sfFalse)
-		{
-			positionTest = rand() % 40;
-			isUnique = sfTrue;
-			for (int j = 0; j < i; j++)
-			{
-				if (powerUpPosition[j] == positionTest)
-				{
-					isUnique = sfFalse;
-					break;
-				}
-			}
-		}
-		powerUpPosition[i] = positionTest;
-	}
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		do
 		{
 			positionRandom = (sfVector2i){ rand() % NB_GRID_COLUMN, rand() % NB_GRID_ROW };
 		} while (positionRandom.x % 2 && positionRandom.y % 2 || GetIfBoxIsHere(positionRandom) || (positionRandom.y + positionRandom.x) < 2);
-		for (int j = 0; j < 11; j++)
+
+		if (i < 11)
 		{
-			if (powerUpPosition[j] == i)
-			{
-				GeneratePowerUpPositions(positionRandom, j);
-			}
+			GeneratePowerUpPositions(positionRandom, i);
 		}
 		SetBoxPosition(positionRandom, i);
 	}
@@ -254,6 +229,10 @@ void UpdateCollider(void)
 		{
 			DestroyBox(deflagrationPosition);
 		}
+		else
+		{
+			DestroyPowerUp(deflagrationPosition);
+		}
 	}
 
 	for (int i = 0; i < GetEnnemyCount(); i++)
@@ -271,9 +250,19 @@ void UpdateCollider(void)
 		}
 	}
 
+	sfVector2i playerPosition = GetPlayerPositionGrid();
+	if (GetEnnemyCount() <= 0)
+	{
+		SetExitIsAccessible();
+	}
+
+	if (LootPowerUpAndReturnIfExit(playerPosition) && GetEnnemyCount() <= 0 || timer < 0.f)
+	{
+		SetGameState(GAME);
+	}
+
 	if (!AskPlayerInvincible())
 	{
-		sfVector2i playerPosition = GetPlayerPositionGrid();
 		for (int i = GetEnnemyCount() - 1; i >= 0; i--)
 		{
 			sfVector2i ennemyPosition = GetEnnemyPosition(i);

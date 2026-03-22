@@ -100,14 +100,7 @@ void Cleanup(MainData* _mainData)
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	if (GetCharFromSave(FULL_SCREEN))
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
-	}
-	else
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
-	}
+	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
 
 	sfRenderWindow_setFramerateLimit(_mainData->renderWindow, (unsigned int) { 60 });
 

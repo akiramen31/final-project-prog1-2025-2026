@@ -52,6 +52,7 @@ void CleanupGlobal(void)
 	for (int i = 0; i < entityManager.assetCount; i++)
 	{
 		char* buffer = GetFormatAsset(entityManager.asset[i].file);
+		free(entityManager.asset[i].file);
 		if (CompareString(buffer, ".png"))
 		{
 			sfTexture_destroy(entityManager.asset[i].ptr);
@@ -126,6 +127,7 @@ void CleanupLocal(void)
 		{
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
+		free(entityManager.asset[i].file);
 	}
 	entityManager.assetCount = entityManager.generalAssetCount;
 
@@ -223,7 +225,7 @@ void* GetAsset(char* _file)
 		buffer[j] = _file[j];
 	}
 
-	entityManager.asset[entityManager.assetCount].file = _file;
+	entityManager.asset[entityManager.assetCount].file = buffer;
 	entityManager.assetCount++;
 	return entityManager.asset[entityManager.assetCount - 1].ptr;
 
@@ -285,11 +287,6 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	sfText_setPosition(newElement->ptr, _position);
 	sfText_setScale(newElement->ptr, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
 
-	if (!entityManager.visual)
-	{
-		entityManager.visual = newElement;
-		return newElement->ptr;
-	}
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
 	{

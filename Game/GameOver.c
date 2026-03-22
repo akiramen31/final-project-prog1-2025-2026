@@ -18,15 +18,13 @@ void LoadGameOver(void)
 	sfMusic_play(gameOverMusic);
 
 	//Score
-	int highScoreNum = GetIntFromSave(0);
-	for (int i = 0; i < 6; i++)
+	int scoreTemp = GetIntFromSave(SCORE);
+	for (int i = 5; i >= 0; i--)
 	{
-		highScore[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 360.f + (36 * i), 200.f }, 4.f, 0.f);
-		int number = (highScoreNum % (int)(pow(10, i + 1))) - (highScoreNum % (int)(pow(10, i)));
-		printf("%d", number);
-		sfSprite_setTextureRect(highScore[i], (sfIntRect) { 10 * number, 0, 10, 12 });
+		sfSprite* sprite = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { SCREEN_WIDTH / 2.0f + (36 * (i - 3)), 200.f }, 4.f, 0.f);
+		sfSprite_setTextureRect(sprite, (sfIntRect) { 10 * (scoreTemp % 10), 0, 10, 12 });
+		scoreTemp /= 10;
 	}
-	printf("\n");
 }
 
 void PollEventGameOver(sfEvent* _event)

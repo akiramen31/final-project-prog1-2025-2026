@@ -18,7 +18,7 @@ typedef enum PowerUpType {
     SPEED_DOWN,
     BOMB_UP,
     BOMB_DOWN,
-    CROWN
+    EXIT
 }PowerUpType;
 
 typedef struct PowerUpEntity{
@@ -30,12 +30,10 @@ typedef struct PowerUpEntity{
 } PowerUpEntity;
 
 void LoadPowerUp(void);
-void CreatePowerUp(void);
-void CleanupPowerUp(void);
 
-void DestructionPowerUp(sfVector2i _gridPos);
+void DestroyPowerUp(sfVector2i _gridPos);
 void GeneratePowerUpPositions(sfVector2i _gridPos, int _index);
-void DropPowerUp(sfVector2i _gridPos);
-void DrawPowerUp(sfRenderWindow* _renderWindow);
+sfBool LootPowerUpAndReturnIfExit(sfVector2i _gridPos);
+void SetExitIsAccessible(void);
 
 #endif

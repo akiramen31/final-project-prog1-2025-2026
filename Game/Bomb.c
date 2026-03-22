@@ -43,7 +43,6 @@ void SpawnBomb(sfVector2i _bombPos)
 		bombCount--;
 		return;
 	}
-	sfSound_play(bombPLace);
 	for (int i = 0; i < bombCount; i++)
 	{
 		if (bombList[i].placed == sfFalse)
@@ -63,6 +62,8 @@ void SpawnBomb(sfVector2i _bombPos)
 			bombList[i].duration = 0;
 
 			bombList[i].placed = sfTrue;
+			sfSound_stop(bombPLace);
+			sfSound_play(bombPLace);
 			return;
 		}
 		else
@@ -78,6 +79,7 @@ void SpawnBomb(sfVector2i _bombPos)
 
 void BlowBomb(int _num, CasePosibility _colision)
 {
+	sfSound_stop(bombExplode);
 	sfSound_play(bombExplode);
 	bombList[_num].blowDirectionCode = 0;
 

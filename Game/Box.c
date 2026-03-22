@@ -9,7 +9,7 @@ void LoadBox(void)
 	for (int i = 0; i < NB_BOX; i++)
 	{
 		box[i] = (Box){ 0 };
-		box[i].down.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 90.f);
+		box[i].down.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT }, scale, 80.f);
 		sfSprite_setTextureRect(box[i].down.sprite, (sfIntRect) { 0, 4, 16, 16 });
 		box[i].down.animation = (Animation){ (sfIntRect) { 0, 4, 16, 16 }, sfFalse, 4, 0.2f, 0.f };
 
