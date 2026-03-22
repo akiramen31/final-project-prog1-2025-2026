@@ -27,6 +27,8 @@ destructible environments, enemies, and a power-up system
     - Space: Plant Bomb
 - System:
     - Escape: Return to Menu
+    - Space : Start the game (on menu)
+    - R: Start a new game (on game over)
 
 3. GAME MECHANICS
 -----------------
@@ -63,7 +65,7 @@ des environnements destructibles, des ennemis et un système de bonus
 .
 
 2. COMMANDES
---------- --
+-----------
 - Déplacement : 
     - Z : Haut
     - S : Bas
@@ -73,6 +75,8 @@ des environnements destructibles, des ennemis et un système de bonus
     - Espace : Placer une bombe
 - Système :
     - Échap : Retour au menu
+    - Espace : Lancer le jeu (dans le menu)
+    - R : Commencer une nouvelle partie (lorsque le jeu est terminé)
 
 3. MÉCANIQUE DU JEU
 -----------------
