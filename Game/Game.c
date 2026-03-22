@@ -237,8 +237,13 @@ void UpdateCollider(void)
 		SetExitIsAccessible();
 	}
 
-	if (LootPowerUpAndReturnIfExit(playerPosition) && GetEnnemyCount() <= 0 )
+	if (LootPowerUpAndReturnIfExit(playerPosition) && GetEnnemyCount() <= 0)
 	{
+		AddIntToSave(ROUND, 1);
+		if (GetIntFromSave(ROUND) % 3 == 0);
+		{
+			AddIntToSave(ENNEMY_COUNT, 1);
+		}
 		SetGameState(GAME);
 		return;
 	}

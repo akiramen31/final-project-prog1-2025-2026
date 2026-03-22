@@ -17,7 +17,7 @@ void LoadGameOver(void)
 	SetIntToSave(SCORE, 0);
 	SetIntToSave(BOMB, 1);
 	SetIntToSave(SPEED, 1);
-	SetIntToSave(ENNEMY_COUNT, 1);
+	SetIntToSave(ENNEMY_COUNT, 3);
 	SetIntToSave(FIRE, 1);
 	SetIntToSave(LIFE, 4);
 
