@@ -15,7 +15,7 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 
-	player.killSound = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 100.f, sfFalse);
+	player.killSound = CreateSound(GetAsset("Assets/Sounds/Kill.wav"), 50.f, sfFalse);
 
 	sfTexture* playerTexture = GetAsset("Assets/Sprites/Player/Player.png");
 	player.sprite = CreateSprite(playerTexture, (sfVector2f) { 200, 200 }, 4.f, 60.f);
