@@ -20,6 +20,8 @@ int main(void)
 	srand(_getpid());
 	MainData mainData = { 0 };
 
+	
+
 	Load(&mainData);
 
 	while (sfRenderWindow_isOpen(mainData.renderWindow))
@@ -100,7 +102,9 @@ void Cleanup(MainData* _mainData)
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfDefaultStyle, NULL);
+	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfClose, NULL);
+
+	
 
 	sfRenderWindow_setFramerateLimit(_mainData->renderWindow, (unsigned int) { 60 });
 

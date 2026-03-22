@@ -86,6 +86,12 @@ sfBool LootPowerUpAndReturnIfExit(sfVector2i _gridPos)
 	{
 		if (powerUpList[i].gridPos.x == _gridPos.x && powerUpList[i].gridPos.y == _gridPos.y)
 		{
+			if (powerUpList[i].powerUpType == EXIT)
+			{
+				return sfTrue;
+
+			}
+
 			sfSound_stop(booster);
 			sfSound_play(booster);
 			switch (powerUpList[i].powerUpType)
