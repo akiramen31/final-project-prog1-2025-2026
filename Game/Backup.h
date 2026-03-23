@@ -6,6 +6,7 @@
 typedef enum FloatSave
 {
 	LIGHT_LEVEL,
+	SOUND_VOLUME,
 	FLOAT_COUNT
 
 }FloatSave;

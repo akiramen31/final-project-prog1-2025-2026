@@ -86,5 +86,5 @@ void SetSpriteOriginMiddel(sfSprite* _sprite)
 
 sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject)
 {
-
+	return (sfVector2f) { 0 };
 }

@@ -3,15 +3,27 @@
 
 #include "Common.h"
 
+#define NB_BUTTON 6
+
+typedef enum MenuState
+{
+	MENU_BASE,
+	SETTING,
+	CREDITS
+}MenuState;
+
+
 typedef struct Menu
 {
-	sfSprite* temp;
+	char* name[10];
+	sfText* button[NB_BUTTON];
+	MenuState state;
+	
 }Menu;
 
 void LoadMenu(void);
 void PollEventMenu(sfEvent* _event);
 void UpdateMenu(float _dt);
 
-void KeyPressedMenu(sfKeyEvent* _keyEvent);
 
 #endif // !MENU_H

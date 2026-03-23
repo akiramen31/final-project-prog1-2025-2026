@@ -76,6 +76,7 @@ typedef struct EntityManager
 	int listListCount;
 }EntityManager;
 
+void LoadEntityManager(void);
 void Draw(void);
 
 void* GetAsset(char* _file);
@@ -108,4 +109,5 @@ void Cleanup(void);
 void SetViewCentre(sfVector2f _centre);
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);
+void ChangeFullSceen(void);
 #endif // !ENTITY_MANAGER_H

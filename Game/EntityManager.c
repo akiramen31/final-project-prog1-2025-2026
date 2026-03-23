@@ -30,6 +30,7 @@ void LoadEntityManager(void)
 
 void LoadGeneralAsset(void)
 {
+	void* ptr = GetAsset("Assets/Font/Daydream.otf");
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
@@ -37,15 +38,24 @@ void Draw(void)
 {
 	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
 	VisualEntity* elementActual = entityManager.visual;
+	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
+	sfColor temp = { 0 };
+
 	while (elementActual)
 	{
 		if (elementActual->type == SPRITE)
 		{
+			temp = sfSprite_getColor(elementActual->ptr);
+			sfSprite_setColor(elementActual->ptr, (sfColor) { (sfUint8)(temp.r * lightlevel), (sfUint8)(temp.g * lightlevel), (sfUint8)(temp.b * lightlevel), (sfUint8)(temp.a) });
 			sfRenderWindow_drawSprite(entityManager.renderWindow, elementActual->ptr, NULL);
+			sfSprite_setColor(elementActual->ptr, temp);
 		}
 		else if (elementActual->type == TEXT)
 		{
-			sfRenderWindow_drawSprite(entityManager.renderWindow, elementActual->ptr, NULL);
+			temp = sfText_getColor(elementActual->ptr);
+			sfText_setColor(elementActual->ptr, (sfColor) { (sfUint8)(temp.r * lightlevel), (sfUint8)(temp.g * lightlevel), (sfUint8)(temp.b * lightlevel), (sfUint8)(temp.a) });
+			sfRenderWindow_drawText(entityManager.renderWindow, elementActual->ptr, NULL);
+			sfText_setColor(elementActual->ptr, temp);
 		}
 		elementActual = elementActual->next;
 	}
@@ -66,7 +76,7 @@ void CleanupGlobal(void)
 		{
 			sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 		}
-		else if (CompareString(buffer, ".ttf"))
+		else if (CompareString(buffer, ".ttf") || CompareString(buffer, ".otf"))
 		{
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
@@ -76,14 +86,7 @@ void CleanupGlobal(void)
 	while (entityManager.visual)
 	{
 		entityManager.visual = InitPointer(entityManager.visual);
-		if (entityManager.visual->type == SPRITE)
-		{
-			sfSprite_destroy(entityManager.visual->ptr);
-		}
-		else if (entityManager.visual->type == TEXT)
-		{
-			sfText_destroy(entityManager.visual->ptr);
-		}
+		sfSprite_destroy(entityManager.visual->ptr);
 		VisualEntity* temp = entityManager.visual;
 		entityManager.visual = (VisualEntity*)entityManager.visual->next;
 		free(temp);
@@ -132,7 +135,7 @@ void CleanupLocal(void)
 		{
 			sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 		}
-		else if (CompareString(buffer, ".ttf"))
+		else if (CompareString(buffer, ".ttf") || CompareString(buffer, ".otf"))
 		{
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
@@ -145,14 +148,7 @@ void CleanupLocal(void)
 		while (entityManager.visual->next)
 		{
 			entityManager.visual->next = InitPointer(entityManager.visual->next);
-			if (entityManager.visual->next->type == SPRITE)
-			{
-				sfSprite_destroy(entityManager.visual->next->ptr);
-			}
-			else if (entityManager.visual->next->type == TEXT)
-			{
-				sfText_destroy(entityManager.visual->next->ptr);
-			}
+			sfSprite_destroy(entityManager.visual->next->ptr);
 			VisualEntity* temp = entityManager.visual->next;
 			entityManager.visual->next = (VisualEntity*)entityManager.visual->next->next;
 			free(temp);
@@ -213,7 +209,7 @@ void* GetAsset(char* _file)
 	{
 		entityManager.asset[entityManager.assetCount].ptr = sfSoundBuffer_createFromFile(_file);
 	}
-	else if (CompareString(buffer, ".ttf"))
+	else if (CompareString(buffer, ".ttf") || CompareString(buffer, ".otf"))
 	{
 		entityManager.asset[entityManager.assetCount].ptr = sfFont_createFromFile(_file);
 	}
@@ -357,14 +353,7 @@ void DestroyVisualEntity(void* _entity)
 	{
 		if (elementNext->ptr == _entity)
 		{
-			if (elementNext->type == SPRITE)
-			{
-				sfSprite_destroy(elementNext->ptr);
-			}
-			else if (elementNext->type == TEXT)
-			{
-				sfText_destroy(elementNext->ptr);
-			}
+			sfSprite_destroy(elementNext->ptr);
 			elementActual->next = elementNext->next;
 			free(elementNext);
 			return;
@@ -410,7 +399,7 @@ void DestroyAssetEntity(void* _entity)
 			{
 				sfSoundBuffer_destroy(entityManager.asset[i].ptr);
 			}
-			else if (CompareString(buffer, ".ttf"))
+			else if (CompareString(buffer, ".ttf") || CompareString(buffer, ".otf"))
 			{
 				sfFont_destroy(entityManager.asset[i].ptr);
 			}
@@ -702,7 +691,15 @@ void Cleanup(void)
 void LoadMainData(void)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	entityManager.renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfClose, NULL);
+
+	if (GetCharFromSave(FULL_SCREEN))
+	{
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
+	}
+	else
+	{
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
+	}
 
 	sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
 
@@ -744,4 +741,22 @@ void SetGameState(GameState _gameState)
 sfRenderWindow* GetRenderWindow(void)
 {
 	return entityManager.renderWindow;
+}
+
+void ChangeFullSceen(void)
+{
+	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
+
+	if (GetCharFromSave(FULL_SCREEN))
+	{
+		sfRenderWindow_destroy(entityManager.renderWindow);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
+		SetCharToSave(FULL_SCREEN, 0);
+	}
+	else
+	{
+		sfRenderWindow_destroy(entityManager.renderWindow);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
+		SetCharToSave(FULL_SCREEN, 1);
+	}
 }
