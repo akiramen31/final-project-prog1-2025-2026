@@ -10,6 +10,9 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 10.f);
+	LoadEnnemy();
+	LoadHUD();
+	LoadPlayer();
 }
 
 void PollEventGame(sfEvent* _event)

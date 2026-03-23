@@ -1,7 +1,12 @@
 #include "EntityManager.h"
 
-char* GetFormatAsset(char* _file);
+void LoadEntityManager(void);
 void LoadGeneralAsset(void);
+void LoadMainData(void);
+void CleanupGlobal(void);
+void CleanupLocal(void);
+
+char* GetFormatAsset(char* _file);
 sfBool CompareString(char* _string1, char* _string2);
 void* InitPointer(void* _ptr);
 

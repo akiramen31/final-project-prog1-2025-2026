@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "Common.h"
-#include "GameState.h"
 #include "HUD.h"
 #include "Player.h"
 #include "Ennemy.h"

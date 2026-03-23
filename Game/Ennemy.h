@@ -2,7 +2,6 @@
 #define ENNEMY_H
 
 #include "Common.h"
-#include "GameState.h"
 
 typedef struct Ennemy
 {

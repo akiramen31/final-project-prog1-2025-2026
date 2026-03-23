@@ -2,7 +2,6 @@
 #define GAME_OVER_H
 
 #include "Common.h"
-#include "GameState.h"
 
 typedef struct GameOver
 {

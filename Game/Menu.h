@@ -2,7 +2,6 @@
 #define MENU_H
 
 #include "Common.h"
-#include "GameState.h"
 
 typedef struct Menu
 {

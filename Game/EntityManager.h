@@ -76,10 +76,7 @@ typedef struct EntityManager
 	int listListCount;
 }EntityManager;
 
-void LoadEntityManager(void);
 void Draw(void);
-void CleanupGlobal(void);
-void CleanupLocal(void);
 
 void* GetAsset(char* _file);
 
@@ -108,7 +105,6 @@ void Load(void);
 void PollEvent(void);
 void Update(void);
 void Cleanup(void);
-void LoadMainData(void);
 void SetViewCentre(sfVector2f _centre);
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);
