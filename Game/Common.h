@@ -39,5 +39,7 @@ void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 sfVector2f TransformVector2iToVector2f(sfVector2i _vector);
+void SetSpriteOrigineFoot(sfSprite* _sprite);
+void SetSpriteOrigineMiddel(sfSprite* _sprite);
 
 #endif // !COMMON_H
