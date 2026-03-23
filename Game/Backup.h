@@ -3,39 +3,34 @@
 
 #include "Common.h"
 
-typedef enum
+typedef enum FloatSave
 {
 	LIGHT_LEVEL,
 	FLOAT_COUNT
 
 }FloatSave;
 
-typedef enum
+typedef enum CharSave
 {
 	FULL_SCREEN,
 	CHAR_COUNT
 
 }CharSave;
 
-typedef enum
+typedef enum IntSave
 {
 	SCORE,
 	LIFE,
-	BOMB,
-	FIRE,
-	SPEED,
-	ENNEMY_COUNT,
-	LEVEL,
 	INT_COUNT
 
 }IntSave;
 
-typedef struct
+typedef struct Backup
 {
 	FILE* saveFile;
 	float valueFloat[FLOAT_COUNT];
 	char valueChar[CHAR_COUNT];
-	char valueInt[INT_COUNT];
+	int valueInt[INT_COUNT];
 }Backup;
 
 void LoadBackup(void);

@@ -4,6 +4,11 @@
 #include "Common.h"
 #include "GameState.h"
 
+typedef struct Menu
+{
+	sfSprite* temp;
+}Menu;
+
 void LoadMenu(void);
 void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event);
 void UpdateMenu(float _dt);

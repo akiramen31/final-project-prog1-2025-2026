@@ -2,10 +2,14 @@
 #define HUD_H
 
 #include "Common.h"
-#include "EntityManager.h"
+
+typedef struct HUD
+{
+	sfSprite* life;
+}HUD;
 
 void LoadHUD(void);
-void UpdateHUD(float _dt, float _timer);
+void UpdateHUD(float _dt);
 
 #endif // !HUD_H
 #pragma once

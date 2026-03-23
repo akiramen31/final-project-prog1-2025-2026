@@ -1,13 +1,12 @@
 #include "GameOver.h"
-
 void KeyPressedGameOver(sfKeyEvent* _keyEvent);
+
+GameOver gameOver;
 
 void LoadGameOver(void)
 {
-	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
-	sfMusic* gameOverMusic = CreateMusic("Assets/Musics/Game-Over.ogg", 10.f, sfFalse);
-	sfMusic_setLoop(gameOverMusic, sfTrue);
-	sfMusic_play(gameOverMusic);
+	gameOver = (GameOver){ 0 };
+	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 }
 
 void PollEventGameOver(sfEvent* _event)

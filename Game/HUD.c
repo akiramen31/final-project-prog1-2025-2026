@@ -1,73 +1,13 @@
 #include "HUD.h"
 
-sfSprite* score[6];
-sfSprite* powerUps[3];
-sfSprite* playerLife;
-sfSprite* time[5];
-
-
+HUD hud;
 
 void LoadHUD()
 {
-	//Score
-	CreateSprite(GetAsset("Assets/Sprites/HUD/HUD.png"), (sfVector2f) { 0 }, 4.f, 10.f);
-	for (int i = 0; i < 6; i++)
-	{
-		score[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 776+(36 * i), 16 }, 4.f, 0.f);
-		sfSprite_setTextureRect(score[i], (sfIntRect) { 0, 0, 10, 12 });
-	}
-	//PowerUps
-	for (int i = 0; i < 3; i++)
-	{
-		powerUps[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 152 + ( 208 * i), 832 }, 4.f, 0.f);
-		sfSprite_setTextureRect(powerUps[i], (sfIntRect) { 10, 0, 10, 12 });
-	}
-	//Life
-	playerLife = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 136, 30 }, 3.f, 0.f);
-	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10, 0, 10, 12 });
-	//Time
-	for (int i = 0; i <2 ; i++)
-	{
-		time[i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 384 + (36 * i), 16 }, 4.f, 0.f);
-		sfSprite_setTextureRect(time[i], (sfIntRect) { 0, 0, 10, 12 });
-		time[3 + i] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 476 + (36* i), 16 }, 4.f, 0.f);
-		sfSprite_setTextureRect(time[3+i], (sfIntRect) { 0, 0, 10, 12 });
-	}
-	time[2] = CreateSprite(GetAsset("Assets/Sprites/HUD/Numbers.png"), (sfVector2f) { 448, 16 }, 4.f, 0.f);
-	sfSprite_setTextureRect(time[2], (sfIntRect) { 100, 0, 10, 12 });
+
 }
 
-void UpdateHUD(float _dt, float _timer)
+void UpdateHUD(float _dt)
 {
-	//score
-	int scoreTemp = GetIntFromSave(0);
-	for (int i = 0; i < 6; i++)
-	{
-		int number = (scoreTemp % (int)(pow(10, i + 1))) - (scoreTemp % (int)(pow(10, i)));
-		sfSprite_setTextureRect(score[i], (sfIntRect) { 10 * number, 0, 10, 12 });
-		if (DEV_MODE)
-		{
-			printf("%d", number);
-		}
-	}
-	if (DEV_MODE)
-	{
-		printf(" = SCORE\n");
-	}
-	//PowerUps
-	for (int i = 0; i < 3; i++)
-	{
-		int number = GetIntFromSave(2+i);
-		sfSprite_setTextureRect(powerUps[i], (sfIntRect){10 * number, 0, 10, 12});
-	}
-	//PlayerLife
-	int lifeTemp = GetIntFromSave(1);
-	sfSprite_setTextureRect(playerLife, (sfIntRect) { 10 * lifeTemp, 0, 10, 12 });
-	//Time
-	int minutesTemp = (int)_timer / 60;
-	int secondsUnitTemp = (int)_timer % 10;
-	int secondsTenTemp = ((int)_timer % 60 - secondsUnitTemp)/10;
-	sfSprite_setTextureRect(time[1], (sfIntRect){10*minutesTemp, 0, 10, 12});
-	sfSprite_setTextureRect(time[3], (sfIntRect){10*secondsTenTemp, 0, 10, 12});
-	sfSprite_setTextureRect(time[4], (sfIntRect){10*secondsUnitTemp, 0, 10, 12});
+	
 }

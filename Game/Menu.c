@@ -1,15 +1,11 @@
 #include "Menu.h"
 
-void EnterInGame(void);
-sfSprite* title;
+Menu menu;
 
 void LoadMenu(void)
 {
-	LoadBackground(GetAsset("Assets/Sprites/Menu/MenuBackground.png"), 1.f);
-	title = CreateSprite(GetAsset("Assets/Sprites/Menu/Title.png"), (sfVector2f) { (SCREEN_WIDTH / 2)-317, 160 }, 1.f, 10.f);
-	sfMusic* menuMusic = CreateMusic("Assets/Musics/Title-Screen.ogg", 10.f, sfFalse);
-	sfMusic_setLoop(menuMusic, sfTrue);
-	sfMusic_play(menuMusic);
+	menu = (Menu){ 0 };
+	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)
@@ -31,9 +27,6 @@ void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent)
 	case sfKeyEscape:
 		sfRenderWindow_close(_renderWindow);
 		break;
-	case sfKeyG:
-		EnterInGame();
-		break;
 	default:
 		break;
 	}
@@ -42,10 +35,4 @@ void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent)
 void UpdateMenu(float _dt)
 {
 
-}
-
-void EnterInGame(void)
-{
-	SetIntToSave(SCORE, 0);
-	SetGameState(GAME);
 }

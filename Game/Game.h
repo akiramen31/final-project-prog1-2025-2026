@@ -5,13 +5,11 @@
 #include "GameState.h"
 #include "HUD.h"
 #include "Player.h"
-#include "Ennemy.h" 
-#include "Box.h"
-#include "Bomb.h"
+#include "Ennemy.h"
 
 typedef struct
 {
-	sfSound* kill;
+	sfSprite* temp;
 }Game;
 
 void LoadGame(void);

@@ -4,6 +4,11 @@
 #include "Common.h"
 #include "GameState.h"
 
+typedef struct GameOver
+{
+	sfSprite* temp;
+}GameOver;
+
 void LoadGameOver(void);
 void PollEventGameOver(sfEvent* _event);
 void UpdateGameOver(float _dt);

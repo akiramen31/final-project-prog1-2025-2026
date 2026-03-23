@@ -94,20 +94,15 @@ void Cleanup(MainData* _mainData)
 {
 	SaveBackup();
 	CleanupMainData(_mainData);
-	CleanupEntityManager();
+	CleanupGlobal();
 }
 
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
-	if (GetCharFromSave(FULL_SCREEN))
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
-	}
-	else
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
-	}
+	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfClose, NULL);
+
+	
 
 	sfRenderWindow_setFramerateLimit(_mainData->renderWindow, (unsigned int) { 60 });
 
@@ -121,4 +116,6 @@ void CleanupMainData(MainData* _mainData)
 
 	sfClock_destroy(_mainData->clock);
 	_mainData->clock = NULL;
+
+	*_mainData = (MainData){ 0 };
 }

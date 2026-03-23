@@ -13,9 +13,13 @@ void LoadEntityManager(void)
 	entityManager.assetCount = 0;
 	entityManager.soundCount = 0;
 	entityManager.generalAssetCount = 0;
+	entityManager.listListCount = 0;
+	entityManager.callocListCount = 0;
 	entityManager.asset = calloc(1, sizeof(AssetEntity));
 	entityManager.sound = calloc(1, sizeof(SoundEntity));
 	entityManager.visual = NULL;
+	entityManager.listList = calloc(1, sizeof(List*));
+	entityManager.callocList = calloc(1, sizeof(void*));
 	LoadGeneralAsset();
 }
 
@@ -43,11 +47,12 @@ void Draw(sfRenderWindow* _renderWindow)
 	sfRenderWindow_display(_renderWindow);
 }
 
-void CleanupEntityManager(void)
+void CleanupGlobal(void)
 {
 	for (int i = 0; i < entityManager.assetCount; i++)
 	{
 		char* buffer = GetFormatAsset(entityManager.asset[i].file);
+		free(entityManager.asset[i].file);
 		if (CompareString(buffer, ".png"))
 		{
 			sfTexture_destroy(entityManager.asset[i].ptr);
@@ -90,11 +95,22 @@ void CleanupEntityManager(void)
 			sfMusic_destroy(entityManager.sound[i].ptr);
 		}
 	}
-	entityManager.soundCount = 0;
 	free(entityManager.sound);
+
+	for (int i = 0; i < entityManager.listListCount; i++)
+	{
+		RemoveList(entityManager.listList[i]);
+	}
+	free(entityManager.listList);
+
+	for (int i = 0; i < entityManager.callocListCount; i++)
+	{
+		free(entityManager.callocList[i]);
+	}
+	free(entityManager.callocList);
 }
 
-void CleanupTempEntity(void)
+void CleanupLocal(void)
 {
 	for (int i = entityManager.generalAssetCount; i < entityManager.assetCount; i++)
 	{
@@ -111,6 +127,7 @@ void CleanupTempEntity(void)
 		{
 			sfFont_destroy(entityManager.asset[i].ptr);
 		}
+		free(entityManager.asset[i].file);
 	}
 	entityManager.assetCount = entityManager.generalAssetCount;
 
@@ -141,10 +158,22 @@ void CleanupTempEntity(void)
 		}
 		else if (entityManager.sound[i].type == MUSIC)
 		{
- 			sfMusic_destroy(entityManager.sound[i].ptr);
+			sfMusic_destroy(entityManager.sound[i].ptr);
 		}
 	}
 	entityManager.soundCount = 0;
+
+	for (int i = 0; i < entityManager.listListCount; i++)
+	{
+		RemoveList(entityManager.listList[i]);
+	}
+	entityManager.listListCount = 0;
+
+	for (int i = 0; i < entityManager.callocListCount; i++)
+	{
+		free(entityManager.callocList[i]);
+	}
+	entityManager.callocListCount = 0;
 }
 
 void* GetAsset(char* _file)
@@ -196,7 +225,7 @@ void* GetAsset(char* _file)
 		buffer[j] = _file[j];
 	}
 
-	entityManager.asset[entityManager.assetCount].file = _file;
+	entityManager.asset[entityManager.assetCount].file = buffer;
 	entityManager.assetCount++;
 	return entityManager.asset[entityManager.assetCount - 1].ptr;
 
@@ -258,11 +287,6 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	sfText_setPosition(newElement->ptr, _position);
 	sfText_setScale(newElement->ptr, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
 
-	if (!entityManager.visual)
-	{
-		entityManager.visual = newElement;
-		return newElement->ptr;
-	}
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
 	{
@@ -277,7 +301,7 @@ sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
 {
 	int bufferCalcule = entityManager.soundCount + 1;
 	SoundEntity* temp = realloc(entityManager.sound, bufferCalcule * sizeof(SoundEntity));
-	if (!temp) // Add ! cause that was if (temp)
+	if (!temp)
 	{
 		return NULL;
 	}
@@ -424,4 +448,178 @@ sfBool CompareString(char* _string1, char* _string2)
 void* InitPointer(void* _ptr)
 {
 	return _ptr;
+}
+
+
+
+void* Calloc(size_t _count, size_t _size)
+{
+	entityManager.callocListCount++;
+	void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
+	if (!temp)
+	{
+		return NULL;
+	}
+	entityManager.callocList = temp;
+	entityManager.callocList[entityManager.callocListCount - 1];
+	return calloc(_count, _size);
+}
+
+void* Realloc(void* _block, size_t _size)
+{
+	void* temp = realloc(_block, _size);
+	if (!temp)
+	{
+		exit(EXIT_FAILURE);
+	}
+
+	for (int i = 0; i < entityManager.callocListCount; i++)
+	{
+		if (entityManager.callocList[i] == _block)
+		{
+			entityManager.callocList[i] = temp;
+			return temp;
+		}
+	}
+	return temp;
+}
+
+void Free(void* _ptr)
+{
+	for (int i = 0; i < entityManager.callocListCount; i++)
+	{
+		if (_ptr == entityManager.callocList[i])
+		{
+			free(_ptr);
+
+			entityManager.callocListCount--;
+			entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
+			void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
+			if (!temp)
+			{
+				return;
+			}
+			entityManager.callocList = temp;
+			return;
+		}
+	}
+}
+
+List* CreateList(void)
+{
+	entityManager.listListCount++;
+	List** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
+	if (!temp)
+	{
+		return NULL;
+	}
+	entityManager.listList = temp;
+	entityManager.listList[entityManager.listListCount - 1];
+
+	List* newList = calloc(1, sizeof(List));
+	if (newList == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+	newList->first = NULL;
+
+	return newList;
+}
+
+void RemoveList(List* _list)
+{
+	for (int i = GetListSize(_list) - 1; i >= 0; i--)
+	{
+		RemoveElement(_list, 0);
+	}
+
+	free(_list);
+	_list = NULL;
+}
+
+unsigned int GetListSize(List* _list)
+{
+	if (!_list)
+	{
+		return 0;
+	}
+	Element* actualElement = _list->first;
+	unsigned int listSize = 0;
+
+	while (actualElement != NULL)
+	{
+		listSize++;
+		actualElement = actualElement->next;
+	}
+
+	return listSize;
+}
+
+Element* CreateElement(void* _value)
+{
+	Element* newElement = calloc(1, sizeof(Element));
+	if (newElement == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+
+	newElement->value = _value;
+	newElement->next = NULL;
+
+	return newElement;
+}
+
+Element* GetElement(List* _list, unsigned int _index)
+{
+	Element* actualElement = _list->first;
+	unsigned int actualIndex = 0;
+
+	while (actualIndex < _index && actualElement != NULL)
+	{
+		actualIndex++;
+		actualElement = actualElement->next;
+	}
+
+	return actualElement;
+}
+
+void InsertElement(List* _list, Element* _element, unsigned int _index)
+{
+	if (_index == 0)
+	{
+		_element->next = _list->first;
+		_list->first = _element;
+	}
+	else
+	{
+		Element* previousElement = GetElement(_list, _index - 1);
+		if (previousElement != NULL)
+		{
+			_element->next = previousElement->next;
+			previousElement->next = _element;
+		}
+	}
+}
+
+void RemoveElement(List* _list, unsigned int _index)
+{
+	if (_index == 0)
+	{
+		Element* elementToRemove = _list->first;
+		_list->first = elementToRemove->next;
+		free(elementToRemove);
+	}
+	else
+	{
+		Element* previousElement = GetElement(_list, _index - 1);
+		if (previousElement != NULL)
+		{
+			Element* elementToRemove = previousElement->next;
+			if (elementToRemove != NULL)
+			{
+				previousElement->next = elementToRemove->next;
+				free(elementToRemove);
+			}
+		}
+	}
 }
