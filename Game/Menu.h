@@ -4,10 +4,15 @@
 #include "Common.h"
 #include "GameState.h"
 
+typedef struct Menu
+{
+	sfSprite* temp;
+}Menu;
+
 void LoadMenu(void);
-void PollEventMenu(sfRenderWindow* _renderWindow);
+void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event);
 void UpdateMenu(float _dt);
 
-void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent);
+void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent);
 
 #endif // !MENU_H

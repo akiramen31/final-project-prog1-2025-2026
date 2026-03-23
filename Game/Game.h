@@ -3,11 +3,16 @@
 
 #include "Common.h"
 #include "GameState.h"
+#include "HUD.h"
+#include "Player.h"
+#include "Ennemy.h"
+
+typedef struct
+{
+	sfSprite* temp;
+}Game;
 
 void LoadGame(void);
-void PollEventGame(sfRenderWindow* _renderWindow);
+void PollEventGame(sfEvent* _event);
 void UpdateGame(float _dt);
-
-void KeyPressedGame(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent);
-
 #endif // !GAME_H

@@ -17,6 +17,7 @@ void CleanupMainData(MainData* _mainData);
 
 int main(void)
 {
+	srand(_getpid());
 	MainData mainData = { 0 };
 
 	Load(&mainData);
@@ -27,15 +28,13 @@ int main(void)
 		Update(mainData);
 		Draw(mainData.renderWindow);
 	}
-
 	Cleanup(&mainData);
-
 	return EXIT_SUCCESS;
 }
 
 void Load(MainData* _mainData)
 {
-	LoadBackup;
+	LoadBackup();
 	LoadEntityManager();
 	LoadMainData(_mainData);
 	SetGameState(MENU);
@@ -43,19 +42,31 @@ void Load(MainData* _mainData)
 
 void PollEvent(sfRenderWindow* _renderWindow)
 {
-	switch (GetGameState())
+	sfEvent event;
+
+	while (sfRenderWindow_pollEvent(_renderWindow, &event))
 	{
-	case MENU:
-		PollEventMenu(_renderWindow);
-		break;
-	case GAME:
-		PollEventGame(_renderWindow);
-		break;
-	case GAME_OVER:
-		PollEventGameOver(_renderWindow);
-		break;
-	default:
-		break;
+		if (event.type == sfEvtClosed)
+		{
+			sfRenderWindow_close(_renderWindow);
+		}
+		else
+		{
+			switch (GetGameState())
+			{
+			case MENU:
+				PollEventMenu(_renderWindow, &event);
+				break;
+			case GAME:
+				PollEventGame(&event);
+				break;
+			case GAME_OVER:
+				PollEventGameOver(&event);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }
 
@@ -83,22 +94,18 @@ void Cleanup(MainData* _mainData)
 {
 	SaveBackup();
 	CleanupMainData(_mainData);
-	CleanupEntityManager();
+	CleanupGlobal();
 }
 
 void LoadMainData(MainData* _mainData)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
+	_mainData->renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfClose, NULL);
 
-	if (GetCharToSave(FULL_SCREEN))
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfFullscreen, NULL);
-	}
-	else
-	{
-		_mainData->renderWindow = sfRenderWindow_create(videoMode, "Game loop", sfDefaultStyle, NULL);
-	}
 	
+
+	sfRenderWindow_setFramerateLimit(_mainData->renderWindow, (unsigned int) { 60 });
+
 	_mainData->clock = sfClock_create();
 }
 
@@ -109,4 +116,6 @@ void CleanupMainData(MainData* _mainData)
 
 	sfClock_destroy(_mainData->clock);
 	_mainData->clock = NULL;
+
+	*_mainData = (MainData){ 0 };
 }

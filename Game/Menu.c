@@ -1,39 +1,31 @@
 #include "Menu.h"
 
+Menu menu;
+
 void LoadMenu(void)
 {
-	//LoadBackground(GetAsset());
+	menu = (Menu){ 0 };
+	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 }
 
-void PollEventMenu(sfRenderWindow* _renderWindow)
+void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)
 {
-	sfEvent event;
-
-	while (sfRenderWindow_pollEvent(_renderWindow, &event))
+	switch (_event->type)
 	{
-		switch (event.type)
-		{
-		case sfEvtClosed:
-			sfRenderWindow_close(_renderWindow);
-			break;
-		case sfEvtKeyPressed:
-			KeyPressedMenu(_renderWindow, event.key);
-			break;
-		default:
-			break;
-		}
+	case sfEvtKeyPressed:
+		KeyPressedMenu(_renderWindow, &_event->key);
+		break;
+	default:
+		break;
 	}
 }
 
-void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
+void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent)
 {
-	switch (_keyEvent.code)
+	switch (_keyEvent->code)
 	{
 	case sfKeyEscape:
 		sfRenderWindow_close(_renderWindow);
-		break;
-	case sfKeySpace:
-		SetGameState(GAME);
 		break;
 	default:
 		break;
@@ -44,4 +36,3 @@ void UpdateMenu(float _dt)
 {
 
 }
-

@@ -1,39 +1,35 @@
 #include "Game.h"
 
+void KeyPressedGame(sfKeyEvent* _keyEvent);
+void UpdateCollider(void);
+
+Game game;
+float timer;
+
 void LoadGame(void)
 {
-	//LoadBackground(GetAsset());
+	game = (Game){ 0 };
+	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
 }
 
-void PollEventGame(sfRenderWindow* _renderWindow)
+void PollEventGame(sfEvent* _event)
 {
-	sfEvent event;
-
-	while (sfRenderWindow_pollEvent(_renderWindow, &event))
+	switch (_event->type)
 	{
-		switch (event.type)
-		{
-		case sfEvtClosed:
-			sfRenderWindow_close(_renderWindow);
-			break;
-		case sfEvtKeyPressed:
-			KeyPressedGame(_renderWindow, event.key);
-			break;
-		default:
-			break;
-		}
+	case sfEvtKeyPressed:
+		KeyPressedGame(&_event->key);
+		break;
+	default:
+		break;
 	}
 }
 
-void KeyPressedGame(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
+void KeyPressedGame(sfKeyEvent* _keyEvent)
 {
-	switch (_keyEvent.code)
+	switch (_keyEvent->code)
 	{
 	case sfKeyEscape:
 		SetGameState(MENU);
-		break;
-	case sfKeySpace:
-		SetGameState(GAME_OVER);
 		break;
 	default:
 		break;
@@ -41,6 +37,14 @@ void KeyPressedGame(sfRenderWindow* _renderWindow, sfKeyEvent _keyEvent)
 }
 
 void UpdateGame(float _dt)
+{
+	UpdatePlayer(_dt);
+	UpdateEnnemy(_dt);
+	UpdateHUD(_dt);
+	UpdateCollider();
+}
+
+void UpdateCollider(void)
 {
 
 }

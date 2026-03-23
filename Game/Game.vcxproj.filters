@@ -21,9 +21,6 @@
     <ClCompile Include="Menu.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Game.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="GameOver.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -33,7 +30,22 @@
     <ClCompile Include="Backup.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Ennemy.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="EntityManager.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,9 +54,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="GameOver.h">
@@ -57,6 +66,18 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
