@@ -5,7 +5,7 @@ Menu menu;
 void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
-	LoadBackground(GetAsset("Assets/Sprites/Map/Background.png"), 4.f);
+	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 4.f);
 }
 
 void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)

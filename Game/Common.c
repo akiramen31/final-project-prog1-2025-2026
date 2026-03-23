@@ -72,19 +72,13 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 	return sfFalse;
 }
 
-sfVector2f TransformVector2iToVector2f(sfVector2i _vector)
-{
-	return (sfVector2f) { FIRST_CASE.left + FIRST_CASE.width * ((float)_vector.x + 0.5f),
-		FIRST_CASE.top + FIRST_CASE.height * ((float)_vector.y + 1.f) };
-}
-
-void SetSpriteOrigineFoot(sfSprite* _sprite)
+void SetSpriteOriginFoot(sfSprite* _sprite)
 {
 	sfFloatRect box = sfSprite_getLocalBounds(_sprite);
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height });
 }
 
-void SetSpriteOrigineMiddel(sfSprite* _sprite)
+void SetSpriteOriginMiddel(sfSprite* _sprite)
 {
 	sfFloatRect box = sfSprite_getLocalBounds(_sprite);
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });
