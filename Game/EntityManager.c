@@ -28,23 +28,23 @@ void LoadGeneralAsset(void)
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
-void Draw(sfRenderWindow* _renderWindow)
+void Draw(void)
 {
-	sfRenderWindow_clear(_renderWindow, sfBlue);
+	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
 	VisualEntity* elementActual = entityManager.visual;
 	while (elementActual)
 	{
 		if (elementActual->type == SPRITE)
 		{
-			sfRenderWindow_drawSprite(_renderWindow, elementActual->ptr, NULL);
+			sfRenderWindow_drawSprite(entityManager.renderWindow, elementActual->ptr, NULL);
 		}
 		else if (elementActual->type == TEXT)
 		{
-			sfRenderWindow_drawSprite(_renderWindow, elementActual->ptr, NULL);
+			sfRenderWindow_drawSprite(entityManager.renderWindow, elementActual->ptr, NULL);
 		}
 		elementActual = elementActual->next;
 	}
-	sfRenderWindow_display(_renderWindow);
+	sfRenderWindow_display(entityManager.renderWindow);
 }
 
 void CleanupGlobal(void)
@@ -108,6 +108,10 @@ void CleanupGlobal(void)
 		free(entityManager.callocList[i]);
 	}
 	free(entityManager.callocList);
+
+	sfRenderWindow_destroy(entityManager.renderWindow);
+	sfClock_destroy(entityManager.clock);
+	sfView_destroy(entityManager.view);
 }
 
 void CleanupLocal(void)
@@ -622,4 +626,117 @@ void RemoveElement(List* _list, unsigned int _index)
 			}
 		}
 	}
+}
+
+
+
+void Load(void)
+{
+	LoadBackup();
+	LoadEntityManager();
+	LoadMainData();
+	SetGameState(MENU);
+}
+
+void PollEvent(void)
+{
+	sfEvent event;
+
+	while (sfRenderWindow_pollEvent(entityManager.renderWindow, &event))
+	{
+		if (event.type == sfEvtClosed)
+		{
+			sfRenderWindow_close(entityManager.renderWindow);
+		}
+		else
+		{
+			switch (entityManager.gameState)
+			{
+			case MENU:
+				PollEventMenu(&event);
+				break;
+			case GAME:
+				PollEventGame(&event);
+				break;
+			case GAME_OVER:
+				PollEventGameOver(&event);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void Update(void)
+{
+	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock));
+
+	switch (entityManager.gameState)
+	{
+	case MENU:
+		UpdateMenu(dt);
+		break;
+	case GAME:
+		UpdateGame(dt);
+		break;
+	case GAME_OVER:
+		UpdateGameOver(dt);
+		break;
+	default:
+		break;
+	}
+}
+
+void Cleanup(void)
+{
+	SaveBackup();
+	CleanupGlobal();
+}
+
+void LoadMainData(void)
+{
+	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
+	entityManager.renderWindow = sfRenderWindow_create(videoMode, "Bomberman", sfClose, NULL);
+
+	sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
+
+	entityManager.clock = sfClock_create();
+
+	entityManager.view = sfView_create();
+	sfView_setCenter(entityManager.view, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
+	sfView_setSize(entityManager.view, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+}
+
+void SetViewCentre(sfVector2f _centre)
+{
+	sfView_setCenter(entityManager.view, _centre);
+}
+
+void SetGameState(GameState _gameState)
+{
+	CleanupLocal();
+
+	entityManager.gameState = _gameState;
+
+	switch (entityManager.gameState)
+	{
+	case MENU:
+		LoadMenu();
+		break;
+	case GAME:
+		LoadGame();
+		break;
+	case GAME_OVER:
+		LoadGameOver();
+		break;
+	default:
+		break;
+	}
+}
+
+sfRenderWindow* GetRenderWindow(void)
+{
+	return entityManager.renderWindow;
 }

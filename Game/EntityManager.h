@@ -2,6 +2,9 @@
 #define ENTITY_MANAGER_H
 
 #include "Common.h"
+#include "Menu.h"
+#include "Game.h"
+#include "GameOver.h"
 
 typedef enum VisualEntityType
 {
@@ -46,8 +49,20 @@ typedef struct List
 	Element* first;
 }List;
 
+typedef enum GameState
+{
+	MENU,
+	GAME,
+	GAME_OVER
+}GameState;
+
 typedef struct EntityManager
 {
+	GameState gameState;
+	sfRenderWindow* renderWindow;
+	sfClock* clock;
+	sfView* view;
+
 	AssetEntity* asset;
 	int assetCount;
 	int generalAssetCount;
@@ -62,7 +77,7 @@ typedef struct EntityManager
 }EntityManager;
 
 void LoadEntityManager(void);
-void Draw(sfRenderWindow* _renderWindow);
+void Draw(void);
 void CleanupGlobal(void);
 void CleanupLocal(void);
 
@@ -88,4 +103,13 @@ Element* CreateElement(void* _value);
 Element* GetElement(List* _list, unsigned int _index);
 void InsertElement(List* _list, Element* _element, unsigned int _index);
 void RemoveElement(List* _list, unsigned int _index);
+
+void Load(void);
+void PollEvent(void);
+void Update(void);
+void Cleanup(void);
+void LoadMainData(void);
+void SetViewCentre(sfVector2f _centre);
+void SetGameState(GameState _gameState);
+sfRenderWindow* GetRenderWindow(void);
 #endif // !ENTITY_MANAGER_H

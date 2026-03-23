@@ -5,27 +5,30 @@ Menu menu;
 void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
-	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 4.f);
+	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 12.f);
 }
 
-void PollEventMenu(sfRenderWindow* _renderWindow, sfEvent* _event)
+void PollEventMenu(sfEvent* _event)
 {
 	switch (_event->type)
 	{
 	case sfEvtKeyPressed:
-		KeyPressedMenu(_renderWindow, &_event->key);
+		KeyPressedMenu(&_event->key);
 		break;
 	default:
 		break;
 	}
 }
 
-void KeyPressedMenu(sfRenderWindow* _renderWindow, sfKeyEvent* _keyEvent)
+void KeyPressedMenu(sfKeyEvent* _keyEvent)
 {
 	switch (_keyEvent->code)
 	{
 	case sfKeyEscape:
-		sfRenderWindow_close(_renderWindow);
+		sfRenderWindow_close(GetRenderWindow());
+		break;
+	case sfKeySpace:
+		SetGameState(GAME);
 		break;
 	default:
 		break;

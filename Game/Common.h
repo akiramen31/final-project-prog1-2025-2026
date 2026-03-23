@@ -36,5 +36,6 @@ sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
+sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject);
 
 #endif // !COMMON_H

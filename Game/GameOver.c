@@ -6,7 +6,7 @@ GameOver gameOver;
 void LoadGameOver(void)
 {
 	gameOver = (GameOver){ 0 };
-	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 4.f);
+	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 8.f);
 }
 
 void PollEventGameOver(sfEvent* _event)

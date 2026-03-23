@@ -83,3 +83,8 @@ void SetSpriteOriginMiddel(sfSprite* _sprite)
 	sfFloatRect box = sfSprite_getLocalBounds(_sprite);
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });
 }
+
+sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject)
+{
+
+}
