@@ -22,9 +22,47 @@ void LoadMenu(void)
 		menu.button[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)20, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
 
-	//for (int i = 0; i < NB_KEY; i++)
+	for (int i = 0; i < NB_KEY; i++)
 	{
-	//	menu.button[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2 + 230, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+	}
+
+	sfText_setString(menu.keyType[0], "Jump");
+	sfText_setString(menu.keyType[1], "Down");
+	sfText_setString(menu.keyType[2], "Right");
+	sfText_setString(menu.keyType[3], "Left");
+	sfText_setString(menu.keyType[4], "Shoot");
+	sfText_setString(menu.keyType[5], "Dash");
+	sfText_setString(menu.keyType[6], "Hit");
+	sfText_setString(menu.keyType[7], "Second");
+
+	char buffer[5] = { 0 };
+	for (int i = 0; i < NB_KEY; i++)
+	{
+		char key = GetCharFromSave(i + 1);
+		if (key < 26)
+		{
+			buffer[0] = 'a' + key;
+		}
+		else if (key < 36)
+		{
+			buffer[0] = '0' + key -26;
+		}
+		else if (key < 100)
+		{
+			buffer[0] = 'F';
+			if (key < 64)
+			{
+				buffer[1] = '0' + key - 85;
+			}
+			else
+			{
+				buffer[1] = '1';
+				buffer[2] = '0' + key - 94;
+			}
+		}
+		sfText_setString(menu.key[i], buffer);
 	}
 
 	menu.name[0] = "Akira";
@@ -67,6 +105,10 @@ void KeyPressedMenu(sfKeyEvent* _keyEvent)
 		sfRenderWindow_close(GetRenderWindow());
 		break;
 	case sfKeySpace:
+		if (menu.state == MENU_BASE)
+		{
+
+		}
 		SetGameState(GAME);
 		break;
 	default:
@@ -103,6 +145,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					{
 						sfRenderWindow_close(GetRenderWindow());
 					}
+					return;
 				}
 			}
 			break;
@@ -128,6 +171,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					{
 						SetMenuState(MENU_BASE);
 					}
+					return;
 				}
 			}
 			break;
