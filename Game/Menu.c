@@ -22,6 +22,11 @@ void LoadMenu(void)
 		menu.button[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)20, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
 
+	//for (int i = 0; i < NB_KEY; i++)
+	{
+	//	menu.button[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+	}
+
 	menu.name[0] = "Akira";
 	menu.name[1] = "Benjamin";
 	menu.name[2] = "Alice";
@@ -72,67 +77,95 @@ void KeyPressedMenu(sfKeyEvent* _keyEvent)
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 {
 	sfFloatRect hitbox = { 0 };
-	switch (menu.state)
+	if (_mouseButtonEvent->button == sfMouseLeft)
 	{
-	case MENU_BASE:
-		for (int i = 0; i < NB_BUTTON; i++)
+		switch (menu.state)
 		{
-			hitbox = sfText_getGlobalBounds(menu.button[i]);
-			if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+		case MENU_BASE:
+			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				if (i == 0)
+				hitbox = sfText_getGlobalBounds(menu.button[i]);
+				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
 				{
-					SetGameState(GAME);
-				}
-				else if (i == 1)
-				{
-					SetMenuState(SETTING);
-				}
-				else if (i == 2)
-				{
-					SetMenuState(CREDITS);
-				}
-				else if (i == 3)
-				{
-					sfRenderWindow_close(GetRenderWindow());
+					if (i == 0)
+					{
+						SetGameState(GAME);
+					}
+					else if (i == 1)
+					{
+						SetMenuState(SETTING);
+					}
+					else if (i == 2)
+					{
+						SetMenuState(CREDITS);
+					}
+					else if (i == 3)
+					{
+						sfRenderWindow_close(GetRenderWindow());
+					}
 				}
 			}
-		}
-		break;
-	case SETTING:
-		for (int i = 0; i < NB_BUTTON; i++)
-		{
-			hitbox = sfText_getGlobalBounds(menu.button[i]);
-			if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+			break;
+		case SETTING:
+			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				if (i == 0)
+				hitbox = sfText_getGlobalBounds(menu.button[i]);
+				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
 				{
-					SetFloatToSave(LIGHT_LEVEL, ((_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75 + 0.25);
-				}
-				else if (i == 1)
-				{
-					SetFloatToSave(SOUND_VOLUME, _mouseButtonEvent->x - hitbox.left);
-				}
-				else if (i == 2)
-				{
-					ChangeFullSceen();
-				}
-				else if (i == 3)
-				{
-					SetMenuState(MENU_BASE);
+					if (i == 0)
+					{
+						SetFloatToSave(LIGHT_LEVEL, ((_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
+					}
+					else if (i == 1)
+					{
+						SetFloatToSave(SOUND_VOLUME, _mouseButtonEvent->x - hitbox.left);
+					}
+					else if (i == 2)
+					{
+						ChangeFullSceen();
+					}
+					else if (i == 3)
+					{
+						SetMenuState(MENU_BASE);
+					}
 				}
 			}
+			break;
+		case CREDITS:
+			hitbox = sfText_getGlobalBounds(menu.button[5]);
+			if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+			{
+				SetMenuState(MENU_BASE);
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	case CREDITS:
-		hitbox = sfText_getGlobalBounds(menu.button[5]);
-		if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+	}
+	else if (_mouseButtonEvent->button == sfMouseRight)
+	{
+		switch (menu.state)
 		{
-			SetMenuState(MENU_BASE);
+		case SETTING:
+			for (int i = 0; i < 2; i++)
+			{
+				hitbox = sfText_getGlobalBounds(menu.button[i]);
+				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+				{
+					if (i == 0)
+					{
+						SetFloatToSave(LIGHT_LEVEL, 0.25f);
+					}
+					else if (i == 1)
+					{
+						SetFloatToSave(SOUND_VOLUME, 0.f);
+					}
+				}
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
 	}
 }
 
@@ -167,6 +200,15 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			{
 				sfText_setColor(menu.button[i], sfWhite);
 			}
+		}
+
+		if (GetFloatFromSave(LIGHT_LEVEL) <= 0.25f)
+		{
+			sfText_setColor(menu.button[0], sfRed);
+		}
+		if (GetFloatFromSave(SOUND_VOLUME) <= 0.0f)
+		{
+			sfText_setColor(menu.button[1], sfRed);
 		}
 		break;
 	case CREDITS:
@@ -208,14 +250,27 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.button[3], "Quit");
 		sfText_setString(menu.button[4], "");
 		sfText_setString(menu.button[5], "");
+		sfText_setColor(menu.button[0], sfWhite);
+		sfText_setColor(menu.button[1], sfWhite);
 		break;
 	case SETTING:
-		sfText_setString(menu.button[0], "Light");
+		sfText_setString(menu.button[0], "Light Level");
 		sfText_setString(menu.button[1], "Sound Volume");
 		sfText_setString(menu.button[2], "Full Sceen");
 		sfText_setString(menu.button[3], "Back");
 		sfText_setString(menu.button[4], "");
 		sfText_setString(menu.button[5], "");
+
+		if (GetFloatFromSave(LIGHT_LEVEL) <= 0.25f)
+		{
+			sfText_setColor(menu.button[0], sfRed);
+		}
+		if (GetFloatFromSave(SOUND_VOLUME) <= 0.0f)
+		{
+			sfText_setColor(menu.button[1], sfRed);
+		}
+
+
 		break;
 	case CREDITS:
 		for (int i = 0; i < 5; i++)
