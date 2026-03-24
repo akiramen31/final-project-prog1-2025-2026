@@ -24,8 +24,8 @@ void LoadMenu(void)
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
-		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2 + 230, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
 
 	sfText_setString(menu.keyType[0], "Jump");
@@ -37,7 +37,7 @@ void LoadMenu(void)
 	sfText_setString(menu.keyType[6], "Hit");
 	sfText_setString(menu.keyType[7], "Second");
 
-	char buffer[5] = { 0 };
+	char buffer[6] = { 0 };
 	for (int i = 0; i < NB_KEY; i++)
 	{
 		char key = GetCharFromSave(i + 1);
@@ -45,11 +45,11 @@ void LoadMenu(void)
 		{
 			buffer[0] = 'a' + key;
 		}
-		else if (key < 36)
+		else if (key > 25 && key < 36)
 		{
 			buffer[0] = '0' + key -26;
 		}
-		else if (key < 100)
+		else if (key > 84 && key < 100)
 		{
 			buffer[0] = 'F';
 			if (key < 64)
