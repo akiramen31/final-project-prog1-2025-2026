@@ -13,6 +13,7 @@ void LoadGame(void)
 	LoadEnnemy();
 	LoadHUD();
 	LoadPlayer();
+	AddEnnemy((sfVector2f) { 200, 200 }, ALEATORY);
 }
 
 void PollEventGame(sfEvent* _event)
@@ -42,7 +43,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-	UpdateEnnemy(_dt);
+	UpdateEnnemy(_dt,0);
 	UpdateHUD(_dt);
 	UpdateCollider();
 }

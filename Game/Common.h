@@ -17,6 +17,7 @@
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 #define BPP 32
+#define DEV_MODE 1
 
 #define G 9.81f
 
