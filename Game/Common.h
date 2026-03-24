@@ -18,6 +18,12 @@
 #define SCREEN_HEIGHT 904
 #define BPP 32
 
+typedef enum  State
+{
+	IDLE = 0,
+	WALK = 4
+}State;
+
 typedef struct Animation
 {
 	sfIntRect rectActualy;

@@ -3,12 +3,22 @@
 
 #include "Common.h"
 
-typedef struct Ennemy
+typedef enum Type
+{
+	SOLDIER,
+	FLYER
+};
+
+typedef struct EnnemyEntity
 {
 	sfSprite* sprite;
+	float life;
+	enum Type type;
+	float energy;
+	sfVector2f move;
 }EnnemyEntity;
 
-typedef struct
+typedef struct Ennemy
 {
 	EnnemyEntity* entity;
 }Ennemy;
@@ -16,6 +26,7 @@ typedef struct
 void LoadEnnemy(void);
 void UpdateEnnemy(float _dt);
 void CreateEnnemyRandom(EnnemyEntity* _ennemy);
+void CrateEnnemy();
 void AddEnnemy(sfVector2f _position);
 void HitEnnemy(unsigned _index);
 

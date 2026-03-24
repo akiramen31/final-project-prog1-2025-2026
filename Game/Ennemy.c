@@ -17,6 +17,11 @@ void CreateEnnemyRandom(EnnemyEntity* _ennemy)
 
 }
 
+void CrateEnnemy()
+{
+
+}
+
 void AddEnnemy(sfVector2f _position)
 {
 	
