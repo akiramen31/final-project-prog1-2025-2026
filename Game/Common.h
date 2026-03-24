@@ -18,6 +18,8 @@
 #define SCREEN_HEIGHT 1080
 #define BPP 32
 
+#define G 9.81f
+
 typedef enum State
 {
 	IDLE = 0,

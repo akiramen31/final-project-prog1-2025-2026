@@ -14,6 +14,14 @@ typedef enum FloatSave
 typedef enum CharSave
 {
 	FULL_SCREEN,
+	KEY_JUMP,
+	KEY_DOWN,
+	KEY_RIGHT,
+	KEY_LEFT,
+	KEY_GUN,
+	KEY_DASH,
+	KEY_HIT,
+	KEY_SECOND,
 	CHAR_COUNT
 
 }CharSave;

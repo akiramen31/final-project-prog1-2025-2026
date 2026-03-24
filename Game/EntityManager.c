@@ -85,8 +85,14 @@ void CleanupGlobal(void)
 
 	while (entityManager.visual)
 	{
-		entityManager.visual = InitPointer(entityManager.visual);
-		sfSprite_destroy(entityManager.visual->ptr);
+		if (entityManager.visual->type == SPRITE)
+		{
+			sfSprite_destroy(entityManager.visual->ptr);
+		}
+		else if (entityManager.visual->type == TEXT)
+		{
+			sfText_destroy(entityManager.visual->ptr);
+		}
 		VisualEntity* temp = entityManager.visual;
 		entityManager.visual = (VisualEntity*)entityManager.visual->next;
 		free(temp);
@@ -143,16 +149,19 @@ void CleanupLocal(void)
 	}
 	entityManager.assetCount = entityManager.generalAssetCount;
 
-	if (entityManager.visual)
+	while (entityManager.visual)
 	{
-		while (entityManager.visual->next)
+		if (entityManager.visual->type == SPRITE)
 		{
-			entityManager.visual->next = InitPointer(entityManager.visual->next);
-			sfSprite_destroy(entityManager.visual->next->ptr);
-			VisualEntity* temp = entityManager.visual->next;
-			entityManager.visual->next = (VisualEntity*)entityManager.visual->next->next;
-			free(temp);
+			sfSprite_destroy(entityManager.visual->ptr);
 		}
+		else if (entityManager.visual->type == TEXT)
+		{
+			sfText_destroy(entityManager.visual->ptr);
+		}
+		VisualEntity* temp = entityManager.visual;
+		entityManager.visual = (VisualEntity*)entityManager.visual->next;
+		free(temp);
 	}
 
 	for (int i = 0; i < entityManager.soundCount; i++)
@@ -353,7 +362,14 @@ void DestroyVisualEntity(void* _entity)
 	{
 		if (elementNext->ptr == _entity)
 		{
-			sfSprite_destroy(elementNext->ptr);
+			if (elementNext->type == SPRITE)
+			{
+				sfSprite_destroy(elementNext->ptr);
+			}
+			else if (elementNext->type == TEXT)
+			{
+				sfText_destroy(elementNext->ptr);
+			}
 			elementActual->next = elementNext->next;
 			free(elementNext);
 			return;

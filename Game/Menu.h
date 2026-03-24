@@ -4,7 +4,7 @@
 #include "Common.h"
 
 #define NB_BUTTON 6
-#define NB_KEY 9
+#define NB_KEY 8
 
 typedef enum MenuState
 {
@@ -18,6 +18,7 @@ typedef struct Menu
 {
 	char* name[10];
 	sfText* button[NB_BUTTON];
+	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
 	MenuState state;
 	
