@@ -6,14 +6,15 @@
 typedef enum Type
 {
 	SOLDIER,
-	FLYER
-};
+	FLYER,
+	TOTAL
+}Type;
 
 typedef struct EnnemyEntity
 {
-	sfSprite* sprite;
-	float life;
 	enum Type type;
+	float life;
+	float energyMax;
 	float energy;
 	sfVector2f move;
 }EnnemyEntity;
@@ -21,13 +22,12 @@ typedef struct EnnemyEntity
 typedef struct Ennemy
 {
 	EnnemyEntity* entity;
+	sfSprite* sprite;
 }Ennemy;
 
 void LoadEnnemy(void);
 void UpdateEnnemy(float _dt);
-void CreateEnnemyRandom(EnnemyEntity* _ennemy);
-void CrateEnnemy();
-void AddEnnemy(sfVector2f _position);
+void AddEnnemy(sfVector2f _position, enum Type _type);
 void HitEnnemy(unsigned _index);
 
 #endif // !GAME_H
