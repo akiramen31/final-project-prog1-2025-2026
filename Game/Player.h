@@ -3,16 +3,15 @@
 
 #include "Common.h"
 
-typedef enum  State
-{
-	IDLE = 0,
-	WALK = 4
-}State;
+
 
 typedef struct Player
 {
 	State state;
 	sfSprite* sprite;
+	float life;
+	float energy;
+	sfVector2f move;
 }Player;
 
 void LoadPlayer(void);
