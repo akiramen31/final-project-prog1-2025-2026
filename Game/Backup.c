@@ -115,7 +115,21 @@ void AddIntToSave(IntSave _index, int _value)
 	backup.valueInt[_index] += _value;
 }
 
-void GetSaveTemp(const char* _nameAndType, void* _ptrExit)
+void SetSaveTemp(const void* _buffer, size_t _size, size_t _count)
+{
+	FILE* file;
+	if (fopen_s(&file, "GameTemp.sav", "w") != 0)
+	{
+		return;
+	}
+
+	fwrite(_buffer, _size, _count, file);
+
+	fclose(file);
+}
+
+
+void GetSaveTemp(void* _buffer, size_t _size, size_t _count)
 {
 	FILE* file;
 	if (fopen_s(&file, "GameTemp.sav", "r") != 0)
@@ -123,7 +137,7 @@ void GetSaveTemp(const char* _nameAndType, void* _ptrExit)
 		return;
 	}
 
-	fscanf_s(file, _nameAndType, _ptrExit);
+	fread(_buffer, _size, _count, file);
 
 	fclose(file);
 }

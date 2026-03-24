@@ -56,5 +56,6 @@ int GetIntFromSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);
 void AddIntToSave(IntSave _index, int _value);
 
-void GetSaveTemp(const char* _nameAndType, void* _ptrExit);
+void SetSaveTemp(const void* _buffer, size_t _size, size_t _count);
+void GetSaveTemp(void* _buffer, size_t _size, size_t _count);
 #endif // !BACKUP_H
