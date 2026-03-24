@@ -10,6 +10,7 @@ typedef struct Player
 	State state;
 	sfSprite* sprite;
 	float life;
+	float energyMax;
 	float energy;
 	sfVector2f move;
 }Player;
