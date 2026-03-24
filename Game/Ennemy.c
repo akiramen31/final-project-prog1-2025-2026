@@ -1,7 +1,7 @@
 #include "Ennemy.h"
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy);
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type, float _life, float _energy, float _speedMax, float _accelerationMax);
+void CreateEnnemy(EnnemyEntity* _ennemy, Type _type, float _life, float _energy, float _speedMax, float _accelerationMax, float jumForce);
 void CalculMoveEnnemy(float _dt, int _index);
 
 List* listEnnemy;
@@ -24,17 +24,17 @@ void CreateEnnemyRandom(EnnemyEntity* _ennemy)
 	switch (temp)
 	{
 	case SOLDIER:
-		CreateEnnemy(_ennemy, 0, 20.f, 500.f, 10.f, 30.f);
+		CreateEnnemy(_ennemy, 0, 20.f, 500.f, 10.f, 30.f, 500.f);
 		break;
 	case FLYER:
-		CreateEnnemy(_ennemy, 1, 10.f, 800.f, 7.f, 30.f);
+		CreateEnnemy(_ennemy, 1, 10.f, 800.f, 7.f, 30.f,500.f);
 		break;
 	default:
 		break;
 	}
 }
 
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type, float _life, float _energy, float _speedMax, float _accelerationMax)
+void CreateEnnemy(EnnemyEntity* _ennemy, Type _type, float _life, float _energy, float _speedMax, float _accelerationMax, float _jumForce)
 {
 	if (DEV_MODE)
 	{
@@ -45,6 +45,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type, float _life, float _energy,
 	_ennemy->energyMax = _energy;
 	_ennemy->energy = _energy;
 	_ennemy->speedMax = _speedMax;
+	_ennemy->jumForce = _jumForce;
 	_ennemy->accelerationMax = _accelerationMax;
 	_ennemy->acceleration = (sfVector2f){ 0,0 };
 	_ennemy->move = (sfVector2f){ 0,0 };
@@ -66,12 +67,13 @@ void CalculMoveEnnemy(float _dt, int _index)
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyUp))
 	{
-		ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.accelerationMax;
+		ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jumForce;
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyDown))
 	{
 		ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.accelerationMax;
 	}
+	ennemy->ennemyEntity.acceleration.y += G;
 	ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.acceleration.x*_dt;
 	ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.acceleration.y * _dt;
 

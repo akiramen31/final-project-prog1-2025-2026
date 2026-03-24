@@ -18,6 +18,7 @@ typedef struct EnnemyEntity
 	float energy;
 	float accelerationMax;
 	float speedMax;
+	float jumForce;
 	sfVector2f acceleration;
 	sfVector2f move;
 	enum State state;
