@@ -7,7 +7,7 @@ typedef enum Type
 {
 	SOLDIER,
 	FLYER,
-	TOTAL
+	ALEATORY
 }Type;
 
 typedef struct EnnemyEntity
@@ -17,11 +17,12 @@ typedef struct EnnemyEntity
 	float energyMax;
 	float energy;
 	sfVector2f move;
+	enum State state;
 }EnnemyEntity;
 
 typedef struct Ennemy
 {
-	EnnemyEntity* entity;
+	EnnemyEntity ennemyEntity;
 	sfSprite* sprite;
 }Ennemy;
 

@@ -7,7 +7,7 @@
 
 typedef struct Player
 {
-	State state;
+	enum State state;
 	sfSprite* sprite;
 	float life;
 	float energyMax;
