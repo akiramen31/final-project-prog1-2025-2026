@@ -14,8 +14,8 @@
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 904
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 #define BPP 32
 
 typedef struct Animation

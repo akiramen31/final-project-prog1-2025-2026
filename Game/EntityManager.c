@@ -694,11 +694,11 @@ void LoadMainData(void)
 
 	if (GetCharFromSave(FULL_SCREEN))
 	{
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
 	}
 	else
 	{
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
 	}
 
 	sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
