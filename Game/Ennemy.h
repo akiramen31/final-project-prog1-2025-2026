@@ -16,6 +16,9 @@ typedef struct EnnemyEntity
 	float life;
 	float energyMax;
 	float energy;
+	float accelerationMax;
+	float speedMax;
+	sfVector2f acceleration;
 	sfVector2f move;
 	enum State state;
 }EnnemyEntity;
@@ -27,7 +30,7 @@ typedef struct Ennemy
 }Ennemy;
 
 void LoadEnnemy(void);
-void UpdateEnnemy(float _dt);
+void UpdateEnnemy(float _dt, int _index);
 void AddEnnemy(sfVector2f _position, enum Type _type);
 void HitEnnemy(unsigned _index);
 
