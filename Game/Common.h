@@ -47,5 +47,6 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject);
 void CopyStingToBuffer(char* _buffer, char* _string);
+void** CreateGrid(sfVector2u _size, size_t _typeSize);
 
 #endif // !COMMON_H
