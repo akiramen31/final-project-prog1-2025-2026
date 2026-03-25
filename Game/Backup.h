@@ -36,7 +36,6 @@ typedef enum IntSave
 
 typedef struct Backup
 {
-	FILE* saveFile;
 	float valueFloat[FLOAT_COUNT];
 	char valueKey[KEY_COUNT];
 	int valueInt[INT_COUNT];
@@ -58,4 +57,6 @@ int GetIntFromSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);
 void AddIntToSave(IntSave _index, int _value);
 
+void SetSaveTemp(const void* _buffer, size_t _size, size_t _count);
+void GetSaveTemp(void* _buffer, size_t _size, size_t _count);
 #endif // !BACKUP_H

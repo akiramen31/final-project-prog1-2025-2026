@@ -25,8 +25,8 @@ void LoadMenu(void)
 	}
 
 	for (int i = 0; i < NB_KEY; i++)
-	{
-		menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+  {
+    menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
@@ -39,7 +39,6 @@ void LoadMenu(void)
 	sfText_setString(menu.keyType[5], "Dash");
 	sfText_setString(menu.keyType[6], "Melee");
 	sfText_setString(menu.keyType[7], "Second");
-
 
 	for (int i = 0; i < NB_KEY; i++)
 	{

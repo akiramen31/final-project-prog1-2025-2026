@@ -4,7 +4,8 @@ Backup backup;
 
 void LoadBackup(void)
 {
-	if (fopen_s(&backup.saveFile, "Game.sav", "r") != 0)
+	FILE* file;
+	if (fopen_s(&file, "Game.sav", "r") != 0)
 	{
 		return;
 	}
@@ -14,7 +15,7 @@ void LoadBackup(void)
 		for (int i = 0; i < FLOAT_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueFloat[i]);
+			fscanf_s(file, (const char*)buffer, &backup.valueFloat[i]);
 		}
 	}
 	{
@@ -22,8 +23,7 @@ void LoadBackup(void)
 		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueKey[i]);
-		}
+			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueKey[i]);}
 	}
 	{
 		char buffer[13] = { "Int  0 : %d\n" };
@@ -31,18 +31,18 @@ void LoadBackup(void)
 		for (int i = 0; i < INT_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueInt[i]);
+			fscanf_s(file, (const char*)buffer, &backup.valueInt[i]);
 		}
 		o = backup.valueInt[0];
 	}
 
-	fclose(backup.saveFile);
-	backup.saveFile = NULL;
+	fclose(file);
 }
 
 void SaveBackup(void)
 {
-	if (fopen_s(&backup.saveFile, "Game.sav", "w") != 0)
+	FILE* file;
+	if (fopen_s(&file, "Game.sav", "w") != 0)
 	{
 		return;
 	}
@@ -52,7 +52,7 @@ void SaveBackup(void)
 		for (int i = 0; i < FLOAT_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fprintf_s(backup.saveFile, (const char*)buffer, backup.valueFloat[i]);
+			fprintf_s(file, (const char*)buffer, backup.valueFloat[i]);
 		}
 	}
 	{
@@ -68,12 +68,11 @@ void SaveBackup(void)
 		for (int i = 0; i < INT_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fprintf_s(backup.saveFile, (const char*)buffer, backup.valueInt[i]);
+			fprintf_s(file, (const char*)buffer, backup.valueInt[i]);
 		}
 	}
 
-	fclose(backup.saveFile);
-	backup.saveFile = NULL;
+	fclose(file);
 }
 
 float GetFloatFromSave(FloatSave _index)
@@ -117,4 +116,31 @@ void SetIntToSave(IntSave _index, int _value)
 void AddIntToSave(IntSave _index, int _value)
 {
 	backup.valueInt[_index] += _value;
+}
+
+void SetSaveTemp(const void* _buffer, size_t _size, size_t _count)
+{
+	FILE* file;
+	if (fopen_s(&file, "GameTemp.sav", "w") != 0)
+	{
+		return;
+	}
+
+	fwrite(_buffer, _size, _count, file);
+
+	fclose(file);
+}
+
+
+void GetSaveTemp(void* _buffer, size_t _size, size_t _count)
+{
+	FILE* file;
+	if (fopen_s(&file, "GameTemp.sav", "r") != 0)
+	{
+		return;
+	}
+
+	fread(_buffer, _size, _count, file);
+
+	fclose(file);
 }
