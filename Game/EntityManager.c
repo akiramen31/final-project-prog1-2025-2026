@@ -419,6 +419,16 @@ void DestroyAssetEntity(void* _entity)
 			{
 				sfFont_destroy(entityManager.asset[i].ptr);
 			}
+			entityManager.assetCount--;
+			free(entityManager.asset[i].file);
+			entityManager.asset[i].ptr = entityManager.asset[entityManager.assetCount].ptr;
+			entityManager.asset[i].file = entityManager.asset[entityManager.assetCount].file;
+			AssetEntity* temp = realloc(entityManager.asset, entityManager.assetCount * sizeof(AssetEntity));
+			if (temp == NULL)
+			{
+				return;
+			}
+			entityManager.asset = temp;
 			return;
 		}
 	}
