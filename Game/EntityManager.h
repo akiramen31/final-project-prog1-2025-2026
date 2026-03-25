@@ -96,11 +96,11 @@ void* Realloc(void* _block, size_t _size);
 void Free(void* _ptr);
 List* CreateList(void);
 void RemoveList(List* _list);
-unsigned int GetListSize(List* _list);
+unsigned GetListSize(List* _list);
 Element* CreateElement(void* _value);
-Element* GetElement(List* _list, unsigned int _index);
-void InsertElement(List* _list, Element* _element, unsigned int _index);
-void RemoveElement(List* _list, unsigned int _index);
+Element* GetElement(List* _list, unsigned _index);
+void InsertElement(List* _list, Element* _element, unsigned _index);
+void RemoveElement(List* _list, unsigned _index);
 
 void Load(void);
 void PollEvent(void);

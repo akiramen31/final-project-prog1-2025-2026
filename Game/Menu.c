@@ -526,7 +526,7 @@ void UpdateTextKey(int _index, int _key)
 
 
 
-	SetKeyToSave(_index + 1, _key);
+	SetKeyToSave(_index, _key);
 	sfText_setString(menu.key[_index], buffer);
 }
 
@@ -554,5 +554,6 @@ void UpdateTextKeyMouse(int _index, int _key)
 		CopyStingToBuffer(buffer, "MouseXButton2");
 	}
 
+	SetMouseKeyToSave(_index, _key);
 	sfText_setString(menu.key[_index], buffer);
 }

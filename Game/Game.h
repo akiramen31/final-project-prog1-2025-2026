@@ -5,6 +5,7 @@
 #include "HUD.h"
 #include "Player.h"
 #include "Ennemy.h"
+#include "Scene.h"
 
 typedef struct
 {

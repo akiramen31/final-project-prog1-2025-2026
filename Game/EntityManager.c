@@ -551,14 +551,14 @@ void RemoveList(List* _list)
 	_list = NULL;
 }
 
-unsigned int GetListSize(List* _list)
+unsigned GetListSize(List* _list)
 {
 	if (!_list)
 	{
 		return 0;
 	}
 	Element* actualElement = _list->first;
-	unsigned int listSize = 0;
+	unsigned listSize = 0;
 
 	while (actualElement != NULL)
 	{
@@ -583,10 +583,17 @@ Element* CreateElement(void* _value)
 	return newElement;
 }
 
-Element* GetElement(List* _list, unsigned int _index)
+Element* GetElement(List* _list, unsigned _index)
 {
 	Element* actualElement = _list->first;
-	unsigned int actualIndex = 0;
+	for (unsigned i = 0; i < _index && actualElement; i++)
+	{
+		actualElement = actualElement->next;
+	}
+	return actualElement;
+
+	/*Element* actualElement = _list->first;
+	unsigned actualIndex = 0;
 
 	while (actualIndex < _index && actualElement != NULL)
 	{
@@ -594,10 +601,10 @@ Element* GetElement(List* _list, unsigned int _index)
 		actualElement = actualElement->next;
 	}
 
-	return actualElement;
+	return actualElement;*/
 }
 
-void InsertElement(List* _list, Element* _element, unsigned int _index)
+void InsertElement(List* _list, Element* _element, unsigned _index)
 {
 	if (_index == 0)
 	{
@@ -615,9 +622,31 @@ void InsertElement(List* _list, Element* _element, unsigned int _index)
 	}
 }
 
-void RemoveElement(List* _list, unsigned int _index)
+void RemoveElement(List* _list, unsigned _index)
 {
+	Element* elementToRemove = _list->first;
 	if (_index == 0)
+	{
+		_list->first = elementToRemove->next;
+	}
+	else
+	{
+		Element* previousElement = GetElement(_list, _index - 1);
+		if (previousElement != NULL)
+		{
+			Element* elementToRemove = previousElement->next;
+			if (elementToRemove != NULL)
+			{
+				previousElement->next = elementToRemove->next;
+			}
+		}
+	}
+	if (elementToRemove)
+	{
+		free(elementToRemove);
+	}
+
+	/*if (_index == 0)
 	{
 		Element* elementToRemove = _list->first;
 		_list->first = elementToRemove->next;
@@ -635,7 +664,7 @@ void RemoveElement(List* _list, unsigned int _index)
 				free(elementToRemove);
 			}
 		}
-	}
+	}*/
 }
 
 
