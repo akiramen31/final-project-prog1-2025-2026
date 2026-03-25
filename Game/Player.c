@@ -59,7 +59,6 @@ void MovePlayer(float _dt)
 			sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 			player.velocity.y = -8;
 			player.isGrounded = sfFalse;
-			printf("444");
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
 		{
@@ -95,11 +94,12 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81 * _dt;
 	}
 
-	if (sfSprite_getPosition(player.sprite).y >= 3890)
+	if (sfSprite_getPosition(player.sprite).y >= 32 * 129)
 	{
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;
 	}
+
 
 	{
 		float tempAngle = atan2f(player.velocity.y, player.velocity.y);		sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
