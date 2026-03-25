@@ -41,7 +41,7 @@ float GetAngleToVector(sfVector2f _vector);
 float RadToDeg(float _angleRad);
 float DegToRad(float _angleDeg);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);
-sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position);
+sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);

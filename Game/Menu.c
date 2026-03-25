@@ -42,7 +42,7 @@ void LoadMenu(void)
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		UpdateTextKey(i, GetKeyFromSave(i + 1));
+		UpdateTextKey(i, GetKeyFromSave(i));
 	}
 
 	menu.name[0] = "Akira";
@@ -526,7 +526,7 @@ void UpdateTextKey(int _index, int _key)
 
 
 
-	SetKeyToSave(_index + 1, _key);
+	SetKeyToSave(_index, _key);
 	sfText_setString(menu.key[_index], buffer);
 }
 
