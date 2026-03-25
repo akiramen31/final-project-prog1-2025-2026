@@ -772,6 +772,12 @@ void SetViewCentre(sfVector2f _centre)
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 
+void SetViewSize(sfVector2f _size)
+{
+	sfView_setSize(entityManager.view, _size);
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+}
+
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();
