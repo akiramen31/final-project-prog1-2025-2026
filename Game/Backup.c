@@ -20,11 +20,10 @@ void LoadBackup(void)
 	}
 	{
 		char buffer[13] = { "Char 0 : %d\n" };
-		for (int i = 0; i < CHAR_COUNT; i++)
+		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fscanf_s(file, (const char*)buffer, &backup.valueChar[i]);
-		}
+			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueKey[i]);}
 	}
 	{
 		char buffer[13] = { "Int  0 : %d\n" };
@@ -58,15 +57,15 @@ void SaveBackup(void)
 	}
 	{
 		char buffer[13] = { "Char 0 : %d\n" };
-		for (int i = 0; i < CHAR_COUNT; i++)
+		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fprintf_s(file, (const char*)buffer, backup.valueChar[i]);
+			fprintf_s(backup.saveFile, (const char*)buffer, backup.valueKey[i]);
 		}
 	}
 	{
 		char buffer[13] = { "Int  0 : %d\n" };
-		for (int i = 0; i < CHAR_COUNT; i++)
+		for (int i = 0; i < INT_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
 			fprintf_s(file, (const char*)buffer, backup.valueInt[i]);
@@ -89,17 +88,21 @@ void AddFloatToSave(FloatSave _index, float _value)
 	backup.valueFloat[_index] += _value;
 }
 
-char GetCharFromSave(CharSave _index)
+char GetKeyFromSave(KeySave _index)
 {
-	return backup.valueChar[_index];
+	return backup.valueKey[_index];
 }
-void SetCharToSave(CharSave _index, char _value)
+void SetKeyToSave(KeySave _index, char _value)
 {
-	backup.valueChar[_index] = _value;
+	backup.valueKey[_index] = _value;
 }
-void AddCharToSave(CharSave _index, char _value)
+char GetMouseKeyFromSave(KeySave _index)
 {
-	backup.valueChar[_index] += _value;
+	return backup.valueKey[_index] - sfKeyCount;
+}
+void SetMouseKeyToSave(KeySave _index, char _value)
+{
+	backup.valueKey[_index] = _value + sfKeyCount;
 }
 
 int GetIntFromSave(IntSave _index)
