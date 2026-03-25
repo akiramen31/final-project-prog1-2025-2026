@@ -10,9 +10,15 @@ typedef enum Type
 	ALEATORY
 }Type;
 
-typedef struct EnnemyEntity
+typedef struct Jetpack
 {
-	enum Type type;
+	float trust;
+	float consomation;
+	float life;
+} Jetpack;
+
+typedef struct EnnemyData
+{
 	float life;
 	float energyMax;
 	float energy;
@@ -20,6 +26,14 @@ typedef struct EnnemyEntity
 	float accelerationMax;
 	float speedMax;
 	float jumForce;
+} EnnemyData;
+
+typedef struct EnnemyEntity
+{
+	enum Type type;
+	struct EnnemyData ennemydata;
+	sfBool isJetpack;
+	struct Jetpack jetpack;
 	sfVector2f acceleration;
 	sfVector2f move;
 	enum State state;
@@ -29,11 +43,13 @@ typedef struct Ennemy
 {
 	EnnemyEntity ennemyEntity;
 	sfSprite* sprite;
+	sfImage* imageColideur;
 }Ennemy;
 
 void LoadEnnemy(void);
 void UpdateEnnemy(float _dt, int _index);
 void AddEnnemy(sfVector2f _position, enum Type _type);
-void HitEnnemy(unsigned _index);
+sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat);
+
 
 #endif // !GAME_H
