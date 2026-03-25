@@ -708,7 +708,7 @@ void LoadMainData(void)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
 
-	if (GetCharFromSave(FULL_SCREEN))
+	if (GetIntFromSave(FULL_SCREEN))
 	{
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
 	}
@@ -763,16 +763,16 @@ void ChangeFullSceen(void)
 {
 	sfVideoMode videoMode = { SCREEN_WIDTH, SCREEN_HEIGHT, BPP };
 
-	if (GetCharFromSave(FULL_SCREEN))
+	if (GetIntFromSave(FULL_SCREEN))
 	{
 		sfRenderWindow_destroy(entityManager.renderWindow);
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
-		SetCharToSave(FULL_SCREEN, 0);
+		SetIntToSave(FULL_SCREEN, 0);
 	}
 	else
 	{
 		sfRenderWindow_destroy(entityManager.renderWindow);
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
-		SetCharToSave(FULL_SCREEN, 1);
+		SetIntToSave(FULL_SCREEN, 1);
 	}
 }

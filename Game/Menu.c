@@ -1,9 +1,11 @@
 #include "Menu.h"
 
-void KeyPressedMenu(sfKeyEvent* _keyEvent);
+void KeyPressedMenu(sfEvent* _event);
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent);
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent);
 void SetMenuState(MenuState _state);
+void UpdateTextKey(int _index, int _key);
+void UpdateTextKeyMouse(int _index, int _key);
 
 Menu menu;
 
@@ -24,8 +26,9 @@ void LoadMenu(void)
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
-		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH / 2 + 230, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
 
 	sfText_setString(menu.keyType[0], "Jump");
@@ -34,35 +37,13 @@ void LoadMenu(void)
 	sfText_setString(menu.keyType[3], "Left");
 	sfText_setString(menu.keyType[4], "Shoot");
 	sfText_setString(menu.keyType[5], "Dash");
-	sfText_setString(menu.keyType[6], "Hit");
+	sfText_setString(menu.keyType[6], "Melee");
 	sfText_setString(menu.keyType[7], "Second");
 
-	char buffer[5] = { 0 };
+
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		char key = GetCharFromSave(i + 1);
-		if (key < 26)
-		{
-			buffer[0] = 'a' + key;
-		}
-		else if (key < 36)
-		{
-			buffer[0] = '0' + key -26;
-		}
-		else if (key < 100)
-		{
-			buffer[0] = 'F';
-			if (key < 64)
-			{
-				buffer[1] = '0' + key - 85;
-			}
-			else
-			{
-				buffer[1] = '1';
-				buffer[2] = '0' + key - 94;
-			}
-		}
-		sfText_setString(menu.key[i], buffer);
+		UpdateTextKey(i, GetKeyFromSave(i + 1));
 	}
 
 	menu.name[0] = "Akira";
@@ -84,7 +65,7 @@ void PollEventMenu(sfEvent* _event)
 	switch (_event->type)
 	{
 	case sfEvtKeyPressed:
-		KeyPressedMenu(&_event->key);
+		KeyPressedMenu(_event);
 		break;
 	case sfEvtMouseButtonPressed:
 		MouseButtonPressedMenu(&_event->mouseButton);
@@ -97,22 +78,26 @@ void PollEventMenu(sfEvent* _event)
 	}
 }
 
-void KeyPressedMenu(sfKeyEvent* _keyEvent)
+void KeyPressedMenu(sfEvent* _event)
 {
-	switch (_keyEvent->code)
+	switch (_event->key.code)
 	{
 	case sfKeyEscape:
 		sfRenderWindow_close(GetRenderWindow());
-		break;
-	case sfKeySpace:
-		if (menu.state == MENU_BASE)
-		{
-
-		}
-		SetGameState(GAME);
-		break;
+		return;
 	default:
 		break;
+	}
+
+	sfFloatRect hitbox = { 0 };
+	sfFloatRect hitbox2 = { 0 };
+	for (int i = 0; i < NB_KEY; i++)
+	{
+		if (sfText_getColor(menu.key[i]).r == sfYellow.r && sfText_getColor(menu.key[i]).g == sfYellow.g && sfText_getColor(menu.key[i]).b == sfYellow.b)
+		{
+			UpdateTextKey(i, _event->key.code);
+			return;
+		}
 	}
 }
 
@@ -127,7 +112,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
 				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 				{
 					if (i == 0)
 					{
@@ -153,7 +138,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
 				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 				{
 					if (i == 0)
 					{
@@ -177,7 +162,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			break;
 		case CREDITS:
 			hitbox = sfText_getGlobalBounds(menu.button[5]);
-			if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+			if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 			{
 				SetMenuState(MENU_BASE);
 			}
@@ -194,7 +179,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			for (int i = 0; i < 2; i++)
 			{
 				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 				{
 					if (i == 0)
 					{
@@ -211,6 +196,16 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			break;
 		}
 	}
+
+	sfFloatRect hitbox2 = { 0 };
+	for (int i = 0; i < NB_KEY; i++)
+	{
+		if (sfText_getColor(menu.key[i]).r == sfYellow.r && sfText_getColor(menu.key[i]).g == sfYellow.g && sfText_getColor(menu.key[i]).b == sfYellow.b)
+		{
+			UpdateTextKeyMouse(i, _mouseButtonEvent->button);
+			return;
+		}
+	}
 }
 
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
@@ -222,7 +217,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 		for (int i = 0; i < NB_BUTTON; i++)
 		{
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
-			if (sfFloatRect_contains(&hitbox, _mouseMovedEvent->x, _mouseMovedEvent->y))
+			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
 				sfText_setColor(menu.button[i], sfYellow);
 			}
@@ -236,13 +231,29 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 		for (int i = 0; i < NB_BUTTON; i++)
 		{
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
-			if (sfFloatRect_contains(&hitbox, _mouseMovedEvent->x, _mouseMovedEvent->y))
+			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
 				sfText_setColor(menu.button[i], sfYellow);
 			}
 			else
 			{
 				sfText_setColor(menu.button[i], sfWhite);
+			}
+		}
+		sfFloatRect hitbox2 = { 0 };
+		for (int i = 0; i < NB_KEY; i++)
+		{
+			hitbox = sfText_getGlobalBounds(menu.key[i]);
+			hitbox2 = sfText_getGlobalBounds(menu.keyType[i]);
+			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y) || sfFloatRect_contains(&hitbox2, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
+			{
+				sfText_setColor(menu.key[i], sfYellow);
+				sfText_setColor(menu.keyType[i], sfYellow);
+			}
+			else
+			{
+				sfText_setColor(menu.key[i], sfWhite);
+				sfText_setColor(menu.keyType[i], sfWhite);
 			}
 		}
 
@@ -259,7 +270,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 		for (int i = 0; i < NB_BUTTON; i++)
 		{
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
-			if (sfFloatRect_contains(&hitbox, _mouseMovedEvent->x, _mouseMovedEvent->y))
+			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
 				sfText_setColor(menu.button[i], sfYellow);
 				if (i < 5)
@@ -296,6 +307,11 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.button[5], "");
 		sfText_setColor(menu.button[0], sfWhite);
 		sfText_setColor(menu.button[1], sfWhite);
+		for (int i = 0; i < NB_KEY; i++)
+		{
+			sfText_setPosition(menu.key[i], (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i });
+			sfText_setPosition(menu.keyType[i], (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i });
+		}
 		break;
 	case SETTING:
 		sfText_setString(menu.button[0], "Light Level");
@@ -314,7 +330,11 @@ void SetMenuState(MenuState _state)
 			sfText_setColor(menu.button[1], sfRed);
 		}
 
-
+		for (int i = 0; i < NB_KEY; i++)
+		{
+			sfText_setPosition(menu.key[i], (sfVector2f) { (float)SCREEN_WIDTH / 2 + 230, (float)SCREEN_HEIGHT / 2 + 50 * i });
+			sfText_setPosition(menu.keyType[i], (sfVector2f) { (float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2 + 50 * i });
+		}
 		break;
 	case CREDITS:
 		for (int i = 0; i < 5; i++)
@@ -331,4 +351,229 @@ void SetMenuState(MenuState _state)
 void UpdateMenu(float _dt)
 {
 
+}
+
+void UpdateTextKey(int _index, int _key)
+{
+	char buffer[10] = { 0 };
+	if (_key >= 0 && _key < 26)
+	{
+		buffer[0] = 'A' + _key;
+	}
+	else if (_key > 25 && _key < 36)
+	{
+		buffer[0] = '0' + _key - 26;
+	}
+	else if (_key == sfKeyLControl)
+	{
+		CopyStingToBuffer(buffer, "LControl");
+	}
+	else if (_key == sfKeyLShift)
+	{
+		CopyStingToBuffer(buffer, "LShift");
+	}
+	else if (_key == sfKeyLAlt)
+	{
+		CopyStingToBuffer(buffer, "LAlt");
+	}
+	else if (_key == sfKeyRControl)
+	{
+		CopyStingToBuffer(buffer, "RControl");
+	}
+	else if (_key == sfKeyRShift)
+	{
+		CopyStingToBuffer(buffer, "RShift");
+	}
+	else if (_key == sfKeyRAlt)
+	{
+		CopyStingToBuffer(buffer, "RAlt");
+	}
+	else if (_key == sfKeyLBracket)
+	{
+		CopyStingToBuffer(buffer, "LBracket");
+	}
+	else if (_key == sfKeyRBracket)
+	{
+		CopyStingToBuffer(buffer, "RBracket");
+	}
+	else if (_key == sfKeySemicolon)
+	{
+		CopyStingToBuffer(buffer, "Semicolon");
+	}
+	else if (_key == sfKeyComma)
+	{
+		CopyStingToBuffer(buffer, "Comma");
+	}
+	else if (_key == sfKeyPeriod)
+	{
+		CopyStingToBuffer(buffer, "Period");
+	}
+	else if (_key == sfKeyQuote)
+	{
+		CopyStingToBuffer(buffer, "Quote");
+	}
+	else if (_key == sfKeySlash)
+	{
+		CopyStingToBuffer(buffer, "Slash");
+	}
+	else if (_key == sfKeyBackslash)
+	{
+		CopyStingToBuffer(buffer, "Backslash");
+	}
+	else if (_key == sfKeyTilde)
+	{
+		CopyStingToBuffer(buffer, "Tilde");
+	}
+	else if (_key == sfKeyEqual)
+	{
+		CopyStingToBuffer(buffer, "Equal");
+	}
+	else if (_key == sfKeyHyphen)
+	{
+		CopyStingToBuffer(buffer, "Hyphen");
+	}
+	else if (_key == sfKeySpace)
+	{
+		CopyStingToBuffer(buffer, "Space");
+	}
+	else if (_key == sfKeyEnter)
+	{
+		CopyStingToBuffer(buffer, "Enter");
+	}
+	else if (_key == sfKeyBackspace)
+	{
+		CopyStingToBuffer(buffer, "Backspace");
+	}
+	else if (_key == sfKeyTab)
+	{
+		CopyStingToBuffer(buffer, "Tab");
+	}
+	else if (_key == sfKeyPageUp)
+	{
+		CopyStingToBuffer(buffer, "PageUp");
+	}
+	else if (_key == sfKeyPageDown)
+	{
+		CopyStingToBuffer(buffer, "PageDown");
+	}
+	else if (_key == sfKeyEnd)
+	{
+		CopyStingToBuffer(buffer, "End");
+	}
+	else if (_key == sfKeyHome)
+	{
+		CopyStingToBuffer(buffer, "Home");
+	}
+	else if (_key == sfKeyInsert)
+	{
+		CopyStingToBuffer(buffer, "Insert");
+	}
+	else if (_key == sfKeyDelete)
+	{
+		CopyStingToBuffer(buffer, "Delete");
+	}
+	else if (_key == sfKeyAdd)
+	{
+		CopyStingToBuffer(buffer, "Add");
+	}
+	else if (_key == sfKeySubtract)
+	{
+		CopyStingToBuffer(buffer, "Subtract");
+	}
+	else if (_key == sfKeyMultiply)
+	{
+		CopyStingToBuffer(buffer, "Multiply");
+	}
+	else if (_key == sfKeyDivide)
+	{
+		CopyStingToBuffer(buffer, "Divide");
+	}
+	else if (_key == sfKeyLeft)
+	{
+		CopyStingToBuffer(buffer, "Left");
+	}
+	else if (_key == sfKeyRight)
+	{
+		CopyStingToBuffer(buffer, "Right");
+	}
+	else if (_key == sfKeyUp)
+	{
+		CopyStingToBuffer(buffer, "Up");
+	}
+	else if (_key == sfKeyDown)
+	{
+		CopyStingToBuffer(buffer, "Down");
+	}
+	else if (_key > 74 && _key < 85)
+	{
+		CopyStingToBuffer(buffer, "Numpad");
+		buffer[6] = '0' + _key - 75;
+	}
+	else if (_key > 84 && _key < 94)
+	{
+		buffer[0] = 'F';
+		buffer[1] = '1' + _key - 85;
+	}
+	else if (_key < 100)
+	{
+		buffer[0] = 'F';
+		buffer[1] = '1';
+		buffer[2] = '0' + _key - 94;
+	}
+	else
+	{
+		return;
+	}
+
+
+
+	SetKeyToSave(_index + 1, _key);
+	sfText_setString(menu.key[_index], buffer);
+}
+
+void UpdateTextKeyMouse(int _index, int _key)
+{
+	char buffer[13] = { 0 };
+	buffer[0] = 'M';
+	buffer[1] = 'o';
+	buffer[2] = 'u';
+	buffer[3] = 's';
+	buffer[4] = 'e';
+	buffer[5] = ' ';
+
+
+	if (_key == sfMouseLeft)
+	{
+		buffer[6] = 'L';
+		buffer[7] = 'e';
+		buffer[8] = 'f';
+		buffer[9] = 't';
+	}
+	else if (_key == sfMouseRight)
+	{
+		buffer[6] = 'R';
+		buffer[7] = 'i';
+		buffer[8] = 'g';
+		buffer[9] = 'h';
+		buffer[10] = 't';
+	}
+	else if (_key == sfMouseMiddle)
+	{
+		buffer[6] = 'M';
+		buffer[7] = 'i';
+		buffer[8] = 'd';
+		buffer[9] = 'd';
+		buffer[10] = 'l';
+		buffer[11] = 'e';
+	}
+	else if (_key == sfMouseXButton1)
+	{
+		buffer[6] = '1';
+	}
+	else if (_key == sfMouseXButton2)
+	{
+		buffer[6] = '2';
+	}
+
+	sfText_setString(menu.key[_index], buffer);
 }

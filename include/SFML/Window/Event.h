@@ -82,7 +82,7 @@ typedef struct
     sfBool      shift;
     sfBool      system;
 } sfKeyEvent;
-
+ 
 ////////////////////////////////////////////////////////////
 /// \brief Text event parameters
 ///

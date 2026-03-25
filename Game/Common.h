@@ -46,5 +46,6 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animati
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject);
+void CopyStingToBuffer(char* _buffer, char* _string);
 
 #endif // !COMMON_H

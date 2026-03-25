@@ -11,9 +11,8 @@ typedef enum FloatSave
 
 }FloatSave;
 
-typedef enum CharSave
+typedef enum KeySave
 {
-	FULL_SCREEN,
 	KEY_JUMP,
 	KEY_DOWN,
 	KEY_RIGHT,
@@ -22,14 +21,15 @@ typedef enum CharSave
 	KEY_DASH,
 	KEY_HIT,
 	KEY_SECOND,
-	CHAR_COUNT
+	KEY_COUNT
 
-}CharSave;
+}KeySave;
 
 typedef enum IntSave
 {
 	SCORE,
 	LIFE,
+	FULL_SCREEN,
 	INT_COUNT
 
 }IntSave;
@@ -38,7 +38,7 @@ typedef struct Backup
 {
 	FILE* saveFile;
 	float valueFloat[FLOAT_COUNT];
-	char valueChar[CHAR_COUNT];
+	char valueKey[KEY_COUNT];
 	int valueInt[INT_COUNT];
 }Backup;
 
@@ -49,9 +49,10 @@ float GetFloatFromSave(FloatSave _index);
 void SetFloatToSave(FloatSave _index, float _value);
 void AddFloatToSave(FloatSave _index, float _value);
 
-char GetCharFromSave(CharSave _index);
-void SetCharToSave(CharSave _index, char _value);
-void AddCharToSave(CharSave _index, char _value);
+char GetKeyFromSave(KeySave _index);
+void SetKeyToSave(KeySave _index, char _value);
+char GetMouseKeyFromSave(KeySave _index);
+void SetMouseKeyToSave(KeySave _index, char _value);
 
 int GetIntFromSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);

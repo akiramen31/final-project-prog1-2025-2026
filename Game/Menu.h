@@ -18,6 +18,7 @@ typedef struct Menu
 {
 	char* name[10];
 	sfText* button[NB_BUTTON];
+	sfText* keyRod[NB_KEY];
 	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
 	MenuState state;
