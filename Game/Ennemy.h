@@ -16,6 +16,7 @@ typedef struct EnnemyEntity
 	float life;
 	float energyMax;
 	float energy;
+	float energyRegen;
 	float accelerationMax;
 	float speedMax;
 	float jumForce;

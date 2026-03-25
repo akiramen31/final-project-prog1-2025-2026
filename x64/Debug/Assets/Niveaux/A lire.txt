@@ -1,0 +1,8 @@
+code couleur pour les map réduite.
+Gris Clair = sol/mur
+Jaune = objet destructible
+Rouge = zone de dégât
+Vert = zone de déplacement
+Rose = zone interactive
+Cyan = zone exclusive au joueur
+Bleu = zone affichage d'information

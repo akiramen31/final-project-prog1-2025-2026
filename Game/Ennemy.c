@@ -9,7 +9,7 @@ EnnemyEntity ennemyEntity[ALEATORY];
 void LoadEnnemy(void)
 {
 	listEnnemy = CreateList();
-	if (DEV_MODE)
+	if (!DEV_MODE)
 	{
 		GetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY);
 	}
@@ -19,6 +19,7 @@ void LoadEnnemy(void)
 		ennemyEntity[0].life = 20.f;
 		ennemyEntity[0].energyMax = 500.f;
 		ennemyEntity[0].energy = 500.f;
+		ennemyEntity[0].energyRegen = 50.f;
 		ennemyEntity[0].speedMax = 10.f;
 		ennemyEntity[0].accelerationMax = 30.f;
 		ennemyEntity[0].jumForce = 500.f;
@@ -27,6 +28,7 @@ void LoadEnnemy(void)
 		ennemyEntity[1].life = 10.f;
 		ennemyEntity[1].energyMax = 800.f;
 		ennemyEntity[1].energy = 800.f;
+		ennemyEntity[0].energyRegen = 50.f;
 		ennemyEntity[1].speedMax = 7.f;
 		ennemyEntity[1].accelerationMax = 30.f;
 		ennemyEntity[1].jumForce = 500.f;
@@ -67,6 +69,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 	_ennemy->life = ennemyEntity[_type].life;
 	_ennemy->energyMax = ennemyEntity[_type].energy;
 	_ennemy->energy = ennemyEntity[_type].energy;
+	_ennemy->energyRegen = ennemyEntity[_type].energyRegen;
 	_ennemy->speedMax = ennemyEntity[_type].speedMax;
 	_ennemy->jumForce = ennemyEntity[_type].jumForce;
 	_ennemy->accelerationMax = ennemyEntity[_type].accelerationMax;
