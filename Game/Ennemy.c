@@ -3,17 +3,20 @@
 void CreateEnnemyRandom(EnnemyEntity* _ennemy);
 void CreateEnnemy(EnnemyEntity* _ennemy, Type _type);
 void CalculMoveEnnemy(float _dt, int _index);
-Direction AStar(int _index);
+Direction AStar(int _index, sfVector2f _positionCible);
+float CalculResultAStar(Case _case);
 
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
 HitboxMap* hitboxMap;
-Case** AStarMap;
+Case** aStarMap;
+List* listeWait;
 
 void LoadEnnemy(void)
 {
 	listEnnemy = CreateList();
+	listeWait = CreateList();
 	if (!DEV_MODE)
 	{
 		GetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY);
@@ -51,8 +54,8 @@ void LoadEnnemy(void)
 	}
 	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	hitboxMap = GetSceneImageHitbox();
-	printf("ratio %d\n", hitboxMap->ratio);
-	AStarMap = CreateGrid(hitboxMap->size,sizeof(Case));
+	printf("ratio %d aille x%d   y%d\n", hitboxMap->ratio, hitboxMap->size.x, hitboxMap->size.y);
+	aStarMap = CreateGrid(hitboxMap->size,sizeof(Case));
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -94,6 +97,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 	_ennemy->acceleration = (sfVector2f){ 0,0 };
 	_ennemy->move = (sfVector2f){ 0,0 };
 	_ennemy->state = IDLE;
+	_ennemy->timer = 0.f;
 
 	_ennemy->isJetpack = ennemyEntity[_type].isJetpack;
 	if (_ennemy->isJetpack)
@@ -146,19 +150,46 @@ void CalculMoveEnnemy(float _dt, int _index)
 
 }
 
-Direction AStar(int _index)
+Direction AStar(int _index, sfVector2f _positionCible)
 {
+	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
+	int x = 0;
+	int y = 0;
 	// reset du tableau
 	for (unsigned y = 0; y < hitboxMap->size.y; y++)
 	{
 		for (unsigned x = 0; x < hitboxMap->size.x; x++)
 		{
-			AStarMap[y][x] = (Case){0};
+			aStarMap[y][x] = (Case){0};
 		}
 	}
 	
+	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
+	Element* element = CreateElement(ennemy);
+	element->value = emplacement;
+	*emplacement = positionDebutCase;
+	
+	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
+	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
+	//AStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = ;
+	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
+
+	sfBool flag = sfFalse;
+
+	while (GetListSize(listeWait) && flag == sfFalse)
+	{
+
+	}
+
 
 	//return Direction();
+}
+
+float CalculResultAStar(Case _case)
+{
+	return (float) { _case.rangeToDestination + _case.action + (_case.energie * 0.2) };
 }
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
@@ -180,10 +211,10 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 	switch (_type)
 	{
 	case SOLDIER:
-		CreateEnnemy(ennemy, 0);
+		CreateEnnemy(&ennemy->ennemyEntity, 0);
 		break;
 	case FLYER:
-		CreateEnnemy(ennemy, 1);
+		CreateEnnemy(&ennemy->ennemyEntity, 1);
 		break;
 	case ALEATORY:
 		CreateEnnemyRandom(&ennemy->ennemyEntity);
@@ -201,7 +232,7 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, _touch.x, _touch.y);
+	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
 	sfBool isTouch = sfFalse;
 	if (pixelColor.a == 255)
 	{
@@ -213,7 +244,7 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 		ennemy->ennemyEntity.ennemydata.life -= _degat;
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
 		{
-			ennemy->ennemyEntity.ennemydata.life == 0;
+			ennemy->ennemyEntity.ennemydata.life = 0;
 		}
 	}
 	return isTouch;
