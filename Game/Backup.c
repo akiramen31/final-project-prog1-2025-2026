@@ -23,7 +23,7 @@ void LoadBackup(void)
 		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fscanf_s(backup.saveFile, (const char*)buffer, &backup.valueKey[i]);}
+			fscanf_s(file, (const char*)buffer, &backup.valueKey[i]);}
 	}
 	{
 		char buffer[13] = { "Int  0 : %d\n" };
@@ -60,7 +60,7 @@ void SaveBackup(void)
 		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			buffer[5] = '0' + i;
-			fprintf_s(backup.saveFile, (const char*)buffer, backup.valueKey[i]);
+			fprintf_s(file, (const char*)buffer, backup.valueKey[i]);
 		}
 	}
 	{

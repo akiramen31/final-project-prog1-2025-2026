@@ -532,46 +532,26 @@ void UpdateTextKey(int _index, int _key)
 
 void UpdateTextKeyMouse(int _index, int _key)
 {
-	char buffer[13] = { 0 };
-	buffer[0] = 'M';
-	buffer[1] = 'o';
-	buffer[2] = 'u';
-	buffer[3] = 's';
-	buffer[4] = 'e';
-	buffer[5] = ' ';
-
-
+	char buffer[14] = { 0 };
 	if (_key == sfMouseLeft)
 	{
-		buffer[6] = 'L';
-		buffer[7] = 'e';
-		buffer[8] = 'f';
-		buffer[9] = 't';
+		CopyStingToBuffer(buffer, "MouseLeft");
 	}
 	else if (_key == sfMouseRight)
 	{
-		buffer[6] = 'R';
-		buffer[7] = 'i';
-		buffer[8] = 'g';
-		buffer[9] = 'h';
-		buffer[10] = 't';
+		CopyStingToBuffer(buffer, "MouseRight");
 	}
 	else if (_key == sfMouseMiddle)
 	{
-		buffer[6] = 'M';
-		buffer[7] = 'i';
-		buffer[8] = 'd';
-		buffer[9] = 'd';
-		buffer[10] = 'l';
-		buffer[11] = 'e';
+		CopyStingToBuffer(buffer, "MouseMiddle");
 	}
 	else if (_key == sfMouseXButton1)
 	{
-		buffer[6] = '1';
+		CopyStingToBuffer(buffer, "MouseXButton1");
 	}
 	else if (_key == sfMouseXButton2)
 	{
-		buffer[6] = '2';
+		CopyStingToBuffer(buffer, "MouseXButton2");
 	}
 
 	sfText_setString(menu.key[_index], buffer);
