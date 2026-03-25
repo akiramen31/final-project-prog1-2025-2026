@@ -33,7 +33,7 @@ void UpdateText(sfText* _text, char* _format, char* _string, int _value)
 	sfText_setString(_text, buffer);
 }
 
-sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position)
+sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position)
 {
 	if (_hitbox->left < _position.x)
 	{
