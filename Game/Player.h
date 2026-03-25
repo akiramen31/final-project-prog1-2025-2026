@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-
+#define PLAYER_WALK_SPEED_MAX 100
 
 typedef struct Player
 {
@@ -12,7 +12,13 @@ typedef struct Player
 	float life;
 	float energyMax;
 	float energy;
-	sfVector2f move;
+	sfVector2f velocity;
+
+	// if True direction is right
+	sfBool direction;
+
+	sfBool isGrounded;
+	sfBool isDashing;
 }Player;
 
 void LoadPlayer(void);

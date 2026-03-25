@@ -402,7 +402,7 @@ void DestroySoundEntity(void* _entity)
 
 void DestroyAssetEntity(void* _entity)
 {
-	for (int i = 0; i < entityManager.assetCount; i++)
+	for (int i = entityManager.generalAssetCount; i < entityManager.assetCount; i++)
 	{
 		if (entityManager.asset[i].ptr == _entity)
 		{
@@ -485,8 +485,8 @@ void* Calloc(size_t _count, size_t _size)
 		return NULL;
 	}
 	entityManager.callocList = temp;
-	entityManager.callocList[entityManager.callocListCount - 1];
-	return calloc(_count, _size);
+	entityManager.callocList[entityManager.callocListCount - 1] = calloc(_count, _size);
+	return entityManager.callocList[entityManager.callocListCount - 1];
 }
 
 void* Realloc(void* _block, size_t _size)
@@ -538,16 +538,14 @@ List* CreateList(void)
 		return NULL;
 	}
 	entityManager.listList = temp;
-	entityManager.listList[entityManager.listListCount - 1];
-
-	List* newList = calloc(1, sizeof(List));
-	if (newList == NULL)
+	entityManager.listList[entityManager.listListCount - 1] = calloc(1, sizeof(List));
+	if (entityManager.listList[entityManager.listListCount - 1] == NULL)
 	{
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
-	newList->first = NULL;
+	entityManager.listList[entityManager.listListCount - 1]->first = NULL;
 
-	return newList;
+	return entityManager.listList[entityManager.listListCount - 1];
 }
 
 void RemoveList(List* _list)
@@ -769,6 +767,12 @@ void LoadMainData(void)
 void SetViewCentre(sfVector2f _centre)
 {
 	sfView_setCenter(entityManager.view, _centre);
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+}
+
+void SetViewSize(sfVector2f _size)
+{
+	sfView_setSize(entityManager.view, _size);
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 

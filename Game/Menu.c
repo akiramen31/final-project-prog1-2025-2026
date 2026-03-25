@@ -12,6 +12,7 @@ Menu menu;
 void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
+
 	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 12.f);
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
@@ -42,7 +43,7 @@ void LoadMenu(void)
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		UpdateTextKey(i, GetKeyFromSave(i + 1));
+		UpdateTextKey(i, GetKeyFromSave(i));
 	}
 
 	menu.name[0] = "Akira";

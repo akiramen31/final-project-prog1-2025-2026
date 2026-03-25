@@ -9,8 +9,11 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
+  
+	LoadBackground(GetAsset("Assets/Niveaux/Reduite1.png"), 64.f);
+	SetViewCentre((sfVector2f) { SCREEN_WIDTH / 6 * 7, 32.f * 116.f });
 	LoadScene();
-	SetViewCentre((sfVector2f) { SCREEN_WIDTH, 3500.f });
+
 	LoadEnnemy();
 	LoadHUD();
 	LoadPlayer();
@@ -44,7 +47,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-	UpdateEnnemy(_dt,0);
+	UpdateEnnemy(_dt, 0);
 	UpdateHUD(_dt);
 	UpdateCollider();
 }

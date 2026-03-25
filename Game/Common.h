@@ -49,12 +49,16 @@ typedef struct Animation
 	float timeActualy;
 }Animation;
 
+#define POW2(x) (x * x)
+#define VECTOR(u,v) v.x - u.x, v.y - u.y
+#define DISTANCEP2(u,v) POW2(v.x - u.x) + POW2(v.y - u.y)
+
 int GetRandomInRange(int _min, int _max);
 float GetAngleToVector(sfVector2f _vector);
 float RadToDeg(float _angleRad);
 float DegToRad(float _angleDeg);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);
-sfBool IsColidingPionHitbox(sfFloatRect* _hitbox, sfVector2f _position);
+sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
