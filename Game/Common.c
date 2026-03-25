@@ -98,3 +98,22 @@ void CopyStingToBuffer(char* _buffer, char* _string)
 		i++;
 	}
 }
+
+void** CreateGrid(sfVector2u _size, size_t _typeSize)
+{
+	void** grid = Calloc(_size.y, sizeof(void*));
+	if (!grid)
+	{
+		return grid;
+	}
+
+	for (unsigned i = 0; i < _size.y; i++)
+	{
+		grid[i] = Calloc(_size.x, _typeSize);
+		if (!grid[i])
+		{
+			return grid;
+		}
+	}
+	return grid;
+}

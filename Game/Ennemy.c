@@ -3,9 +3,14 @@
 void CreateEnnemyRandom(EnnemyEntity* _ennemy);
 void CreateEnnemy(EnnemyEntity* _ennemy, Type _type);
 void CalculMoveEnnemy(float _dt, int _index);
+Direction AStar(int _index);
+
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
+HitboxMap* hitboxMap;
+Case** AStarMap;
+
 void LoadEnnemy(void)
 {
 	listEnnemy = CreateList();
@@ -45,6 +50,9 @@ void LoadEnnemy(void)
 		ennemyEntity[1].jetpack.trust = 20.f;
 	}
 	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
+	hitboxMap = GetSceneImageHitbox();
+	printf("ratio %d\n", hitboxMap->ratio);
+	AStarMap = CreateGrid(hitboxMap->size,sizeof(Case));
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -136,6 +144,30 @@ void CalculMoveEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
 
+}
+
+Direction AStar(int _index)
+{
+	// reset du tableau
+	for (unsigned y = 0; y < hitboxMap->size.y; y++)
+	{
+		for (unsigned x = 0; x < hitboxMap->size.x; x++)
+		{
+			AStarMap[y][x] = (Case){0};
+		}
+	}
+	
+
+	//return Direction();
+}
+
+sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
+{
+	printf("ratio %d\n", hitboxMap->ratio);
+	_positionReal.x = _positionReal.x / hitboxMap->ratio;
+	_positionReal.y = _positionReal.y / hitboxMap->ratio;
+	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
+	return newposition;
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)

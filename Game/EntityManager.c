@@ -402,7 +402,7 @@ void DestroySoundEntity(void* _entity)
 
 void DestroyAssetEntity(void* _entity)
 {
-	for (int i = 0; i < entityManager.assetCount; i++)
+	for (int i = entityManager.generalAssetCount; i < entityManager.assetCount; i++)
 	{
 		if (entityManager.asset[i].ptr == _entity)
 		{
@@ -419,6 +419,16 @@ void DestroyAssetEntity(void* _entity)
 			{
 				sfFont_destroy(entityManager.asset[i].ptr);
 			}
+			entityManager.assetCount--;
+			free(entityManager.asset[i].file);
+			entityManager.asset[i].ptr = entityManager.asset[entityManager.assetCount].ptr;
+			entityManager.asset[i].file = entityManager.asset[entityManager.assetCount].file;
+			AssetEntity* temp = realloc(entityManager.asset, entityManager.assetCount * sizeof(AssetEntity));
+			if (temp == NULL)
+			{
+				return;
+			}
+			entityManager.asset = temp;
 			return;
 		}
 	}
@@ -475,8 +485,8 @@ void* Calloc(size_t _count, size_t _size)
 		return NULL;
 	}
 	entityManager.callocList = temp;
-	entityManager.callocList[entityManager.callocListCount - 1];
-	return calloc(_count, _size);
+	entityManager.callocList[entityManager.callocListCount - 1] = calloc(_count, _size);
+	return entityManager.callocList[entityManager.callocListCount - 1];
 }
 
 void* Realloc(void* _block, size_t _size)
@@ -528,16 +538,14 @@ List* CreateList(void)
 		return NULL;
 	}
 	entityManager.listList = temp;
-	entityManager.listList[entityManager.listListCount - 1];
-
-	List* newList = calloc(1, sizeof(List));
-	if (newList == NULL)
+	entityManager.listList[entityManager.listListCount - 1] = calloc(1, sizeof(List));
+	if (entityManager.listList[entityManager.listListCount - 1] == NULL)
 	{
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
-	newList->first = NULL;
+	entityManager.listList[entityManager.listListCount - 1]->first = NULL;
 
-	return newList;
+	return entityManager.listList[entityManager.listListCount - 1];
 }
 
 void RemoveList(List* _list)
@@ -551,14 +559,14 @@ void RemoveList(List* _list)
 	_list = NULL;
 }
 
-unsigned int GetListSize(List* _list)
+unsigned GetListSize(List* _list)
 {
 	if (!_list)
 	{
 		return 0;
 	}
 	Element* actualElement = _list->first;
-	unsigned int listSize = 0;
+	unsigned listSize = 0;
 
 	while (actualElement != NULL)
 	{
@@ -583,10 +591,17 @@ Element* CreateElement(void* _value)
 	return newElement;
 }
 
-Element* GetElement(List* _list, unsigned int _index)
+Element* GetElement(List* _list, unsigned _index)
 {
 	Element* actualElement = _list->first;
-	unsigned int actualIndex = 0;
+	for (unsigned i = 0; i < _index && actualElement; i++)
+	{
+		actualElement = actualElement->next;
+	}
+	return actualElement;
+
+	/*Element* actualElement = _list->first;
+	unsigned actualIndex = 0;
 
 	while (actualIndex < _index && actualElement != NULL)
 	{
@@ -594,10 +609,10 @@ Element* GetElement(List* _list, unsigned int _index)
 		actualElement = actualElement->next;
 	}
 
-	return actualElement;
+	return actualElement;*/
 }
 
-void InsertElement(List* _list, Element* _element, unsigned int _index)
+void InsertElement(List* _list, Element* _element, unsigned _index)
 {
 	if (_index == 0)
 	{
@@ -615,9 +630,31 @@ void InsertElement(List* _list, Element* _element, unsigned int _index)
 	}
 }
 
-void RemoveElement(List* _list, unsigned int _index)
+void RemoveElement(List* _list, unsigned _index)
 {
+	Element* elementToRemove = _list->first;
 	if (_index == 0)
+	{
+		_list->first = elementToRemove->next;
+	}
+	else
+	{
+		Element* previousElement = GetElement(_list, _index - 1);
+		if (previousElement != NULL)
+		{
+			Element* elementToRemove = previousElement->next;
+			if (elementToRemove != NULL)
+			{
+				previousElement->next = elementToRemove->next;
+			}
+		}
+	}
+	if (elementToRemove)
+	{
+		free(elementToRemove);
+	}
+
+	/*if (_index == 0)
 	{
 		Element* elementToRemove = _list->first;
 		_list->first = elementToRemove->next;
@@ -635,7 +672,7 @@ void RemoveElement(List* _list, unsigned int _index)
 				free(elementToRemove);
 			}
 		}
-	}
+	}*/
 }
 
 
@@ -730,6 +767,12 @@ void LoadMainData(void)
 void SetViewCentre(sfVector2f _centre)
 {
 	sfView_setCenter(entityManager.view, _centre);
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+}
+
+void SetViewSize(sfVector2f _size)
+{
+	sfView_setSize(entityManager.view, _size);
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 

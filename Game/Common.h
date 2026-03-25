@@ -27,6 +27,18 @@ typedef enum State
 	WALK = 4
 }State;
 
+typedef enum Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_LEFT,
+	UP_RIGHT,
+	DOWN_LEFT,
+	DOWN_RIGHT
+}Direction;
+
 typedef struct Animation
 {
 	sfIntRect rectActualy;
@@ -47,5 +59,6 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject);
 void CopyStingToBuffer(char* _buffer, char* _string);
+void** CreateGrid(sfVector2u _size, size_t _typeSize);
 
 #endif // !COMMON_H
