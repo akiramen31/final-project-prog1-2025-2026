@@ -17,7 +17,7 @@ void SetScene(SceneState _scene)
         scene.hitbox.image = sfTexture_copyToImage(texture);
         scene.hitbox.ratio = 60;
         sfVector2u size = sfImage_getSize(scene.hitbox.image);
-        scene.hitbox.size = (sfVector2u){ size.x * scene.hitbox.ratio, size.y * scene.hitbox.ratio };
+        scene.hitbox.size = (sfVector2u){ size.x, size.y};
         DestroyAssetEntity(texture);
     } 
     {
@@ -25,7 +25,6 @@ void SetScene(SceneState _scene)
         buffer[22] = '1' + _scene;
         sfSprite_setTexture(scene.map, GetAsset(buffer), sfFalse);
     }
-
 }
 
 HitboxMap* GetSceneImageHitbox(void)
