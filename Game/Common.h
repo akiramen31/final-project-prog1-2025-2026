@@ -48,6 +48,10 @@ typedef struct Animation
 	float timeActualy;
 }Animation;
 
+#define POW2(x) (x * x)
+#define VECTOR(u,v) v.x - u.x, v.y - u.y
+#define DISTANCEP2(u,v) POW2(v.x - u.x) + POW2(v.y - u.y)
+
 int GetRandomInRange(int _min, int _max);
 float GetAngleToVector(sfVector2f _vector);
 float RadToDeg(float _angleRad);
