@@ -27,6 +27,18 @@ typedef enum State
 	WALK = 4
 }State;
 
+typedef enum Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_LEFT,
+	UP_RIGHT,
+	DOWN_LEFT,
+	DOWN_RIGHT
+}Direction;
+
 typedef struct Animation
 {
 	sfIntRect rectActualy;
