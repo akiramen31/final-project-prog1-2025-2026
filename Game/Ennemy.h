@@ -47,10 +47,20 @@ typedef struct Ennemy
 	sfImage* imageColideur;
 }Ennemy;
 
+typedef struct Case
+{
+	float rangeToDestination;
+	float action;
+	float Résultat;
+	float energie;
+	enum Direction direction;
+}Case;
+
 void LoadEnnemy(void);
 void UpdateEnnemy(float _dt, int _index);
 void AddEnnemy(sfVector2f _position, enum Type _type);
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat);
+sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 
 
 #endif // !GAME_H
