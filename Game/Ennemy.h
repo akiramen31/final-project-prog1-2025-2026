@@ -2,6 +2,7 @@
 #define ENNEMY_H
 
 #include "Common.h"
+#include "Scene.h"
 
 typedef enum Type
 {

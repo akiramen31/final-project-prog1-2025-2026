@@ -3,6 +3,7 @@
 void CreateEnnemyRandom(EnnemyEntity* _ennemy);
 void CreateEnnemy(EnnemyEntity* _ennemy, Type _type);
 void CalculMoveEnnemy(float _dt, int _index);
+Direction AStar(int _index);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -136,6 +137,12 @@ void CalculMoveEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
 
+}
+
+Direction AStar(int _index)
+{
+
+	return Direction();
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
