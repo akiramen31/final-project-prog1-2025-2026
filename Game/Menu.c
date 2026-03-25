@@ -12,6 +12,7 @@ Menu menu;
 void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
+
 	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 12.f);
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
