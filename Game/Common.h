@@ -29,6 +29,7 @@ typedef enum State
 
 typedef enum Direction
 {
+	NO_DIRECTION,
 	UP,
 	DOWN,
 	LEFT,

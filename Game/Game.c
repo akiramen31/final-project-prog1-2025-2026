@@ -50,10 +50,6 @@ void UpdateGame(float _dt)
 	UpdateEnnemy(_dt, 0);
 	UpdateHUD(_dt);
 	UpdateCollider();
-	float x = 80.f;
-	float y = 80.f;
-	sfVector2f position = { x,y };
-	printf("cordoné x%f  y%f   devien x%d  y%d\n", x,y,RealPositionConvertTableauPosition(position).x, RealPositionConvertTableauPosition(position).y);
 }
 
 void UpdateCollider(void)
