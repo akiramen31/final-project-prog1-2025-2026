@@ -730,6 +730,7 @@ void LoadMainData(void)
 void SetViewCentre(sfVector2f _centre)
 {
 	sfView_setCenter(entityManager.view, _centre);
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 
 void SetGameState(GameState _gameState)

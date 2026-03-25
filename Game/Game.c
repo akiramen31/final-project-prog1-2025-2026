@@ -9,7 +9,8 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
-	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 10.f);
+	LoadBackground(GetAsset("Assets/Niveaux/Reduite1.png"), 60.f);
+	SetViewCentre((sfVector2f) { SCREEN_WIDTH, 3500.f });
 	LoadEnnemy();
 	LoadHUD();
 	LoadPlayer();
