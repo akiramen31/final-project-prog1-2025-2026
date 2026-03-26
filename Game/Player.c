@@ -31,12 +31,12 @@ void MovePlayer(float _dt)
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
 		{
-			player.velocity.x = 1;
+			player.velocity.x = 4;
 			player.direction = sfTrue;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
 		{
-			player.velocity.x = -1;
+			player.velocity.x = -4;
 			player.direction = sfFalse;
 		}
 		else
@@ -65,10 +65,6 @@ void MovePlayer(float _dt)
 			player.velocity.y = 1;
 		}
 	}
-	//else
-	//{
-	//	player.velocity.y = 0;
-	//}
 
 	tempKey1 = KEY_DASH;
 	if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
@@ -94,7 +90,7 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81 * _dt;
 	}
 
-	if (sfSprite_getPosition(player.sprite).y >= 32 * 129)
+	if (sfSprite_getPosition(player.sprite).y >= 32 * 121)
 	{
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;
@@ -109,4 +105,9 @@ void MovePlayer(float _dt)
 void KillPlayer(void)
 {
 
+}
+
+sfVector2f GetPlayerPosition(void)
+{
+	return sfSprite_getPosition(player.sprite);
 }

@@ -11,7 +11,7 @@ void LoadGame(void)
 	game = (Game){ 0 };
   
 	LoadBackground(GetAsset("Assets/Niveaux/Reduite1.png"), 64.f);
-	SetViewCentre((sfVector2f) { SCREEN_WIDTH / 6 * 7, 32.f * 116.f });
+	SetViewCentre((sfVector2f) { SCREEN_WIDTH / 6 * 7, 32.f * 108.f });
 	LoadScene();
 
 	LoadEnnemy();

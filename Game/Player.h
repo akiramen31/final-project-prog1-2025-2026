@@ -24,4 +24,6 @@ typedef struct Player
 void LoadPlayer(void);
 void UpdatePlayer(float _dt);
 void KillPlayer(void);
+
+sfVector2f GetPlayerPosition(void);
 #endif
