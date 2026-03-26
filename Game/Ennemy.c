@@ -592,7 +592,7 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 		isTouch = sfTrue;
 		if (DEV_MODE)
 		{
-			printf("Ennemie %d Toucher fait %f degat", _index, _degat);
+			printf("Ennemie %d Toucher fait %f degat\n", _index, _degat);
 		}
 		ennemy->ennemyEntity.ennemydata.life -= _degat;
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
