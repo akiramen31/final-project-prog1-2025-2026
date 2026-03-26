@@ -24,7 +24,7 @@ void LoadEnnemy(void)
 	{
 		GetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY);
 	}
-	else
+	else // charger les diférent type d'ennemy
 	{
 		ennemyEntity[0].type = 0;
 		ennemyEntity[0].ennemydata.life = 20.f;
@@ -56,21 +56,23 @@ void LoadEnnemy(void)
 		ennemyEntity[1].jetpack.trust = 20.f;
 	}
 	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
-	hitboxMap = GetSceneImageHitbox();
+	hitboxMap = GetSceneImageHitbox(); // connaitre la taille de la map
 	printf("ratio %d aille x%d   y%d\n", hitboxMap->ratio, hitboxMap->size.x, hitboxMap->size.y);
-	aStarMap = CreateGrid(hitboxMap->size, sizeof(Case));
+	aStarMap = CreateGrid(hitboxMap->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 }
 
 void UpdateEnnemy(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen;
-	CalculMoveEnnemy(_dt, _index);
+	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
+	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
+	// sécuriter pour le max d'énergie en stock
 	if (ennemy->ennemyEntity.ennemydata.energy > ennemy->ennemyEntity.ennemydata.energyMax)
 	{
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
+	
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -95,6 +97,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 	{
 		printf("creation d'un ennemy de type %d\n", _type);
 	}
+	//création et aplication des donné de l'ennemy
 	_ennemy->type = _type;
 	_ennemy->ennemydata = ennemyEntity[_type].ennemydata;
 	_ennemy->acceleration = (sfVector2f){ 0,0 };
@@ -169,23 +172,27 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 	}
 
+	//création du tableau chainé de sfVecteur2u
 	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
 	Element* element = CreateElement(emplacement);
 	*emplacement = positionDebutCase;
 	InsertElement(listeWait, element, 0);
 
+	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = NORM_POW2(positionCibleCase, positionDebutCase);
 	aStarMap[positionDebutCase.y][positionDebutCase.x].energie = ennemy->ennemyEntity.ennemydata.energy;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
+	// préparation des variable nécéssaire
 	sfBool flag = sfFalse;
 	sfVector2u caseRecherche = { 0 };
 	int indexMin = 0;
 	sfVector2u* caseRecup = NULL;
 	sfVector2u caseGet = { 0 };
 
+	//remplisage / exécution du code principale de l'algorytme A*
 	while (GetListSize(listeWait) && flag == sfFalse)
 	{
 		indexMin = MinResultCase();
@@ -504,7 +511,7 @@ float CalculResultAStar(Case _case)
 	return (float) { _case.rangeToDestination + _case.action - (_case.energie * 1) };
 }
 
-int MinResultCase(void)
+int MinResultCase(void) // recherche du plus petit resultat dans la liste chainé listeWait
 {
 	int min = 0;
 	if (GetListSize(listeWait) > 1)
@@ -585,7 +592,7 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 		isTouch = sfTrue;
 		if (DEV_MODE)
 		{
-			printf("Ennemie %d Toucher fait %f degat", _index, _degat);
+			printf("Ennemie %d Toucher fait %f degat\n", _index, _degat);
 		}
 		ennemy->ennemyEntity.ennemydata.life -= _degat;
 		if (ennemy->ennemyEntity.ennemydata.life < 0)

@@ -7,15 +7,6 @@ void LoadScene(void)
     scene.map = LoadBackground(GetAsset("Assets/Maps/Reduite1.png"), 60.f);
     SetScene(LEVEL1);
 
-
-
-    LoadMap("Map");
-    // Print the collision info
-    sfFloatRect collision = GetMapCollision(0);
-    printf("%.2f %.2f %.2f %.2f\n", collision.left, collision.top, collision.width, collision.height);
-    // Print the trigger info
-    Trigger trigger = GetMapTrigger(0);
-    printf("%s %.2f %.2f %.2f %.2f\n", trigger.name, trigger.left, trigger.top, trigger.width, trigger.height);
 }
 
 void SetScene(SceneState _scene)
