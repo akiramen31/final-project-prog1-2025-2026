@@ -57,6 +57,7 @@ typedef struct Animation
 #define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)
 #define ANGLE_VECTOR(v) RAD_DEG(atan2f(v.y, v.x))
 
+sfBool CompareColor(sfColor _color1, sfColor _color2);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
