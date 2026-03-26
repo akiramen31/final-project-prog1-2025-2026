@@ -1,0 +1,63 @@
+{
+    "activeFile": "D:/SVN/Cours/Prog1/Programmation/Programmation CSFML/16 - Tiled/x64/Debug/Assets/Map/Map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "D:/SVN/Cours/Prog1/Programmation/Programmation CSFML/16 - Tiled/x64/Debug/Assets/Map/Map.tmx": {
+            "scale": 0.69765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 639.2833146696528,
+                "y": 639.2833146696529
+            }
+        },
+        "D:/SVN/Cours/Prog1/Programmation/Programmation CSFML/16 - Tiled/x64/Debug/Assets/Map/Map.tmx#Grassland@64x64": {
+            "scaleInDock": 1
+        },
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/cartetest.tmx": {
+            "scale": 0.8381770833333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 480.2087864288822,
+                "y": 320.93456782452006
+            }
+        },
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/cartetest2.tmx": {
+            "scale": 0.8381770833333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 545.8273783632636,
+                "y": 319.1449698626733
+            }
+        },
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/tileSET_test.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/tileset_cours.tsx": {
+            "scaleInDock": 1
+        },
+        "Level1.tmx": {
+            "expandedGroupLayers": [
+                4
+            ],
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 2048.6666666666665,
+                "y": 767.3333333333333
+            }
+        }
+    },
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "Level1.tmx",
+        "D:/SVN/Cours/Prog1/Programmation/Programmation CSFML/16 - Tiled/x64/Debug/Assets/Map/Map.tmx"
+    ],
+    "project": "FinalProject.tiled-project",
+    "recentFiles": [
+        "Level1.tmx",
+        "D:/SVN/Cours/Prog1/Programmation/Programmation CSFML/16 - Tiled/x64/Debug/Assets/Map/Map.tmx",
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/cartetest.tmx",
+        "D:/SVN/Eleves/aaillet/Infographie/TILED/cours1/cartetest2.tmx"
+    ]
+}
