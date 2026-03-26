@@ -11,6 +11,8 @@ Menu menu;
 
 void LoadMenu(void)
 {
+	printf("%d", rand() % -10);
+
 	menu = (Menu){ 0 };
 
 	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 12.f);
