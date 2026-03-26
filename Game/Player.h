@@ -3,7 +3,13 @@
 
 #include "Common.h"
 
-#define PLAYER_WALK_SPEED_MAX 100
+#define PLAYER_WALK_SPEED_MAX 400
+
+#define PLAYER_JUMP_POWER 4
+
+#define PLAYER_DASH_POWER 4
+#define PLAYER_DASH_COOLDOWN 1.f
+#define PLAYER_DASH_DURATION 0.2f
 
 typedef struct Player
 {
@@ -24,4 +30,6 @@ typedef struct Player
 void LoadPlayer(void);
 void UpdatePlayer(float _dt);
 void KillPlayer(void);
+
+sfVector2f GetPlayerPosition(void);
 #endif

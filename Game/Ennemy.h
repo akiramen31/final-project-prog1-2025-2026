@@ -41,9 +41,17 @@ typedef struct EnnemyEntity
 	float timer;
 }EnnemyEntity;
 
+typedef struct ActionDemander
+{
+	sfBool gauche;
+	sfBool droite;
+	sfBool Saut;
+}ActionDemander;
+
 typedef struct Ennemy
 {
 	EnnemyEntity ennemyEntity;
+	ActionDemander actiondemander;
 	sfSprite* sprite;
 	sfImage* imageColideur;
 }Ennemy;
