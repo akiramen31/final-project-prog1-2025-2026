@@ -52,17 +52,16 @@ typedef struct Animation
 #define POW2(x) (x * x)
 #define VECTOR(u,v) v.x - u.x, v.y - u.y
 #define NORM_POW2(u,v) POW2(v.x - u.x) + POW2(v.y - u.y)
+#define RAD_DEG(r) r * 180 / M_PI
+#define DEG_RAD(d) d * M_PI / 180
+#define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)
+#define ANGLE_VECTOR(v) RAD_DEG(atan2f(v.y, v.x))
 
-int GetRandomInRange(int _min, int _max);
-float GetAngleToVector(sfVector2f _vector);
-float RadToDeg(float _angleRad);
-float DegToRad(float _angleDeg);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
-sfVector2f GetColliderMove(sfIntRect _staticObject, sfIntRect _moveObject);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(sfVector2u _size, size_t _typeSize);
 
