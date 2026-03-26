@@ -10,8 +10,8 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
   
-	LoadBackground(GetAsset("Assets/Maps/Reduite1.png"), 64.f);
-	SetViewCentre((sfVector2f) { SCREEN_WIDTH / 6 * 7, 32.f * 108.f });
+	LoadBackground(GetAsset("Assets/Maps/Reduite1.png"), TILE_SIZE);
+	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 6 * 7, TILE_SIZE * 108.f });
 	LoadScene();
 
 	LoadEnnemy();
@@ -50,6 +50,8 @@ void UpdateGame(float _dt)
 	UpdateEnnemy(_dt, 0);
 	UpdateHUD(_dt);
 	UpdateCollider();
+
+	SetViewCenter(GetPlayerPosition());
 }
 
 void UpdateCollider(void)

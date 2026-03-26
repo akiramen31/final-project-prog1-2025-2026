@@ -19,6 +19,8 @@
 #define BPP 32
 #define DEV_MODE 1
 
+#define TILE_SIZE 16.f
+
 #define G 9.81f
 
 typedef enum State

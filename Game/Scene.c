@@ -15,7 +15,7 @@ void SetScene(SceneState _scene)
         //buffer[22] = '1' + _scene;
         sfTexture* texture = GetAsset(buffer);
         scene.hitbox.image = sfTexture_copyToImage(texture);
-        scene.hitbox.ratio = 60;
+        scene.hitbox.ratio = TILE_SIZE;
         sfVector2u size = sfImage_getSize(scene.hitbox.image);
         scene.hitbox.size = (sfVector2u){ size.x, size.y};
         DestroyAssetEntity(texture);

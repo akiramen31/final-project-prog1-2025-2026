@@ -9,12 +9,13 @@ void LoadPlayer(void)
 	player = (Player){ 0 };
 
 	sfTexture* texture = GetAsset("D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Sprites/capsul.png");
-	player.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, 3500.f }, 2.f, 40);
+	player.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, TILE_SIZE * 119}, 2.f, 40);
 	SetSpriteOriginFoot(player.sprite);
 }
 
 void UpdatePlayer(float _dt)
 {
+	printf("%f", sfSprite_getOrigin(player.sprite).y);
 	MovePlayer(_dt);
 }
 
@@ -91,7 +92,7 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81 * _dt;
 	}
 
-	if (sfSprite_getPosition(player.sprite).y >= 32 * 121)
+	if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
 	{
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;

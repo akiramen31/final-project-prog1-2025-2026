@@ -764,7 +764,7 @@ void LoadMainData(void)
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 
-void SetViewCentre(sfVector2f _centre)
+void SetViewCenter(sfVector2f _centre)
 {
 	sfView_setCenter(entityManager.view, _centre);
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
