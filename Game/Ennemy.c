@@ -93,7 +93,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 {
 	if (DEV_MODE)
 	{
-		printf("création d'un ennemy de type %d\n", _type);
+		printf("creation d'un ennemy de type %d\n", _type);
 	}
 	_ennemy->type = _type;
 	_ennemy->ennemydata = ennemyEntity[_type].ennemydata;
