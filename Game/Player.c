@@ -61,6 +61,7 @@ void MovePlayer(float _dt)
 			player.isGrounded = sfFalse;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
+
 		{
 			player.velocity.y = 1;
 		}
