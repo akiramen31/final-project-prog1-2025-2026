@@ -17,7 +17,7 @@ void LoadPlayer(void)
 
 void UpdatePlayer(float _dt)
 {
-	printf("%f", sfSprite_getOrigin(player.sprite).y);
+	//printf("%f", sfSprite_getOrigin(player.sprite).y);      // JE SAIS PAS A ECRIT SA M'EST SA SE SPAME SUR LA CONSOLLE EN REVOYANT 00 TEMPORAIREMENT DESACTIVER POUR POUVOIR UTILISER LA CONSOLE NORMALEMENT
 	MovePlayer(_dt);
 }
 
