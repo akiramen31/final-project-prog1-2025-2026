@@ -10,32 +10,11 @@ void LoadBackup(void)
 		return;
 	}
 
+	fread(&backup, sizeof(Backup), 3, file);
+	if (backup.valueFloat[LIGHT_LEVEL] < 0.25f)
 	{
-		char buffer[13] = { "Float0 : %f\n" };
-		for (int i = 0; i < FLOAT_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fscanf_s(file, (const char*)buffer, &backup.valueFloat[i]);
-		}
-	}
-	{
-		char buffer[13] = { "Char 0 : %d\n" };
-		for (int i = 0; i < KEY_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fscanf_s(file, (const char*)buffer, &backup.valueKey[i]);}
-	}
-	{
-		char buffer[13] = { "Int  0 : %d\n" };
-		int o = backup.valueInt[0];
-		for (int i = 0; i < INT_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fscanf_s(file, (const char*)buffer, &backup.valueInt[i]);
-		}
-		o = backup.valueInt[0];
-	}
-
+		backup.valueFloat[LIGHT_LEVEL] = 1.f;
+	} 
 	fclose(file);
 }
 
@@ -47,31 +26,7 @@ void SaveBackup(void)
 		return;
 	}
 
-	{
-		char buffer[13] = { "Float0 : %f\n" };
-		for (int i = 0; i < FLOAT_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fprintf_s(file, (const char*)buffer, backup.valueFloat[i]);
-		}
-	}
-	{
-		char buffer[13] = { "Char 0 : %d\n" };
-		for (int i = 0; i < KEY_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fprintf_s(file, (const char*)buffer, backup.valueKey[i]);
-		}
-	}
-	{
-		char buffer[13] = { "Int  0 : %d\n" };
-		for (int i = 0; i < INT_COUNT; i++)
-		{
-			buffer[5] = '0' + i;
-			fprintf_s(file, (const char*)buffer, backup.valueInt[i]);
-		}
-	}
-
+	fwrite(&backup, sizeof(Backup), 3, file);
 	fclose(file);
 }
 
@@ -98,7 +53,7 @@ void SetKeyToSave(KeySave _index, char _value)
 }
 char GetMouseKeyFromSave(KeySave _index)
 {
-	return backup.valueKey[_index] - sfKeyCount;
+	return (backup.valueKey[_index] - sfKeyCount);
 }
 void SetMouseKeyToSave(KeySave _index, char _value)
 {
