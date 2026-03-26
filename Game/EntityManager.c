@@ -37,6 +37,8 @@ void LoadGeneralAsset(void)
 void Draw(void)
 {
 	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
+	DrawMap(entityManager.renderWindow);
+
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
@@ -122,6 +124,12 @@ void CleanupGlobal(void)
 		free(entityManager.callocList[i]);
 	}
 	free(entityManager.callocList);
+
+
+
+	CleanupMap();
+
+
 
 	sfRenderWindow_destroy(entityManager.renderWindow);
 	sfClock_destroy(entityManager.clock);

@@ -2,6 +2,8 @@
 
 Player player;
 
+float timerDash = 0;
+
 void MovePlayer(float _dt);
 
 void LoadPlayer(void)
@@ -9,7 +11,7 @@ void LoadPlayer(void)
 	player = (Player){ 0 };
 
 	sfTexture* texture = GetAsset("D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Sprites/capsul.png");
-	player.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, TILE_SIZE * 119}, 2.f, 40);
+	player.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, TILE_SIZE * 119 }, 2.f, 40);
 	SetSpriteOriginFoot(player.sprite);
 }
 
@@ -21,6 +23,11 @@ void UpdatePlayer(float _dt)
 
 void MovePlayer(float _dt)
 {
+	if (timerDash <= PLAYER_DASH_COOLDOWN)
+	{
+		timerDash += _dt;
+	}
+
 	KeySave tempKey1 = KEY_RIGHT;
 	KeySave tempKey2 = KEY_LEFT;
 
@@ -32,12 +39,12 @@ void MovePlayer(float _dt)
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
 		{
-			player.velocity.x = 4;
+			player.velocity.x = 1;
 			player.direction = sfTrue;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
 		{
-			player.velocity.x = -4;
+			player.velocity.x = -1;
 			player.direction = sfFalse;
 		}
 		else
@@ -58,7 +65,7 @@ void MovePlayer(float _dt)
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
 		{
 			sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
-			player.velocity.y = -8;
+			player.velocity.y = -PLAYER_JUMP_POWER;
 			player.isGrounded = sfFalse;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
@@ -68,23 +75,27 @@ void MovePlayer(float _dt)
 		}
 	}
 
-	tempKey1 = KEY_DASH;
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
+	if (timerDash >= PLAYER_DASH_DURATION)
 	{
-		if (player.direction)
+		tempKey1 = KEY_DASH;
+		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && timerDash >= PLAYER_DASH_COOLDOWN)
 		{
-			sfSprite_move(player.sprite, (sfVector2f) { 20, 0 });
+			timerDash = 0;
+			if (player.direction)
+			{
+				player.velocity.x = PLAYER_DASH_POWER;
+			}
+			else
+			{
+				player.velocity.x = -PLAYER_DASH_POWER;
+			}
+
+			player.isDashing = sfTrue;
 		}
 		else
 		{
-			sfSprite_move(player.sprite, (sfVector2f) { -20, 0 });
+			player.isDashing = sfFalse;
 		}
-
-		player.isDashing = sfTrue;
-	}
-	else
-	{
-		player.isDashing = sfFalse;
 	}
 
 	if (player.isGrounded == sfFalse)
