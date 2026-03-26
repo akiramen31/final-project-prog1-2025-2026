@@ -5,7 +5,6 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent);
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent);
 void SetMenuState(MenuState _state);
 void UpdateTextKey(int _index, int _key);
-void UpdateTextKeyMouse(int _index, int _key);
 
 Menu menu;
 
@@ -95,7 +94,8 @@ void KeyPressedMenu(sfEvent* _event)
 	sfFloatRect hitbox2 = { 0 };
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		if (sfText_getColor(menu.key[i]).r == sfYellow.r && sfText_getColor(menu.key[i]).g == sfYellow.g && sfText_getColor(menu.key[i]).b == sfYellow.b)
+		
+		if (CompareColor(sfText_getColor(menu.key[i]), sfYellow))
 		{
 			UpdateTextKey(i, _event->key.code);
 			return;
@@ -113,8 +113,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case MENU_BASE:
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
+				if (CompareColor(sfText_getColor(menu.button[i]), sfYellow))
 				{
 					if (i == 0)
 					{
@@ -139,8 +138,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case SETTING:
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
+				if (CompareColor(sfText_getColor(menu.button[i]), sfYellow))
 				{
 					if (i == 0)
 					{
@@ -163,10 +161,10 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			}
 			break;
 		case CREDITS:
-			hitbox = sfText_getGlobalBounds(menu.button[5]);
-			if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
+			if (CompareColor(sfText_getColor(menu.button[5]), sfYellow))
 			{
 				SetMenuState(MENU_BASE);
+				return;
 			}
 			break;
 		default:
@@ -180,8 +178,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case SETTING:
 			for (int i = 0; i < 2; i++)
 			{
-				hitbox = sfText_getGlobalBounds(menu.button[i]);
-				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
+				if (CompareColor(sfText_getColor(menu.button[i]), sfYellow))
 				{
 					if (i == 0)
 					{
@@ -191,6 +188,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					{
 						SetFloatToSave(SOUND_VOLUME, 0.f);
 					}
+					return;
 				}
 			}
 			break;
@@ -198,13 +196,11 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			break;
 		}
 	}
-
-	sfFloatRect hitbox2 = { 0 };
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		if (sfText_getColor(menu.key[i]).r == sfYellow.r && sfText_getColor(menu.key[i]).g == sfYellow.g && sfText_getColor(menu.key[i]).b == sfYellow.b)
+		if (CompareColor(sfText_getColor(menu.key[i]), sfYellow))
 		{
-			UpdateTextKeyMouse(i, _mouseButtonEvent->button);
+			UpdateTextKey(i, _mouseButtonEvent->button + sfKeyCount);
 			return;
 		}
 	}
@@ -357,7 +353,7 @@ void UpdateMenu(float _dt)
 
 void UpdateTextKey(int _index, int _key)
 {
-	char buffer[10] = { 0 };
+	char buffer[14] = { 0 };
 	if (_key >= 0 && _key < 26)
 	{
 		buffer[0] = 'A' + _key;
@@ -522,41 +518,31 @@ void UpdateTextKey(int _index, int _key)
 		buffer[1] = '1';
 		buffer[2] = '0' + _key - 94;
 	}
+	else if (_key == sfMouseLeft + sfKeyCount)
+	{
+		CopyStingToBuffer(buffer, "MouseLeft");
+	}
+	else if (_key == sfMouseRight + sfKeyCount)
+	{
+		CopyStingToBuffer(buffer, "MouseRight");
+	}
+	else if (_key == sfMouseMiddle + sfKeyCount)
+	{
+		CopyStingToBuffer(buffer, "MouseMiddle");
+	}
+	else if (_key == sfMouseXButton1 + sfKeyCount)
+	{
+		CopyStingToBuffer(buffer, "MouseXButton1");
+	}
+	else if (_key == sfMouseXButton2 + sfKeyCount)
+	{
+		CopyStingToBuffer(buffer, "MouseXButton2");
+	}
 	else
 	{
 		return;
 	}
 
-
-
 	SetKeyToSave(_index, _key);
-	sfText_setString(menu.key[_index], buffer);
-}
-
-void UpdateTextKeyMouse(int _index, int _key)
-{
-	char buffer[14] = { 0 };
-	if (_key == sfMouseLeft)
-	{
-		CopyStingToBuffer(buffer, "MouseLeft");
-	}
-	else if (_key == sfMouseRight)
-	{
-		CopyStingToBuffer(buffer, "MouseRight");
-	}
-	else if (_key == sfMouseMiddle)
-	{
-		CopyStingToBuffer(buffer, "MouseMiddle");
-	}
-	else if (_key == sfMouseXButton1)
-	{
-		CopyStingToBuffer(buffer, "MouseXButton1");
-	}
-	else if (_key == sfMouseXButton2)
-	{
-		CopyStingToBuffer(buffer, "MouseXButton2");
-	}
-
-	SetMouseKeyToSave(_index, _key);
 	sfText_setString(menu.key[_index], buffer);
 }

@@ -1,5 +1,14 @@
 #include "Common.h"
 
+sfBool CompareColor(sfColor _color1, sfColor _color2)
+{
+	if (_color1.r == _color2.r && _color1.g == _color2.g && _color1.b == _color2.b)
+	{
+		return sfTrue;
+	}
+	return sfFalse;
+}
+
 void UpdateText(sfText* _text, char* _format, char* _string, int _value)
 {
 	char buffer[50];
