@@ -147,6 +147,7 @@
     <ClCompile Include="GameOver.c" />
     <ClCompile Include="HUD.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Map.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Scene.c" />
@@ -154,11 +155,13 @@
   <ItemGroup>
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="cute_tiled.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="HUD.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
