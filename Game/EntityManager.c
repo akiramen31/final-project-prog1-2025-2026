@@ -36,7 +36,7 @@ void LoadGeneralAsset(void)
 
 void Draw(void)
 {
-	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
+	//SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
 
 	if (entityManager.gameState == GAME)
@@ -45,7 +45,7 @@ void Draw(void)
 	}
 
 	//background non draw entityManager.visual->next  -> entityManager.visual
-	VisualEntity* elementActual = entityManager.visual->next;
+	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
 
@@ -762,7 +762,8 @@ void LoadMainData(void)
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
 	}
 
-	sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
+	
+	//sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
 
 	entityManager.clock = sfClock_create();
 

@@ -1,82 +1,60 @@
 {
     "activeFile": "Level1.tmx",
-    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        ".",
-        "Tilesets"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
-        "": {
+        ":/automap-tiles.tsx": {
             "scaleInDock": 1
         },
-        ":/automap-tiles.tsx": {
-            "scaleInDock": 3,
-            "scaleInEditor": 1
-        },
         "Level1.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 1,
+            "scale": 0.75,
+            "selectedLayer": -1,
             "viewCenter": {
-                "x": 1152.6666666666665,
-                "y": 239.3333333333333
+                "x": 505.33333333333337,
+                "y": 922.6666666666666
             }
-        },
-        "Level1.tmx#Pipes": {
-            "scaleInEditor": 1
-        },
-        "Level1.tmx#pipes": {
-            "scaleInDock": 1,
-            "scaleInEditor": 1
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 3,
+            "scale": 1.8004032258064515,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 145.33333333333334,
-                "y": 84.66666666666667
+                "x": 247.72228443449046,
+                "y": 247.72228443449046
             }
         },
-        "Tilesets/Pipe.tsx": {
+        "Tilesets/Metal_girder.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 5.5
+            "scaleInEditor": 8
+        },
+        "Tilesets/Metal_plate.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "Tilesets/Pipes.tsx": {
-            "scaleInDock": 1.5,
-            "scaleInEditor": 5.5
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "Tilesets/TileForAutomaping.tsx": {
-            "scaleInDock": 2,
-            "scaleInEditor": 5.5
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         }
     },
-    "last.externalTilesetPath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
-    "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
-    "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
     "openFiles": [
         "Level1.tmx",
-        "Tilesets/Pipes.tsx",
         "Tilesets/AutoTileRules.tmx",
+        "Tilesets/Metal_girder.tsx",
+        "Tilesets/Metal_plate.tsx",
+        "Tilesets/Pipes.tsx",
         "Tilesets/TileForAutomaping.tsx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
         "Tilesets/TileForAutomaping.tsx",
-        "Tilesets/AutoTileRules.tmx",
         "Tilesets/Pipes.tsx",
-        "Level1.tmx",
-        ":/automap-tiles.tsx",
-        "Tilesets/Pipe.tsx"
-    ],
-    "tileset.embedInMap": false,
-    "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
-    "tileset.lastUsedFormat": "tsx",
-    "tileset.tileSize": {
-        "height": 16,
-        "width": 16
-    },
-    "tileset.transparentColor": "#000000",
-    "tileset.useTransparentColor": false
+        "Tilesets/Metal_plate.tsx",
+        "Tilesets/Metal_girder.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Level1.tmx"
+    ]
 }
