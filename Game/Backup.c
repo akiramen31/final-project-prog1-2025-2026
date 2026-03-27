@@ -11,7 +11,7 @@ void LoadBackup(void)
 	}
 
 	fread(&backup, sizeof(Backup), 3, file);
-	if (backup.valueFloat[LIGHT_LEVEL] < 0.25f)
+	if (backup.valueFloat[LIGHT_LEVEL] < 0.25f || backup.valueFloat[LIGHT_LEVEL] > 1.f)
 	{
 		backup.valueFloat[LIGHT_LEVEL] = 1.f;
 	} 

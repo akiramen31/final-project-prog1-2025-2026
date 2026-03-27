@@ -138,7 +138,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case SETTING:
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.button[i]), sfYellow))
+				sfFloatRect hitbox = sfText_getGlobalBounds(menu.button[i]);
+				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
 				{
 					if (i == 0)
 					{
