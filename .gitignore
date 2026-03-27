@@ -9,7 +9,7 @@
 
 # Test to stop having the .exe to create issue when comitting
 *.exe
-Game/x64/Debug/Game.sav
+*.sav
 
 # User-specific files
 *.rsuser
