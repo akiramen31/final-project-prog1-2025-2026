@@ -36,8 +36,16 @@ void LoadGeneralAsset(void)
 
 void Draw(void)
 {
+	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
-	VisualEntity* elementActual = entityManager.visual;
+
+	if (entityManager.gameState == GAME)
+	{
+		DrawMap(entityManager.renderWindow);
+	}
+
+	//background non draw entityManager.visual->next  -> entityManager.visual
+	VisualEntity* elementActual = entityManager.visual->next;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
 
