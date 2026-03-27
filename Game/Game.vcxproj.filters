@@ -48,7 +48,10 @@
     <ClCompile Include="Scene.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="cJSON.c">
+    <ClCompile Include="Map.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="cute_tile.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,7 +89,10 @@
     <ClInclude Include="Weapon.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="cJSON.h">
+    <ClInclude Include="cute_tiled.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
