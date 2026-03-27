@@ -1,35 +1,82 @@
 {
-    "activeFile": "Tilesets/Pipe.tsx",
+    "activeFile": "Level1.tmx",
+    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        ".",
+        "Tilesets"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
         "Level1.tmx": {
-            "scale": 0.33,
+            "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2213.636363636364,
-                "y": 765.1515151515152
+                "x": 1152.6666666666665,
+                "y": 239.3333333333333
+            }
+        },
+        "Level1.tmx#Pipes": {
+            "scaleInEditor": 1
+        },
+        "Level1.tmx#pipes": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tilesets/AutoTileRules.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 145.33333333333334,
+                "y": 84.66666666666667
             }
         },
         "Tilesets/Pipe.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 5.5
+        },
+        "Tilesets/Pipes.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 5.5
+        },
+        "Tilesets/TileForAutomaping.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 5.5
         }
     },
+    "last.externalTilesetPath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
     "openFiles": [
         "Level1.tmx",
-        "Tilesets/Pipe.tsx"
+        "Tilesets/Pipes.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/TileForAutomaping.tsx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
+        "Tilesets/TileForAutomaping.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/Pipes.tsx",
         "Level1.tmx",
+        ":/automap-tiles.tsx",
         "Tilesets/Pipe.tsx"
     ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 16,
         "width": 16
-    }
+    },
+    "tileset.transparentColor": "#000000",
+    "tileset.useTransparentColor": false
 }

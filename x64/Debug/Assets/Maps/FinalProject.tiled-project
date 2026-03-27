@@ -1,5 +1,5 @@
 {
-    "automappingRulesFile": "",
+    "automappingRulesFile": "Tilesets/AutoTileRules.tmx",
     "commands": [
     ],
     "compatibilityVersion": 1100,
