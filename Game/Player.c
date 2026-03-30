@@ -100,19 +100,12 @@ void MovePlayer(float _dt)
 
 	if (player.isGrounded == sfFalse)
 	{
-		player.velocity.y += 9.81 * _dt;
-	}
-
-	if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
-	{
-		player.isGrounded = sfTrue;
-		player.velocity.y = 0;
+		player.velocity.y += 9.81f * _dt;
 	}
 
 
-	{
-		float tempAngle = atan2f(player.velocity.y, player.velocity.y);		sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
-	}
+	sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
+	sfSprite_move(player.sprite, Colision(sfShape_getGlobalBounds(player.sprite)));
 }
 
 void KillPlayer(void)

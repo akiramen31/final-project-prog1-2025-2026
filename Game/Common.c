@@ -86,3 +86,47 @@ void** CreateGrid(sfVector2u _size, size_t _typeSize)
 	}
 	return grid;
 }
+
+sfVector2f Colision(sfFloatRect _hitbox)
+{
+	sfFloatRect* hitboxReaction = { 0 };
+
+	for (unsigned int i = 0; i < GetCollisionTabSize(); i++)
+	{
+		sfFloatRect hitboxScene = GetMapCollision(i);
+
+		sfFloatRect_intersects(&_hitbox, &hitboxScene, hitboxReaction);
+
+		if (hitboxReaction != 0)
+		{
+			break;
+		}
+	}
+
+	if (hitboxReaction == 0)
+	{
+		return (sfVector2f) { 0 };
+	}
+
+	sfVector2f groundReaction = { 0 };
+
+	if (hitboxReaction->left < _hitbox.left + _hitbox.width / 2)
+	{
+		groundReaction.x = hitboxReaction->width;
+	}
+	else if (hitboxReaction->left > _hitbox.left + _hitbox.width / 2)
+	{
+		groundReaction.x = -hitboxReaction->width;
+	}
+
+	if (hitboxReaction->top < _hitbox.top + _hitbox.height / 2)
+	{
+		groundReaction.y = hitboxReaction->height;
+	}
+	else if (hitboxReaction->top > _hitbox.top + _hitbox.height / 2)
+	{
+		groundReaction.y = -hitboxReaction->height;
+	}
+
+	return groundReaction;
+}
