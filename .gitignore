@@ -10,6 +10,7 @@
 # Test to stop having the .exe to create issue when comitting
 *.exe
 *.sav
+*.sln
 
 # User-specific files
 *.rsuser

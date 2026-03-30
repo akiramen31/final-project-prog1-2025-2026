@@ -307,7 +307,7 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	newElement->ptr = sfText_create();
 	sfText_setFont(newElement->ptr, _font);
 	sfText_setPosition(newElement->ptr, _position);
-	sfText_setScale(newElement->ptr, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
+	sfText_setCharacterSize(newElement->ptr, _scale* GAME_SCALE);
 
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)

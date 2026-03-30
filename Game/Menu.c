@@ -14,23 +14,25 @@ void LoadMenu(void)
 
 	menu = (Menu){ 0 };
 
-	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 12.f);
+	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 8.f);
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
 	}
 
+	sfFont* font = GetAsset("Assets/Font/Daydream.otf");
+
 	for (int i = 0; i < NB_BUTTON; i++)
 	{
-		menu.button[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)20, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.button[i] = CreateText(font, (sfVector2f) { (float)400*i, (float)20}, 50, 5.f);
 	}
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
-		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
-		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+		menu.keyRod[i] = CreateText(font, (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 50, 5.f);
+		menu.keyType[i] = CreateText(font, (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 50, 5.f);
+		menu.key[i] = CreateText(font, (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 50, 5.f);
 	}
 
 	sfText_setString(menu.keyType[0], "Jump");
