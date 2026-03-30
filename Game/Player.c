@@ -17,7 +17,6 @@ void LoadPlayer(void)
 
 void UpdatePlayer(float _dt)
 {
-	//printf("%f", sfSprite_getOrigin(player.sprite).y);      // JE SAIS PAS A ECRIT SA M'EST SA SE SPAME SUR LA CONSOLLE EN REVOYANT 00 TEMPORAIREMENT DESACTIVER POUR POUVOIR UTILISER LA CONSOLE NORMALEMENT
 	MovePlayer(_dt);
 }
 
@@ -103,9 +102,24 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81f * _dt;
 	}
 
+	if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
+	{
+		player.isGrounded = sfTrue;
+		player.velocity.y = 0;
+
+		sfFloatRect bound = sfSprite_getGlobalBounds(player.sprite);
+		sfSprite_move(player.sprite, (sfVector2f) { 0, TILE_SIZE * 121 * 2 - bound.height - bound.top });
+	}
 
 	sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
-	sfSprite_move(player.sprite, Colision(sfShape_getGlobalBounds(player.sprite)));
+
+	sfVector2f reaction = Colision(sfShape_getGlobalBounds(player.sprite));
+	if (reaction.y < 0)
+	{
+		player.isGrounded = sfTrue;
+		player.velocity.y = 0;
+	}
+	sfSprite_move(player.sprite, reaction);
 }
 
 void KillPlayer(void)

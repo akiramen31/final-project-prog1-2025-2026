@@ -37,7 +37,7 @@ void LoadGeneralAsset(void)
 void Draw(void)
 {
 	//SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
-	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
+	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
 
 	if (entityManager.gameState == GAME)
 	{
@@ -762,7 +762,9 @@ void LoadMainData(void)
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
 	}
 
-	
+
+	sfRenderWindow_setVerticalSyncEnabled(entityManager.renderWindow, sfTrue);
+
 	//sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
 
 	entityManager.clock = sfClock_create();
