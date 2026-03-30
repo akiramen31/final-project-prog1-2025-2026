@@ -1,11 +1,22 @@
 {
-    "activeFile": "Level1.tmx",
+    "activeFile": "Level1.json",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
             "scaleInDock": 1
+        },
+        "Level1.json": {
+            "expandedObjectLayers": [
+                31
+            ],
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 2080,
+                "y": 512
+            }
         },
         "Level1.tmx": {
             "expandedObjectLayers": [
@@ -14,16 +25,16 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1891,
-                "y": 676
+                "x": 2080,
+                "y": 511.5
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": -65.33333333333326,
-                "y": 424
+                "x": 248,
+                "y": 247.33333333333337
             }
         },
         "Tilesets/Metal_girder.tsx": {
@@ -50,8 +61,9 @@
     "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
     "map.lastUsedExportFilter": "Fichiers CSV (*.csv)",
+    "map.lastUsedFormat": "json",
     "openFiles": [
-        "Level1.tmx",
+        "Level1.json",
         "Tilesets/AutoTileRules.tmx",
         "Tilesets/Metal_girder.tsx",
         "Tilesets/individual_tiles.tsx",
@@ -67,6 +79,7 @@
         "Tilesets/individual_tiles.tsx",
         "Tilesets/Metal_girder.tsx",
         "Tilesets/AutoTileRules.tmx",
+        "Level1.json",
         "Level1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
