@@ -8,19 +8,19 @@
             "scaleInDock": 1
         },
         "Level1.tmx": {
-            "scale": 0.75,
-            "selectedLayer": -1,
+            "scale": 0.33,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 505.33333333333337,
-                "y": 922.6666666666666
+                "x": 2266.6666666666665,
+                "y": 1196.969696969697
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 1.8004032258064515,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 247.72228443449046,
-                "y": 247.72228443449046
+                "x": 224.39417693169094,
+                "y": 247.99999999999997
             }
         },
         "Tilesets/Metal_girder.tsx": {
@@ -40,6 +40,8 @@
             "scaleInEditor": 8
         }
     },
+    "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
+    "map.lastUsedExportFilter": "Fichiers CSV (*.csv)",
     "openFiles": [
         "Level1.tmx",
         "Tilesets/AutoTileRules.tmx",
