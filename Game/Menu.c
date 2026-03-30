@@ -7,6 +7,9 @@ void SetMenuState(MenuState _state);
 void UpdateTextKey(int _index, int _key);
 
 Menu menu;
+sfSprite* vinyl;
+sfSprite* cog;
+sfSprite* title;
 
 void LoadMenu(void)
 {
@@ -15,6 +18,15 @@ void LoadMenu(void)
 	menu = (Menu){ 0 };
 
 	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 8.f);
+	vinyl = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) {0}, 8.f, 50.f);
+	cog = CreateSprite(GetAsset("Assets/Sprites/cog.png"), (sfVector2f) {0}, 8.f, 50.f);
+	title = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) {0}, 8.f, 50.f);
+	sfSprite_setOrigin(vinyl, (sfVector2f){64,64});
+	sfSprite_setOrigin(cog, (sfVector2f){64,64});
+	sfSprite_setOrigin(title, (sfVector2f){64,64});
+	sfSprite_setPosition(vinyl, (sfVector2f){1504, 552});
+	sfSprite_setPosition(cog, (sfVector2f){1504, 552});
+	sfSprite_setPosition(title, (sfVector2f){1504, 552});
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
@@ -25,7 +37,22 @@ void LoadMenu(void)
 
 	for (int i = 0; i < NB_BUTTON; i++)
 	{
-		menu.button[i] = CreateText(font, (sfVector2f) { (float)400*i, (float)20}, 50, 5.f);
+		menu.button[i] = CreateText(font, (sfVector2f) { 0.f, 0.f}, 50, 5.f);
+		switch (i)
+		{
+		case 0:
+			sfText_setPosition(menu.button[i], (sfVector2f){35, 23});
+			break;
+		case 1:
+			sfText_setPosition(menu.button[i], (sfVector2f) { 332, 23 });
+			break;
+		case 2:
+			sfText_setPosition(menu.button[i], (sfVector2f) { 850, 23});
+			break;
+		case 3:
+			sfText_setPosition(menu.button[i], (sfVector2f) { 1308, 23});
+			break;
+		}
 	}
 
 	for (int i = 0; i < NB_KEY; i++)
@@ -115,7 +142,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case MENU_BASE:
 			for (int i = 0; i < NB_BUTTON; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.button[i]), sfYellow))
+				if (CompareColor(sfText_getColor(menu.button[i]), sfRed))
 				{
 					if (i == 0)
 					{
@@ -212,6 +239,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 {
 	sfFloatRect hitbox = { 0 };
+	sfColor highlightColor = sfRed;
+	sfColor baseColor = sfWhite;
 	switch (menu.state)
 	{
 	case MENU_BASE:
@@ -220,11 +249,11 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
 			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
-				sfText_setColor(menu.button[i], sfYellow);
+				sfText_setColor(menu.button[i], highlightColor);
 			}
 			else
 			{
-				sfText_setColor(menu.button[i], sfWhite);
+				sfText_setColor(menu.button[i], baseColor);
 			}
 		}
 		break;
@@ -234,11 +263,11 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
 			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
-				sfText_setColor(menu.button[i], sfYellow);
+				sfText_setColor(menu.button[i], highlightColor);
 			}
 			else
 			{
-				sfText_setColor(menu.button[i], sfWhite);
+				sfText_setColor(menu.button[i], baseColor);
 			}
 		}
 		sfFloatRect hitbox2 = { 0 };
@@ -248,23 +277,23 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			hitbox2 = sfText_getGlobalBounds(menu.keyType[i]);
 			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y) || sfFloatRect_contains(&hitbox2, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
-				sfText_setColor(menu.key[i], sfYellow);
-				sfText_setColor(menu.keyType[i], sfYellow);
+				sfText_setColor(menu.key[i], highlightColor);
+				sfText_setColor(menu.keyType[i], highlightColor);
 			}
 			else
 			{
-				sfText_setColor(menu.key[i], sfWhite);
-				sfText_setColor(menu.keyType[i], sfWhite);
+				sfText_setColor(menu.key[i], baseColor);
+				sfText_setColor(menu.keyType[i], baseColor);
 			}
 		}
 
 		if (GetFloatFromSave(LIGHT_LEVEL) <= 0.25f)
 		{
-			sfText_setColor(menu.button[0], sfRed);
+			sfText_setColor(menu.button[0], highlightColor);
 		}
 		if (GetFloatFromSave(SOUND_VOLUME) <= 0.0f)
 		{
-			sfText_setColor(menu.button[1], sfRed);
+			sfText_setColor(menu.button[1], highlightColor);
 		}
 		break;
 	case CREDITS:
@@ -273,7 +302,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			hitbox = sfText_getGlobalBounds(menu.button[i]);
 			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
-				sfText_setColor(menu.button[i], sfYellow);
+				sfText_setColor(menu.button[i], highlightColor);
 				if (i < 5)
 				{
 					sfText_setString(menu.button[i], menu.name[i + 5]);
@@ -281,7 +310,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			}
 			else
 			{
-				sfText_setColor(menu.button[i], sfWhite);
+				sfText_setColor(menu.button[i], baseColor);
 				if (i < 5)
 				{
 					sfText_setString(menu.button[i], menu.name[i]);
@@ -351,7 +380,13 @@ void SetMenuState(MenuState _state)
 
 void UpdateMenu(float _dt)
 {
-
+	float rotation = sfSprite_getRotation(vinyl);
+	if (rotation > 360)
+	{
+		rotation -= 360;
+	}
+	rotation += 5 * _dt;
+	sfSprite_setRotation(vinyl, rotation);
 }
 
 void UpdateTextKey(int _index, int _key)
