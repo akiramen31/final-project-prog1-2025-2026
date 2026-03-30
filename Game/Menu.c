@@ -14,7 +14,7 @@ void LoadMenu(void)
 
 	menu = (Menu){ 0 };
 
-	LoadBackground(GetAsset("Assets/Sprites/Background.png"), 12.f);
+	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 12.f);
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
@@ -27,8 +27,8 @@ void LoadMenu(void)
 	}
 
 	for (int i = 0; i < NB_KEY; i++)
-  {
-    menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
+	{
+		menu.keyRod[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 		menu.keyType[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 		menu.key[i] = CreateText(GetAsset("Assets/Font/Daydream.otf"), (sfVector2f) { (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT / 2 + 50 * i }, 1.f, 5.f);
 	}
@@ -55,7 +55,7 @@ void LoadMenu(void)
 	menu.name[5] = "Akiramen";
 	menu.name[6] = "Scorpiontron";
 	menu.name[7] = "Zelouve";
-	menu.name[8] = "Ylix";
+	menu.name[8] = "Pyxal";
 	menu.name[9] = "Parc9999";
 
 	SetMenuState(MENU_BASE);
