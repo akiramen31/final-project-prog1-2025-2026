@@ -26,15 +26,9 @@ void LoadMenu(void)
 		sfSprite_setPosition(menu.logo[i], (sfVector2f) { 1504, 552 });
 	}
 
-<<<<<<< Updated upstream
 	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
-
-	for (int i = 0; i < NB_BUTTON; i++)
-=======
-	sfFont* font = GetAsset("Assets/Font/Daydream.otf");
 	//Top buttons
 	for (int i = 0; i < NB_BUTTONS; i++)
->>>>>>> Stashed changes
 	{
 		menu.topButtons[i] = CreateText(font, (sfVector2f) { 0.f, 0.f }, 50, 5.f);
 		switch (i)
@@ -292,6 +286,17 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		}
 	}
 	else if (_mouseButtonEvent->button == sfMouseRight)
+	{
+		for (int i = 0; i < NB_KEY; i++)
+		{
+			if (CompareColor(sfText_getColor(menu.key[i]), sfRed))
+			{
+				UpdateTextKey(i, _mouseButtonEvent->button + sfKeyCount);
+				return;
+			}
+		}
+	}
+	else if (_mouseButtonEvent->button == sfMouseMiddle)
 	{
 		for (int i = 0; i < NB_KEY; i++)
 		{
