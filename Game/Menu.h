@@ -6,6 +6,7 @@
 #define NB_BUTTONS 5
 #define NB_KEY 8
 #define MAX_INFO 6
+#define NB_MUSICS 5
 
 typedef enum MenuState
 {
@@ -25,8 +26,8 @@ typedef struct Menu
 	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
 	sfSprite* logo[3];
+	sfMusic* musics[NB_MUSICS];
 	MenuState state;
-	
 }Menu;
 
 void LoadMenu(void);

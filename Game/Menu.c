@@ -5,6 +5,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent);
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent);
 void SetMenuState(MenuState _state);
 void UpdateTextKey(int _index, int _key);
+int WhichMusicPlaying();
+void NextMusic(void);
 
 Menu menu;
 
@@ -64,8 +66,8 @@ void LoadMenu(void)
 	//Keybinds
 	for (int i = 0; i < NB_KEY; i++)
 	{
-			menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
-			menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
+		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
+		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
 	}
 	sfText_setString(menu.keyType[0], "Jump");
 	sfText_setString(menu.keyType[1], "Down");
@@ -97,6 +99,15 @@ void LoadMenu(void)
 	{
 		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * i }, 50, 5.f);
 	}
+	//Musics
+
+	menu.musics[0] = CreateMusic("Assets/Musics/1914-Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfFalse);
+	menu.musics[1] = CreateMusic("Assets/Musics/1914-United_Forces_March.ogg", 10.f, sfFalse);
+	menu.musics[2] = CreateMusic("Assets/Musics/1915-Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfFalse);
+	menu.musics[3] = CreateMusic("Assets/Musics/1917-Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfFalse);
+	menu.musics[4] = CreateMusic("Assets/Musics/1917-Over_There.ogg", 10.f, sfFalse);
+
+	sfMusic_play(menu.musics[rand() % NB_MUSICS]);
 
 	SetMenuState(MENU_BASE);
 }
@@ -143,6 +154,15 @@ void KeyPressedMenu(sfEvent* _event)
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 {
 	sfFloatRect hitbox = { 0 };
+	sfVector2i temp = { _mouseButtonEvent->x,_mouseButtonEvent->y };
+	sfVector2i temp2 = { 1504, 552 };
+	if (((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)) < POW2(400))
+	{
+		printf("%d", ((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)));
+		printf("%d\n", NORM_POW2(temp, temp2));
+		NextMusic();
+	}
+
 	if (_mouseButtonEvent->button == sfMouseLeft)
 	{
 		if (CompareColor(sfText_getColor(menu.topButtons[3]), sfRed))
@@ -530,6 +550,10 @@ void UpdateMenu(float _dt)
 	}
 	rotation += 5 * _dt;
 	sfSprite_setRotation(menu.logo[0], rotation);
+	if (WhichMusicPlaying() == -1)
+	{
+		NextMusic();
+	}
 }
 
 void UpdateTextKey(int _index, int _key)
@@ -726,4 +750,31 @@ void UpdateTextKey(int _index, int _key)
 
 	SetKeyToSave(_index, _key);
 	sfText_setString(menu.key[_index], buffer);
+}
+
+int WhichMusicPlaying()
+{
+	for (int i = 0; i < NB_MUSICS; i++)
+	{
+		if (sfMusic_getStatus(menu.musics[i]) == sfPlaying)
+		{
+			return (i);
+		}
+	}
+	return (-1);
+}
+
+void NextMusic()
+{
+	int musicPlaying = WhichMusicPlaying();
+	sfMusic_stop(menu.musics[musicPlaying]);
+	if (musicPlaying == NB_MUSICS - 1)
+	{
+		sfMusic_play(menu.musics[0]);
+	}
+	else
+	{
+		sfMusic_play(menu.musics[musicPlaying + 1]);
+	}
+	sfSprite_setRotation(menu.logo[0], 0);
 }
