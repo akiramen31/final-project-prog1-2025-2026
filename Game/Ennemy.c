@@ -566,6 +566,11 @@ sfFloatRect GetBounsEnnemy(int _index)
 	return sfSprite_getGlobalBounds(ennemy->sprite);
 }
 
+int GetNumberEnnemy()
+{
+	return GetListSize(listEnnemy);
+}
+
 void AddEnnemy(sfVector2f _position, enum Type _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
