@@ -70,6 +70,8 @@ void UpdateEnnemy(float _dt, int _index);
 void AddEnnemy(sfVector2f _position, enum Type _type);
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
+sfVector2f GetPositionEnnemy(int _index);
+sfFloatRect GetBounsEnnemy(int _index);
 
 
 #endif // !GAME_H
