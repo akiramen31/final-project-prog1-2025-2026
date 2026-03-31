@@ -30,25 +30,36 @@ void LoadMenu(void)
 	//Top buttons
 	for (int i = 0; i < NB_BUTTONS; i++)
 	{
-		menu.topButtons[i] = CreateText(font, (sfVector2f) { 0.f, 0.f }, 50, 5.f);
+		sfVector2f position;
 		switch (i)
 		{
 		case 0:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 35, 23 });
-			break;
-		case 1:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 332, 23 });
-			break;
-		case 2:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 850, 23 });
-			break;
-		case 3:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 1308, 23 });
-			break;
-		case 4:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 1600, 23 });
+		{
+			position = (sfVector2f){ 35, 23 };
 			break;
 		}
+		case 1:
+		{
+			position = (sfVector2f){ 332, 23 };
+			break;
+		}
+		case 2:
+		{
+			position = (sfVector2f){ 850, 23 };
+			break;
+		}
+		case 3:
+		{
+			position = (sfVector2f){ 1308, 23 };
+			break;
+		}
+		case 4:
+		{
+			position = (sfVector2f){ 1600, 23 };
+			break;
+		}
+		}
+		menu.topButtons[i] = CreateText(font, position, 50, 5.f);
 	}
 	//Keybinds
 	for (int i = 0; i < NB_KEY; i++)
@@ -413,6 +424,10 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 
 void SetMenuState(MenuState _state)
 {
+	for (int i = 0; i < MAX_INFO; i++)
+	{
+		sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 0, 0 });
+	}
 	switch (menu.state)
 	{
 	case PLAY:
@@ -508,13 +523,13 @@ void SetMenuState(MenuState _state)
 
 void UpdateMenu(float _dt)
 {
-	float rotation = sfSprite_getRotation(menu.logo[1]);
+	float rotation = sfSprite_getRotation(menu.logo[0]);
 	if (rotation > 360)
 	{
 		rotation -= 360;
 	}
 	rotation += 5 * _dt;
-	sfSprite_setRotation(menu.logo[1], rotation);
+	sfSprite_setRotation(menu.logo[0], rotation);
 }
 
 void UpdateTextKey(int _index, int _key)
