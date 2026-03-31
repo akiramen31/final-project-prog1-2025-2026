@@ -30,6 +30,7 @@ typedef enum IntSave
 	SCORE,
 	LIFE,
 	FULL_SCREEN,
+	TROPHY,
 	INT_COUNT
 
 }IntSave;

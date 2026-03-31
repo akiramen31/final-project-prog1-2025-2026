@@ -3,13 +3,16 @@
 
 #include "Common.h"
 
-#define NB_BUTTON 6
+#define NB_BUTTONS 5
 #define NB_KEY 8
+#define MAX_INFO 6
 
 typedef enum MenuState
 {
 	MENU_BASE,
-	SETTING,
+	PLAY,
+	SETTINGS,
+	CONTROLS,
 	CREDITS
 }MenuState;
 
@@ -17,10 +20,11 @@ typedef enum MenuState
 typedef struct Menu
 {
 	char* name[10];
-	sfText* button[NB_BUTTON];
-	sfText* keyRod[NB_KEY];
+	sfText* topButtons[NB_BUTTONS];
+	sfText* infoDisplay[6];
 	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
+	sfSprite* logo[3];
 	MenuState state;
 	
 }Menu;
