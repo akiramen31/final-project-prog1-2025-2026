@@ -38,16 +38,19 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 489.33333333333337,
-                "y": 620
+                "x": 2112,
+                "y": 510.6666666666666
             }
         },
         "Level2.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 1,
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 0.33,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 2056,
-                "y": 2008
+                "x": 2469.6969696969695,
+                "y": 881.8181818181819
             }
         },
         "LevelTest.tmx": {
@@ -65,9 +68,14 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 50,
-                "y": 278
+                "x": 279,
+                "y": 247
             }
+        },
+        "Tilesets/FullTiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 3
         },
         "Tilesets/LevelTest.json": {
             "scale": 2,
@@ -90,6 +98,7 @@
             "scaleInEditor": 8
         },
         "Tilesets/TileForAutomaping.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 8
         },
@@ -108,14 +117,14 @@
         "Level1.tmx",
         "Level2.tmx",
         "Tilesets/AutoTileRules.tmx",
-        "Tilesets/Metal_girder.tsx",
-        "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_plate.tsx",
-        "Tilesets/Pipes.tsx",
-        "Tilesets/TileForAutomaping.tsx"
+        "Tilesets/FullTiles.tsx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
+        "Level1.tmx",
+        "Tilesets/FullTiles.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Level2.tmx",
         "LevelTest.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
@@ -123,11 +132,7 @@
         "Tilesets/Metal_plate.tsx",
         "Tilesets/individual_tiles.tsx",
         "Tilesets/Metal_girder.tsx",
-        "Level2.tmx",
-        "Level1.tmx",
-        "Tilesets/AutoTileRules.tmx",
-        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx",
-        "Tilesets/LevelTest.json"
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
