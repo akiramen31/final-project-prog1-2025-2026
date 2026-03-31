@@ -44,6 +44,8 @@ void Draw(void)
 		//DrawMap(entityManager.renderWindow);
 	}
 
+	SetViewCenter((sfVector2f) {SCREEN_WIDTH/2, SCREEN_HEIGHT/2});
+
 	//background non draw entityManager.visual->next  -> entityManager.visual
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);

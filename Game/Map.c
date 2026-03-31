@@ -2,27 +2,29 @@
 
 Map map;
 
-void LoadRectMap(sfFloatRect* _floatRect, int _floatRectCount, Object* _object, int _objectCount);
+MapData LoadMapData(Cjson* _cjson);
+sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
+void LoadMapTexture(MapData* _data);
 Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(void)
 {
-    SetMap(LEVEL1);
-
-    Cjson* cjson = LoadCjson("Assets/Maps/LevelTest.json");
-    map.map = LoadMapData(cjson);
-    CleanupCjson(cjson);
+	SetMap(LEVEL1);
 }
 
 void SetMap(MapState _map)
 {
-    ;
-}
-
-
-MapData* GetMapData(void)
-{
-    return &map.map;
+	Cjson* cjson = NULL;
+	switch (_map)
+	{
+	case LEVEL1:
+		cjson = LoadCjson("Assets/Maps/LevelTest.json");
+		map.data = LoadMapData(cjson);
+		CleanupCjson(cjson);
+		break;
+	default:
+		break;
+	}
 }
 
 MapData LoadMapData(Cjson* _cjson)
@@ -33,7 +35,7 @@ MapData LoadMapData(Cjson* _cjson)
 	{
 		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
 		{
-			LoadRectMap(data.colider, data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			data.colider = LoadRectMap(&data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 			if (data.size.x < _cjson->layers[i].width)
 			{
 				data.size.x = _cjson->layers[i].width;
@@ -45,25 +47,36 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
 		{
-			LoadRectMap(data.colider, data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			data.triger = LoadRectMap(&data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
 
+	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
-
-
 
 	return data;
 }
 
-void LoadRectMap(sfFloatRect* _floatRect, int _floatRectCount, Object* _object, int _objectCount)
-{
-	_floatRect = calloc(_objectCount, sizeof(sfFloatRect));
 
+MapData* GetMapData(void)
+{
+	return &map.data;
+}
+
+sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount)
+{
+	sfFloatRect* hitbox = calloc(_objectCount, sizeof(sfFloatRect));
+	if (!hitbox)
+	{
+		return NULL;
+	}
+	*_floatRectCount = _objectCount;
 	for (int i = 0; i < _objectCount; i++)
 	{
-		_floatRect[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
+		hitbox[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
 	}
+	return hitbox;
 }
 
 Bool StringCompareMap(char* _string1, char* _string2)
@@ -80,29 +93,40 @@ Bool StringCompareMap(char* _string1, char* _string2)
 	return FALSE;
 }
 
+void LoadMapTexture(MapData* _data)
+{
+	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
+	for (int row = 0; row < _data->size.y; row++)
+	{
+		for (int column = 0; column < _data->size.y; column++)
+		{
+			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect){0}, sfTrue);
+		}
+	}
+}
+
 sfVector2f Colision(sfFloatRect _hitbox)
 {
 	sfVector2f vectorMove = { 0 };
-	const MapData* const mapData = GetMapData();
 
-	for (int i = 0; i < mapData->coliderCount; i++)
+	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		if (mapData->colider[i].left < _hitbox.left + _hitbox.width)
+		if (map.data.colider[i].left < _hitbox.left + _hitbox.width)
 		{
-			vectorMove.x += mapData->colider[i].left - _hitbox.left - _hitbox.width;
+			vectorMove.x += map.data.colider[i].left - _hitbox.left - _hitbox.width;
 		}
-		else if (_hitbox.left < mapData->colider[i].left + mapData->colider[i].width)
+		else if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width)
 		{
-			vectorMove.x += mapData->colider[i].left + mapData->colider[i].width - _hitbox.left;
+			vectorMove.x += map.data.colider[i].left + map.data.colider[i].width - _hitbox.left;
 		}
 
-		if (mapData->colider[i].top < _hitbox.top + _hitbox.height)
+		if (map.data.colider[i].top < _hitbox.top + _hitbox.height)
 		{
-			vectorMove.y += mapData->colider[i].top - _hitbox.top - _hitbox.height;
+			vectorMove.y += map.data.colider[i].top - _hitbox.top - _hitbox.height;
 		}
-		else if (_hitbox.top < mapData->colider[i].top + mapData->colider[i].height)
+		else if (_hitbox.top < map.data.colider[i].top + map.data.colider[i].height)
 		{
-			vectorMove.x += mapData->colider[i].top + mapData->colider[i].height - _hitbox.top;
+			vectorMove.x += map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
 		}
 	}
 	return vectorMove;

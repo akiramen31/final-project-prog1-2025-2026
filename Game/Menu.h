@@ -13,8 +13,8 @@ typedef enum MenuState
 	MENU_BASE,
 	PLAY,
 	SETTINGS,
-	CONTROLS,
-	CREDITS
+	CREDITS,
+	CONTROLS
 }MenuState;
 
 
@@ -28,6 +28,8 @@ typedef struct Menu
 	sfSprite* logo[3];
 	sfMusic* musics[NB_MUSICS];
 	MenuState state;
+	sfColor highlightTextColor;
+	sfColor textColor;
 }Menu;
 
 void LoadMenu(void);

@@ -72,6 +72,8 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
 
+	sfSprite_move(ennemy->sprite, Colision(GetBounsEnnemy(_index)));
+	printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -152,7 +154,6 @@ void CalculMoveEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
-
 }
 
 ActionDemander AStar(int _index, sfVector2f _positionCible)
@@ -552,6 +553,23 @@ sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 	_positionReal.y = _positionReal.y / mapData->caseSize.y;
 	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
 	return newposition;
+}
+
+sfVector2f GetPositionEnnemy(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	return sfSprite_getPosition(ennemy->sprite);
+}
+
+sfFloatRect GetBounsEnnemy(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	return sfSprite_getGlobalBounds(ennemy->sprite);
+}
+
+int GetNumberEnnemy()
+{
+	return GetListSize(listEnnemy);
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
