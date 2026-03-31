@@ -12,7 +12,7 @@ void LoadGame(void)
   
 	LoadBackground(GetAsset("Assets/Maps/Reduite1.png"), TILE_SIZE);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 6 * 7, TILE_SIZE * 108.f });
-	LoadScene();
+	LoadMap();
 
 	LoadEnnemy();
 	LoadHUD();

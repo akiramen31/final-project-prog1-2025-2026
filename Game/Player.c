@@ -113,7 +113,7 @@ void MovePlayer(float _dt)
 
 	sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
 
-	sfVector2f reaction = Colision(sfShape_getGlobalBounds(player.sprite));
+	sfVector2f reaction = Colision(sfSprite_getGlobalBounds(player.sprite));
 	if (reaction.y < 0)
 	{
 		player.isGrounded = sfTrue;

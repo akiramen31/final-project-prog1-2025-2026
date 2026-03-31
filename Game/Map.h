@@ -2,24 +2,45 @@
 #define MAP_H
 
 #include "Common.h"
-#include "cute_tiled.h"
+#include "Map.h"
+#include "Cjson.h"
 
-typedef struct Trigger
+typedef enum MapState
 {
-	char name[FILENAME_MAX];
-	float left;
-	float top;
-	float width;
-	float height;
-}Trigger;
+	LEVEL1,
+	LEVEL2,
+	LEVEL3
+}MapState;
 
-void LoadMap(char* _mapName);
-void DrawMap(sfRenderWindow* _renderWindow);
-void CleanupMap(void);
+typedef struct MapData
+{
+	sfFloatRect* colider;
+	int coliderCount;
+	sfFloatRect* triger;
+	int trigerCount;
+	sfVector2u size;
+	sfVector2f caseSize;
+}MapData;
 
-unsigned int GetCollisionTabSize(void);
-unsigned int GetTriggerTabSize(void);
-sfFloatRect GetMapCollision(unsigned int _index);
-Trigger GetMapTrigger(unsigned int _index);
+typedef struct HitboxMap
+{
+	sfImage* image;
+	sfVector2u size;
+	int ratio;
+}HitboxMap;
 
-#endif
+typedef struct Map
+{
+	MapData map;
+	MapState state;
+}Map;
+
+void LoadMap(void);
+void SetMap(MapState _map);
+
+MapData LoadMapData(Cjson* _cjson);
+MapData* GetMapData(void);
+
+sfVector2f Colision(sfFloatRect _hitbox);
+
+#endif // !MAP_H
