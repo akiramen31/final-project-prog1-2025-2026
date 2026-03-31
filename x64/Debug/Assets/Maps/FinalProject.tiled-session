@@ -1,5 +1,5 @@
 {
-    "activeFile": "Level1.json",
+    "activeFile": "Level1.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
@@ -11,11 +11,11 @@
             "expandedObjectLayers": [
                 31
             ],
-            "scale": 1,
+            "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 2080,
-                "y": 512
+                "x": 621.3333333333334,
+                "y": 844
             }
         },
         "Level1.tmx": {
@@ -23,10 +23,10 @@
                 31
             ],
             "scale": 1,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 2080,
-                "y": 511.5
+                "x": 1978,
+                "y": 694
             }
         },
         "Tilesets/AutoTileRules.tmx": {
@@ -34,7 +34,7 @@
             "selectedLayer": 2,
             "viewCenter": {
                 "x": 248,
-                "y": 247.33333333333337
+                "y": 246.66666666666669
             }
         },
         "Tilesets/Metal_girder.tsx": {
@@ -60,10 +60,10 @@
     },
     "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
-    "map.lastUsedExportFilter": "Fichiers CSV (*.csv)",
+    "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
     "map.lastUsedFormat": "json",
     "openFiles": [
-        "Level1.json",
+        "Level1.tmx",
         "Tilesets/AutoTileRules.tmx",
         "Tilesets/Metal_girder.tsx",
         "Tilesets/individual_tiles.tsx",
@@ -79,8 +79,8 @@
         "Tilesets/individual_tiles.tsx",
         "Tilesets/Metal_girder.tsx",
         "Tilesets/AutoTileRules.tmx",
-        "Level1.json",
-        "Level1.tmx"
+        "Level1.tmx",
+        "Level1.json"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
