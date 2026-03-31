@@ -20,6 +20,7 @@ typedef struct MapData
 	int trigerCount;
 	sfVector2u size;
 	sfVector2f caseSize;
+	unsigned** caseImage;
 	sfImage* image;
 }MapData;
 
@@ -39,7 +40,6 @@ typedef struct Map
 void LoadMap(void);
 void SetMap(MapState _map);
 
-MapData LoadMapData(Cjson* _cjson);
 MapData* GetMapData(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);
