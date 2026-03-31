@@ -26,24 +26,24 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 510.5,
-                "y": 627
+                "x": 2080.5,
+                "y": 512
             }
         },
         "LevelTest.tmx": {
             "scale": 2.6778125,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 200.35009919477184,
-                "y": 219.58221496090562
+                "x": 269.43634029641726,
+                "y": 159.83195238650953
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 248.125,
-                "y": 248.25
+                "x": 248,
+                "y": 248.125
             }
         },
         "Tilesets/LevelTest.json": {

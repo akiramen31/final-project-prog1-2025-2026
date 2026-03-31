@@ -170,7 +170,7 @@
         {
          "draworder":"topdown",
          "id":31,
-         "name":"Colision",
+         "name":"Collider",
          "objects":[
                 {
                  "height":16,
