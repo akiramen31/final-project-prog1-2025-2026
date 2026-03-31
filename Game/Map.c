@@ -2,12 +2,29 @@
 
 Map map;
 
+MapData LoadMapData(Cjson* _cjson);
 sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
+void LoadMapTexture(MapData* _data);
 Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(void)
 {
 	SetMap(LEVEL1);
+}
+
+void SetMap(MapState _map)
+{
+	Cjson* cjson = NULL;
+	switch (_map)
+	{
+	case LEVEL1:
+		cjson = LoadCjson("Assets/Maps/LevelTest.json");
+		map.data = LoadMapData(cjson);
+		CleanupCjson(cjson);
+		break;
+	default:
+		break;
+	}
 }
 
 MapData LoadMapData(Cjson* _cjson)
@@ -34,27 +51,13 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 	}
 
+	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
-
-
 
 	return data;
 }
 
-void SetMap(MapState _map)
-{
-	Cjson* cjson = NULL;
-	switch (_map)
-	{
-	case LEVEL1:
-		cjson = LoadCjson("Assets/Maps/LevelTest.json");
-		map.data = LoadMapData(cjson);
-		CleanupCjson(cjson);
-		break;
-	default:
-		break;
-	}
-}
 
 MapData* GetMapData(void)
 {
@@ -88,6 +91,18 @@ Bool StringCompareMap(char* _string1, char* _string2)
 		}
 	}
 	return FALSE;
+}
+
+void LoadMapTexture(MapData* _data)
+{
+	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
+	for (int row = 0; row < _data->size.y; row++)
+	{
+		for (int column = 0; column < _data->size.y; column++)
+		{
+			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect){0}, sfTrue);
+		}
+	}
 }
 
 sfVector2f Colision(sfFloatRect _hitbox)
