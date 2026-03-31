@@ -45,13 +45,10 @@
     <ClCompile Include="Common.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Map.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="cute_tile.c">
+    <ClCompile Include="Cjson.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,16 +80,13 @@
     <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="Map.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Weapon.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="cute_tiled.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
+    <ClInclude Include="Cjson.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

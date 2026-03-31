@@ -2,7 +2,7 @@
 #define ENNEMY_H
 
 #include "Common.h"
-#include "Scene.h"
+#include "Map.h"
 
 typedef enum Type
 {

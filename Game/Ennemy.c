@@ -12,7 +12,7 @@ void RetirerListWait(int _index);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
-HitboxMap* hitboxMap;
+MapData* mapData;
 Case** aStarMap;
 List* listeWait;
 
@@ -56,9 +56,8 @@ void LoadEnnemy(void)
 		ennemyEntity[1].jetpack.trust = 20.f;
 	}
 	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
-	hitboxMap = GetSceneImageHitbox(); // connaitre la taille de la map
-	printf("ratio %d aille x%d   y%d\n", hitboxMap->ratio, hitboxMap->size.x, hitboxMap->size.y);
-	aStarMap = CreateGrid(hitboxMap->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
+	mapData = GetMapData(); // connaitre la taille de la map
+	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -72,7 +71,7 @@ void UpdateEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
-	
+
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -158,15 +157,16 @@ void CalculMoveEnnemy(float _dt, int _index)
 
 ActionDemander AStar(int _index, sfVector2f _positionCible)
 {
+	/* non fonctionnel
 	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
 	int x = 0;
 	int y = 0;
 	// reset du tableau
-	for (unsigned y = 0; y < hitboxMap->size.y; y++)
+	for (unsigned y = 0; y < mapData->size.y; y++)
 	{
-		for (unsigned x = 0; x < hitboxMap->size.x; x++)
+		for (unsigned x = 0; x < mapData->size.x; x++)
 		{
 			aStarMap[y][x] = (Case){ 0 };
 		}
@@ -504,6 +504,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		caseGet = caseRecherche;
 	}
+	*/
 }
 
 float CalculResultAStar(Case _case)
@@ -546,9 +547,9 @@ void RetirerListWait(int _index)
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 {
-	printf("ratio %d\n", hitboxMap->ratio);
-	_positionReal.x = _positionReal.x / hitboxMap->ratio;
-	_positionReal.y = _positionReal.y / hitboxMap->ratio;
+	printf("ratio %f\n", mapData->caseSize.x);
+	_positionReal.x = _positionReal.x / mapData->caseSize.x;
+	_positionReal.y = _positionReal.y / mapData->caseSize.y;
 	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
 	return newposition;
 }

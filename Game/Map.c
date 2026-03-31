@@ -1,242 +1,109 @@
 #include "Map.h"
 
-sfTexture* tileTexture;
-sfSprite* tileSprite;
-cute_tiled_map_t* map;
+Map map;
 
-sfFloatRect* collisionTab;
-unsigned int collisionTabSize;
-Trigger* triggerTab;
-unsigned int triggerTabSize;
+void LoadRectMap(sfFloatRect* _floatRect, int _floatRectCount, Object* _object, int _objectCount);
+Bool StringCompareMap(char* _string1, char* _string2);
 
-void LoadCollisionAndTrigger(void);
-void DrawTileLayer(sfRenderWindow* _renderWindow, cute_tiled_layer_t* _layer);
-void DrawObjectGroup(sfRenderWindow* _renderWindow, cute_tiled_layer_t* _layer);
-
-void LoadMap(char* _mapName)
+void LoadMap(void)
 {
-	char filename[FILENAME_MAX];
+    SetMap(LEVEL1);
 
-	// Load the map
-	map = cute_tiled_load_map_from_file("Assets/Map/Map.json", NULL);
-
-	// Load the texture used as Tileset
-	sprintf_s(filename, FILENAME_MAX, "Assets/Map/%s", map->tilesets->image.ptr);
-	tileTexture = sfTexture_createFromFile(filename, NULL);
-
-	// Create the sprite used to draw each tile
-	tileSprite = sfSprite_create();
-	sfSprite_setTexture(tileSprite, tileTexture, sfTrue);
-	sfSprite_setScale(tileSprite, (sfVector2f) { GAME_SCALE, GAME_SCALE });
-
-	// Load the layer of collisions and triggers
-	LoadCollisionAndTrigger();
+    Cjson* cjson = LoadCjson("Assets/Map/Map.json");
+    map.map = LoadMapData(cjson);
+    CleanupCjson(cjson);
 }
 
-void DrawMap(sfRenderWindow* _renderWindow)
+void SetMap(MapState _map)
 {
-	cute_tiled_layer_t* layer = map->layers;
+    ;
+}
 
-	// Parse all the layers
-	while (layer)
+
+MapData* GetMapData(void)
+{
+    return &map.map;
+}
+
+MapData LoadMapData(Cjson* _cjson)
+{
+	MapData data = { 0 };
+
+	for (int i = 0; i < _cjson->layersCount; i++)
 	{
-		if (layer->visible)
+		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
 		{
-			if (strcmp(layer->type.ptr, "tilelayer") == 0)
+			LoadRectMap(data.colider, data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			if (data.size.x < _cjson->layers[i].width)
 			{
-				DrawTileLayer(_renderWindow, layer);
+				data.size.x = _cjson->layers[i].width;
 			}
-			else if (strcmp(layer->type.ptr, "objectgroup") == 0)
+			if (data.size.y < _cjson->layers[i].height)
 			{
-				DrawObjectGroup(_renderWindow, layer);
+				data.size.y = _cjson->layers[i].height;
 			}
 		}
-
-		layer = layer->next;
-	}
-}
-
-void CleanupMap(void)
-{
-	sfTexture_destroy(tileTexture);
-	tileTexture = NULL;
-
-	sfSprite_destroy(tileSprite);
-	tileSprite = NULL;
-
-	cute_tiled_free_map(map);
-	map = NULL;
-
-	free(collisionTab);
-	collisionTab = NULL;
-
-	free(triggerTab);
-	triggerTab = NULL;
-}
-
-void LoadCollisionAndTrigger(void)
-{
-	// Create the array of collisions
-	collisionTab = calloc(1, sizeof(sfFloatRect));
-	collisionTabSize = 0;
-	if (collisionTab == NULL)
-	{
-		return;
-	}
-
-	// Create the array of triggers
-	triggerTab = calloc(1, sizeof(Trigger));
-	triggerTabSize = 0;
-	if (triggerTab == NULL)
-	{
-		return;
-	}
-
-	// Select the first layer
-	cute_tiled_layer_t* layer = map->layers;
-
-	// Parse all the layers
-	while (layer)
-	{
-		cute_tiled_object_t* object = layer->objects;
-
-		while (object)
+		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
 		{
-			if (object->ellipse == 0 && object->point == 0 && object->vertices == 0)
-			{
-				if (strcmp(layer->name.ptr, "Collision") == 0)
-				{
-					// Resize the collision array
-					sfFloatRect* collisionTabTemp = realloc(collisionTab, (unsigned long long)(collisionTabSize + 1) * sizeof(sfFloatRect));
-					if (collisionTabTemp == NULL)
-					{
-						return;
-					}
-					collisionTab = collisionTabTemp;
-
-					// Add the collision in the array
-					collisionTab[collisionTabSize] = (sfFloatRect){ object->x, object->y, object->width, object->height };
-					collisionTabSize++;
-				}
-				else if (strcmp(layer->name.ptr, "Trigger") == 0)
-				{
-					// Resize the trigger array
-					Trigger* triggerTabTemp = realloc(triggerTab, (unsigned long long)(triggerTabSize + 1) * sizeof(Trigger));
-					if (triggerTabTemp == NULL)
-					{
-						return;
-					}
-					triggerTab = triggerTabTemp;
-
-					// Add the collision in the array
-					strcpy_s(triggerTab[triggerTabSize].name, FILENAME_MAX, object->name.ptr);
-					triggerTab[triggerTabSize].left = object->x;
-					triggerTab[triggerTabSize].top = object->y;
-					triggerTab[triggerTabSize].width = object->width;
-					triggerTab[triggerTabSize].height = object->height;
-					triggerTabSize++;
-				}
-			}
-			// Next object
-			object = object->next;
-		}
-		// Next layer
-		layer = layer->next;
-	}
-}
-
-void DrawTileLayer(sfRenderWindow* _renderWindow, cute_tiled_layer_t* _layer)
-{
-	// Set the opacity used to draw the tiles
-	sfSprite_setColor(tileSprite, (sfColor) { 255, 255, 255, (int)(_layer->opacity * 255) });
-
-	// Set the tile size
-	int tileWidth = map->tilewidth;
-	int tileHeight = map->tileheight;
-
-	for (int line = 0; line < _layer->height; line++)
-	{
-		for (int column = 0; column < _layer->width; column++)
-		{
-			int tileId = _layer->data[line * _layer->width + column] - 1;
-			if (tileId >= 0)
-			{
-				// Select the correct tile
-				int tileX = (tileId % map->tilesets->columns) * tileWidth;
-				int tileY = (tileId / map->tilesets->columns) * tileHeight;
-				sfSprite_setTextureRect(tileSprite, (sfIntRect) { tileX, tileY, tileWidth, tileHeight });
-
-				// Place and draw the tile
-				sfSprite_setPosition(tileSprite, (sfVector2f) { (float)column* tileWidth* GAME_SCALE, (float)line* tileHeight* GAME_SCALE });
-				sfRenderWindow_drawSprite(_renderWindow, tileSprite, NULL);
-			}
+			LoadRectMap(data.colider, data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
+
+	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
+
+
+
+	return data;
 }
 
-void DrawObjectGroup(sfRenderWindow* _renderWindow, cute_tiled_layer_t* _layer)
+void LoadRectMap(sfFloatRect* _floatRect, int _floatRectCount, Object* _object, int _objectCount)
 {
-	cute_tiled_object_t* object = _layer->objects;
+	_floatRect = calloc(_objectCount, sizeof(sfFloatRect));
 
-	while (object)
+	for (int i = 0; i < _objectCount; i++)
 	{
-		// The object is a rectangle
-		if (object->ellipse == 0 && object->point == 0 && object->vertices == 0)
+		_floatRect[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
+	}
+}
+
+Bool StringCompareMap(char* _string1, char* _string2)
+{
+	int i = 0;
+	while (_string1[i] == _string2[i])
+	{
+		i++;
+		if (_string1[i] == 0 && _string2[i] == 0)
 		{
-			sfRectangleShape* rectangle = sfRectangleShape_create();
-			sfRectangleShape_setPosition(rectangle, (sfVector2f) { object->x, object->y });
-			sfRectangleShape_setSize(rectangle, (sfVector2f) { object->width, object->height });
-			sfRectangleShape_setFillColor(rectangle, sfTransparent);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
 
-			if (strcmp(_layer->name.ptr, "Collision") == 0)
-			{
-				sfRectangleShape_setOutlineColor(rectangle, (sfColor) { 255, 0, 0, (int)(_layer->opacity * 255) });
-			}
-			else
-			{
-				sfRectangleShape_setOutlineColor(rectangle, (sfColor) { 255, 255, 255, (int)(_layer->opacity * 255) });
-			}
-			sfRectangleShape_setOutlineThickness(rectangle, 1);
+sfVector2f Colision(sfFloatRect _hitbox)
+{
+	sfVector2f vectorMove = { 0 };
+	const MapData* const mapData = GetMapData();
 
-			sfRenderWindow_drawRectangleShape(_renderWindow, rectangle, NULL);
-			sfRectangleShape_destroy(rectangle);
+	for (int i = 0; i < mapData->coliderCount; i++)
+	{
+		if (mapData->colider[i].left < _hitbox.left + _hitbox.width)
+		{
+			vectorMove.x += mapData->colider[i].left - _hitbox.left - _hitbox.width;
+		}
+		else if (_hitbox.left < mapData->colider[i].left + mapData->colider[i].width)
+		{
+			vectorMove.x += mapData->colider[i].left + mapData->colider[i].width - _hitbox.left;
 		}
 
-		// Next object
-		object = object->next;
+		if (mapData->colider[i].top < _hitbox.top + _hitbox.height)
+		{
+			vectorMove.y += mapData->colider[i].top - _hitbox.top - _hitbox.height;
+		}
+		else if (_hitbox.top < mapData->colider[i].top + mapData->colider[i].height)
+		{
+			vectorMove.x += mapData->colider[i].top + mapData->colider[i].height - _hitbox.top;
+		}
 	}
-}
-
-unsigned int GetCollisionTabSize(void)
-{
-	return collisionTabSize;
-}
-
-unsigned int GetTriggerTabSize(void)
-{
-	return triggerTabSize;
-}
-
-sfFloatRect GetMapCollision(unsigned int _index)
-{
-	if (_index < collisionTabSize)
-	{
-		return collisionTab[_index];
-	}
-	else
-	{
-		return (sfFloatRect) { 0, 0, 0, 0 };
-	}
-}
-
-Trigger GetMapTrigger(unsigned int _index)
-{
-	if (_index < triggerTabSize)
-	{
-		return triggerTab[_index];
-	}
-	else
-	{
-		return (Trigger) { "NoName", 0, 0, 0, 0 };
-	}
+	return vectorMove;
 }

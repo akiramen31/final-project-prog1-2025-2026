@@ -41,7 +41,7 @@ void Draw(void)
 
 	if (entityManager.gameState == GAME)
 	{
-		DrawMap(entityManager.renderWindow);
+		//DrawMap(entityManager.renderWindow);
 	}
 
 	//background non draw entityManager.visual->next  -> entityManager.visual

@@ -11,8 +11,6 @@
 
 #include "Backup.h"
 #include "EntityManager.h"
-#include "cute_tiled.h"
-#include "Map.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
