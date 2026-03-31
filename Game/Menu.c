@@ -329,6 +329,20 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 	}
 	switch (menu.state)
 	{
+	case PLAY:
+		for (int i = 0; i < 4; i++)
+		{
+			hitbox = sfText_getGlobalBounds(menu.infoDisplay[i]);
+			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
+			{
+				sfText_setColor(menu.infoDisplay[i], highlightColor);
+			}
+			else
+			{
+				sfText_setColor(menu.infoDisplay[i], baseColor);
+			}
+		}
+		break;
 	case SETTINGS:
 		for (int i = 0; i < 4; i++)
 		{
@@ -414,8 +428,8 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.topButtons[1], "Setting");
 		for (int i = 0; i < NB_KEY; i++)
 		{
-			sfText_setScale(menu.key[i], (sfVector2f) { 1, 1 });
-			sfText_setScale(menu.keyType[i], (sfVector2f) { 1, 1 });
+			sfText_setScale(menu.key[i], (sfVector2f) { 0 });
+			sfText_setScale(menu.keyType[i], (sfVector2f) { 0 });
 		}
 		break;
 	case  CREDITS:
