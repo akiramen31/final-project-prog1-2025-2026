@@ -12,8 +12,8 @@ typedef enum MenuState
 	MENU_BASE,
 	PLAY,
 	SETTINGS,
-	CONTROLS,
-	CREDITS
+	CREDITS,
+	CONTROLS
 }MenuState;
 
 
@@ -26,6 +26,8 @@ typedef struct Menu
 	sfText* key[NB_KEY];
 	sfSprite* logo[3];
 	MenuState state;
+	sfColor colorTriger;
+	sfColor colorNotTriger;
 	
 }Menu;
 

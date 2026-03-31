@@ -12,58 +12,40 @@ void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
 
+	menu.colorTriger = (sfColor){ 255, 165, 0 , 255};
+	menu.colorNotTriger = sfWhite;
+
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
 	}
 	//Logo
 	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 8.f);
-	menu.logo[0] = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) { 0 }, 8.f, 50.f);
-	menu.logo[1] = CreateSprite(GetAsset("Assets/Sprites/cog.png"), (sfVector2f) { 0 }, 8.f, 50.f);
-	menu.logo[2] = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) { 0 }, 8.f, 50.f);
-	for (int i = 0; i < 3; i++) {
-		sfSprite_setOrigin(menu.logo[i], (sfVector2f) { 64, 64 });
-		sfSprite_setPosition(menu.logo[i], (sfVector2f) { 1504, 552 });
+	menu.logo[0] = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
+	menu.logo[1] = CreateSprite(GetAsset("Assets/Sprites/cog.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
+	menu.logo[2] = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
+
+	for (int i = 0; i < 3; i++)
+	{
+		SetSpriteOriginMiddel(menu.logo[i]);
 	}
 
 	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
+
 	//Top buttons
+	sfVector2f positionTopButton[5] = { { 35, 23 }, { 332, 23 }, { 850, 23 },{ 1308, 23 }, { 1600, 23 } };
 	for (int i = 0; i < NB_BUTTONS; i++)
 	{
-		menu.topButtons[i] = CreateText(font, (sfVector2f) { 0.f, 0.f }, 50, 5.f);
-		switch (i)
-		{
-		case 0:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 35, 23 });
-			break;
-		case 1:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 332, 23 });
-			break;
-		case 2:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 850, 23 });
-			break;
-		case 3:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 1308, 23 });
-			break;
-		case 4:
-			sfText_setPosition(menu.topButtons[i], (sfVector2f) { 1600, 23 });
-			break;
-		}
+		menu.topButtons[i] = CreateText(font, positionTopButton[i], 50, 5.f);
 	}
 	//Keybinds
+	char* bufferKeyType[NB_KEY] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < NB_KEY; i++)
 	{
-			menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
-			menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
+		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
+		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
+		sfText_setString(menu.keyType[i], bufferKeyType[i]);
 	}
-	sfText_setString(menu.keyType[0], "Jump");
-	sfText_setString(menu.keyType[1], "Down");
-	sfText_setString(menu.keyType[2], "Right");
-	sfText_setString(menu.keyType[3], "Left");
-	sfText_setString(menu.keyType[4], "Shoot");
-	sfText_setString(menu.keyType[5], "Dash");
-	sfText_setString(menu.keyType[6], "Melee");
-	sfText_setString(menu.keyType[7], "Second");
 
 	for (int i = 0; i < NB_KEY; i++)
 	{
@@ -121,7 +103,7 @@ void KeyPressedMenu(sfEvent* _event)
 	for (int i = 0; i < NB_KEY; i++)
 	{
 
-		if (CompareColor(sfText_getColor(menu.key[i]), sfRed))
+		if (CompareColor(sfText_getColor(menu.key[i]), menu.colorTriger))
 		{
 			UpdateTextKey(i, _event->key.code);
 			return;
@@ -134,59 +116,21 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 	sfFloatRect hitbox = { 0 };
 	if (_mouseButtonEvent->button == sfMouseLeft)
 	{
-		if (CompareColor(sfText_getColor(menu.topButtons[3]), sfRed))
+		if (CompareColor(sfText_getColor(menu.topButtons[3]), menu.colorTriger))
 		{
 			sfRenderWindow_close(GetRenderWindow());
 		}
 		switch (menu.state)
 		{
-		case MENU_BASE:
-			for (int i = 0; i < NB_BUTTONS; i++)
-			{
-				if (CompareColor(sfText_getColor(menu.topButtons[i]), sfRed))
-				{
-					switch (i)
-					{
-					case 0:
-						SetMenuState(PLAY);
-						break;
-					case 1:
-						SetMenuState(SETTINGS);
-						break;
-					case 2:
-						SetMenuState(CREDITS);
-						break;
-					}
-				}
-			}
-			break;
 		case PLAY:
 			for (int i = 0; i < 3; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.infoDisplay[i]), sfRed))
+				if (CompareColor(sfText_getColor(menu.infoDisplay[i]), menu.colorTriger))
 				{
 					switch (i)
 					{
 					case 0:
 						SetGameState(GAME);
-						break;
-					}
-				}
-			}
-			for (int i = 0; i < NB_BUTTONS; i++)
-			{
-				if (CompareColor(sfText_getColor(menu.topButtons[i]), sfRed))
-				{
-					switch (i)
-					{
-					case 0:
-						SetMenuState(MENU_BASE);
-						break;
-					case 1:
-						SetMenuState(SETTINGS);
-						break;
-					case 2:
-						SetMenuState(CREDITS);
 						break;
 					}
 				}
@@ -216,57 +160,29 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					return;
 				}
 			}
-			for (int i = 0; i < NB_BUTTONS; i++)
-			{
-				if (CompareColor(sfText_getColor(menu.topButtons[i]), sfRed))
-				{
-					switch (i)
-					{
-					case 0:
-						SetMenuState(PLAY);
-						break;
-					case 1:
-						SetMenuState(MENU_BASE);
-						break;
-					case 2:
-						SetMenuState(CREDITS);
-						break;
-					}
-				}
-			}
 			break;
 		case CONTROLS:
 			for (int i = 0; i < NB_KEY; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.key[i]), sfRed))
+				if (CompareColor(sfText_getColor(menu.key[i]), menu.colorTriger))
 				{
 					UpdateTextKey(i, _mouseButtonEvent->button + sfKeyCount);
 					return;
 				}
 			}
-			for (int i = 0; i < NB_BUTTONS; i++)
-			{
-				if (CompareColor(sfText_getColor(menu.topButtons[i]), sfRed))
-				{
-					switch (i)
-					{
-					case 0:
-						SetMenuState(PLAY);
-						break;
-					case 1:
-						SetMenuState(MENU_BASE);
-						break;
-					case 2:
-						SetMenuState(CREDITS);
-						break;
-					}
-				}
-			}
 			break;
 		case CREDITS:
-			for (int i = 0; i < NB_BUTTONS; i++)
+			break;
+		}
+		for (int i = 0; i < NB_BUTTONS; i++)
+		{
+			if (CompareColor(sfText_getColor(menu.topButtons[i]), menu.colorTriger))
 			{
-				if (CompareColor(sfText_getColor(menu.topButtons[i]), sfRed))
+				if (i + 1 == menu.state)
+				{
+					SetMenuState(MENU_BASE);
+				}
+				else
 				{
 					switch (i)
 					{
@@ -277,19 +193,18 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 						SetMenuState(SETTINGS);
 						break;
 					case 2:
-						SetMenuState(MENU_BASE);
+						SetMenuState(CREDITS);
 						break;
 					}
 				}
 			}
-			break;
 		}
 	}
 	else if (_mouseButtonEvent->button == sfMouseRight)
 	{
 		for (int i = 0; i < NB_KEY; i++)
 		{
-			if (CompareColor(sfText_getColor(menu.key[i]), sfRed))
+			if (CompareColor(sfText_getColor(menu.key[i]), menu.colorTriger))
 			{
 				UpdateTextKey(i, _mouseButtonEvent->button + sfKeyCount);
 				return;
@@ -300,7 +215,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 	{
 		for (int i = 0; i < NB_KEY; i++)
 		{
-			if (CompareColor(sfText_getColor(menu.key[i]), sfRed))
+			if (CompareColor(sfText_getColor(menu.key[i]), menu.colorTriger))
 			{
 				UpdateTextKey(i, _mouseButtonEvent->button + sfKeyCount);
 				return;
@@ -312,8 +227,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 {
 	sfFloatRect hitbox = { 0 };
-	sfColor highlightColor = sfRed;
-	sfColor baseColor = sfWhite;
+	sfColor highlightColor = menu.colorTriger;
+	sfColor baseColor = menu.colorNotTriger;
 
 	for (int i = 0; i < NB_BUTTONS; i++)
 	{
@@ -413,53 +328,30 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 
 void SetMenuState(MenuState _state)
 {
-	switch (menu.state)
+	for (int i = 0; i < NB_KEY; i++)
 	{
-	case PLAY:
-		sfText_setString(menu.topButtons[0], "Play");
-		break;
-	case SETTINGS:
-		if (_state != CONTROLS)
-		{
-			sfText_setString(menu.topButtons[1], "Setting");
-		}
-		break;
-	case CONTROLS:
-		sfText_setString(menu.topButtons[1], "Setting");
-		for (int i = 0; i < NB_KEY; i++)
-		{
-			sfText_setScale(menu.key[i], (sfVector2f) { 0 });
-			sfText_setScale(menu.keyType[i], (sfVector2f) { 0 });
-		}
-		break;
-	case  CREDITS:
-		sfText_setString(menu.topButtons[2], "Credits");
-		break;
+		sfText_setScale(menu.key[i], (sfVector2f) { 0 });
+		sfText_setScale(menu.keyType[i], (sfVector2f) { 0 });
 	}
+	for (int i = 0; i < MAX_INFO; i++)
+	{
+		sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 0 });
+	}
+
+	sfText_setString(menu.topButtons[0], "Play");
+	sfText_setString(menu.topButtons[1], "Setting");
+	sfText_setString(menu.topButtons[2], "Credits");
+	sfText_setString(menu.topButtons[3], "Quit");
+	sfText_setString(menu.topButtons[4], "");
+
 	menu.state = _state;
 	switch (menu.state)
 	{
-	case MENU_BASE:
-		sfText_setString(menu.topButtons[0], "Play");
-		sfText_setString(menu.topButtons[1], "Setting");
-		sfText_setString(menu.topButtons[2], "Credits");
-		sfText_setString(menu.topButtons[3], "Quit");
-		sfText_setString(menu.topButtons[4], "???");
-		for (int i = 0; i < NB_KEY; i++)
-		{
-			sfText_setScale(menu.key[i], (sfVector2f) { 0 });
-			sfText_setScale(menu.keyType[i], (sfVector2f) { 0 });
-		}
-		for (int i = 0; i < MAX_INFO; i++)
-		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 0 });
-		}
-		break;
 	case PLAY:
 		sfText_setString(menu.topButtons[0], "Back");
 		for (int i = 0; i < 3; i++)
 		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1, 1 });
+			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1.f, 1.f});
 		}
 		sfText_setString(menu.infoDisplay[0], "New save");
 		sfText_setString(menu.infoDisplay[1], "Load save");
@@ -469,7 +361,7 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.topButtons[1], "Back");
 		for (int i = 0; i < 4; i++)
 		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1, 1 });
+			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1.f, 1.f });
 		}
 		sfText_setString(menu.infoDisplay[0], "Light Level");
 		sfText_setString(menu.infoDisplay[1], "Sound Volume");
@@ -484,24 +376,23 @@ void SetMenuState(MenuState _state)
 			sfText_setColor(menu.infoDisplay[1], sfRed);
 		}
 		break;
-	case CONTROLS:
-		for (int i = 0; i < NB_KEY; i++)
-		{
-			sfText_setScale(menu.key[i], (sfVector2f) { 1, 1 });
-			sfText_setScale(menu.keyType[i], (sfVector2f) { 1, 1 });
-		}
-		for (int i = 0; i < MAX_INFO; i++)
-		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 0 });
-		}
-		break;
 	case CREDITS:
 		sfText_setString(menu.topButtons[2], "Back");
 		for (int i = 0; i < 5; i++)
 		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1, 1 });
+			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1.f, 1.f });
 			sfText_setString(menu.infoDisplay[i], menu.name[i]);
 		}
+		break;
+	case CONTROLS:
+		sfText_setString(menu.topButtons[3], "Back");
+		for (int i = 0; i < NB_KEY; i++)
+		{
+			sfText_setScale(menu.key[i], (sfVector2f) { 1.f, 1.f });
+			sfText_setScale(menu.keyType[i], (sfVector2f) { 1.f, 1.f });
+		}
+		break;
+	default:
 		break;
 	}
 }
