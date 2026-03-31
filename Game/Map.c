@@ -92,7 +92,6 @@ Bool StringCompareMap(char* _string1, char* _string2)
 
 sfVector2f Colision(sfFloatRect _hitbox)
 {
-	
 	sfVector2f vectorMove = { 0 };
 
 	for (int i = 0; i < map.data.coliderCount; i++)
