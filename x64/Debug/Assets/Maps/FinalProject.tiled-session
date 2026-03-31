@@ -1,11 +1,22 @@
 {
-    "activeFile": "Level1.tmx",
+    "activeFile": "LevelTest.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx": {
+            "scale": 0.69765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 558.2978723404256,
+                "y": 639.2833146696529
+            }
+        },
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx#Grassland@64x64": {
             "scaleInDock": 1
         },
         "Level1.json": {
@@ -26,24 +37,24 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 2080.5,
+                "x": 2080,
                 "y": 512
             }
         },
         "LevelTest.tmx": {
-            "scale": 2.6778125,
-            "selectedLayer": 2,
+            "scale": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 269.43634029641726,
-                "y": 159.83195238650953
+                "x": 231.5,
+                "y": 147
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 4,
-            "selectedLayer": 2,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 248,
-                "y": 248.125
+                "x": 216,
+                "y": 224
             }
         },
         "Tilesets/LevelTest.json": {
@@ -91,14 +102,15 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "LevelTest.tmx",
-        "Tilesets/TileForAutomaping.tsx",
-        "Tilesets/Pipes.tsx",
-        "Tilesets/Metal_plate.tsx",
-        "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_girder.tsx",
-        "Tilesets/AutoTileRules.tmx",
         "Level1.tmx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/Metal_girder.tsx",
+        "Tilesets/individual_tiles.tsx",
+        "Tilesets/Metal_plate.tsx",
+        "Tilesets/Pipes.tsx",
+        "Tilesets/TileForAutomaping.tsx",
+        "LevelTest.tmx",
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx",
         "Tilesets/LevelTest.json",
         "Level1.json"
     ],

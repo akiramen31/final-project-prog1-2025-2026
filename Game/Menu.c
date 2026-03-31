@@ -399,13 +399,13 @@ void SetMenuState(MenuState _state)
 
 void UpdateMenu(float _dt)
 {
-	float rotation = sfSprite_getRotation(menu.logo[1]);
+	float rotation = sfSprite_getRotation(menu.logo[0]);
 	if (rotation > 360)
 	{
 		rotation -= 360;
 	}
 	rotation += 5 * _dt;
-	sfSprite_setRotation(menu.logo[1], rotation);
+	sfSprite_setRotation(menu.logo[0], rotation);
 }
 
 void UpdateTextKey(int _index, int _key)
