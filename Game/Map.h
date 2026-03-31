@@ -20,6 +20,7 @@ typedef struct MapData
 	int trigerCount;
 	sfVector2u size;
 	sfVector2f caseSize;
+	sfImage* image;
 }MapData;
 
 typedef struct HitboxMap
@@ -31,7 +32,7 @@ typedef struct HitboxMap
 
 typedef struct Map
 {
-	MapData map;
+	MapData data;
 	MapState state;
 }Map;
 

@@ -554,6 +554,23 @@ sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 	return newposition;
 }
 
+sfVector2f GetPositionEnnemy(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	return sfSprite_getPosition(ennemy->sprite);
+}
+
+sfFloatRect GetBounsEnnemy(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	return sfSprite_getGlobalBounds(ennemy->sprite);
+}
+
+int GetNumberEnnemy()
+{
+	return GetListSize(listEnnemy);
+}
+
 void AddEnnemy(sfVector2f _position, enum Type _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
