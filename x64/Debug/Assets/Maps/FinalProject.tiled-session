@@ -1,5 +1,5 @@
 {
-    "activeFile": "LevelTest.tmx",
+    "activeFile": "Level1.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
     ],
@@ -24,26 +24,26 @@
                 31
             ],
             "scale": 1,
-            "selectedLayer": 0,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 2080,
-                "y": 511.5
+                "x": 510.5,
+                "y": 627
             }
         },
         "LevelTest.tmx": {
             "scale": 2.6778125,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 239.93464815030924,
-                "y": 159.83195238650953
+                "x": 200.35009919477184,
+                "y": 219.58221496090562
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 248,
-                "y": 248.125
+                "x": 248.125,
+                "y": 248.25
             }
         },
         "Tilesets/LevelTest.json": {
@@ -87,20 +87,19 @@
         "Tilesets/Metal_plate.tsx",
         "Tilesets/Pipes.tsx",
         "Tilesets/TileForAutomaping.tsx",
-        "Tilesets/LevelTest.json",
         "LevelTest.tmx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Tilesets/LevelTest.json",
-        "Level1.tmx",
-        "Tilesets/AutoTileRules.tmx",
-        "Tilesets/Metal_girder.tsx",
-        "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_plate.tsx",
-        "Tilesets/Pipes.tsx",
-        "Tilesets/TileForAutomaping.tsx",
         "LevelTest.tmx",
+        "Tilesets/TileForAutomaping.tsx",
+        "Tilesets/Pipes.tsx",
+        "Tilesets/Metal_plate.tsx",
+        "Tilesets/individual_tiles.tsx",
+        "Tilesets/Metal_girder.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Level1.tmx",
+        "Tilesets/LevelTest.json",
         "Level1.json"
     ],
     "tileset.lastUsedFormat": "tsx",
