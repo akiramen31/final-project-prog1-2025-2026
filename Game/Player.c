@@ -11,7 +11,7 @@ void LoadPlayer(void)
 	player = (Player){ 0 };
 
 	sfTexture* texture = GetAsset("D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Sprites/capsul.png");
-	player.sprite = CreateSprite(texture, (sfVector2f) { SCREEN_WIDTH, TILE_SIZE * 119 }, 2.f, 40);
+	player.sprite = CreateSprite(texture, (sfVector2f) { TILE_SIZE * 5, TILE_SIZE * 5 }, 2.f, 40);
 	SetSpriteOriginFoot(player.sprite);
 }
 
@@ -102,14 +102,14 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81f * _dt;
 	}
 
-	if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
-	{
-		player.isGrounded = sfTrue;
-		player.velocity.y = 0;
+	//if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
+	//{
+	//	player.isGrounded = sfTrue;
+	//	player.velocity.y = 0;
 
-		sfFloatRect bound = sfSprite_getGlobalBounds(player.sprite);
-		sfSprite_move(player.sprite, (sfVector2f) { 0, TILE_SIZE * 121 * 2 - bound.height - bound.top });
-	}
+	//	sfFloatRect bound = sfSprite_getGlobalBounds(player.sprite);
+	//	sfSprite_move(player.sprite, (sfVector2f) { 0, TILE_SIZE * 121 * 2 - bound.height - bound.top });
+	//}
 
 	sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
 

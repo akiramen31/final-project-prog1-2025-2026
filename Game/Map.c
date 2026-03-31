@@ -9,7 +9,7 @@ void LoadMap(void)
 {
     SetMap(LEVEL1);
 
-    Cjson* cjson = LoadCjson("Assets/Map/Map.json");
+    Cjson* cjson = LoadCjson("Assets/Maps/LevelTest.json");
     map.map = LoadMapData(cjson);
     CleanupCjson(cjson);
 }

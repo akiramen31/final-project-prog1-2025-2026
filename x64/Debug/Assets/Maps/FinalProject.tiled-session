@@ -1,5 +1,6 @@
 {
-    "activeFile": "Level1.tmx",
+    "activeFile": "LevelTest.tmx",
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
@@ -23,18 +24,34 @@
                 31
             ],
             "scale": 1,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1978,
-                "y": 694
+                "x": 2080,
+                "y": 511.5
+            }
+        },
+        "LevelTest.tmx": {
+            "scale": 2.6778125,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 239.93464815030924,
+                "y": 159.83195238650953
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 0.75,
+            "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
                 "x": 248,
-                "y": 246.66666666666669
+                "y": 248.125
+            }
+        },
+        "Tilesets/LevelTest.json": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 239.75,
+                "y": 159.5
             }
         },
         "Tilesets/Metal_girder.tsx": {
@@ -69,17 +86,21 @@
         "Tilesets/individual_tiles.tsx",
         "Tilesets/Metal_plate.tsx",
         "Tilesets/Pipes.tsx",
-        "Tilesets/TileForAutomaping.tsx"
+        "Tilesets/TileForAutomaping.tsx",
+        "Tilesets/LevelTest.json",
+        "LevelTest.tmx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Tilesets/TileForAutomaping.tsx",
-        "Tilesets/Pipes.tsx",
-        "Tilesets/Metal_plate.tsx",
-        "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_girder.tsx",
-        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/LevelTest.json",
         "Level1.tmx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/Metal_girder.tsx",
+        "Tilesets/individual_tiles.tsx",
+        "Tilesets/Metal_plate.tsx",
+        "Tilesets/Pipes.tsx",
+        "Tilesets/TileForAutomaping.tsx",
+        "LevelTest.tmx",
         "Level1.json"
     ],
     "tileset.lastUsedFormat": "tsx",
