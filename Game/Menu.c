@@ -33,7 +33,7 @@ void LoadMenu(void)
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
 	}
 
-	sfFont* font = GetAsset("Assets/Font/Daydream.otf");
+	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
 
 	for (int i = 0; i < NB_BUTTON; i++)
 	{

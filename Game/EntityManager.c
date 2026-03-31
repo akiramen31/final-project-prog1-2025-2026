@@ -30,7 +30,7 @@ void LoadEntityManager(void)
 
 void LoadGeneralAsset(void)
 {
-	void* ptr = GetAsset("Assets/Font/Daydream.otf");
+	void* ptr = GetAsset("Assets/Fonts/Daydream.otf");
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
