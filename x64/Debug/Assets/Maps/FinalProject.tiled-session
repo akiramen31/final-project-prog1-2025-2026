@@ -35,35 +35,35 @@
             "expandedObjectLayers": [
                 31
             ],
-            "scale": 0.25,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 956,
-                "y": 360
+                "x": 489.33333333333337,
+                "y": 620
             }
         },
         "Level2.tmx": {
-            "scale": 1,
+            "scale": 0.25,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 3672,
-                "y": 378
+                "x": 2772,
+                "y": 1328
             }
         },
         "LevelTest.tmx": {
-            "scale": 2,
+            "scale": 1.5,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 224,
-                "y": 95.5
+                "x": 170.66666666666669,
+                "y": 235.3333333333333
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 2,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 296,
-                "y": 206
+                "x": 50,
+                "y": 278
             }
         },
         "Tilesets/LevelTest.json": {
@@ -113,6 +113,7 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
+        "LevelTest.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
         "Tilesets/Pipes.tsx",
@@ -122,7 +123,6 @@
         "Level2.tmx",
         "Level1.tmx",
         "Tilesets/AutoTileRules.tmx",
-        "LevelTest.tmx",
         "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx",
         "Tilesets/LevelTest.json"
     ],
