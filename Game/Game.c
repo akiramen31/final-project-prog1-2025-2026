@@ -4,13 +4,15 @@ void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
 
 Game game;
+sfSprite* background;
 float timer;
 
 void LoadGame(void)
 {
 	game = (Game){ 0 };
   
-	LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 0.f);
+	background = LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 1.f);
+	sfSprite_setOrigin(background, (sfVector2f) { 860, 430 + 50 - 39 });
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 6 * 7, TILE_SIZE * 108.f });
 	LoadMap();
 
@@ -26,6 +28,8 @@ void PollEventGame(sfEvent* _event)
 	{
 	case sfEvtKeyPressed:
 		KeyPressedGame(&_event->key);
+		break;
+	case sfEvtMouseMoved:
 		break;
 	default:
 		break;

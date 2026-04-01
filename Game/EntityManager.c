@@ -36,13 +36,8 @@ void LoadGeneralAsset(void)
 
 void Draw(void)
 {
-	//SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
-
-	
-
-	
-
+	//sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
 
 	//background non draw entityManager.visual->next  -> entityManager.visual
 	VisualEntity* elementActual = entityManager.visual;

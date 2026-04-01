@@ -158,7 +158,6 @@ void DrawDev(sfRenderWindow* _renderWindow)
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
 		sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
-		printf("%f, %f\t", vectorMove.x, vectorMove.y);
 
 		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
 	}

@@ -18,6 +18,7 @@ void LoadPlayer(void)
 void UpdatePlayer(float _dt)
 {
 	MovePlayer(_dt);
+	sfSprite_setPosition(player.sprite, (sfVector2f) {100.f, 100.f});
 }
 
 void MovePlayer(float _dt)
