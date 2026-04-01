@@ -3,6 +3,7 @@
 Player player;
 
 float timerDash = 0;
+float timerFaling = 0;
 
 void MovePlayer(float _dt);
 
@@ -125,10 +126,14 @@ void MovePlayer(float _dt)
 	{
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;
+		timerFaling = 0;
 	}
 	else if (reaction.y >= 0.f)
 	{
-		player.isGrounded = sfFalse;
+		if (timerFaling < PLAYER_JUMP_FORGIVE)
+		{
+			player.isGrounded = sfFalse;
+		}
 	}
 
 	//printf("%f %f\n", reaction.x, reaction.y);
@@ -136,11 +141,16 @@ void MovePlayer(float _dt)
 	if (reaction.x != 0)
 	{
 		player.velocity.x = 0;
+
 		player.isDashing = sfFalse;
 	}
 	if (reaction.y != 0)
 	{
 		player.velocity.y = 0;
+		if (timerFaling <= PLAYER_JUMP_FORGIVE)
+		{
+			timerFaling += _dt;
+		}
 	}
 
 	sfRectangleShape_move(player.collision, reaction);
