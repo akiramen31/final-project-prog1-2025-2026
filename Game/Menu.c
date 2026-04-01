@@ -129,8 +129,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 	sfVector2i temp2 = { 1504, 552 };
 	if (((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)) < POW2(400))
 	{
-		printf("%d", ((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)));
-		printf("%d\n", NORM_POW2(temp, temp2));
+		//printf("%d", ((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)));
+		//printf("%d\n", NORM_POW2(temp, temp2));
 		NextMusic();
 	}
 

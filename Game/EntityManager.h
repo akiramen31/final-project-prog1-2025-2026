@@ -62,6 +62,7 @@ typedef struct EntityManager
 	sfRenderWindow* renderWindow;
 	sfClock* clock;
 	sfView* view;
+	float viewZoom;
 
 	AssetEntity* asset;
 	int assetCount;
@@ -107,7 +108,7 @@ void PollEvent(void);
 void Update(void);
 void Cleanup(void);
 void SetViewCenter(sfVector2f _centre);
-void SetViewSize(sfVector2f _size);
+void SetViewZoom(float _zoom);
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);
 void ChangeFullSceen(void);

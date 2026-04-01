@@ -62,7 +62,6 @@ void Draw(void)
 		}
 		elementActual = elementActual->next;
 	}
-	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 
 	if (entityManager.gameState == GAME)
 	{
@@ -71,6 +70,9 @@ void Draw(void)
 			DrawDev(entityManager.renderWindow);
 		}
 	}
+
+	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+	printf("view x: %f y: %f , wight: %f, height: %f\n", sfView_getCenter(entityManager.view).x, sfView_getCenter(entityManager.view).y, sfView_getSize(entityManager.view).x, sfView_getSize(entityManager.view).y);
 
 	sfRenderWindow_display(entityManager.renderWindow);
 }
@@ -767,7 +769,6 @@ void LoadMainData(void)
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
 	}
 
-
 	sfRenderWindow_setVerticalSyncEnabled(entityManager.renderWindow, sfTrue);
 
 	//sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
@@ -775,21 +776,20 @@ void LoadMainData(void)
 	entityManager.clock = sfClock_create();
 
 	entityManager.view = sfView_create();
-	sfView_setCenter(entityManager.view, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
-	sfView_setSize(entityManager.view, (sfVector2f) { SCREEN_WIDTH, SCREEN_HEIGHT });
-	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
+	SetViewZoom(1.f);
 }
 
 void SetViewCenter(sfVector2f _centre)
 {
 	sfView_setCenter(entityManager.view, _centre);
-	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 }
 
-void SetViewSize(sfVector2f _size)
+void SetViewZoom(float _zoom)
 {
-	sfView_setSize(entityManager.view, _size);
-	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
+	sfVector2u windowSize = sfRenderWindow_getSize(entityManager.renderWindow);
+	entityManager.viewZoom = _zoom;
+	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x * entityManager.viewZoom, windowSize.y * entityManager.viewZoom});
 }
 
 void SetGameState(GameState _gameState)
