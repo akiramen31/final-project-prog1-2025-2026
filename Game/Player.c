@@ -95,6 +95,7 @@ void MovePlayer(float _dt)
 		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && timerDash >= PLAYER_DASH_COOLDOWN)
 		{
 			timerDash = 0;
+			player.velocity.y = 0;
 			if (player.direction)
 			{
 				player.velocity.x = PLAYER_DASH_POWER;
@@ -132,14 +133,15 @@ void MovePlayer(float _dt)
 
 	//printf("%f %f\n", reaction.x, reaction.y);
 
-	//if (reaction.x != 0)
-	//{
-	//	player.velocity.x = 0;
-	//}
-	//if (reaction.y != 0)
-	//{
-	//	player.velocity.y = 0;
-	//}
+	if (reaction.x != 0)
+	{
+		player.velocity.x = 0;
+		player.isDashing = sfFalse;
+	}
+	if (reaction.y != 0)
+	{
+		player.velocity.y = 0;
+	}
 
 	sfRectangleShape_move(player.collision, reaction);
 }
