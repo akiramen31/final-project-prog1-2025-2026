@@ -10,7 +10,7 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
   
-	LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 4.f);
+	LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 0.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 6 * 7, TILE_SIZE * 108.f });
 	LoadMap();
 

@@ -39,12 +39,10 @@ void Draw(void)
 	//SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
 
-	if (entityManager.gameState == GAME)
-	{
-		//DrawMap(entityManager.renderWindow);
-	}
+	
 
-	SetViewCenter((sfVector2f) {SCREEN_WIDTH/2, SCREEN_HEIGHT/2});
+	
+
 
 	//background non draw entityManager.visual->next  -> entityManager.visual
 	VisualEntity* elementActual = entityManager.visual;
@@ -69,6 +67,16 @@ void Draw(void)
 		}
 		elementActual = elementActual->next;
 	}
+	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
+
+	if (entityManager.gameState == GAME)
+	{
+		if (DEV_MODE)
+		{
+			DrawDev(entityManager.renderWindow);
+		}
+	}
+
 	sfRenderWindow_display(entityManager.renderWindow);
 }
 

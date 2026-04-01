@@ -67,6 +67,5 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(sfVector2u _size, size_t _typeSize);
-sfVector2f Colision(sfFloatRect _hitbox);
 
 #endif // !COMMON_H

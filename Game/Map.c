@@ -2,6 +2,8 @@
 
 Map map;
 
+sfRectangleShape** colision;
+
 MapData LoadMapData(Cjson* _cjson);
 sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
 void LoadMapTexture(MapData* _data);
@@ -71,10 +73,29 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 	{
 		return NULL;
 	}
+
+	if (DEV_MODE)
+	{
+		colision = calloc(_objectCount, sizeof(sfRectangleShape*));
+		if (!colision)
+		{
+			return NULL;
+		}
+	}
+
+	
 	*_floatRectCount = _objectCount;
 	for (int i = 0; i < _objectCount; i++)
 	{
 		hitbox[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
+
+		if (DEV_MODE)
+		{
+			colision[i] = sfRectangleShape_create();
+			sfRectangleShape_setFillColor(colision[i], sfBlue);
+			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height});
+			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
+		}
 	}
 	return hitbox;
 }
@@ -100,7 +121,7 @@ void LoadMapTexture(MapData* _data)
 	{
 		for (int column = 0; column < _data->size.y; column++)
 		{
-			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect){0}, sfTrue);
+			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
 		}
 	}
 }
@@ -126,8 +147,19 @@ sfVector2f Colision(sfFloatRect _hitbox)
 		}
 		else if (_hitbox.top < map.data.colider[i].top + map.data.colider[i].height)
 		{
-			vectorMove.x += map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
+			vectorMove.y += map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
 		}
 	}
 	return vectorMove;
+}
+
+void DrawDev(sfRenderWindow* _renderWindow)
+{
+	for (int i = 0; i < map.data.coliderCount; i++)
+	{
+		sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
+		printf("%f, %f\t", vectorMove.x, vectorMove.y);
+
+		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
+	}
 }

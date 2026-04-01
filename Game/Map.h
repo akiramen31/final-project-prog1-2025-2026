@@ -43,5 +43,6 @@ void SetMap(MapState _map);
 MapData* GetMapData(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);
+void DrawDev(sfRenderWindow* _renderWindow);
 
 #endif // !MAP_H
