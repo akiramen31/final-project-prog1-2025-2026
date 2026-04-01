@@ -59,11 +59,11 @@ void LoadMenu(void)
 	menu.name[2] = "Alice";
 	menu.name[3] = "Ylix";
 	menu.name[4] = "Pierre";
-	menu.name[5] = "Akiramen";
-	menu.name[6] = "Scorpiontron";
-	menu.name[7] = "Zelouve";
-	menu.name[8] = "Pyxal";
-	menu.name[9] = "Parc9999";
+	menu.name[5] = "AILLET";
+	menu.name[6] = "MEURISSE PEREZ";
+	menu.name[7] = "VOLLAIRE";
+	menu.name[8] = "MASSON";
+	menu.name[9] = "PAGLIAZZO";
 
 	//infoDisplay
 	for (int i = 0; i < MAX_INFO; i++)
@@ -131,8 +131,6 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 	sfVector2i temp2 = { 1504, 552 };
 	if (((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)) < POW2(400))
 	{
-		//printf("%d", ((temp2.x - temp.x) * (temp2.x - temp.x) + (temp2.y - temp.y) * (temp2.y - temp.y)));
-		//printf("%d\n", NORM_POW2(temp, temp2));
 		NextMusic();
 	}
 

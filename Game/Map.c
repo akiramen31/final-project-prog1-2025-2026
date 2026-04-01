@@ -132,22 +132,13 @@ sfVector2f Colision(sfFloatRect _hitbox)
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		if (map.data.colider[i].left < _hitbox.left + _hitbox.width)
+		if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width && _hitbox.left + _hitbox.width > map.data.colider[i].left && _hitbox.top < map.data.colider[i].top + map.data.colider[i].height && _hitbox.top + _hitbox.height > map.data.colider[i].top)
 		{
-			vectorMove.x += map.data.colider[i].left - _hitbox.left - _hitbox.width;
+			printf("ok\n");
 		}
-		else if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width)
+		else
 		{
-			vectorMove.x += map.data.colider[i].left + map.data.colider[i].width - _hitbox.left;
-		}
-
-		if (map.data.colider[i].top < _hitbox.top + _hitbox.height)
-		{
-			vectorMove.y += map.data.colider[i].top - _hitbox.top - _hitbox.height;
-		}
-		else if (_hitbox.top < map.data.colider[i].top + map.data.colider[i].height)
-		{
-			vectorMove.y += map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
+			printf("nooooon\n");
 		}
 	}
 	return vectorMove;
