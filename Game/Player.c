@@ -14,12 +14,16 @@ void LoadPlayer(void)
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
 	SetSpriteOriginFoot(player.sprite);
 
+	player.collision = sfRectangleShape_create();
+	sfRectangleShape_setSize(player.collision, (sfVector2f) { 16, 32 });
+	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { 8, 32 });
 }
 
 void UpdatePlayer(float _dt)
 {
 	MovePlayer(_dt);
 	SetViewCenter(GetPlayerPosition());
+	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 
 void MovePlayer(float _dt)
@@ -29,11 +33,13 @@ void MovePlayer(float _dt)
 		timerDash += _dt;
 	}
 
-	KeySave tempKey1 = KEY_RIGHT;
-	KeySave tempKey2 = KEY_LEFT;
+	KeySave tempKey1;
+	KeySave tempKey2;
 
 	if (player.isDashing == sfFalse)
 	{
+		tempKey1 = KEY_RIGHT;
+		tempKey2 = KEY_LEFT;
 		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2))))
 		{
 			player.velocity.x = 0;
@@ -52,29 +58,29 @@ void MovePlayer(float _dt)
 		{
 			player.velocity.x = 0;
 		}
+		tempKey1 = KEY_JUMP;
+		tempKey2 = KEY_DOWN;
+
+		if (player.isGrounded == sfTrue)
+		{
+			if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2))))
+			{
+				player.velocity.y = 0;
+			}
+			else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
+			{
+				sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
+				player.velocity.y = -PLAYER_JUMP_POWER;
+				player.isGrounded = sfFalse;
+			}
+			else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
+
+			{
+				player.velocity.y = 1;
+			}
+		}
 	}
 
-	tempKey1 = KEY_JUMP;
-	tempKey2 = KEY_DOWN;
-
-	if (player.isGrounded == sfTrue)
-	{
-		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2))))
-		{
-			player.velocity.y = 0;
-		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
-		{
-			sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
-			player.velocity.y = -PLAYER_JUMP_POWER;
-			player.isGrounded = sfFalse;
-		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
-
-		{
-			player.velocity.y = 1;
-		}
-	}
 
 	if (timerDash >= PLAYER_DASH_DURATION)
 	{
@@ -104,18 +110,9 @@ void MovePlayer(float _dt)
 		player.velocity.y += 9.81f * _dt;
 	}
 
-	//if (sfSprite_getPosition(player.sprite).y >= TILE_SIZE * 121 * 2)
-	//{
-	//	player.isGrounded = sfTrue;
-	//	player.velocity.y = 0;
+	sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
 
-	//	sfFloatRect bound = sfSprite_getGlobalBounds(player.sprite);
-	//	sfSprite_move(player.sprite, (sfVector2f) { 0, TILE_SIZE * 121 * 2 - bound.height - bound.top });
-	//}
-
-	sfSprite_move(player.sprite, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
-
-	sfVector2f reaction = Colision(sfSprite_getGlobalBounds(player.sprite));
+	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 	if (reaction.y < 0)
 	{
 		player.isGrounded = sfTrue;
@@ -125,7 +122,7 @@ void MovePlayer(float _dt)
 	{
 		player.isGrounded = sfFalse;
 	}
-	//sfSprite_move(player.sprite, reaction);
+	//sfRectangleShape_move(player.colliion, reaction);
 }
 
 void KillPlayer(void)
@@ -135,5 +132,5 @@ void KillPlayer(void)
 
 sfVector2f GetPlayerPosition(void)
 {
-	return sfSprite_getPosition(player.sprite);
+	return sfRectangleShape_getPosition(player.collision);
 }
