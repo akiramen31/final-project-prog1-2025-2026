@@ -21,8 +21,11 @@ void SetMap(MapState _map)
 	{
 	case LEVEL1:
 		cjson = LoadCjson("Assets/Maps/Level1.json");
-		map.data = LoadMapData(cjson);
-		CleanupCjson(cjson);
+		if (cjson)
+		{
+			map.data = LoadMapData(cjson);
+			CleanupCjson(cjson);
+		}
 		break;
 	default:
 		break;
@@ -133,18 +136,14 @@ sfVector2f Colision(sfFloatRect _hitbox)
 	sfVector2f vectorMove = { 0 };
 	sfFloatRect reaction = { 0 };
 
+
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
 		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i], &reaction))
 		{
-			float centerHitboxX = _hitbox.left + (_hitbox.width / 2.0f);
-			float centerHitboxY = _hitbox.top + (_hitbox.height / 2.0f);
-			float centerColliderX = map.data.colider[i].left + (map.data.colider[i].width / 2.0f);
-			float centerColliderY = map.data.colider[i].top + (map.data.colider[i].height / 2.0f);
-
 			if (reaction.width < reaction.height)
 			{
-				if (centerHitboxX < centerColliderX) 
+				if (_hitbox.left + vectorMove.x - map.data.colider[i].left < (map.data.colider[i].width - _hitbox.width) / 2.0f)
 				{
 					vectorMove.x -= reaction.width; 
 				}
@@ -155,7 +154,7 @@ sfVector2f Colision(sfFloatRect _hitbox)
 			}
 			else
 			{
-				if (centerHitboxY < centerColliderY) 
+				if (_hitbox.top + vectorMove.y - map.data.colider[i].top < (map.data.colider[i].height - _hitbox.height) / 2.0f)
 				{
 					vectorMove.y -= reaction.height;
 				}
@@ -164,13 +163,8 @@ sfVector2f Colision(sfFloatRect _hitbox)
 					vectorMove.y += reaction.height; 
 				}
 			}
-
-			_hitbox.left += vectorMove.x;
-			_hitbox.top += vectorMove.y;
 		}
 	}
-
-	printf("Resolution: %f %f\n", vectorMove.x, vectorMove.y);
 	return vectorMove;
 }
 
@@ -178,8 +172,6 @@ void DrawDev(sfRenderWindow* _renderWindow)
 {
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		//sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
-
 		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
 	}
 }
