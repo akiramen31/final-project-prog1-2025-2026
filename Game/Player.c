@@ -15,9 +15,9 @@ void LoadPlayer(void)
 	SetSpriteOriginFoot(player.sprite);
 
 	player.collision = sfRectangleShape_create();
-	sfRectangleShape_setSize(player.collision, (sfVector2f) { 16, 32 });
+	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
-	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { 8, 32 });
+	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
 }
 
 void UpdatePlayer(float _dt)
@@ -55,7 +55,7 @@ void MovePlayer(float _dt)
 			player.velocity.x = -1;
 			player.direction = sfFalse;
 		}
-		else
+		else /*if (player.isGrounded)*/
 		{
 			player.velocity.x = 0;
 		}
@@ -79,6 +79,11 @@ void MovePlayer(float _dt)
 			{
 				player.velocity.y = 1;
 			}
+		}
+
+		if (player.isGrounded == sfFalse)
+		{
+			player.velocity.y += 9.81f * _dt;
 		}
 	}
 
@@ -105,11 +110,11 @@ void MovePlayer(float _dt)
 			player.isDashing = sfFalse;
 		}
 	}
-
-	if (player.isGrounded == sfFalse)
+	if (player.velocity.y > 1)
 	{
-		player.velocity.y += 9.81f * _dt;
+		player.velocity.y = 1;
 	}
+
 
 	sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
 
@@ -124,7 +129,7 @@ void MovePlayer(float _dt)
 		player.isGrounded = sfFalse;
 	}
 
-	printf("%f %f\n", reaction.x, reaction.y);
+	//printf("%f %f\n", reaction.x, reaction.y);
 	sfRectangleShape_move(player.collision, reaction);
 }
 

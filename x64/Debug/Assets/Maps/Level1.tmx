@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="260" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="36" nextobjectid="239">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="260" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="36" nextobjectid="262">
  <editorsettings>
   <export target="Level1.json" format="json"/>
  </editorsettings>
@@ -144,12 +144,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="31" name="Collider" visible="0">
-  <object id="12" x="320" y="688" width="32" height="16"/>
-  <object id="13" x="288" y="528" width="64" height="160"/>
-  <object id="14" x="208" y="672" width="32" height="16"/>
-  <object id="15" x="144" y="672" width="32" height="16"/>
-  <object id="16" x="144" y="528" width="96" height="144"/>
+ <objectgroup id="31" name="Collider">
   <object id="24" x="352" y="528" width="144" height="16"/>
   <object id="26" x="704" y="384" width="16" height="144"/>
   <object id="40" x="528" y="384" width="80" height="32"/>
@@ -158,10 +153,6 @@
   <object id="44" x="417" y="674" width="110" height="12"/>
   <object id="46" x="513" y="594" width="222" height="12"/>
   <object id="47" x="593" y="674" width="207" height="12"/>
-  <object id="54" x="1088" y="752" width="80" height="64"/>
-  <object id="55" x="1168" y="752" width="32" height="32"/>
-  <object id="56" x="1168" y="784" width="16" height="16"/>
-  <object id="57" x="1200" y="736" width="16" height="32"/>
   <object id="77" x="1280" y="672" width="160" height="64"/>
   <object id="78" x="1184" y="624" width="144" height="48"/>
   <object id="83" x="1984" y="608" width="64" height="96"/>
@@ -217,6 +208,21 @@
   <object id="236" x="1216" y="800" width="16" height="32"/>
   <object id="237" x="1200" y="816" width="16" height="16"/>
   <object id="238" x="1072" y="320" width="112" height="112"/>
+  <object id="239" x="0" y="528" width="96" height="160"/>
+  <object id="240" x="0" y="688" width="80" height="112"/>
+  <object id="241" x="80" y="736" width="32" height="64"/>
+  <object id="242" x="304" y="736" width="640" height="64"/>
+  <object id="243" x="112" y="752" width="192" height="48"/>
+  <object id="245" x="144" y="528" width="32" height="160"/>
+  <object id="247" x="176" y="528" width="32" height="144"/>
+  <object id="248" x="208" y="528" width="32" height="160"/>
+  <object id="250" x="288" y="528" width="32" height="160"/>
+  <object id="252" x="320" y="528" width="32" height="176"/>
+  <object id="254" x="1072" y="752" width="144.5" height="15.5"/>
+  <object id="255" x="1072" y="768" width="128" height="16"/>
+  <object id="256" x="1072" y="784" width="112" height="16"/>
+  <object id="257" x="1072" y="800" width="96" height="16"/>
+  <object id="261" x="1200" y="736" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="32" name="MoveRight" visible="0">
   <object id="142" x="1232" y="782" width="816" height="18"/>
