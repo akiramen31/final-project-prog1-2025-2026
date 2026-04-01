@@ -14,7 +14,7 @@ void LoadMenu(void)
 {
 	menu = (Menu){ 0 };
 
-	menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255};
+	menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255 };
 	menu.textColor = sfWhite;
 
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
@@ -81,6 +81,8 @@ void LoadMenu(void)
 	sfMusic_play(menu.musics[rand() % NB_MUSICS]);
 
 	SetMenuState(MENU_BASE);
+	SetViewZoom(1.f);
+	SetViewCenter((sfVector2f){ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 }
 
 void PollEventMenu(sfEvent* _event)
@@ -371,7 +373,7 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.topButtons[0], "Back");
 		for (int i = 0; i < 3; i++)
 		{
-			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1.f, 1.f});
+			sfText_setScale(menu.infoDisplay[i], (sfVector2f) { 1.f, 1.f });
 		}
 		sfText_setString(menu.infoDisplay[0], "New save");
 		sfText_setString(menu.infoDisplay[1], "Load save");

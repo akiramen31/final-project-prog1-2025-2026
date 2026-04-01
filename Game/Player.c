@@ -13,11 +13,13 @@ void LoadPlayer(void)
 	sfTexture* texture = GetAsset("D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Sprites/capsul.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
 	SetSpriteOriginFoot(player.sprite);
+
 }
 
 void UpdatePlayer(float _dt)
 {
 	MovePlayer(_dt);
+	SetViewCenter(GetPlayerPosition());
 }
 
 void MovePlayer(float _dt)
@@ -119,7 +121,7 @@ void MovePlayer(float _dt)
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;
 	}
-	if (reaction.y > 0)
+	else if (reaction.y >= 0)
 	{
 		player.isGrounded = sfFalse;
 	}

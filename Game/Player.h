@@ -15,6 +15,8 @@ typedef struct Player
 {
 	enum State state;
 	sfSprite* sprite;
+	sfRectangleShape* hitBox;
+
 	float life;
 	float energyMax;
 	float energy;
