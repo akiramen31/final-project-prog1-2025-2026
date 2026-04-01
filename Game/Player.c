@@ -10,7 +10,7 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 
-	sfTexture* texture = GetAsset("D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Sprites/capsul.png");
+	sfTexture* texture = GetAsset("Assets/Sprites/capsul.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
 	SetSpriteOriginFoot(player.sprite);
 

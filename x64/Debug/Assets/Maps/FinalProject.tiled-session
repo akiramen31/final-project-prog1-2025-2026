@@ -1,5 +1,5 @@
 {
-    "activeFile": "Level2.tmx",
+    "activeFile": "LevelTest.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
     ],
@@ -57,11 +57,11 @@
             "expandedObjectLayers": [
                 8
             ],
-            "scale": 1.5,
-            "selectedLayer": 1,
+            "scale": 1,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 211.3333333333333,
-                "y": 39.33333333333337
+                "x": 231,
+                "y": 415
             }
         },
         "Tilesets/AutoTileRules.tmx": {
@@ -117,14 +117,15 @@
         "Level1.tmx",
         "Level2.tmx",
         "Tilesets/AutoTileRules.tmx",
-        "Tilesets/FullTiles.tsx"
+        "Tilesets/FullTiles.tsx",
+        "LevelTest.tmx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
         "Level1.tmx",
-        "Tilesets/FullTiles.tsx",
-        "Tilesets/AutoTileRules.tmx",
         "Level2.tmx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/FullTiles.tsx",
         "LevelTest.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
