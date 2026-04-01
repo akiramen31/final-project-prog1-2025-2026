@@ -272,12 +272,10 @@ int GetObjectStructObjectCjson(char* _buffer, Object** _object)
 	int first = 0;
 
 	int objectCount = 0;
-	while (GetIndexValueCjson(_buffer, "height") < GetIndexValueCjson(_buffer, "id"))
+	while (first = GetIndexValueCjson(_buffer, "\"height\"") < GetIndexValueCjson(_buffer, "id"))
 	{
 		REALLOC(temp, *_object, (size_t)(objectCount + 1) * sizeof(Object)) objectCount;
 		temp[objectCount] = (Object){ 0 };
-
-		first = GetIndexValueCjson(_buffer, "height") - 1;
 
 		GetObjectByNameCjson(&_buffer[first], "height", &temp[objectCount].height, INT);
 		GetObjectByNameCjson(&_buffer[first], "id", &temp[objectCount].id, INT);
@@ -403,7 +401,7 @@ int GetIndexValueCjson(char* _buffer, char* _id1)
 		while (_buffer[i + j] == _id1[j])
 		{
 			j++;
-			if (_id1[j] == 0 && _buffer[i + j] == '\"')
+			if (_id1[j] == 0)
 			{
 				return i;
 			}
