@@ -11,7 +11,7 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
   
-	background = LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 1.f);
+	background = LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 0.f);
 	LoadMap();
 
 	LoadEnnemy();

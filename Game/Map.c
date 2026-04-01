@@ -20,7 +20,7 @@ void SetMap(MapState _map)
 	switch (_map)
 	{
 	case LEVEL1:
-		cjson = LoadCjson("Assets/Maps/LevelTest.json");
+		cjson = LoadCjson("Assets/Maps/Level1.json");
 		map.data = LoadMapData(cjson);
 		CleanupCjson(cjson);
 		break;
@@ -83,7 +83,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		}
 	}
 
-	
+
 	*_floatRectCount = _objectCount;
 	for (int i = 0; i < _objectCount; i++)
 	{
@@ -93,8 +93,10 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		{
 			colision[i] = sfRectangleShape_create();
 			sfRectangleShape_setFillColor(colision[i], sfBlue);
-			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height});
+			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
 			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
+			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
+			sfRectangleShape_setOutlineThickness(colision[i], -1.f);
 		}
 	}
 	return hitbox;
@@ -129,18 +131,46 @@ void LoadMapTexture(MapData* _data)
 sfVector2f Colision(sfFloatRect _hitbox)
 {
 	sfVector2f vectorMove = { 0 };
+	sfFloatRect reaction = { 0 };
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width && _hitbox.left + _hitbox.width > map.data.colider[i].left && _hitbox.top < map.data.colider[i].top + map.data.colider[i].height && _hitbox.top + _hitbox.height > map.data.colider[i].top)
+		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i], &reaction))
 		{
-			printf("ok\n");
-		}
-		else
-		{
-			printf("nooooon\n");
+			float centerHitboxX = _hitbox.left + (_hitbox.width / 2.0f);
+			float centerHitboxY = _hitbox.top + (_hitbox.height / 2.0f);
+			float centerColliderX = map.data.colider[i].left + (map.data.colider[i].width / 2.0f);
+			float centerColliderY = map.data.colider[i].top + (map.data.colider[i].height / 2.0f);
+
+			if (reaction.width < reaction.height)
+			{
+				if (centerHitboxX < centerColliderX) 
+				{
+					vectorMove.x -= reaction.width; 
+				}
+				else 
+				{
+					vectorMove.x += reaction.width;
+				}
+			}
+			else
+			{
+				if (centerHitboxY < centerColliderY) 
+				{
+					vectorMove.y -= reaction.height;
+				}
+				else 
+				{
+					vectorMove.y += reaction.height; 
+				}
+			}
+
+			_hitbox.left += vectorMove.x;
+			_hitbox.top += vectorMove.y;
 		}
 	}
+
+	printf("Resolution: %f %f\n", vectorMove.x, vectorMove.y);
 	return vectorMove;
 }
 
@@ -148,7 +178,7 @@ void DrawDev(sfRenderWindow* _renderWindow)
 {
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
+		//sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
 
 		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
 	}

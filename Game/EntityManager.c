@@ -72,7 +72,6 @@ void Draw(void)
 	}
 
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
-	
 	sfRenderWindow_display(entityManager.renderWindow);
 }
 

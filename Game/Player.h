@@ -5,17 +5,20 @@
 
 #define PLAYER_WALK_SPEED_MAX 400
 
-#define PLAYER_JUMP_POWER 4
+#define PLAYER_JUMP_POWER 2.f
 
-#define PLAYER_DASH_POWER 4
+#define PLAYER_DASH_POWER 2
 #define PLAYER_DASH_COOLDOWN 1.f
 #define PLAYER_DASH_DURATION 0.2f
+
+#define PLAYER_COLLISION_WIDTH 14
+#define PLAYER_COLLISION_HEIGHT 30
 
 typedef struct Player
 {
 	enum State state;
 	sfSprite* sprite;
-	sfRectangleShape* hitBox;
+	sfRectangleShape* collision;
 
 	float life;
 	float energyMax;
