@@ -72,7 +72,6 @@ void Draw(void)
 	}
 
 	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
-	printf("view x: %f y: %f , wight: %f, height: %f\n", sfView_getCenter(entityManager.view).x, sfView_getCenter(entityManager.view).y, sfView_getSize(entityManager.view).x, sfView_getSize(entityManager.view).y);
 
 	sfRenderWindow_display(entityManager.renderWindow);
 }

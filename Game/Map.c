@@ -83,7 +83,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		}
 	}
 
-	
+
 	*_floatRectCount = _objectCount;
 	for (int i = 0; i < _objectCount; i++)
 	{
@@ -93,8 +93,10 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		{
 			colision[i] = sfRectangleShape_create();
 			sfRectangleShape_setFillColor(colision[i], sfBlue);
-			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height});
+			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
 			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
+			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
+			sfRectangleShape_setOutlineThickness(colision[i], -1.f);
 		}
 	}
 	return hitbox;
@@ -129,25 +131,79 @@ void LoadMapTexture(MapData* _data)
 sfVector2f Colision(sfFloatRect _hitbox)
 {
 	sfVector2f vectorMove = { 0 };
+	sfFloatRect reaction = { 0 };
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		if (map.data.colider[i].left < _hitbox.left + _hitbox.width)
+		int val;
+		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i], &reaction))
 		{
-			vectorMove.x += map.data.colider[i].left - _hitbox.left - _hitbox.width;
-		}
-		else if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width)
-		{
-			vectorMove.x += map.data.colider[i].left + map.data.colider[i].width - _hitbox.left;
-		}
+			//if (map.data.colider[i].left < _hitbox.left + _hitbox.width)
+			//{
+			//	val = map.data.colider[i].left - _hitbox.left - _hitbox.width;
+			//	if (val > -8)
+			//	{
+			//		vectorMove.x += val;
+			//	}
+			//}
+			//if (_hitbox.left < map.data.colider[i].left + map.data.colider[i].width)
+			//{
+			//	val = map.data.colider[i].left + map.data.colider[i].width - _hitbox.left;
+			//	if (val < 8)
+			//	{
+			//		vectorMove.x += val;
+			//	}
+			//}
 
-		if (map.data.colider[i].top < _hitbox.top + _hitbox.height)
-		{
-			vectorMove.y += map.data.colider[i].top - _hitbox.top - _hitbox.height;
-		}
-		else if (_hitbox.top < map.data.colider[i].top + map.data.colider[i].height)
-		{
-			vectorMove.y += map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
+			//if (map.data.colider[i].top < _hitbox.top + _hitbox.height)
+			//{
+			//	val = map.data.colider[i].top - _hitbox.top - _hitbox.height;
+			//	if (val > -32)
+			//	{
+			//		vectorMove.y += val;
+			//	}
+			//}
+			//if (_hitbox.top < map.data.colider[i].top + map.data.colider[i].height)
+			//{
+			//	val = map.data.colider[i].top + map.data.colider[i].height - _hitbox.top;
+			//	if (val < 16)
+			//	{
+			//		vectorMove.y += val;
+			//	}
+			//}
+			if (reaction.left > _hitbox.left)
+			{
+				val = reaction.width;
+				if (val < 8)
+				{
+					vectorMove.x -= val;
+				}
+			}
+			if (reaction.left + reaction.width < _hitbox.left + _hitbox.width)
+			{
+				val = reaction.width;
+				if (val < 8)
+				{
+					vectorMove.x += val;
+				}
+			}
+
+			if (reaction.top > _hitbox.top)
+			{
+				val = reaction.height;
+				if (val < 32)
+				{
+					vectorMove.y -= val;
+				}
+			}
+			if (reaction.top + reaction.height < _hitbox.top + _hitbox.height)
+			{
+				val = reaction.height;
+				if (val < 16)
+				{
+					vectorMove.y += val;
+				}
+			}
 		}
 	}
 	return vectorMove;
@@ -157,7 +213,7 @@ void DrawDev(sfRenderWindow* _renderWindow)
 {
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
+		//sfVector2f vectorMove = sfRectangleShape_getPosition(colision[i]);
 
 		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
 	}

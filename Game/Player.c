@@ -16,6 +16,7 @@ void LoadPlayer(void)
 
 	player.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { 16, 32 });
+	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { 8, 32 });
 }
 
@@ -118,11 +119,13 @@ void MovePlayer(float _dt)
 		player.isGrounded = sfTrue;
 		player.velocity.y = 0;
 	}
-	else if (reaction.y >= 0)
+	else if (reaction.y >= 0.f)
 	{
 		player.isGrounded = sfFalse;
 	}
-	//sfRectangleShape_move(player.colliion, reaction);
+
+	printf("%f %f\n", reaction.x, reaction.y);
+	sfRectangleShape_move(player.collision, reaction);
 }
 
 void KillPlayer(void)
