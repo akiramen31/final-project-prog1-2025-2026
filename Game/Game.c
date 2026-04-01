@@ -12,8 +12,6 @@ void LoadGame(void)
 	game = (Game){ 0 };
   
 	background = LoadBackground(GetAsset("Assets/Maps/LevelTest.png"), 1.f);
-	sfSprite_setOrigin(background, (sfVector2f) { 860, 430 + 50 - 39 });
-	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 6 * 7, TILE_SIZE * 108.f });
 	LoadMap();
 
 	LoadEnnemy();
@@ -55,7 +53,6 @@ void UpdateGame(float _dt)
 	UpdateHUD(_dt);
 	UpdateCollider();
 
-	SetViewCenter(GetPlayerPosition());
 }
 
 void UpdateCollider(void)

@@ -72,8 +72,11 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
 
+
 	sfSprite_move(ennemy->sprite, Colision(GetBounsEnnemy(_index)));
-	printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+	//printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+
+	sfSprite_setPosition(ennemy->sprite, (sfVector2f) { 0 });
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -96,7 +99,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 {
 	if (DEV_MODE)
 	{
-		printf("creation d'un ennemy de type %d\n", _type);
+		//printf("creation d'un ennemy de type %d\n", _type);
 	}
 	//création et aplication des donné de l'ennemy
 	_ennemy->type = _type;
@@ -548,7 +551,7 @@ void RetirerListWait(int _index)
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 {
-	printf("ratio %f\n", mapData->caseSize.x);
+	//printf("ratio %f\n", mapData->caseSize.x);
 	_positionReal.x = _positionReal.x / mapData->caseSize.x;
 	_positionReal.y = _positionReal.y / mapData->caseSize.y;
 	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
@@ -611,7 +614,7 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 		isTouch = sfTrue;
 		if (DEV_MODE)
 		{
-			printf("Ennemie %d Toucher fait %f degat\n", _index, _degat);
+			//printf("Ennemie %d Toucher fait %f degat\n", _index, _degat);
 		}
 		ennemy->ennemyEntity.ennemydata.life -= _degat;
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
