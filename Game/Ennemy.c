@@ -31,9 +31,9 @@ void LoadEnnemy(void)
 		ennemyEntity[0].ennemydata.energyMax = 500.f;
 		ennemyEntity[0].ennemydata.energy = 500.f;
 		ennemyEntity[0].ennemydata.energyRegen = 50.f;
-		ennemyEntity[0].ennemydata.speedMax = 10.f;
-		ennemyEntity[0].ennemydata.accelerationMax = 30.f;
-		ennemyEntity[0].ennemydata.jumForce = 500.f;
+		ennemyEntity[0].ennemydata.speedMax = 3.f;
+		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[0].ennemydata.jumForce = 700.f;
 
 		ennemyEntity[0].isJetpack = sfFalse;
 		ennemyEntity[0].jetpack.consomation = 50.f;
@@ -46,9 +46,9 @@ void LoadEnnemy(void)
 		ennemyEntity[1].ennemydata.energyMax = 800.f;
 		ennemyEntity[1].ennemydata.energy = 800.f;
 		ennemyEntity[1].ennemydata.energyRegen = 50.f;
-		ennemyEntity[1].ennemydata.speedMax = 7.f;
-		ennemyEntity[1].ennemydata.accelerationMax = 30.f;
-		ennemyEntity[1].ennemydata.jumForce = 500.f;
+		ennemyEntity[1].ennemydata.speedMax = 3.f;
+		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[1].ennemydata.jumForce = 700.f;
 
 		ennemyEntity[1].isJetpack = sfTrue;
 		ennemyEntity[1].jetpack.consomation = 20.f;
@@ -72,11 +72,17 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
 
-
-	sfSprite_move(ennemy->sprite, Colision(GetBounsEnnemy(_index)));
-	//printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
-
-	sfSprite_setPosition(ennemy->sprite, (sfVector2f) { 0 });
+	sfVector2f collision = Colision(GetBounsEnnemy(_index));
+	sfSprite_move(ennemy->sprite, collision);
+	if (collision.x != 0)
+	{
+		ennemy->ennemyEntity.move.x = 0;
+	}
+	if (collision.y != 0)
+	{
+		ennemy->ennemyEntity.move.y = 0;
+	}
+	printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -99,7 +105,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 {
 	if (DEV_MODE)
 	{
-		//printf("creation d'un ennemy de type %d\n", _type);
+		printf("creation d'un ennemy de type %d\n", _type);
 	}
 	//création et aplication des donné de l'ennemy
 	_ennemy->type = _type;
@@ -130,13 +136,20 @@ void CalculMoveEnnemy(float _dt, int _index)
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyUp))
 	{
-		ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+		collisionEnnemy.top += 1;
+		sfVector2f collision = Colision(collisionEnnemy);
+		printf("collision %f", collision.y);
+		if (collision.y)
+		{
+			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+		}
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyDown))
 	{
 		ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.ennemydata.accelerationMax;
 	}
-	ennemy->ennemyEntity.acceleration.y += G;
+	ennemy->ennemyEntity.acceleration.y += G*4;
 	ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.acceleration.x * _dt;
 	ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.acceleration.y * _dt;
 
@@ -147,15 +160,6 @@ void CalculMoveEnnemy(float _dt, int _index)
 	else if (ennemy->ennemyEntity.move.x < -ennemy->ennemyEntity.ennemydata.speedMax)
 	{
 		ennemy->ennemyEntity.move.x = -ennemy->ennemyEntity.ennemydata.speedMax;
-	}
-
-	if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.ennemydata.speedMax)
-	{
-		ennemy->ennemyEntity.move.y = ennemy->ennemyEntity.ennemydata.speedMax;
-	}
-	else if (ennemy->ennemyEntity.move.y < -ennemy->ennemyEntity.ennemydata.speedMax)
-	{
-		ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
 }
 
@@ -597,8 +601,8 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 		break;
 	}
 
-	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/E.png"), _position, 1, 1);
-	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/E.png"));
+	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), _position, 1, 1);
+	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 	ennemy->actiondemander = (ActionDemander){ 0 };
 
 	InsertElement(listEnnemy, element, 0);
