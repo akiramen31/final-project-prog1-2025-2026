@@ -82,7 +82,7 @@ void UpdateEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.move.y = 0;
 	}
-	printf("position x:%f y:%f\n",sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+	printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -124,15 +124,18 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 
 void CalculMoveEnnemy(float _dt, int _index)
 {
+	sfBool test = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
 	if (sfKeyboard_isKeyPressed(sfKeyRight))
 	{
 		ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
+		test = 1;
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyLeft))
 	{
 		ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
+		test = 1;
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyUp))
 	{
@@ -144,12 +147,37 @@ void CalculMoveEnnemy(float _dt, int _index)
 		{
 			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
 		}
+		test = 1;
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyDown))
 	{
 		ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.ennemydata.accelerationMax;
+		test = 1;
 	}
-	ennemy->ennemyEntity.acceleration.y += G*4;
+	if (test == 0)
+	{
+		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+		collisionEnnemy.top += 1;
+		sfVector2f collision = Colision(collisionEnnemy);
+		printf("collision %f", collision.y);
+		if (collision.y)
+		{
+			if (ennemy->ennemyEntity.move.x > 0)
+			{
+				ennemy->ennemyEntity.move.x -= 1;
+			}
+			if (ennemy->ennemyEntity.move.x < 0)
+			{
+				ennemy->ennemyEntity.move.x += 1;
+			}
+			if (ennemy->ennemyEntity.move.x > -2 && ennemy->ennemyEntity.move.x < 2)
+			{
+				ennemy->ennemyEntity.move.x = 0;
+			}
+
+		}
+	}
+	ennemy->ennemyEntity.acceleration.y += G * 4;
 	ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.acceleration.x * _dt;
 	ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.acceleration.y * _dt;
 
