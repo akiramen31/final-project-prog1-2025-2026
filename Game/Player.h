@@ -4,7 +4,7 @@
 #include "Common.h"
 
 #define PLAYER_WALK_SPEED_MAX 400
-
+#define PLAYER_FALL_SPEED_MAX 1
 #define PLAYER_JUMP_POWER 2.f
 
 #define PLAYER_DASH_POWER 3.f
