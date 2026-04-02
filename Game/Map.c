@@ -61,7 +61,7 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 	}
 
-	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRÃ©duite.png");
 
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 
@@ -122,6 +122,18 @@ Bool StringCompareMap(char* _string1, char* _string2)
 		}
 	}
 	return FALSE;
+}
+
+void LoadMapTexture(MapData* _data)
+{
+	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
+	for (int row = 0; row < _data->size.y; row++)
+	{
+		for (int column = 0; column < _data->size.y; column++)
+		{
+			sfImage_copyImage(image, NULL, column * (unsigned int)_data->caseSize.x, row * (unsigned int)_data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
+		}
+	}
 }
 
 sfVector2f Colision(sfFloatRect _hitbox)

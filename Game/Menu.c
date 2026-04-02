@@ -44,8 +44,8 @@ void LoadMenu(void)
 	char* bufferKeyType[NB_KEY] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
-		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
+		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, 30, 5.f);
+		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
 		sfText_setString(menu.keyType[i], bufferKeyType[i]);
 	}
 
@@ -68,7 +68,7 @@ void LoadMenu(void)
 	//infoDisplay
 	for (int i = 0; i < MAX_INFO; i++)
 	{
-		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * i }, 50, 5.f);
+		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * (float)i }, 50, 5.f);
 	}
 	//Musics
 
@@ -168,26 +168,16 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		case SETTINGS:
 			for (int i = 0; i < 4; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.infoDisplay[i]), menu.highlightTextColor) || CompareColor(sfText_getColor(menu.infoDisplay[i]), sfRed))
+				sfFloatRect hitbox = sfText_getGlobalBounds(menu.infoDisplay[i]);
+				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 				{
 					switch (i)
 					{
 					case 0:
-					{
-						sfFloatRect hitbox = sfText_getGlobalBounds(menu.infoDisplay[i]);
-						SetFloatToSave(LIGHT_LEVEL, ((_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
-						if (GetFloatFromSave(LIGHT_LEVEL) <= 0.25f)
-						{
-							sfText_setColor(menu.infoDisplay[0], sfRed);
-						}
-					}
+						SetFloatToSave(LIGHT_LEVEL, (((float)_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
 						break;
 					case 1:
-						SetFloatToSave(SOUND_VOLUME, _mouseButtonEvent->x - sfText_getGlobalBounds(menu.infoDisplay[i]).left);
-						if (GetFloatFromSave(SOUND_VOLUME) <= 0.0f)
-						{
-							sfText_setColor(menu.infoDisplay[1], sfRed);
-						}
+						SetFloatToSave(SOUND_VOLUME, (float)_mouseButtonEvent->x - hitbox.left);
 						break;
 					case 2:
 						ChangeFullSceen();
