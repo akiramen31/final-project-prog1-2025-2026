@@ -57,13 +57,21 @@ void LoadEnnemy(void)
 	}
 	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
+	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 }
 
 void UpdateEnnemy(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	ennemy->ennemyEntity.timer += _dt;
 	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
+	if (ennemy->ennemyEntity.type >= TIMER_ASTAR)
+	{
+		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		ennemy->ennemyEntity.type -= TIMER_ASTAR;
+	}
+	printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
 	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	// sécuriter pour le max d'énergie en stock
@@ -193,7 +201,6 @@ void CalculMoveEnnemy(float _dt, int _index)
 
 ActionDemander AStar(int _index, sfVector2f _positionCible)
 {
-	/* non fonctionnel
 	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
@@ -236,11 +243,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		caseGet = (sfVector2u){ caseRecup->x,caseRecup->y };
 		//Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -263,14 +270,14 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -293,11 +300,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -320,11 +327,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -348,14 +355,14 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -378,11 +385,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -406,11 +413,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
-			if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y).a == 0) // si espace libre
+			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0) // si espace libre
 			{
-				if (sfImage_getPixel(hitboxMap->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
@@ -433,7 +440,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
-		if (sfImage_getPixel(hitboxMap->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
 		{
 
 		}
@@ -540,7 +547,6 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		caseGet = caseRecherche;
 	}
-	*/
 }
 
 float CalculResultAStar(Case _case)
