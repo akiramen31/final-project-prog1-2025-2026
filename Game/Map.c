@@ -6,7 +6,6 @@ sfRectangleShape** colision;
 
 MapData LoadMapData(Cjson* _cjson);
 sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
-void LoadMapTexture(MapData* _data);
 Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(void)
@@ -35,6 +34,8 @@ void SetMap(MapState _map)
 MapData LoadMapData(Cjson* _cjson)
 {
 	MapData data = { 0 };
+	
+	data.size = (sfVector2u){_cjson->width, _cjson->height};
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
@@ -121,18 +122,6 @@ Bool StringCompareMap(char* _string1, char* _string2)
 		}
 	}
 	return FALSE;
-}
-
-void LoadMapTexture(MapData* _data)
-{
-	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
-	for (int row = 0; row < _data->size.y; row++)
-	{
-		for (int column = 0; column < _data->size.y; column++)
-		{
-			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
-		}
-	}
 }
 
 sfVector2f Colision(sfFloatRect _hitbox)
