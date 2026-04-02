@@ -54,6 +54,10 @@ MapData LoadMapData(Cjson* _cjson)
 		{
 			data.triger = LoadRectMap(&data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
+		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
+		{
+			//data.triger = LoadRectMap(&data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
 	}
 
 	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
@@ -95,7 +99,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		if (DEV_MODE)
 		{
 			colision[i] = sfRectangleShape_create();
-			sfRectangleShape_setFillColor(colision[i], sfBlue);
+			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0,0,255,125));
 			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
 			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
 			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
