@@ -34,8 +34,8 @@ void SetMap(MapState _map)
 MapData LoadMapData(Cjson* _cjson)
 {
 	MapData data = { 0 };
-	
-	data.size = (sfVector2u){_cjson->width, _cjson->height};
+
+	data.size = (sfVector2u){ _cjson->width, _cjson->height };
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
@@ -99,7 +99,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		if (DEV_MODE)
 		{
 			colision[i] = sfRectangleShape_create();
-			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0,0,255,125));
+			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0, 0, 255, 125));
 			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
 			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
 			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
@@ -149,9 +149,9 @@ sfVector2f Colision(sfFloatRect _hitbox)
 			{
 				if (_hitbox.left + vectorMove.x - map.data.colider[i].left < (map.data.colider[i].width - _hitbox.width) / 2.0f)
 				{
-					vectorMove.x -= reaction.width; 
+					vectorMove.x -= reaction.width;
 				}
-				else 
+				else
 				{
 					vectorMove.x += reaction.width;
 				}
@@ -162,9 +162,9 @@ sfVector2f Colision(sfFloatRect _hitbox)
 				{
 					vectorMove.y -= reaction.height;
 				}
-				else 
+				else
 				{
-					vectorMove.y += reaction.height; 
+					vectorMove.y += reaction.height;
 				}
 			}
 		}
@@ -174,8 +174,12 @@ sfVector2f Colision(sfFloatRect _hitbox)
 
 void DrawDev(sfRenderWindow* _renderWindow)
 {
-	for (int i = 0; i < map.data.coliderCount; i++)
+	if (DEV_MAP_COLIDER)
 	{
-		sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
+		for (int i = 0; i < map.data.coliderCount; i++)
+		{
+			sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
+		}
+
 	}
 }
