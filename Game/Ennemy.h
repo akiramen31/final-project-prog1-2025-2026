@@ -4,6 +4,8 @@
 #include "Common.h"
 #include "Map.h"
 
+#define TIMER_ASTAR 0.5f
+
 typedef enum Type
 {
 	SOLDIER,

@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "Common.h"
+#include "Aim.h"
 
 #define PLAYER_WALK_SPEED_MAX 400
 

@@ -312,7 +312,7 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	newElement->ptr = sfText_create();
 	sfText_setFont(newElement->ptr, _font);
 	sfText_setPosition(newElement->ptr, _position);
-	sfText_setCharacterSize(newElement->ptr, _scale* GAME_SCALE);
+	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale* GAME_SCALE);
 
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
@@ -800,7 +800,7 @@ sfVector2f GetViewPosition(void)
 	sfVector2f center = sfView_getCenter(entityManager.view);
 	sfVector2f size = sfView_getSize(entityManager.view);
 
-	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2};
+	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2 };
 }
 
 void SetGameState(GameState _gameState)
