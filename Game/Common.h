@@ -19,6 +19,8 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
+#define DEV_ENNEMY sfFalse
+#define DEV_MAP_COLIDER sfFalse
 
 #define TILE_SIZE 16.f
 
