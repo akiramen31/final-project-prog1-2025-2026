@@ -44,8 +44,8 @@ void LoadMenu(void)
 	char* bufferKeyType[NB_KEY] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < NB_KEY; i++)
 	{
-		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * i }, 30, 5.f);
-		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * i }, 30, 5.f);
+		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, 30, 5.f);
+		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
 		sfText_setString(menu.keyType[i], bufferKeyType[i]);
 	}
 
@@ -68,7 +68,7 @@ void LoadMenu(void)
 	//infoDisplay
 	for (int i = 0; i < MAX_INFO; i++)
 	{
-		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * i }, 50, 5.f);
+		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * (float)i }, 50, 5.f);
 	}
 	//Musics
 
@@ -160,15 +160,15 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			for (int i = 0; i < 4; i++)
 			{
 				sfFloatRect hitbox = sfText_getGlobalBounds(menu.infoDisplay[i]);
-				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
+				if (sfFloatRect_contains(&hitbox, (float)_mouseButtonEvent->x, (float)_mouseButtonEvent->y))
 				{
 					switch (i)
 					{
 					case 0:
-						SetFloatToSave(LIGHT_LEVEL, ((_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
+						SetFloatToSave(LIGHT_LEVEL, (((float)_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
 						break;
 					case 1:
-						SetFloatToSave(SOUND_VOLUME, _mouseButtonEvent->x - hitbox.left);
+						SetFloatToSave(SOUND_VOLUME, (float)_mouseButtonEvent->x - hitbox.left);
 						break;
 					case 2:
 						ChangeFullSceen();

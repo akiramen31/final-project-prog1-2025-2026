@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Aim.c" />
     <ClCompile Include="Backup.c" />
     <ClCompile Include="Cjson.c" />
     <ClCompile Include="Common.c" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Map.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aim.h" />
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Cjson.h" />
     <ClInclude Include="Common.h" />

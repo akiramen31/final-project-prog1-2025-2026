@@ -126,7 +126,7 @@ void LoadMapTexture(MapData* _data)
 	{
 		for (int column = 0; column < _data->size.y; column++)
 		{
-			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
+			sfImage_copyImage(image, NULL, column * (unsigned int)_data->caseSize.x, row * (unsigned int)_data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
 		}
 	}
 }

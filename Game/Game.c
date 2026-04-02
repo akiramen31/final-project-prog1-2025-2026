@@ -17,6 +17,7 @@ void LoadGame(void)
 	LoadEnnemy();
 	LoadHUD();
 	LoadPlayer();
+	LoadAim();
 	AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 }
 
@@ -50,9 +51,9 @@ void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
 	UpdateEnnemy(_dt, 0);
-	UpdateHUD(_dt);
 	UpdateCollider();
-
+	UpdateHUD(_dt);
+	UpdateAim(_dt);
 }
 
 void UpdateCollider(void)

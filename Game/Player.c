@@ -7,6 +7,8 @@ float timerFaling = 0;
 
 void MovePlayer(float _dt);
 
+sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color);
+
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
@@ -19,6 +21,20 @@ void LoadPlayer(void)
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
+}
+
+sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color)
+{
+	sfVertexArray* newLine = sfVertexArray_create();
+	sfVertexArray_setPrimitiveType(newLine, sfLines);
+
+	sfVertex vertexA = { _pointA, _color };
+	sfVertexArray_append(newLine, vertexA);
+
+	sfVertex vertexB = { _pointB, _color };
+	sfVertexArray_append(newLine, vertexB);
+
+	return newLine;
 }
 
 void UpdatePlayer(float _dt)
