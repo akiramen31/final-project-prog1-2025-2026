@@ -99,7 +99,7 @@ void MovePlayer(float _dt)
 		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && timerDash >= PLAYER_DASH_COOLDOWN)
 		{
 			timerDash = 0;
-			player.velocity.y = 0;
+			//player.velocity.y = 0;
 			if (player.direction)
 			{
 				player.velocity.x = PLAYER_DASH_POWER;

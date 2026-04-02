@@ -38,8 +38,8 @@
             "scale": 3,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 629,
-                "y": 635.6666666666666
+                "x": 2080.1666666666665,
+                "y": 511.83333333333326
             }
         },
         "Level2.tmx": {
@@ -60,16 +60,16 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 375,
-                "y": 143
+                "x": 319.5,
+                "y": 143.5
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 92,
-                "y": 205
+                "x": 248.16666666666666,
+                "y": 248.16666666666666
             }
         },
         "Tilesets/FullTiles.tsx": {
