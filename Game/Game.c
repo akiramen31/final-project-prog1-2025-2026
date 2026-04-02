@@ -22,6 +22,7 @@ void LoadGame(void)
 
 	LoadHUD();
 	LoadPlayer();
+	LoadAim();
 }
 
 void PollEventGame(sfEvent* _event)
@@ -59,7 +60,7 @@ void UpdateGame(float _dt)
 	}
 	UpdateHUD(_dt);
 	UpdateCollider();
-
+	UpdateAim(_dt);
 }
 
 void UpdateCollider(void)

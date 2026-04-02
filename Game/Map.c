@@ -6,7 +6,6 @@ sfRectangleShape** colision;
 
 MapData LoadMapData(Cjson* _cjson);
 sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
-void LoadMapTexture(MapData* _data);
 Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(void)
@@ -35,6 +34,8 @@ void SetMap(MapState _map)
 MapData LoadMapData(Cjson* _cjson)
 {
 	MapData data = { 0 };
+	
+	data.size = (sfVector2u){_cjson->width, _cjson->height};
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
@@ -60,7 +61,7 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 	}
 
-	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRÃ©duite.png");
 
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 
@@ -130,7 +131,7 @@ void LoadMapTexture(MapData* _data)
 	{
 		for (int column = 0; column < _data->size.y; column++)
 		{
-			sfImage_copyImage(image, NULL, column * _data->caseSize.x, row * _data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
+			sfImage_copyImage(image, NULL, column * (unsigned int)_data->caseSize.x, row * (unsigned int)_data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
 		}
 	}
 }
