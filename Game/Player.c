@@ -9,7 +9,7 @@ void MovePlayer(float _dt);
 
 void LoadPlayer(void)
 {
-	player = (Player){ 0 };
+	{ player = (Player){ 0 }; }
 
 	sfTexture* texture = GetAsset("Assets/Sprites/capsul.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
@@ -79,9 +79,9 @@ void MovePlayer(float _dt)
 				}
 			}
 		}
-		else
+		if (player.isGrounded == sfFalse)
 		{
-			player.velocity.y += 9.81f * _dt;
+			player.velocity.y += G * _dt;
 			if (player.velocity.y > PLAYER_FALL_SPEED_MAX)
 			{
 				player.velocity.y = PLAYER_FALL_SPEED_MAX;
@@ -92,7 +92,6 @@ void MovePlayer(float _dt)
 	if (timerDash >= PLAYER_DASH_COOLDOWN && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
 	{
 		timerDash = 0;
-		player.velocity.y = 0;
 		if (player.direction)
 		{
 			player.velocity.x = PLAYER_DASH_POWER;
