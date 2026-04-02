@@ -17,7 +17,8 @@
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 #define BPP 32
-#define DEV_MODE 1
+
+#define DEV_MODE sfTrue
 
 #define TILE_SIZE 16.f
 
