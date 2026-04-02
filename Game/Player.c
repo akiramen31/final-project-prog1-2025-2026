@@ -61,10 +61,23 @@ void MovePlayer(float _dt)
 		tempKey1 = KEY_JUMP;
 		tempKey2 = KEY_DOWN;
 
-		if (player.isGrounded == sfTrue)
+		if (player.isGrounded == sfTrue || timerFaling < PLAYER_JUMP_FORGIVE)
 		{
-			player.velocity.y = 0;
-			if (!((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))))
+
+			if ((sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2))))
+			{
+				player.velocity.y = 0;
+			}
+			else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
+			{
+				player.velocity.y = 0;
+				sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
+				player.velocity.y -= PLAYER_JUMP_POWER;
+				timerFaling += PLAYER_JUMP_FORGIVE;
+				player.isGrounded = sfFalse;
+			}
+			else if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey2)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey2)))
+
 			{
 				if (sfKeyboard_isKeyPressed(GetKeyFromSave(tempKey1)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(tempKey1)))
 				{
@@ -93,7 +106,19 @@ void MovePlayer(float _dt)
 		player.velocity.y = 0;
 		if (player.direction)
 		{
-			player.velocity.x = PLAYER_DASH_POWER;
+
+			timerDash = 0;
+			//player.velocity.y = 0;
+			if (player.direction)
+			{
+				player.velocity.x = PLAYER_DASH_POWER;
+			}
+			else
+			{
+				player.velocity.x = -PLAYER_DASH_POWER;
+			}
+
+			player.isDashing = sfTrue;
 		}
 		else
 		{
@@ -119,7 +144,11 @@ void MovePlayer(float _dt)
 	{
 		player.isGrounded = sfFalse;
 	}
-	if (reaction.y != 0 && timerFaling <= PLAYER_JUMP_FORGIVE)
+
+
+	//printf("%f %f\n", reaction.x, reaction.y);
+
+	if (reaction.x != 0)
 	{
 		timerFaling += _dt;
 	}
