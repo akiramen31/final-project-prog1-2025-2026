@@ -16,7 +16,7 @@
 #define PLAYER_JUMP_FORGIVE 0.05f
 
 #define PLAYER_COLLISION_WIDTH 14
-#define PLAYER_COLLISION_HEIGHT 30
+#define PLAYER_COLLISION_HEIGHT 32
 
 typedef struct Player
 {
