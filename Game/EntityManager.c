@@ -795,6 +795,14 @@ void SetViewZoom(float _zoom)
 	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x * entityManager.viewZoom, windowSize.y * entityManager.viewZoom});
 }
 
+sfVector2f GetViewPosition(void)
+{
+	sfVector2f center = sfView_getCenter(entityManager.view);
+	sfVector2f size = sfView_getSize(entityManager.view);
+
+	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2};
+}
+
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();

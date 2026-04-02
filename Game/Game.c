@@ -52,7 +52,6 @@ void UpdateGame(float _dt)
 	UpdateEnnemy(_dt, 0);
 	UpdateHUD(_dt);
 	UpdateCollider();
-
 }
 
 void UpdateCollider(void)
