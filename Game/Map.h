@@ -12,14 +12,24 @@ typedef enum MapState
 	LEVEL3
 }MapState;
 
+typedef struct InfoZone
+{
+	sfFloatRect hitbox;
+	char* type;
+	char* name;
+}InfoZone;
+
 typedef struct MapData
 {
 	sfFloatRect* colider;
 	int coliderCount;
-	sfFloatRect* triger;
+
+	InfoZone* triger;
 	int trigerCount;
-	sfFloatRect* move;
+
+	InfoZone* move;
 	int moveCount;
+
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;

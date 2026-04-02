@@ -42,14 +42,6 @@ MapData LoadMapData(Cjson* _cjson)
 		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
 		{
 			data.colider = LoadRectMap(&data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
-			if (data.size.x < _cjson->layers[i].width)
-			{
-				data.size.x = _cjson->layers[i].width;
-			}
-			if (data.size.y < _cjson->layers[i].height)
-			{
-				data.size.y = _cjson->layers[i].height;
-			}
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
 		{
@@ -57,7 +49,7 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
 		{
-			data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			//data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
 	data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
@@ -81,7 +73,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		return NULL;
 	}
 
-	if (DEV_MODE)
+	if (DEV_MAP_COLIDER)
 	{
 		colision = calloc(_objectCount, sizeof(sfRectangleShape*));
 		if (!colision)
@@ -96,7 +88,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 	{
 		hitbox[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
 
-		if (DEV_MODE)
+		if (DEV_MAP_COLIDER)
 		{
 			colision[i] = sfRectangleShape_create();
 			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0, 0, 255, 125));
@@ -121,18 +113,6 @@ Bool StringCompareMap(char* _string1, char* _string2)
 		}
 	}
 	return FALSE;
-}
-
-void LoadMapTexture(MapData* _data)
-{
-	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
-	for (int row = 0; row < _data->size.y; row++)
-	{
-		for (int column = 0; column < _data->size.y; column++)
-		{
-			sfImage_copyImage(image, NULL, column * (unsigned int)_data->caseSize.x, row * (unsigned int)_data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
-		}
-	}
 }
 
 sfVector2f Colision(sfFloatRect _hitbox)
