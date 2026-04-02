@@ -57,11 +57,10 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
 		{
-			//data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
-
-	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+	data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 
