@@ -10,14 +10,18 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
-  
+
 	background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadMap();
 
-	LoadEnnemy();
+	if (DEV_ENNEMY)
+	{
+		LoadEnnemy();
+		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
+	}
+
 	LoadHUD();
 	LoadPlayer();
-	AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 }
 
 void PollEventGame(sfEvent* _event)
@@ -49,7 +53,10 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-	UpdateEnnemy(_dt, 0);
+	if (DEV_ENNEMY)
+	{
+		UpdateEnnemy(_dt, 0);
+	}
 	UpdateHUD(_dt);
 	UpdateCollider();
 
