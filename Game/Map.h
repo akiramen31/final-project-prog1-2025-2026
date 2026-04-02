@@ -18,6 +18,8 @@ typedef struct MapData
 	int coliderCount;
 	sfFloatRect* triger;
 	int trigerCount;
+	sfFloatRect* move;
+	int moveCount;
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;

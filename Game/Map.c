@@ -6,7 +6,6 @@ sfRectangleShape** colision;
 
 MapData LoadMapData(Cjson* _cjson);
 sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
-void LoadMapTexture(MapData* _data);
 Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(void)
@@ -35,6 +34,8 @@ void SetMap(MapState _map)
 MapData LoadMapData(Cjson* _cjson)
 {
 	MapData data = { 0 };
+	
+	data.size = (sfVector2u){_cjson->width, _cjson->height};
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
@@ -54,9 +55,13 @@ MapData LoadMapData(Cjson* _cjson)
 		{
 			data.triger = LoadRectMap(&data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
+		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
+		{
+			//data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
 	}
 
-	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRéduite.png");
+	data.image = sfImage_createFromFile("Assets/Maps/MapTesteRÃ©duite.png");
 
 	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 
@@ -95,7 +100,7 @@ sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount
 		if (DEV_MODE)
 		{
 			colision[i] = sfRectangleShape_create();
-			sfRectangleShape_setFillColor(colision[i], sfBlue);
+			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0,0,255,125));
 			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
 			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
 			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
