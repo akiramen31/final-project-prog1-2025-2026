@@ -71,7 +71,7 @@ void LoadMapData(Cjson* _cjson)
 		{
 			LoadObjectMap(&map.data.colider, &map.data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
+		else if (StringCompareMap(_cjson->layers[i].name, "Trigger"))
 		{
 			LoadObjectMap(&map.data.triger, &map.data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
