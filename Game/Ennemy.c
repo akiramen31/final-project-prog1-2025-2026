@@ -630,6 +630,12 @@ sfColor GetColorsPixelMap(sfVector2f _position)
 	return sfImage_getPixel(mapData->image,positionMap.x, positionMap.y);
 }
 
+void SetPositionEnnemy(sfVector2f _position, int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	sfSprite_setPosition(ennemy->sprite, _position);
+}
+
 void AddEnnemy(sfVector2f _position, enum Type _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
@@ -655,10 +661,10 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), _position, 1, 1);
 	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 	ennemy->actiondemander = (ActionDemander){ 0 };
-
-	InsertElement(listEnnemy, element, 0);
-	sfFloatRect floatRect = GetBounsEnnemy(0);
+	sfFloatRect floatRect = sfSprite_getGlobalBounds(ennemy->sprite);
 	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height});
+	  
+	InsertElement(listEnnemy, element, 0);
 }
 
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
