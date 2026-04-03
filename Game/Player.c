@@ -112,38 +112,52 @@ void MovePlayer(float _dt)
 		}
 	}
 
-	{
-		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt});
+	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
+	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 
-		sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+	if (reaction.y < 0)
+	{
+		player.isGrounded = sfTrue;
+		timerFaling = 0;
+	}
+	else if (reaction.y >= 0)
+	{
+		player.isGrounded = sfFalse;
+		if (timerFaling <= PLAYER_JUMP_FORGIVE)
+		{
+			timerFaling += _dt;
+		}
+	}
+
+	if (reaction.y != 0)
+	{
+		player.velocity.y = 0;
+	}
+
+	if (timerDash <= PLAYER_DASH_DURATION)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt / 10, 0 });
+			reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+
+			if (reaction.x != 0)
+			{
+				player.velocity.x = 0;
+			}
+		}
+	}
+	else
+	{
+		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, 0 });
+		reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+
 		if (reaction.x != 0)
 		{
 			player.velocity.x = 0;
 		}
-
-		if (reaction.y < 0)
-		{
-			player.isGrounded = sfTrue;
-			timerFaling = 0;
-		}
-
-		if (reaction.y >= 0)
-		{
-			player.isGrounded = sfFalse;
-			if (timerFaling <= PLAYER_JUMP_FORGIVE)
-			{
-				timerFaling += _dt;
-			}
-		}
-
-		if (reaction.y != 0)
-		{
-			player.velocity.y = 0;
-
-		}
-
-		sfRectangleShape_move(player.collision, reaction);
 	}
+	sfRectangleShape_move(player.collision, reaction);
 }
 
 void KillPlayer(void)

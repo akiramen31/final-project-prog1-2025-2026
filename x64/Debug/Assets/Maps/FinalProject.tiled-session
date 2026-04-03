@@ -2,6 +2,7 @@
     "activeFile": "Level1.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -35,48 +36,46 @@
             "expandedObjectLayers": [
                 37
             ],
-            "scale": 0.5,
+            "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 838,
-                "y": 436
+                "x": 2080.25,
+                "y": 511.75
             }
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
-                6,
-                5
+                7,
+                5,
+                6
             ],
-            "scale": 2,
-            "selectedLayer": 5,
+            "scale": 0.25,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 341.5,
-                "y": 1465.5
+                "x": 2562,
+                "y": 1166
             }
         },
         "LevelTest.tmx": {
-            "expandedObjectLayers": [
-                8
-            ],
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 192.66666666666669,
-                "y": 208
+                "x": 320.3333333333333,
+                "y": 143.66666666666669
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 175.3333333333333,
-                "y": 309.33333333333326
+                "x": 248.33333333333331,
+                "y": 247.66666666666669
             }
         },
         "Tilesets/FullTiles.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 3
+            "scaleInEditor": 1
         },
         "Tilesets/LevelTest.json": {
             "scale": 2,
