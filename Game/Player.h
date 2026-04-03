@@ -33,7 +33,6 @@ typedef struct Player
 	sfBool direction;
 
 	sfBool isGrounded;
-	sfBool isDashing;
 }Player;
 
 void LoadPlayer(void);
@@ -41,4 +40,5 @@ void UpdatePlayer(float _dt);
 void KillPlayer(void);
 
 sfVector2f GetPlayerPosition(void);
+void SetPlayerPosition(sfVector2f _pos);
 #endif
