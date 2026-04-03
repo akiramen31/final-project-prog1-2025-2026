@@ -480,10 +480,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			flag = sfTrue;
 		}
 	}
-
-	flag = sfFalse;
+	if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
+	{
+		flag = sfFalse;
+	}
+	else
+	{
+		flag = sfTrue;
+	}
 	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
-
+	
 	while (flag == sfFalse) // rechercher les action demander
 	{
 		switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -557,7 +563,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		caseGet = caseRecherche;
 	}
-	return (ActionDemander) {0};
+	return (ActionDemander) { 0 };
 }
 
 float CalculResultAStar(Case _case)
@@ -627,7 +633,7 @@ int GetNumberEnnemy()
 sfColor GetColorsPixelMap(sfVector2f _position)
 {
 	sfVector2u positionMap = RealPositionConvertTableauPosition(_position);
-	return sfImage_getPixel(mapData->image,positionMap.x, positionMap.y);
+	return sfImage_getPixel(mapData->image, positionMap.x, positionMap.y);
 }
 
 void SetPositionEnnemy(sfVector2f _position, int _index)
@@ -662,8 +668,8 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 	ennemy->actiondemander = (ActionDemander){ 0 };
 	sfFloatRect floatRect = sfSprite_getGlobalBounds(ennemy->sprite);
-	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height});
-	  
+	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
+
 	InsertElement(listEnnemy, element, 0);
 }
 
