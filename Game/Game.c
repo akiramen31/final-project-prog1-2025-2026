@@ -11,13 +11,13 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadPlayer();
-	LoadMap(background);
-
 	if (DEV_ENNEMY)
 	{
 		LoadEnnemy();
 		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
+	LoadMap(background);
+	
 
 	LoadHUD();
 	LoadAim();

@@ -63,8 +63,7 @@ void LoadEnnemy(void)
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
-	texture = sfTexture_createFromImage(mapData->image, NULL);
-	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
+	sprite = CreateSprite(GetAsset("Assets/Maps/Level1Reduite.png"), (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 
 }
