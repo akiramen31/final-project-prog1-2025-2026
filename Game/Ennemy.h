@@ -75,6 +75,10 @@ sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 sfVector2f GetPositionEnnemy(int _index);
 sfFloatRect GetBounsEnnemy(int _index);
 int GetNumberEnnemy();
+sfColor GetColorsPixelMap(sfVector2f _position);
+
+void DrawImage(void);
+
 
 
 #endif // !GAME_H
