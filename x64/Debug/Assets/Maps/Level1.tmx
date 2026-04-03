@@ -234,10 +234,10 @@
   <object id="290" type="SpawnPlayer" x="120" y="544">
    <point/>
   </object>
-  <object id="291" type="Enemy" x="2240" y="464">
+  <object id="291" name="2" type="Enemy" x="2240" y="464">
    <point/>
   </object>
-  <object id="292" type="Enemy" x="2144" y="496">
+  <object id="292" name="1" type="Enemy" x="2144" y="496">
    <point/>
   </object>
  </objectgroup>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="40" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="67">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="40" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="70">
  <editorsettings>
   <export target="LevelTest.json" format="json"/>
  </editorsettings>
@@ -65,8 +65,14 @@
   <object id="63" x="16" y="4.66667" width="425.333" height="11.3333"/>
   <object id="64" x="432" y="16" width="12" height="259.333"/>
  </objectgroup>
- <objectgroup id="9" name="Point" visible="0">
-  <object id="65" x="52.6667" y="160">
+ <objectgroup id="9" name="Point">
+  <object id="67" type="SpawnPlayer" x="48" y="192">
+   <point/>
+  </object>
+  <object id="68" type="Enemy" x="256" y="176">
+   <point/>
+  </object>
+  <object id="69" type="Enemy" x="352" y="208">
    <point/>
   </object>
  </objectgroup>
