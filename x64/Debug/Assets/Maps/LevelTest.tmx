@@ -69,10 +69,10 @@
   <object id="67" type="SpawnPlayer" x="48" y="192">
    <point/>
   </object>
-  <object id="68" type="Enemy" x="256" y="176">
+  <object id="68" name="1" type="Enemy" x="256" y="176">
    <point/>
   </object>
-  <object id="69" type="Enemy" x="352" y="208">
+  <object id="69" name="2" type="Enemy" x="352" y="208">
    <point/>
   </object>
  </objectgroup>
