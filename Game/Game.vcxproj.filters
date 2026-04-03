@@ -36,7 +36,7 @@
     <ClCompile Include="Game.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="HUD.c">
+    <ClCompile Include="GUI.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">
@@ -74,7 +74,7 @@
     <ClInclude Include="Game.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="HUD.h">
+    <ClInclude Include="GUI.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
