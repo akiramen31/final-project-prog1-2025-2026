@@ -732,9 +732,9 @@ void Update(void)
 {
 	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock));
 
-	if (dt > 0.025f)
+	if (dt > 0.05f)
 	{
-		dt = 0.025f;
+		dt = 0.05f;
 	}
 
 	switch (entityManager.gameState)
