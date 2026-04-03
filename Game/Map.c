@@ -172,6 +172,8 @@ sfVector2f Colision(sfFloatRect _hitbox)
 					vectorMove.y += reaction.height;
 				}
 			}
+			_hitbox.left += vectorMove.x;
+			_hitbox.top += vectorMove.y;
 		}
 	}
 	return vectorMove;
