@@ -35,7 +35,8 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
-			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x, _event->mouseButton.y });
+			sfVector2f viewPosition = GetViewPosition();
+			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x+viewPosition.x, _event->mouseButton.y+viewPosition.y });
 			printf("color is a = %d \n", tempColor.a);
 		}
 	default:

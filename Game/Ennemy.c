@@ -65,7 +65,7 @@ void LoadEnnemy(void)
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
-	sfSprite_setColor(sprite, (sfColor) { 255, 255, 0, 250 });
+	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 
 }
 
@@ -76,10 +76,10 @@ void UpdateEnnemy(float _dt, int _index)
 	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
 	if (ennemy->ennemyEntity.type >= TIMER_ASTAR)
 	{
-		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
-		//ennemy->ennemyEntity.type -= TIMER_ASTAR;
+		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		ennemy->ennemyEntity.type -= TIMER_ASTAR;
 	}
-	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
+	printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
 	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	// sécuriter pour le max d'énergie en stock
@@ -630,11 +630,6 @@ sfColor GetColorsPixelMap(sfVector2f _position)
 	return sfImage_getPixel(mapData->image,positionMap.x, positionMap.y);
 }
 
-void DrawImage(void)
-{
-	
-}
-
 void AddEnnemy(sfVector2f _position, enum Type _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
@@ -662,6 +657,8 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 	ennemy->actiondemander = (ActionDemander){ 0 };
 
 	InsertElement(listEnnemy, element, 0);
+	sfFloatRect floatRect = GetBounsEnnemy(0);
+	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height});
 }
 
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
