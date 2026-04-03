@@ -5,7 +5,7 @@ Map map;
 int rectShapeCount;
 sfRectangleShape** rectShape;
 
-MapData LoadMapData(Cjson* _cjson);
+void LoadMapData(Cjson* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 Bool StringCompareMap(char* _string1, char* _string2);
@@ -42,30 +42,33 @@ void SetMap(MapState _map)
 	}
 	if (cjson)
 	{
-		map.data = LoadMapData(cjson);
+		LoadMapData(cjson);
 		CleanupCjson(cjson);
 	}
 }
 
-MapData LoadMapData(Cjson* _cjson)
+MapState GetActualyMap(void)
 {
-	MapData data = { 0 };
+	return map.state;
+}
 
-	data.size = (sfVector2u){ _cjson->width, _cjson->height };
+void LoadMapData(Cjson* _cjson)
+{
+	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
 		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
 		{
-			LoadObjectMap(&data.colider, &data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.colider, &map.data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
 		{
-			LoadObjectMap(&data.triger, &data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.triger, &map.data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
 		{
-			LoadObjectMap(&data.move, &data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.move, &map.data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Point"))
 		{
@@ -73,14 +76,10 @@ MapData LoadMapData(Cjson* _cjson)
 		}
 	}
 
+	CreateRectVisible(map.data.move, map.data.moveCount);
+	map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 
-
-	CreateRectVisible(data.move, data.moveCount);
-	data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
-
-	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
-
-	return data;
+	map.data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 }
 
 
