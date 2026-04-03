@@ -31,6 +31,9 @@ typedef struct MapData
 	InfoZone* move;
 	int moveCount;
 
+	InfoZone* point;
+	int pointCount;
+
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;

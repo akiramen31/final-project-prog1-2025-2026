@@ -312,7 +312,7 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	newElement->ptr = sfText_create();
 	sfText_setFont(newElement->ptr, _font);
 	sfText_setPosition(newElement->ptr, _position);
-	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale* GAME_SCALE);
+	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale * GAME_SCALE);
 
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
@@ -544,85 +544,71 @@ void Free(void* _ptr)
 
 List* CreateList(void)
 {
-	entityManager.listListCount++;
-	List** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
-	if (!temp)
+	List** temp = realloc(entityManager.listList, (size_t)(entityManager.listListCount + 1) * sizeof(List*));
+	if (temp)
 	{
-		return NULL;
+		entityManager.listList = temp;
+		entityManager.listList[entityManager.listListCount] = calloc(1, sizeof(List));
+		if (entityManager.listList[entityManager.listListCount])
+		{
+			entityManager.listList[entityManager.listListCount]->first = NULL;
+		}
+		entityManager.listListCount++;
+		return entityManager.listList[entityManager.listListCount - 1];
 	}
-	entityManager.listList = temp;
-	entityManager.listList[entityManager.listListCount - 1] = calloc(1, sizeof(List));
-	if (entityManager.listList[entityManager.listListCount - 1] == NULL)
-	{
-		return NULL;
-	}
-	entityManager.listList[entityManager.listListCount - 1]->first = NULL;
-
-	return entityManager.listList[entityManager.listListCount - 1];
+	return NULL;
 }
 
 void RemoveList(List* _list)
 {
-	for (int i = GetListSize(_list) - 1; i >= 0; i--)
+	if (_list)
 	{
-		RemoveElement(_list, 0);
-	}
+		for (int i = GetListSize(_list) - 1; i >= 0; i--)
+		{
+			RemoveElement(_list, 0);
+		}
 
-	free(_list);
-	_list = NULL;
+		free(_list);
+	}
 }
 
 unsigned GetListSize(List* _list)
 {
-	if (!_list)
-	{
-		return 0;
-	}
-	Element* actualElement = _list->first;
 	unsigned listSize = 0;
-
-	while (actualElement != NULL)
+	if (_list)
 	{
-		listSize++;
-		actualElement = actualElement->next;
+		Element* actualElement = _list->first;
+		while (actualElement)
+		{
+			listSize++;
+			actualElement = actualElement->next;
+		}
 	}
-
 	return listSize;
 }
 
 Element* CreateElement(void* _value)
 {
 	Element* newElement = calloc(1, sizeof(Element));
-	if (newElement == NULL)
+	if (newElement)
 	{
-		exit(EXIT_FAILURE);
+		*newElement = (Element){ _value, NULL };
 	}
-
-	newElement->value = _value;
-	newElement->next = NULL;
-
 	return newElement;
 }
 
 Element* GetElement(List* _list, unsigned _index)
 {
-	Element* actualElement = _list->first;
-	for (unsigned i = 0; i < _index && actualElement; i++)
+	if (_list)
 	{
-		actualElement = actualElement->next;
+		Element* actualElement = _list->first;
+		for (unsigned i = 0; i < _index && actualElement; i++)
+		{
+			actualElement = actualElement->next;
+		}
+		return actualElement;
 	}
-	return actualElement;
-
-	/*Element* actualElement = _list->first;
-	unsigned actualIndex = 0;
-
-	while (actualIndex < _index && actualElement != NULL)
-	{
-		actualIndex++;
-		actualElement = actualElement->next;
-	}
-
-	return actualElement;*/
+	return NULL;
 }
 
 void InsertElement(List* _list, Element* _element, unsigned _index)
@@ -635,7 +621,7 @@ void InsertElement(List* _list, Element* _element, unsigned _index)
 	else
 	{
 		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
+		if (previousElement)
 		{
 			_element->next = previousElement->next;
 			previousElement->next = _element;
@@ -645,29 +631,7 @@ void InsertElement(List* _list, Element* _element, unsigned _index)
 
 void RemoveElement(List* _list, unsigned _index)
 {
-	Element* elementToRemove = _list->first;
 	if (_index == 0)
-	{
-		_list->first = elementToRemove->next;
-	}
-	else
-	{
-		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
-		{
-			Element* elementToRemove = previousElement->next;
-			if (elementToRemove != NULL)
-			{
-				previousElement->next = elementToRemove->next;
-			}
-		}
-	}
-	if (elementToRemove)
-	{
-		free(elementToRemove);
-	}
-
-	/*if (_index == 0)
 	{
 		Element* elementToRemove = _list->first;
 		_list->first = elementToRemove->next;
@@ -676,16 +640,13 @@ void RemoveElement(List* _list, unsigned _index)
 	else
 	{
 		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
+		if (previousElement && previousElement->next)
 		{
 			Element* elementToRemove = previousElement->next;
-			if (elementToRemove != NULL)
-			{
-				previousElement->next = elementToRemove->next;
-				free(elementToRemove);
-			}
+			previousElement->next = elementToRemove->next;
+			free(elementToRemove);
 		}
-	}*/
+	}
 }
 
 
@@ -792,7 +753,7 @@ void SetViewZoom(float _zoom)
 {
 	sfVector2u windowSize = sfRenderWindow_getSize(entityManager.renderWindow);
 	entityManager.viewZoom = _zoom;
-	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x * entityManager.viewZoom, windowSize.y * entityManager.viewZoom});
+	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x* entityManager.viewZoom, windowSize.y* entityManager.viewZoom });
 }
 
 sfVector2f GetViewPosition(void)
@@ -823,6 +784,7 @@ void SetGameState(GameState _gameState)
 	default:
 		break;
 	}
+	PollEvent();
 }
 
 sfRenderWindow* GetRenderWindow(void)
