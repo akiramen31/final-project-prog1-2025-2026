@@ -77,8 +77,6 @@ sfFloatRect GetBounsEnnemy(int _index);
 int GetNumberEnnemy();
 sfColor GetColorsPixelMap(sfVector2f _position);
 
-void DrawImage(void);
-
 
 
 #endif // !GAME_H
