@@ -12,6 +12,7 @@ Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(sfSprite* _background)
 {
+	map = (Map){ 0 };
 	map.background = _background;
 	SetMap(LEVEL1);
 }
@@ -19,23 +20,31 @@ void LoadMap(sfSprite* _background)
 void SetMap(MapState _map)
 {
 	Cjson* cjson = NULL;
+	if (map.data.image)
+	{
+		sfImage_destroy(map.data.image);
+	}
 	switch (_map)
 	{
 	case LEVEL1:
 		cjson = LoadCjson("Assets/Maps/Level1.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 		break;
 	case LEVEL2:
 		cjson = LoadCjson("Assets/Maps/Level2.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
 		break;
 	case LEVEL3:
 		cjson = LoadCjson("Assets/Maps/Level3.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
 		break;
 	case LEVEL_TEST:
 		cjson = LoadCjson("Assets/Maps/LevelTest.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/MapTesteReduite.png");
 		break;
 	default:
 		break;
@@ -77,7 +86,6 @@ void LoadMapData(Cjson* _cjson)
 	}
 
 	CreateRectVisible(map.data.move, map.data.moveCount);
-	map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 
 	map.data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 }
