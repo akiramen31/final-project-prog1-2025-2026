@@ -9,9 +9,9 @@
 #define PLAYER_FALL_SPEED_MAX 1
 #define PLAYER_JUMP_POWER 1.9f
 
-#define PLAYER_DASH_POWER 3.f
+#define PLAYER_DASH_POWER 2.0f
 #define PLAYER_DASH_COOLDOWN 0.5f
-#define PLAYER_DASH_DURATION 0.06f
+#define PLAYER_DASH_DURATION 0.1f
 
 #define PLAYER_JUMP_FORGIVE 0.1f
 
@@ -40,5 +40,8 @@ void UpdatePlayer(float _dt);
 void KillPlayer(void);
 
 sfVector2f GetPlayerPosition(void);
+sfFloatRect GetPlayerRect(void);
+
 void SetPlayerPosition(sfVector2f _pos);
+
 #endif
