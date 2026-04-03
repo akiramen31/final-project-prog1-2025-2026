@@ -55,6 +55,13 @@ void SetMap(MapState _map)
 		LoadMapData(cjson);
 		CleanupCjson(cjson);
 	}
+
+	if (DEV_ENNEMY)
+	{
+		LoadEnnemy();
+		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
+	}
+		SetPositionEntity(map.data.point, map.data.pointCount);
 }
 
 MapState GetActualyMap(void)
@@ -83,7 +90,6 @@ void LoadMapData(Cjson* _cjson)
 		else if (StringCompareMap(_cjson->layers[i].name, "Point"))
 		{
 			LoadObjectMap(&map.data.point, &map.data.pointCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
-			SetPositionEntity(map.data.point, map.data.pointCount);
 		}
 	}
 
