@@ -53,6 +53,7 @@ typedef struct Map
 
 void LoadMap(sfSprite* _background);
 void SetMap(MapState _map);
+MapState GetActualyMap(void);
 
 MapData* GetMapData(void);
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
