@@ -4,15 +4,14 @@ void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
 
 Game game;
-sfSprite* background;
 float timer;
 
 void LoadGame(void)
 {
 	game = (Game){ 0 };
-
-	background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
-	LoadMap();
+	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	LoadPlayer();
+	LoadMap(background);
 
 	if (DEV_ENNEMY)
 	{
@@ -21,7 +20,6 @@ void LoadGame(void)
 	}
 
 	LoadHUD();
-	LoadPlayer();
 	LoadAim();
 }
 
@@ -48,6 +46,26 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		break;
 	default:
 		break;
+	}
+	if (DEV_MODE)
+	{
+		switch (_keyEvent->code)
+		{
+		case sfKeyF1:
+			SetMap(LEVEL1);
+			break;
+		case sfKeyF2:
+			SetMap(LEVEL2);
+			break;
+		case sfKeyF3:
+			SetMap(LEVEL3);
+			break;
+		case sfKeyF4:
+			SetMap(LEVEL_TEST);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
