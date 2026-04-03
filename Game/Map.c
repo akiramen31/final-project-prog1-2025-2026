@@ -7,6 +7,7 @@ sfRectangleShape** rectShape;
 
 void LoadMapData(Cjson* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount);
+void SetPositionEntity(InfoZone* _point, int _count);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 Bool StringCompareMap(char* _string1, char* _string2);
 
@@ -54,6 +55,13 @@ void SetMap(MapState _map)
 		LoadMapData(cjson);
 		CleanupCjson(cjson);
 	}
+
+	if (DEV_ENNEMY)
+	{
+		LoadEnnemy();
+		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
+	}
+		SetPositionEntity(map.data.point, map.data.pointCount);
 }
 
 MapState GetActualyMap(void)
@@ -81,7 +89,7 @@ void LoadMapData(Cjson* _cjson)
 		}
 		else if (StringCompareMap(_cjson->layers[i].name, "Point"))
 		{
-			SetPlayerPosition((sfVector2f) { (float)_cjson->layers[i].objects->x, (float)_cjson->layers[i].objects->y});
+			LoadObjectMap(&map.data.point, &map.data.pointCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
 
@@ -111,6 +119,24 @@ void LoadObjectMap(InfoZone** _infoZoneExit,int* _infoZoneCountExit, Object* _ob
 		}
 		*_infoZoneCountExit = _objectCount;
 		*_infoZoneExit = temp;
+	}
+}
+
+void SetPositionEntity(InfoZone* _point, int _count)
+{
+	for (int i = 0; i < _count; i++)
+	{
+		if (StringCompareMap(_point[i].type, "Enemy"))
+		{
+			if (DEV_ENNEMY)
+			{
+				SetPositionEnnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, 0);
+			}
+		}
+		else if (StringCompareMap(_point[i].type, "SpawnPlayer"))
+		{
+			SetPlayerPosition((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
 	}
 }
 

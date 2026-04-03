@@ -563,13 +563,16 @@ List* CreateList(void)
 
 void RemoveList(List* _list)
 {
-	for (int i = GetListSize(_list) - 1; i >= 0; i--)
+	if (_list)
 	{
-		RemoveElement(_list, 0);
-	}
+		for (int i = GetListSize(_list) - 1; i >= 0; i--)
+		{
+			RemoveElement(_list, 0);
+		}
 
-	free(_list);
-	_list = NULL;
+		free(_list);
+		_list = NULL;
+	}
 }
 
 unsigned GetListSize(List* _list)
@@ -823,6 +826,7 @@ void SetGameState(GameState _gameState)
 	default:
 		break;
 	}
+	PollEvent();
 }
 
 sfRenderWindow* GetRenderWindow(void)

@@ -63,8 +63,7 @@ void LoadEnnemy(void)
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
-	texture = sfTexture_createFromImage(mapData->image, NULL);
-	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
+	sprite = CreateSprite(GetAsset("Assets/Maps/Level1Reduite.png"), (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 
 }
@@ -74,12 +73,12 @@ void UpdateEnnemy(float _dt, int _index)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.timer += _dt;
 	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
-	if (ennemy->ennemyEntity.type >= TIMER_ASTAR)
+	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
 		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
-		ennemy->ennemyEntity.type -= TIMER_ASTAR;
+		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
-	printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
+	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
 	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	// sécuriter pour le max d'énergie en stock
@@ -558,6 +557,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		caseGet = caseRecherche;
 	}
+	return (ActionDemander) {0};
 }
 
 float CalculResultAStar(Case _case)
