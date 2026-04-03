@@ -16,6 +16,10 @@ MapData* mapData;
 Case** aStarMap;
 List* listeWait;
 
+
+sfSprite* sprite;
+sfTexture* texture;
+
 void LoadEnnemy(void)
 {
 	listEnnemy = CreateList();
@@ -59,6 +63,10 @@ void LoadEnnemy(void)
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
+	texture = sfTexture_createFromImage(mapData->image, NULL);
+	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
+	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
+
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -68,10 +76,10 @@ void UpdateEnnemy(float _dt, int _index)
 	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
 	if (ennemy->ennemyEntity.type >= TIMER_ASTAR)
 	{
-		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
-		ennemy->ennemyEntity.type -= TIMER_ASTAR;
+		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		//ennemy->ennemyEntity.type -= TIMER_ASTAR;
 	}
-	printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
+	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
 	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	// sécuriter pour le max d'énergie en stock
@@ -90,7 +98,10 @@ void UpdateEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.move.y = 0;
 	}
-	printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+	sfTexture_destroy(texture);
+	texture = sfTexture_createFromImage(mapData->image, NULL);
+	sfSprite_setTexture(sprite, texture, sfTrue);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -150,7 +161,7 @@ void CalculMoveEnnemy(float _dt, int _index)
 		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
 		collisionEnnemy.top += 1;
 		sfVector2f collision = Colision(collisionEnnemy);
-		printf("collision %f", collision.y);
+		//printf("collision %f", collision.y);
 		if (collision.y)
 		{
 			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
@@ -167,7 +178,7 @@ void CalculMoveEnnemy(float _dt, int _index)
 		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
 		collisionEnnemy.top += 1;
 		sfVector2f collision = Colision(collisionEnnemy);
-		printf("collision %f", collision.y);
+		//printf("collision %f", collision.y);
 		if (collision.y)
 		{
 			if (ennemy->ennemyEntity.move.x > 0)
@@ -611,6 +622,17 @@ sfFloatRect GetBounsEnnemy(int _index)
 int GetNumberEnnemy()
 {
 	return GetListSize(listEnnemy);
+}
+
+sfColor GetColorsPixelMap(sfVector2f _position)
+{
+	sfVector2u positionMap = RealPositionConvertTableauPosition(_position);
+	return sfImage_getPixel(mapData->image,positionMap.x, positionMap.y);
+}
+
+void DrawImage(void)
+{
+	
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
