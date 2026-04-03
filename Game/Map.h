@@ -9,17 +9,28 @@ typedef enum MapState
 {
 	LEVEL1,
 	LEVEL2,
-	LEVEL3
+	LEVEL3,
+	LEVEL_TEST
 }MapState;
+
+typedef struct InfoZone
+{
+	sfFloatRect hitbox;
+	char* type;
+	char* name;
+}InfoZone;
 
 typedef struct MapData
 {
-	sfFloatRect* colider;
+	InfoZone* colider;
 	int coliderCount;
-	sfFloatRect* triger;
+
+	InfoZone* triger;
 	int trigerCount;
-	sfFloatRect* move;
+
+	InfoZone* move;
 	int moveCount;
+
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;
@@ -36,6 +47,7 @@ typedef struct HitboxMap
 typedef struct Map
 {
 	MapData data;
+	sfSprite* background;
 	MapState state;
 }Map;
 
@@ -43,6 +55,8 @@ void LoadMap(void);
 void SetMap(MapState _map);
 
 MapData* GetMapData(void);
+InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
+InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
 
 sfVector2f Colision(sfFloatRect _hitbox);
 void DrawDev(sfRenderWindow* _renderWindow);

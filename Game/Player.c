@@ -153,3 +153,8 @@ sfVector2f GetPlayerPosition(void)
 {
 	return sfRectangleShape_getPosition(player.collision);
 }
+
+void SetPlayerPosition(sfVector2f _pos)
+{
+	sfRectangleShape_setPosition(player.collision, _pos);
+}
