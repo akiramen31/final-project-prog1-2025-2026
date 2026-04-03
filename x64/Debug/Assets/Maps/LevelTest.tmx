@@ -51,7 +51,7 @@
 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="8" name="Collider">
+ <objectgroup id="8" name="Collider" visible="0">
   <object id="50" x="-160" y="-0.5" width="176" height="336.5"/>
   <object id="53" x="-160" y="272" width="784" height="64"/>
   <object id="54" x="432" y="0" width="192" height="336"/>
@@ -65,7 +65,7 @@
   <object id="63" x="16" y="4.66667" width="425.333" height="11.3333"/>
   <object id="64" x="432" y="16" width="12" height="259.333"/>
  </objectgroup>
- <objectgroup id="9" name="Point">
+ <objectgroup id="9" name="Point" visible="0">
   <object id="65" x="52.6667" y="160">
    <point/>
   </object>
