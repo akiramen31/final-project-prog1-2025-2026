@@ -9,8 +9,9 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
-
-	LoadMap();
+	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	LoadPlayer();
+	LoadMap(background);
 
 	if (DEV_ENNEMY)
 	{
@@ -19,7 +20,6 @@ void LoadGame(void)
 	}
 
 	LoadHUD();
-	LoadPlayer();
 	LoadAim();
 }
 

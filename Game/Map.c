@@ -10,9 +10,9 @@ void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _o
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 Bool StringCompareMap(char* _string1, char* _string2);
 
-void LoadMap(void)
+void LoadMap(sfSprite* _background)
 {
-	map.background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	map.background = _background;
 	SetMap(LEVEL1);
 }
 
@@ -67,9 +67,9 @@ MapData LoadMapData(Cjson* _cjson)
 		{
 			LoadObjectMap(&data.move, &data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Piont"))
+		else if (StringCompareMap(_cjson->layers[i].name, "Point"))
 		{
-			//SetPlayerPosition((sfVector2f) {_cjson->layers[i].objects.x,_cjson->layers[i].objects.y });
+			SetPlayerPosition((sfVector2f) { (float)_cjson->layers[i].objects->x, (float)_cjson->layers[i].objects->y});
 		}
 	}
 
@@ -111,18 +111,17 @@ void CreateRectVisible(InfoZone* _infoZone, int _count)
 {
 	rectShapeCount = _count;
 	rectShape = calloc(_count, sizeof(sfRectangleShape*));
-	if (!rectShape)
+	if (rectShape)
 	{
-		return NULL;
-	}
-	for (int i = 0; i < _count; i++)
-	{
-		rectShape[i] = sfRectangleShape_create();
-		sfRectangleShape_setFillColor(rectShape[i], sfColor_fromRGBA(0, 0, 255, 125));
-		sfRectangleShape_setSize(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.width, _infoZone[i].hitbox.height });
-		sfRectangleShape_setPosition(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.left, _infoZone[i].hitbox.top });
-		sfRectangleShape_setOutlineColor(rectShape[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
-		sfRectangleShape_setOutlineThickness(rectShape[i], -1.f);
+		for (int i = 0; i < _count; i++)
+		{
+			rectShape[i] = sfRectangleShape_create();
+			sfRectangleShape_setFillColor(rectShape[i], sfColor_fromRGBA(0, 0, 255, 125));
+			sfRectangleShape_setSize(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.width, _infoZone[i].hitbox.height });
+			sfRectangleShape_setPosition(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.left, _infoZone[i].hitbox.top });
+			sfRectangleShape_setOutlineColor(rectShape[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
+			sfRectangleShape_setOutlineThickness(rectShape[i], -1.f);
+		}
 	}
 }
 
