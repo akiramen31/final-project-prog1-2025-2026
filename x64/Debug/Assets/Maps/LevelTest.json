@@ -5,8 +5,6 @@
         {
          "id":7,
          "image":"MapTesteR\u00e9duite.png",
-         "imageheight":288,
-         "imagewidth":448,
          "name":"Calque d'Images 1",
          "opacity":1,
          "type":"imagelayer",
@@ -91,7 +89,6 @@
                 {
                  "height":64,
                  "id":53,
-
                  "name":"",
                  "rotation":0,
                  "type":"",
@@ -171,9 +168,32 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":9,
+         "name":"Point",
+         "objects":[
+                {
+                 "height":0,
+                 "id":60,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":77,
+                 "y":176
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":60,
+ "nextlayerid":10,
+ "nextobjectid":61,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
