@@ -63,9 +63,10 @@ void LoadEnnemy(void)
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
-	sprite = CreateSprite(GetAsset("Assets/Maps/Level1Reduite.png"), (sfVector2f) { 0 }, 1.f, 0.f);
+	texture = sfTexture_createFromImage(mapData->image, NULL);
+	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
+	sfSprite_setTexture(sprite, texture, sfTrue);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
-
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -98,9 +99,6 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.move.y = 0;
 	}
 	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
-	sfTexture_destroy(texture);
-	texture = sfTexture_createFromImage(mapData->image, NULL);
-	sfSprite_setTexture(sprite, texture, sfTrue);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -647,6 +645,38 @@ void ResetEnnemy(void)
 	RemoveList(listEnnemy);
 	Free(aStarMap);
 	RemoveList(listeWait);
+	sfTexture_destroy(texture);
+	DestroyVisualEntity(sprite);
+}
+
+int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
+{
+	int index = -1;
+	sfBool test = 1;
+	for (int i = 0; i < GetListSize(listEnnemy); i++)
+	{
+		GetPositionEnnemy(i);
+		if (NORM_POW2(GetPositionEnnemy(i), _position) < NORM_POW2(GetPositionEnnemy(index), _position))
+		{
+			for (int r = 0; r < GetListSize(_listeIgnore); r++)
+			{
+				int* temp = GetElement(listEnnemy, r)->value;
+				if (index == *temp)
+				{
+					test = 0;
+				}
+			}
+			if (test)
+			{
+				index = i;
+			}
+		}
+		else
+		{
+			index = 0;
+		}
+	}
+	return index;
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
@@ -700,3 +730,4 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 	}
 	return isTouch;
 }
+
