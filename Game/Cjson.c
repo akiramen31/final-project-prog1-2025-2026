@@ -4,7 +4,7 @@
 #define REALLOC(_exitBlock, _block, _size) _exitBlock = realloc(_block, _size); if (!temp) return
 #define ALLOC(_exitBlock, _count, _size) _exitBlock = calloc(_count, _size); if(!_exitBlock) return
 
-void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, TypeValue _typeValue);
+int GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, TypeValue _typeValue);
 Bool StringCompareCjson(char* _string1, char* _string2);
 int GetObjectStructLayerCjson(char* _buffer, Layers** _layers);
 int GetObjectStructObjectCjson(char* _buffer, Object** _object);
@@ -41,14 +41,14 @@ Cjson* LoadCjson(char* _file)
 
 	fread(buffer, sizeof(char), (size_t)(fileSize + 1), file);
 	int first = GetIndexValueCjson(buffer, "compressionlevel");
-	GetObjectByNameCjson(&buffer[first], "compressionlevel", &cjson->compressionlevel, INT);
-	GetObjectByNameCjson(&buffer[first], "height", &cjson->height, INT);
-	GetObjectByNameCjson(&buffer[first], "infinite", &cjson->infinite, BOOL);
+	first += GetObjectByNameCjson(&buffer[first], "compressionlevel", &cjson->compressionlevel, INT);
+	first += GetObjectByNameCjson(&buffer[first], "height", &cjson->height, INT);
+	first += GetObjectByNameCjson(&buffer[first], "infinite", &cjson->infinite, BOOL);
 
-	first = GetIndexValueCjson(buffer, "layer");
+	first += GetIndexValueCjson(&buffer[first], "layer");
 	cjson->layersCount = GetObjectStructLayerCjson(&buffer[first], &cjson->layers);
 
-	first = GetIndexValueCjson(buffer, "nextlayerid");
+	first += GetIndexValueCjson(&buffer[first], "nextlayerid");
 	GetObjectByNameCjson(&buffer[first], "nextlayerid", &cjson->nextLayerId, INT);
 	GetObjectByNameCjson(&buffer[first], "nextobjectid", &cjson->nextObjectId, INT);
 	GetObjectByNameCjson(&buffer[first], "orientation", &cjson->orientation, CHAR_PTR);
@@ -56,10 +56,10 @@ Cjson* LoadCjson(char* _file)
 	GetObjectByNameCjson(&buffer[first], "tiledversion", &cjson->tiledVersion, CHAR_PTR);
 	GetObjectByNameCjson(&buffer[first], "tileheight", &cjson->tileHeight, INT);
 
-	first = GetIndexValueCjson(buffer, "tileset");
+	first += GetIndexValueCjson(&buffer[first], "tileset");
 	cjson->tilesetsCount = GetObjectStructTilesetCjson(&buffer[first], &cjson->tilesets);
 
-	first = GetIndexValueCjson(buffer, "tilewidth");
+	first += GetIndexValueCjson(&buffer[first], "tilewidth");
 	GetObjectByNameCjson(&buffer[first], "tilewidth", &cjson->tileWidth, INT);
 	GetObjectByNameCjson(&buffer[first], "type", &cjson->type, CHAR_PTR);
 	GetObjectByNameCjson(&buffer[first], "version", &cjson->version, CHAR_PTR);
@@ -69,7 +69,7 @@ Cjson* LoadCjson(char* _file)
 	return cjson;
 }
 
-void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, TypeValue _typeValue)
+int GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, TypeValue _typeValue)
 {
 	int tempCalcule = 0;
 
@@ -115,7 +115,7 @@ void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, Type
 						char* buffer = calloc(30, sizeof(char));
 						if (!buffer)
 						{
-							return;
+							return 0;
 						}
 
 						int h = 3;
@@ -149,7 +149,7 @@ void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, Type
 						int** buffer = *(int***)_saveValue = calloc(nbRow, sizeof(int*));
 						if (!buffer)
 						{
-							return;
+							return 0;
 						}
 
 						for (int g = 0; g < nbRow; g++)
@@ -157,7 +157,7 @@ void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, Type
 							buffer[g] = calloc(nbColumn, sizeof(int*));
 							if (!buffer[g])
 							{
-								return;
+								return 0;
 							}
 						}
 
@@ -182,6 +182,12 @@ void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, Type
 								indexChar++;
 							}
 						}
+						while (_bufferFile[i] != '\0' && _bufferFile[i] != '\t' && _bufferFile[i] != ',')
+						{
+							_bufferFile[i] = 'N';
+							i++;
+						}
+						return indexChar;
 					}
 
 					while (_bufferFile[i] != '\0' && _bufferFile[i] != '\t' && _bufferFile[i] != ',')
@@ -191,13 +197,13 @@ void GetObjectByNameCjson(char* _bufferFile, char* _name, void* _saveValue, Type
 					}
 
 
-					return;
+					return i;
 				}
 			}
 			i += j + 1;
 		}
 	}
-	return;
+	return 0;
 }
 
 Bool StringCompareCjson(char* _string1, char* _string2)
@@ -229,30 +235,30 @@ int GetObjectStructLayerCjson(char* _buffer, Layers** _layers)
 		temp[layersCount] = (Layers){ 0 };
 		if (dataIndex < draworderIndex)
 		{
-			GetObjectByNameCjson(&_buffer[dataIndex], "data", &temp[layersCount].data, INT_PTR);
-			GetObjectByNameCjson(&_buffer[dataIndex], "height", &temp[layersCount].height, INT);
-			GetObjectByNameCjson(&_buffer[dataIndex], "id", &temp[layersCount].id, INT);
-			GetObjectByNameCjson(&_buffer[dataIndex], "name", &temp[layersCount].name, CHAR_PTR);
-			GetObjectByNameCjson(&_buffer[dataIndex], "opacity", &temp[layersCount].opacity, FLOAT);
-			GetObjectByNameCjson(&_buffer[dataIndex], "type", &temp[layersCount].type, CHAR_PTR);
-			GetObjectByNameCjson(&_buffer[dataIndex], "visible", &temp[layersCount].visible, BOOL);
-			GetObjectByNameCjson(&_buffer[dataIndex], "width", &temp[layersCount].width, INT);
-			GetObjectByNameCjson(&_buffer[dataIndex], "x", &temp[layersCount].x, INT);
-			GetObjectByNameCjson(&_buffer[dataIndex], "y", &temp[layersCount].y, INT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "data", &temp[layersCount].data, INT_PTR);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "height", &temp[layersCount].height, INT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "id", &temp[layersCount].id, INT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "name", &temp[layersCount].name, CHAR_PTR);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "opacity", &temp[layersCount].opacity, FLOAT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "type", &temp[layersCount].type, CHAR_PTR);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "visible", &temp[layersCount].visible, BOOL);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "width", &temp[layersCount].width, INT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "x", &temp[layersCount].x, INT);
+			dataIndex += GetObjectByNameCjson(&_buffer[dataIndex], "y", &temp[layersCount].y, INT);
 		}
 		else if (dataIndex >  draworderIndex)
 		{
-			GetObjectByNameCjson(&_buffer[draworderIndex], "draworder", &temp[layersCount].draworder, CHAR_PTR);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "id", &temp[layersCount].id, INT);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "name", &temp[layersCount].name, CHAR_PTR);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "draworder", &temp[layersCount].draworder, CHAR_PTR);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "id", &temp[layersCount].id, INT);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "name", &temp[layersCount].name, CHAR_PTR);
 
 			temp[layersCount].objectsCount = GetObjectStructObjectCjson(&_buffer[draworderIndex], &temp[layersCount].objects);
 
-			GetObjectByNameCjson(&_buffer[draworderIndex], "opacity", &temp[layersCount].opacity, FLOAT);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "type", &temp[layersCount].type, CHAR_PTR);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "visible", &temp[layersCount].visible, BOOL);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "x", &temp[layersCount].x, INT);
-			GetObjectByNameCjson(&_buffer[draworderIndex], "y", &temp[layersCount].y, INT);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "opacity", &temp[layersCount].opacity, FLOAT);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "type", &temp[layersCount].type, CHAR_PTR);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "visible", &temp[layersCount].visible, BOOL);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "x", &temp[layersCount].x, INT);
+			draworderIndex += GetObjectByNameCjson(&_buffer[draworderIndex], "y", &temp[layersCount].y, INT);
 
 
 		}
