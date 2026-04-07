@@ -78,6 +78,6 @@ int GetNumberEnnemy();
 sfColor GetColorsPixelMap(sfVector2f _position);
 void SetPositionEnnemy(sfVector2f _position, int _index);
 
-
+void ResetEnnemy(void);
 
 #endif // !GAME_H
