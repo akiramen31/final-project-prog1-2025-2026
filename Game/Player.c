@@ -6,7 +6,7 @@ float timerDash = 0;
 float timerFaling = 0;
 
 void MovePlayer(float _dt);
-void ColisionMapPlayer(sfVector2f _move, float _dt);
+void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
 
 sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color);
@@ -60,7 +60,11 @@ void MovePlayer(float _dt)
 	{
 		player.velocity.x /= 1.5f;
 
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT))))
+		{
+			player.velocity.x = 0;
+		}
+		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
 			if (player.velocity.x < 1)
 			{
@@ -135,31 +139,48 @@ void MovePlayer(float _dt)
 
 	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
 
-	ColisionMapPlayer(player.velocity, _dt);
+	ColisionMapPlayer(_dt);
 }
 
-void ColisionMapPlayer(sfVector2f _move, float _dt)
+void ColisionMapPlayer(float _dt)
 {
 	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
 
-	if (reaction.y < 0)
+	if (reactionPassThrough.y < 0)
 	{
-		player.isGrounded = sfTrue;
-		timerFaling = 0;
-	}
-	else if (reaction.y >= 0)
-	{
-		player.isGrounded = sfFalse;
-		if (timerFaling <= PLAYER_JUMP_FORGIVE)
+		if (player.velocity.y >= 0)
 		{
-			timerFaling += _dt;
+			player.isGrounded = sfTrue;
+			timerFaling = 0;
+			player.velocity.y = 0;
+
+			reaction.y += reactionPassThrough.y;
+		}
+	}
+	else
+	{
+		if (reaction.y < 0)
+		{
+			player.isGrounded = sfTrue;
+			timerFaling = 0;
+		}
+		else if (reaction.y >= 0)
+		{
+			player.isGrounded = sfFalse;
+
+			if (timerFaling <= PLAYER_JUMP_FORGIVE)
+			{
+				timerFaling += _dt;
+			}
+		}
+
+		if (reaction.y != 0 || reactionPassThrough.y != 0)
+		{
+			player.velocity.y = 0;
 		}
 	}
 
-	if (reaction.y != 0)
-	{
-		player.velocity.y = 0;
-	}
 
 	if (timerDash <= PLAYER_DASH_DURATION)
 	{

@@ -107,9 +107,11 @@ void Load(void);
 void PollEvent(void);
 void Update(void);
 void Cleanup(void);
+
 void SetViewCenter(sfVector2f _centre);
 void SetViewZoom(float _zoom);
 sfVector2f GetViewPosition(void);
+
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);
 void ChangeFullSceen(void);

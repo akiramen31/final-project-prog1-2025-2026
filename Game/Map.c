@@ -90,6 +90,10 @@ void LoadMapData(Cjson* _cjson)
 		{
 			LoadObjectMap(&map.data.point, &map.data.pointCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
+		else if (StringCompare(_cjson->layers[i].name, "PassThrough"))
+		{
+			LoadObjectMap(&map.data.passThrough, &map.data.PassThroughCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
 	}
 
 	CreateRectVisible(map.data.move, map.data.moveCount);
@@ -157,6 +161,7 @@ void CreateRectVisible(InfoZone* _infoZone, int _count)
 	}
 }
 
+
 sfVector2f Colision(sfFloatRect _hitbox)
 {
 	sfVector2f vectorMove = { 0 };
@@ -190,6 +195,25 @@ sfVector2f Colision(sfFloatRect _hitbox)
 				}
 			}
 			_hitbox.left += vectorMove.x;
+			_hitbox.top += vectorMove.y;
+		}
+	}
+	return vectorMove;
+}
+
+sfVector2f CollisionPassThrough(sfFloatRect _hitbox)
+{
+	sfVector2f vectorMove = { 0 };
+	sfFloatRect reaction = { 0 };
+
+	for (int i = 0; i < map.data.PassThroughCount; i++)
+	{
+		if (sfFloatRect_intersects(&_hitbox, &map.data.passThrough[i].hitbox, &reaction))
+		{
+			if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - map.data.passThrough[i].hitbox.top < (map.data.passThrough[i].hitbox.height - _hitbox.height / 2))
+			{
+				vectorMove.y -= reaction.height;
+			}
 			_hitbox.top += vectorMove.y;
 		}
 	}

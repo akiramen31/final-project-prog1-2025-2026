@@ -25,6 +25,9 @@ typedef struct MapData
 	InfoZone* colider;
 	int coliderCount;
 
+	InfoZone* passThrough;
+	int PassThroughCount;
+
 	InfoZone* triger;
 	int trigerCount;
 
@@ -64,5 +67,7 @@ InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
 int GetMoveCount(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);
+sfVector2f CollisionPassThrough(sfFloatRect _hitbox);
+
 void DrawDev(sfRenderWindow* _renderWindow);
 #endif // !MAP_H

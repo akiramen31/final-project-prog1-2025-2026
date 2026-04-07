@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="260" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="38" nextobjectid="312">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="260" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="39" nextobjectid="317">
  <editorsettings>
   <export target="Level1.json" format="json"/>
  </editorsettings>
@@ -228,10 +228,13 @@
  </objectgroup>
  <objectgroup id="32" name="Move">
   <object id="142" name="10" type="RIGHT" x="1232" y="782" width="816" height="18"/>
-  <object id="283" name="500" type="UP" x="1872" y="672" width="112" height="112"/>
-  <object id="284" name="500" type="UP" x="1888" y="608" width="80" height="64"/>
+  <object id="283" name="500" type="UP" x="1872" y="608" width="112" height="176"/>
   <object id="309" name="250" type="RIGHT" x="1872" y="672" width="16" height="32"/>
   <object id="310" name="250" type="LEFT" x="1968" y="672" width="16" height="32"/>
+ </objectgroup>
+ <objectgroup id="38" name="PassThrough">
+  <object id="314" x="1888" y="608" width="32" height="16"/>
+  <object id="315" x="1936" y="608" width="32" height="16"/>
  </objectgroup>
  <objectgroup id="37" name="Point" visible="0">
   <object id="290" type="SpawnPlayer" x="120" y="544">
