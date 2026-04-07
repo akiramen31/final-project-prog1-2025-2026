@@ -32,14 +32,14 @@ void LoadEnnemy(void)
 	{
 		ennemyEntity[0].type = 0;
 		ennemyEntity[0].ennemydata.life = 20.f;
-		ennemyEntity[0].ennemydata.energyMax = 500.f;
-		ennemyEntity[0].ennemydata.energy = 500.f;
-		ennemyEntity[0].ennemydata.energyRegen = 50.f;
+		ennemyEntity[0].ennemydata.energyMax = 100.f;
+		ennemyEntity[0].ennemydata.energy = 100.f;
+		ennemyEntity[0].ennemydata.energyRegen = 15.f;
 		ennemyEntity[0].ennemydata.speedMax = 3.f;
 		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[0].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[0].isJetpack = sfFalse;
+		ennemyEntity[0].isJetpack = sfTrue;
 		ennemyEntity[0].jetpack.consomation = 50.f;
 		ennemyEntity[0].jetpack.life = 5.f;
 		ennemyEntity[0].jetpack.trust = 10.f;
@@ -47,9 +47,9 @@ void LoadEnnemy(void)
 
 		ennemyEntity[1].type = 1;
 		ennemyEntity[1].ennemydata.life = 10.f;
-		ennemyEntity[1].ennemydata.energyMax = 800.f;
-		ennemyEntity[1].ennemydata.energy = 800.f;
-		ennemyEntity[1].ennemydata.energyRegen = 50.f;
+		ennemyEntity[1].ennemydata.energyMax = 200.f;
+		ennemyEntity[1].ennemydata.energy = 200.f;
+		ennemyEntity[1].ennemydata.energyRegen = 15.f;
 		ennemyEntity[1].ennemydata.speedMax = 3.f;
 		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[1].ennemydata.jumForce = 700.f;
@@ -62,7 +62,7 @@ void LoadEnnemy(void)
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
-	aStarMap = (Case **)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
+	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setTexture(sprite, texture, sfTrue);
@@ -73,7 +73,7 @@ void UpdateEnnemy(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.timer += _dt;
-	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
+	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
 		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
@@ -143,32 +143,65 @@ void CalculMoveEnnemy(float _dt, int _index)
 	sfBool test = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if (sfKeyboard_isKeyPressed(sfKeyRight))
+	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 	{
-		ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyLeft))
-	{
-		ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyUp))
-	{
-		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
-		collisionEnnemy.top += 1;
-		sfVector2f collision = Colision(collisionEnnemy);
-		//printf("collision %f", collision.y);
-		if (collision.y)
+		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
+
+		ennemy->ennemyEntity.acceleration.y -= G * 4;
+		if (sfKeyboard_isKeyPressed(sfKeyM))
 		{
-			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
 		}
-		test = 1;
+		if (sfKeyboard_isKeyPressed(sfKeyK))
+		{
+			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyO))
+		{
+			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyL))
+		{
+			ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
+		}
+		if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.jetpack.trust / 3)
+		{
+			ennemy->ennemyEntity.move.y = ennemy->ennemyEntity.ennemydata.speedMax;
+		}
+		else if (ennemy->ennemyEntity.move.y < -ennemy->ennemyEntity.jetpack.trust / 3)
+		{
+			ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
+		}
+
 	}
-	if (sfKeyboard_isKeyPressed(sfKeyDown))
+	else
 	{
-		ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
+		if (sfKeyboard_isKeyPressed(sfKeyM))
+		{
+			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyK))
+		{
+			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyO))
+		{
+			sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+			collisionEnnemy.top += 1;
+			sfVector2f collision = Colision(collisionEnnemy);
+			//printf("collision %f", collision.y);
+			if (collision.y)
+			{
+				ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			}
+			test = 1;
+		}
 	}
 	if (test == 0)
 	{
@@ -182,11 +215,12 @@ void CalculMoveEnnemy(float _dt, int _index)
 			{
 				ennemy->ennemyEntity.move.x -= 1;
 			}
-			if (ennemy->ennemyEntity.move.x < 0)
+			else if (ennemy->ennemyEntity.move.x < 0)
 			{
 				ennemy->ennemyEntity.move.x += 1;
 			}
-			if (ennemy->ennemyEntity.move.x > -2 && ennemy->ennemyEntity.move.x < 2)
+
+			if (ennemy->ennemyEntity.move.x > (float)-1.5 && ennemy->ennemyEntity.move.x < (float)1.5)
 			{
 				ennemy->ennemyEntity.move.x = 0;
 			}
@@ -205,6 +239,7 @@ void CalculMoveEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.move.x = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
+
 }
 
 ActionDemander AStar(int _index, sfVector2f _positionCible)
@@ -645,7 +680,10 @@ void ResetEnnemy(void)
 	RemoveList(listEnnemy);
 	Free(aStarMap);
 	RemoveList(listeWait);
-	sfTexture_destroy(texture);
+	if (texture)
+	{
+		sfTexture_destroy(texture);
+	}
 	DestroyVisualEntity(sprite);
 }
 
