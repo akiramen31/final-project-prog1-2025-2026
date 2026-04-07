@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Ennemy.h"
 
 Map map;
 
