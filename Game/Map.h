@@ -61,8 +61,8 @@ MapState GetActualyMap(void);
 MapData* GetMapData(void);
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
 InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
+int GetMoveCount(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);
 void DrawDev(sfRenderWindow* _renderWindow);
-
 #endif // !MAP_H

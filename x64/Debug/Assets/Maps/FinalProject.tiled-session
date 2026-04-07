@@ -1,6 +1,6 @@
 {
-    "activeFile": "Tilesets/AutoTileRules.tmx",
-    "automapping.whileDrawing": false,
+    "activeFile": "Level1.tmx",
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
     ],
@@ -36,22 +36,22 @@
             "expandedObjectLayers": [
                 31
             ],
-            "scale": 3,
-            "selectedLayer": 2,
+            "scale": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 457,
-                "y": 527.3333333333333
+                "x": 2080,
+                "y": 511.5
             }
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
                 7
             ],
-            "scale": 3,
+            "scale": 0.125,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 405.33333333333326,
-                "y": 1446
+                "x": 2560,
+                "y": 1164
             }
         },
         "LevelTest.tmx": {
@@ -61,16 +61,16 @@
             "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 356.6666666666667,
-                "y": 144
+                "x": 320,
+                "y": 143.66666666666669
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 155.33333333333334,
-                "y": 171.66666666666663
+                "x": 248,
+                "y": 296.25
             }
         },
         "Tilesets/FullTiles.tsx": {
@@ -115,7 +115,7 @@
     "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.tileHeight": 145,
     "map.tileWidth": 320,
     "openFiles": [
@@ -128,12 +128,12 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Level1.tmx",
-        "Level2.tmx",
         "Tilesets/SpritesList.tsx",
         "LevelTest.tmx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
+        "Level2.tmx",
+        "Level1.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
         "Tilesets/Pipes.tsx",

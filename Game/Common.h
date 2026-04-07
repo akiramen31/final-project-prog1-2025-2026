@@ -70,5 +70,5 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(sfVector2u _size, size_t _typeSize);
-
+sfBool StringCompare(char* _string1, char* _string2);
 #endif // !COMMON_H

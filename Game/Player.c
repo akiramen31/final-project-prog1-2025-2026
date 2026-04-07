@@ -6,6 +6,8 @@ float timerDash = 0;
 float timerFaling = 0;
 
 void MovePlayer(float _dt);
+void ColisionMapPlayer(sfVector2f _move, float _dt);
+void MoveZonePlayer(float _dt);
 
 sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color);
 
@@ -39,8 +41,11 @@ sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor
 
 void UpdatePlayer(float _dt)
 {
+	MoveZonePlayer(_dt);
 	MovePlayer(_dt);
+
 	SetViewCenter(GetPlayerPosition());
+
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 
@@ -53,15 +58,28 @@ void MovePlayer(float _dt)
 
 	if (timerDash >= PLAYER_DASH_DURATION)
 	{
-		player.velocity.x = 0;
+		player.velocity.x /= 1.5f;
+
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			player.velocity.x++;
+			if (player.velocity.x < 1)
+			{
+				player.velocity.x = 1;
+			}
 		}
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			player.velocity.x--;
+			if (player.velocity.x > -1)
+			{
+				player.velocity.x = -1;
+			}
 		}
+
+		if (player.velocity.x > -0.1f && player.velocity.x < 0.1f)
+		{
+			player.velocity.x = 0;
+		}
+
 		if (player.velocity.x < 0)
 		{
 			player.direction = sfFalse;
@@ -102,17 +120,26 @@ void MovePlayer(float _dt)
 	if (timerDash >= PLAYER_DASH_COOLDOWN && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
 	{
 		timerDash = 0;
+
+		player.velocity.y /= 1.5f;
+
 		if (player.direction)
 		{
-			player.velocity.x = PLAYER_DASH_POWER;
+			player.velocity.x += PLAYER_DASH_POWER;
 		}
 		else
 		{
-			player.velocity.x = -PLAYER_DASH_POWER;
+			player.velocity.x += -PLAYER_DASH_POWER;
 		}
 	}
 
 	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
+
+	ColisionMapPlayer(player.velocity, _dt);
+}
+
+void ColisionMapPlayer(sfVector2f _move, float _dt)
+{
 	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 
 	if (reaction.y < 0)
@@ -158,6 +185,45 @@ void MovePlayer(float _dt)
 		}
 	}
 	sfRectangleShape_move(player.collision, reaction);
+}
+
+void MoveZonePlayer(float _dt)
+{
+	InfoZone* zone = GetInfoZoneMove(sfRectangleShape_getGlobalBounds(player.collision));
+
+	if (zone != NULL)
+	{
+		int num = GetMoveCount();
+
+		InfoZone* zone = GetInfoZoneMove(sfRectangleShape_getGlobalBounds(player.collision));
+		for (int i = 0; i < num; i++)
+		{
+			int speed = 0;
+			sscanf_s(zone[i].name, "%d", &speed);
+
+			sfFloatRect hitbox = sfRectangleShape_getGlobalBounds(player.collision);
+
+			if (sfFloatRect_intersects(&hitbox, &zone[i].hitbox, NULL))
+			{
+				if (StringCompare(zone[i].type, "RIGHT"))
+				{
+					sfRectangleShape_move(player.collision, (sfVector2f) { speed* _dt, 0 });
+				}
+				else if (StringCompare(zone[i].type, "LEFT"))
+				{
+					sfRectangleShape_move(player.collision, (sfVector2f) { -speed * _dt, 0 });
+				}
+				else if (StringCompare(zone[i].type, "DOWN"))
+				{
+					sfRectangleShape_move(player.collision, (sfVector2f) { 0, speed* _dt });
+				}
+				else if (StringCompare(zone[i].type, "UP"))
+				{
+					sfRectangleShape_move(player.collision, (sfVector2f) { 0, -speed * _dt });
+				}
+			}
+		}
+	}
 }
 
 void KillPlayer(void)

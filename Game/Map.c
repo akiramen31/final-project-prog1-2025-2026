@@ -9,7 +9,6 @@ void LoadMapData(Cjson* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount);
 void SetPositionEntity(InfoZone* _point, int _count);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
-Bool StringCompareMap(char* _string1, char* _string2);
 
 void LoadMap(sfSprite* _background)
 {
@@ -61,7 +60,7 @@ void SetMap(MapState _map)
 		LoadEnnemy();
 		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
-		SetPositionEntity(map.data.point, map.data.pointCount);
+	SetPositionEntity(map.data.point, map.data.pointCount);
 }
 
 MapState GetActualyMap(void)
@@ -75,19 +74,19 @@ void LoadMapData(Cjson* _cjson)
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
-		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
+		if (StringCompare(_cjson->layers[i].name, "Collider"))
 		{
 			LoadObjectMap(&map.data.colider, &map.data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Trigger"))
+		else if (StringCompare(_cjson->layers[i].name, "Trigger"))
 		{
 			LoadObjectMap(&map.data.triger, &map.data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
+		else if (StringCompare(_cjson->layers[i].name, "Move"))
 		{
 			LoadObjectMap(&map.data.move, &map.data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Point"))
+		else if (StringCompare(_cjson->layers[i].name, "Point"))
 		{
 			LoadObjectMap(&map.data.point, &map.data.pointCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
@@ -104,7 +103,7 @@ MapData* GetMapData(void)
 	return &map.data;
 }
 
-void LoadObjectMap(InfoZone** _infoZoneExit,int* _infoZoneCountExit, Object* _object, int _objectCount)
+void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount)
 {
 	*_infoZoneCountExit = 0;
 	*_infoZoneExit = NULL;
@@ -126,14 +125,14 @@ void SetPositionEntity(InfoZone* _point, int _count)
 {
 	for (int i = 0; i < _count; i++)
 	{
-		if (StringCompareMap(_point[i].type, "Enemy"))
+		if (StringCompare(_point[i].type, "Enemy"))
 		{
 			if (DEV_ENNEMY)
 			{
 				SetPositionEnnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, 0);
 			}
 		}
-		else if (StringCompareMap(_point[i].type, "SpawnPlayer"))
+		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
 			SetPlayerPosition((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
@@ -156,20 +155,6 @@ void CreateRectVisible(InfoZone* _infoZone, int _count)
 			sfRectangleShape_setOutlineThickness(rectShape[i], -1.f);
 		}
 	}
-}
-
-Bool StringCompareMap(char* _string1, char* _string2)
-{
-	int i = 0;
-	while (_string1[i] == _string2[i])
-	{
-		i++;
-		if (_string1[i] == 0 && _string2[i] == 0)
-		{
-			return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 sfVector2f Colision(sfFloatRect _hitbox)
@@ -213,10 +198,9 @@ sfVector2f Colision(sfFloatRect _hitbox)
 
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox)
 {
-	sfFloatRect reaction = { 0 };
 	for (int i = 0; i < map.data.trigerCount; i++)
 	{
-		if (sfFloatRect_intersects(&_hitbox, &map.data.triger[i].hitbox, &reaction))
+		if (sfFloatRect_intersects(&_hitbox, &map.data.triger[i].hitbox, NULL))
 		{
 			return &map.data.triger[i];
 		}
@@ -226,15 +210,19 @@ InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox)
 
 InfoZone* GetInfoZoneMove(sfFloatRect _hitbox)
 {
-	sfFloatRect reaction = { 0 };
-	for (int i = 0; i < map.data.trigerCount; i++)
+	for (int i = 0; i < map.data.moveCount; i++)
 	{
-		if (sfFloatRect_intersects(&_hitbox, &map.data.triger[i].hitbox, &reaction))
+		if (sfFloatRect_intersects(&_hitbox, &map.data.move[i].hitbox, NULL))
 		{
-			return &map.data.triger[i];
+			return map.data.move;
 		}
 	}
 	return NULL;
+}
+
+int GetMoveCount(void)
+{
+	return map.data.moveCount;
 }
 
 void DrawDev(sfRenderWindow* _renderWindow)
