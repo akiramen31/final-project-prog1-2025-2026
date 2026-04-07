@@ -62,7 +62,7 @@ void LoadEnnemy(void)
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
-	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
+	aStarMap = (Case **)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setTexture(sprite, texture, sfTrue);
@@ -232,7 +232,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
-	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = NORM_POW2(positionCibleCase, positionDebutCase);
+	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = (float)NORM_POW2(positionCibleCase, positionDebutCase);
 	aStarMap[positionDebutCase.y][positionDebutCase.x].energie = ennemy->ennemyEntity.ennemydata.energy;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
@@ -258,8 +258,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = LEFT;
@@ -288,8 +288,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = UP_LEFT;
@@ -315,8 +315,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = DOWN_LEFT;
@@ -342,8 +342,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = RIGHT;
@@ -373,8 +373,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = UP_RIGHT;
@@ -400,8 +400,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = DOWN_RIGHT;
@@ -428,8 +428,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = RIGHT;
@@ -455,8 +455,8 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		else
 		{
 			Case caseTemp = { 0 };
-			caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-			caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+			caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+			caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 			caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 			caseTemp.Résultat = CalculResultAStar(caseTemp);
 			caseTemp.direction = RIGHT;
@@ -487,7 +487,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		flag = sfTrue;
 	}
 	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
-	
+
 	while (flag == sfFalse) // rechercher les action demander
 	{
 		switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -653,22 +653,24 @@ int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
 {
 	int index = -1;
 	sfBool test = 1;
-	for (int i = 0; i < GetListSize(listEnnemy); i++)
+	for (unsigned i = 0; i < GetListSize(listEnnemy); i++)
 	{
-		GetPositionEnnemy(i);
-		if (NORM_POW2(GetPositionEnnemy(i), _position) < NORM_POW2(GetPositionEnnemy(index), _position))
+		if (index >= 0)
 		{
-			for (int r = 0; r < GetListSize(_listeIgnore); r++)
+			if (NORM_POW2(GetPositionEnnemy(i), _position) < NORM_POW2(GetPositionEnnemy(index), _position))
 			{
-				int* temp = GetElement(listEnnemy, r)->value;
-				if (index == *temp)
+				for (unsigned r = 0; r < GetListSize(_listeIgnore); r++)
 				{
-					test = 0;
+					int* temp = GetElement(listEnnemy, r)->value;
+					if (index == *temp)
+					{
+						test = 0;
+					}
 				}
-			}
-			if (test)
-			{
-				index = i;
+				if (test)
+				{
+					index = i;
+				}
 			}
 		}
 		else

@@ -2,9 +2,6 @@
 #define ENTITY_MANAGER_H
 
 #include "Common.h"
-#include "Menu.h"
-#include "Game.h"
-#include "GameOver.h"
 
 typedef enum VisualEntityType
 {

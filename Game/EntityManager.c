@@ -1,4 +1,7 @@
 #include "EntityManager.h"
+#include "Menu.h"
+#include "Game.h"
+#include "GameOver.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
