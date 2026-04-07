@@ -59,7 +59,7 @@ void LoadEnnemy(void)
 		ennemyEntity[1].jetpack.life = 5.f;
 		ennemyEntity[1].jetpack.trust = 20.f;
 	}
-	SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
+	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
@@ -75,7 +75,7 @@ void UpdateEnnemy(float _dt, int _index)
 	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
-		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
@@ -640,6 +640,13 @@ void SetPositionEnnemy(sfVector2f _position, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfSprite_setPosition(ennemy->sprite, _position);
+}
+
+void ResetEnnemy(void)
+{
+	RemoveList(listEnnemy);
+	Free(aStarMap);
+	RemoveList(listeWait);
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
