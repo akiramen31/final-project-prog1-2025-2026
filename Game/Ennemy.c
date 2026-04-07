@@ -181,7 +181,7 @@ void CalculMoveEnnemy(float _dt, int _index)
 		{
 			if (ennemy->ennemyEntity.move.x > 0)
 			{
-				ennemy->ennemyEntity.move.x -= ennemy->ennemyEntity.jetpack.trust *_dt;
+				ennemy->ennemyEntity.move.x -= ennemy->ennemyEntity.jetpack.trust * _dt;
 			}
 			else if (ennemy->ennemyEntity.move.x < 0)
 			{
@@ -197,7 +197,7 @@ void CalculMoveEnnemy(float _dt, int _index)
 		{
 			if (ennemy->ennemyEntity.move.y > 0)
 			{
-				ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.jetpack.trust *_dt;
+				ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.jetpack.trust * _dt;
 			}
 			else if (ennemy->ennemyEntity.move.y < 0)
 			{
@@ -212,17 +212,17 @@ void CalculMoveEnnemy(float _dt, int _index)
 	}
 	else
 	{
-		if (sfKeyboard_isKeyPressed(sfKeyM))
+		if (sfKeyboard_isKeyPressed(sfKeyM) || ennemy->actiondemander.droite)
 		{
 			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
 			test = 1;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyK))
+		if (sfKeyboard_isKeyPressed(sfKeyK) || ennemy->actiondemander.gauche)
 		{
 			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
 			test = 1;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyO))
+		if (sfKeyboard_isKeyPressed(sfKeyO) || ennemy->actiondemander.Saut)
 		{
 			sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
 			collisionEnnemy.top += 1;
@@ -234,29 +234,29 @@ void CalculMoveEnnemy(float _dt, int _index)
 			}
 			test = 1;
 		}
-	}
-	if (test == 0)
-	{
-		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
-		collisionEnnemy.top += 1;
-		sfVector2f collision = Colision(collisionEnnemy);
-		//printf("collision %f", collision.y);
-		if (collision.y)
+		if (test == 0)
 		{
-			if (ennemy->ennemyEntity.move.x > 0)
+			sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+			collisionEnnemy.top += 1;
+			sfVector2f collision = Colision(collisionEnnemy);
+			//printf("collision %f", collision.y);
+			if (collision.y)
 			{
-				ennemy->ennemyEntity.move.x -= 1;
-			}
-			else if (ennemy->ennemyEntity.move.x < 0)
-			{
-				ennemy->ennemyEntity.move.x += 1;
-			}
+				if (ennemy->ennemyEntity.move.x > 0)
+				{
+					ennemy->ennemyEntity.move.x -= 1;
+				}
+				else if (ennemy->ennemyEntity.move.x < 0)
+				{
+					ennemy->ennemyEntity.move.x += 1;
+				}
 
-			if (ennemy->ennemyEntity.move.x > (float)-1.5 && ennemy->ennemyEntity.move.x < (float)1.5)
-			{
-				ennemy->ennemyEntity.move.x = 0;
-			}
+				if (ennemy->ennemyEntity.move.x > (float)-1.5 && ennemy->ennemyEntity.move.x < (float)1.5)
+				{
+					ennemy->ennemyEntity.move.x = 0;
+				}
 
+			}
 		}
 	}
 	ennemy->ennemyEntity.acceleration.y += G * 4;
@@ -281,7 +281,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
 	positionDebutCase.y -= 1;
-	//printf("position cible x:%d y:%d position debut x:%d y:%d\n",positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
+	printf("position cible x:%d y:%d position debut x:%d y:%d\n", positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
 	int x = 0;
 	int y = 0;
 	// reset du tableau
@@ -292,34 +292,12 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			aStarMap[y][x] = (Case){ 0 };
 		}
 	}
-	for (unsigned y = 0; y < mapData->size.y; y++)
-	{
-		for (unsigned x = 0; x < mapData->size.x; x++)
-		{
-			if (aStarMap[y][x].rangeToDestination)
-			{
-				printf("X");
-			}
-			else
-			{
-				printf("O");
-			}
-			
-		}
-		printf("\n");
-	}
-	printf("\n");
-	printf("\n");
-	printf("\n");
-	printf("\n");
-	printf("\n");
 	//création du tableau chainé de sfVecteur2u
 	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
 	Element* element = CreateElement(emplacement);
 	*emplacement = positionDebutCase;
 	InsertElement(listeWait, element, 0);
 
-	/*
 	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
@@ -348,6 +326,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			{
 				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
 				{
+
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
 					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
@@ -367,6 +346,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				}
 			}
 		}
+
 		//Bas Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
 		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
@@ -568,22 +548,52 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		{
 			flag = sfTrue;
 		}
+		/*
+		for (unsigned y = 0; y < mapData->size.y; y++)
+		{
+			for (unsigned x = 0; x < mapData->size.x; x++)
+			{
+				if (aStarMap[y][x].rangeToDestination)
+				{
+					printf("X");
+				}
+				else
+				{
+					printf("O");
+				}
+
+			}
+			printf("\n");
+		printf("\n");
+		printf("\n");
+		printf("\n");
+		}*/
 	}
+
+	for (int i = GetListSize(listeWait) - 1; i >= 0; i--)
+	{
+		RetirerListWait(i);
+	}
+
 	if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
 	{
+		printf("Cible Ateinte");
 		flag = sfFalse;
 	}
 	else
 	{
+		printf("Cible Non Ateinte");
 		flag = sfTrue;
 	}
 	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
+
 
 	while (flag == sfFalse) // rechercher les action demander
 	{
 		switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 		{
 		case NO_DIRECTION:
+			return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 			break;
 		case UP:
 			caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
@@ -612,7 +622,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		default:
 			break;
 		}
-		if (caseRecherche.x == positionCibleCase.x && caseRecherche.y == positionCibleCase.y) // retourne le bloc d'action nésésaire
+		if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
 		{
 			ActionDemander actionDemander = { 0 };
 			switch (aStarMap[caseGet.y][caseGet.x].direction)
@@ -648,10 +658,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
+			printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
 			return actionDemander;
 		}
 		caseGet = caseRecherche;
-	}*/
+	}
 	return (ActionDemander) { 0 };
 }
 
@@ -683,7 +694,7 @@ void AjoutListWait(sfVector2u _caseAjout)
 	sfVector2u* emplacementTemp = Calloc(1, sizeof(sfVector2u));
 	Element* elementTemp = CreateElement(emplacementTemp);
 	*emplacementTemp = _caseAjout;
-	InsertElement(listeWait, elementTemp, 0);
+	InsertElement(listeWait, elementTemp, GetListSize(listeWait));
 }
 
 void RetirerListWait(int _index)
@@ -733,11 +744,17 @@ void SetPositionEnnemy(sfVector2f _position, int _index)
 
 void ResetEnnemy(void)
 {
+	for (int i = 0; i < GetListSize(listEnnemy); i++)
+	{
+		Ennemy* ennemy = GetElement(listEnnemy, i)->value;
+		DestroyVisualEntity(ennemy->sprite);
+	}
 	RemoveList(listEnnemy);
 	Free(aStarMap);
 	RemoveList(listeWait);
 	sfTexture_destroy(texture);
 	DestroyVisualEntity(sprite);
+
 }
 
 int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
