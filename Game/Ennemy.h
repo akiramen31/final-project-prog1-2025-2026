@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 
-#define TIMER_ASTAR 5.f
+#define TIMER_ASTAR 0.1f
 
 typedef enum Type
 {
@@ -61,6 +61,7 @@ typedef struct Ennemy
 
 typedef struct Case
 {
+	int jumpForce;
 	float rangeToDestination;
 	float action;
 	float Résultat;
