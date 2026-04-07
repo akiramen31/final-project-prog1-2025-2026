@@ -15,8 +15,8 @@ void LoadGame(void)
 	LoadMap(background);
 	
 
-	LoadHUD();
-	LoadGUI();
+	//LoadHUD();
+	//LoadGUI();
 	LoadPlayer();
 	LoadAim();
 }
@@ -81,8 +81,8 @@ void UpdateGame(float _dt)
 	{
 		UpdateEnnemy(_dt, 0);
 	}
-	UpdateHUD(_dt);
-	UpdateGUI(_dt);
+	//UpdateHUD(_dt);
+	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
 }
