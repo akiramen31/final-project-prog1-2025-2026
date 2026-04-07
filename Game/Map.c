@@ -59,6 +59,7 @@ void SetMap(MapState _map)
 
 	if (DEV_ENNEMY)
 	{
+		ResetEnnemy();
 		LoadEnnemy();
 		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
