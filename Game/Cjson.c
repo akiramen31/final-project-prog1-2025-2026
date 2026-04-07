@@ -216,12 +216,13 @@ int GetObjectStructLayerCjson(Layers** _layers)
 
 	int dataIndex = GetIndexValueCjson("data");
 	int draworderIndex = GetIndexValueCjson("draworder");
+	int imageIndex = GetIndexValueCjson("image");
 
-	while (dataIndex != draworderIndex)
+	while (dataIndex != draworderIndex || dataIndex != imageIndex)
 	{
 		REALLOC(temp, *_layers, (size_t)(layersCount + 1) * sizeof(Layers)) layersCount;
 		temp[layersCount] = (Layers){ 0 };
-		if (dataIndex < draworderIndex)
+		if (dataIndex < draworderIndex && dataIndex < imageIndex)
 		{
 			GetObjectByNameCjson("data", &temp[layersCount].data, INT_PTR);
 			GetObjectByNameCjson("height", &temp[layersCount].height, INT);
@@ -231,10 +232,8 @@ int GetObjectStructLayerCjson(Layers** _layers)
 			GetObjectByNameCjson("type", &temp[layersCount].type, CHAR_PTR);
 			GetObjectByNameCjson("visible", &temp[layersCount].visible, BOOL);
 			GetObjectByNameCjson("width", &temp[layersCount].width, INT);
-			GetObjectByNameCjson("x", &temp[layersCount].x, INT);
-			GetObjectByNameCjson("y", &temp[layersCount].y, INT);
 		}
-		else if (dataIndex > draworderIndex)
+		else if (draworderIndex < imageIndex)
 		{
 			GetObjectByNameCjson("draworder", &temp[layersCount].draworder, CHAR_PTR);
 			GetObjectByNameCjson("id", &temp[layersCount].id, INT);
@@ -245,14 +244,29 @@ int GetObjectStructLayerCjson(Layers** _layers)
 			GetObjectByNameCjson("opacity", &temp[layersCount].opacity, FLOAT);
 			GetObjectByNameCjson("type", &temp[layersCount].type, CHAR_PTR);
 			GetObjectByNameCjson("visible", &temp[layersCount].visible, BOOL);
-			GetObjectByNameCjson("x", &temp[layersCount].x, INT);
-			GetObjectByNameCjson("y", &temp[layersCount].y, INT);
 		}
+		else
+		{
+			GetObjectByNameCjson("id", &temp[layersCount].id, INT);
+			GetObjectByNameCjson("image", &temp[layersCount].draworder, CHAR_PTR);
+			GetObjectByNameCjson("imageheight", &temp[layersCount].height, INT);
+			GetObjectByNameCjson("imagewidth", &temp[layersCount].width, INT);
+			GetObjectByNameCjson("locked", &temp[layersCount].locked, BOOL);
+			GetObjectByNameCjson("name", &temp[layersCount].name, CHAR_PTR);
+			GetObjectByNameCjson("offsetx", &temp[layersCount].offsetx, INT);
+			GetObjectByNameCjson("offsety", &temp[layersCount].offsety, INT);
+			GetObjectByNameCjson("opacity", &temp[layersCount].opacity, FLOAT);
+			GetObjectByNameCjson("type", &temp[layersCount].type, CHAR_PTR);
+			GetObjectByNameCjson("visible", &temp[layersCount].visible, BOOL);
+		}
+		GetObjectByNameCjson("x", &temp[layersCount].x, INT);
+		GetObjectByNameCjson("y", &temp[layersCount].y, INT);
 		*_layers = temp;
 		layersCount++;
 
 		dataIndex = GetIndexValueCjson("data");
 		draworderIndex = GetIndexValueCjson("draworder");
+		imageIndex = GetIndexValueCjson("image");
 	}
 	return layersCount;
 }
@@ -261,7 +275,7 @@ int GetObjectStructObjectCjson(Object** _object)
 {
 	Object* ALLOC(temp, 1, sizeof(Object)) 0;
 	int objectCount = 0;
-	while (GetIndexValueCjson("\"height\"") < GetIndexValueCjson("opacity"))
+	while (GetIndexValueCjson("height") < GetIndexValueCjson("type"))
 	{
 		REALLOC(temp, *_object, (size_t)(objectCount + 1) * sizeof(Object)) objectCount;
 		temp[objectCount] = (Object){ 0 };
@@ -387,7 +401,7 @@ int GetObjectStructWangtilesCjson(Wangtiles** _wangtiles)
 
 int GetIndexValueCjson(char* _id1)
 {
-	int i = 0;
+	int i = index;
 	int j = 0;
 	while (buffer[i])
 	{
