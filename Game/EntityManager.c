@@ -80,6 +80,7 @@ void Draw(void)
 
 void CleanupGlobal(void)
 {
+	CleanupLocal();
 	for (int i = 0; i < entityManager.assetCount; i++)
 	{
 		char* buffer = GetFormatAsset(entityManager.asset[i].file);
@@ -98,45 +99,8 @@ void CleanupGlobal(void)
 		}
 	}
 	free(entityManager.asset);
-
-	while (entityManager.visual)
-	{
-		if (entityManager.visual->type == SPRITE)
-		{
-			sfSprite_destroy(entityManager.visual->ptr);
-		}
-		else if (entityManager.visual->type == TEXT)
-		{
-			sfText_destroy(entityManager.visual->ptr);
-		}
-		VisualEntity* temp = entityManager.visual;
-		entityManager.visual = (VisualEntity*)entityManager.visual->next;
-		free(temp);
-	}
-
-	for (int i = 0; i < entityManager.soundCount; i++)
-	{
-		if (entityManager.sound[i].type == SOUND)
-		{
-			sfSound_destroy(entityManager.sound[i].ptr);
-		}
-		else if (entityManager.sound[i].type == MUSIC)
-		{
-			sfMusic_destroy(entityManager.sound[i].ptr);
-		}
-	}
 	free(entityManager.sound);
-
-	for (int i = 0; i < entityManager.listListCount; i++)
-	{
-		RemoveList(entityManager.listList[i]);
-	}
 	free(entityManager.listList);
-
-	for (int i = 0; i < entityManager.callocListCount; i++)
-	{
-		free(entityManager.callocList[i]);
-	}
 	free(entityManager.callocList);
 
 	sfRenderWindow_destroy(entityManager.renderWindow);
@@ -196,6 +160,7 @@ void CleanupLocal(void)
 	for (int i = 0; i < entityManager.listListCount; i++)
 	{
 		RemoveList(entityManager.listList[i]);
+		entityManager.listList[i] = NULL;
 	}
 	entityManager.listListCount = 0;
 
@@ -564,14 +529,30 @@ List* CreateList(void)
 
 void RemoveList(List* _list)
 {
-	if (_list)
+	for (int i = 0; i < entityManager.listListCount; i++)
 	{
-		for (int i = GetListSize(_list) - 1; i >= 0; i--)
+		if (_list == entityManager.listList[i])
 		{
-			RemoveElement(_list, 0);
-		}
+			for (int i = GetListSize(_list) - 1; i >= 0; i--)
+			{
+				RemoveElement(_list, 0);
+			}
 
-		free(_list);
+			free(_list);
+
+			entityManager.listListCount--;
+			if (entityManager.listListCount)
+			{
+				entityManager.listList[i] = entityManager.listList[entityManager.listListCount];
+				void** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
+				if (!temp)
+				{
+					return;
+				}
+				entityManager.listList = temp;
+			}
+			return;
+		}
 	}
 }
 
