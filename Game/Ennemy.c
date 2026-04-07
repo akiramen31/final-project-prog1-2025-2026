@@ -680,10 +680,7 @@ void ResetEnnemy(void)
 	RemoveList(listEnnemy);
 	Free(aStarMap);
 	RemoveList(listeWait);
-	if (texture)
-	{
-		sfTexture_destroy(texture);
-	}
+	sfTexture_destroy(texture);
 	DestroyVisualEntity(sprite);
 }
 
