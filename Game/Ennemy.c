@@ -76,7 +76,7 @@ void UpdateEnnemy(float _dt, int _index)
 	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
-		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
@@ -141,6 +141,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 void CalculMoveEnnemy(float _dt, int _index)
 {
 	sfBool test = 0;
+	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
 	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
@@ -161,12 +162,12 @@ void CalculMoveEnnemy(float _dt, int _index)
 		if (sfKeyboard_isKeyPressed(sfKeyO))
 		{
 			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jetpack.trust;
-			test = 1;
+			test2 = 1;
 		}
 		if (sfKeyboard_isKeyPressed(sfKeyL))
 		{
 			ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.jetpack.trust;
-			test = 1;
+			test2 = 1;
 		}
 		if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.jetpack.trust / 3)
 		{
@@ -176,7 +177,38 @@ void CalculMoveEnnemy(float _dt, int _index)
 		{
 			ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
 		}
+		if (!test)
+		{
+			if (ennemy->ennemyEntity.move.x > 0)
+			{
+				ennemy->ennemyEntity.move.x -= ennemy->ennemyEntity.jetpack.trust *_dt;
+			}
+			else if (ennemy->ennemyEntity.move.x < 0)
+			{
+				ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.jetpack.trust * _dt;;
+			}
 
+			if (ennemy->ennemyEntity.move.x > (float)-0.5 && ennemy->ennemyEntity.move.x < (float)0.5)
+			{
+				ennemy->ennemyEntity.move.x = 0;
+			}
+		}
+		if (!test2)
+		{
+			if (ennemy->ennemyEntity.move.y > 0)
+			{
+				ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.jetpack.trust *_dt;
+			}
+			else if (ennemy->ennemyEntity.move.y < 0)
+			{
+				ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.jetpack.trust * _dt;;
+			}
+
+			if (ennemy->ennemyEntity.move.y > (float)-0.5 && ennemy->ennemyEntity.move.y < (float)0.5)
+			{
+				ennemy->ennemyEntity.move.y = 0;
+			}
+		}
 	}
 	else
 	{
@@ -245,8 +277,11 @@ void CalculMoveEnnemy(float _dt, int _index)
 ActionDemander AStar(int _index, sfVector2f _positionCible)
 {
 	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
+	positionCibleCase.y -= 1;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
+	positionDebutCase.y -= 1;
+	//printf("position cible x:%d y:%d position debut x:%d y:%d\n",positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
 	int x = 0;
 	int y = 0;
 	// reset du tableau
@@ -257,13 +292,34 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			aStarMap[y][x] = (Case){ 0 };
 		}
 	}
-
+	for (unsigned y = 0; y < mapData->size.y; y++)
+	{
+		for (unsigned x = 0; x < mapData->size.x; x++)
+		{
+			if (aStarMap[y][x].rangeToDestination)
+			{
+				printf("X");
+			}
+			else
+			{
+				printf("O");
+			}
+			
+		}
+		printf("\n");
+	}
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
 	//création du tableau chainé de sfVecteur2u
 	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
 	Element* element = CreateElement(emplacement);
 	*emplacement = positionDebutCase;
 	InsertElement(listeWait, element, 0);
 
+	/*
 	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
@@ -595,7 +651,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			return actionDemander;
 		}
 		caseGet = caseRecherche;
-	}
+	}*/
 	return (ActionDemander) { 0 };
 }
 

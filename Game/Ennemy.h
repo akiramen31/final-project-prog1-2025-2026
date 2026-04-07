@@ -3,8 +3,9 @@
 
 #include "Common.h"
 #include "Map.h"
+#include "Player.h"
 
-#define TIMER_ASTAR 0.5f
+#define TIMER_ASTAR 5.f
 
 typedef enum Type
 {
