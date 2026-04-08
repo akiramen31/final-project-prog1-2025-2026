@@ -23,6 +23,7 @@ void LoadPlayer(void)
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
+
 }
 
 sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color)
@@ -44,7 +45,7 @@ void UpdatePlayer(float _dt)
 	MoveZonePlayer(_dt);
 	MovePlayer(_dt);
 
-	SetViewCenter(GetPlayerPosition());
+	//MoveCameraSlow(GetPlayerPosition(), _dt);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
@@ -66,14 +67,14 @@ void MovePlayer(float _dt)
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			if (player.velocity.x < 1)
+			if (player.velocity.x <= 1)
 			{
 				player.velocity.x = 1;
 			}
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			if (player.velocity.x > -1)
+			if (player.velocity.x >= -1)
 			{
 				player.velocity.x = -1;
 			}
@@ -149,13 +150,13 @@ void ColisionMapPlayer(float _dt)
 
 	if (reactionPassThrough.y < 0)
 	{
-		if (player.velocity.y >= 0)
+		if (player.velocity.y >= 0 && !(sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN))))
 		{
 			player.isGrounded = sfTrue;
 			timerFaling = 0;
 			player.velocity.y = 0;
 
-			reaction.y += reactionPassThrough.y;
+			sfRectangleShape_move(player.collision, reactionPassThrough);
 		}
 	}
 	else
@@ -215,14 +216,13 @@ void MoveZonePlayer(float _dt)
 	if (zone != NULL)
 	{
 		int num = GetMoveCount();
+		sfFloatRect hitbox = GetPlayerRect();
 
-		InfoZone* zone = GetInfoZoneMove(sfRectangleShape_getGlobalBounds(player.collision));
 		for (int i = 0; i < num; i++)
 		{
 			int speed = 0;
 			sscanf_s(zone[i].name, "%d", &speed);
 
-			sfFloatRect hitbox = sfRectangleShape_getGlobalBounds(player.collision);
 
 			if (sfFloatRect_intersects(&hitbox, &zone[i].hitbox, NULL))
 			{

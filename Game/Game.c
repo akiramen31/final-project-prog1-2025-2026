@@ -11,9 +11,9 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadPlayer();
-	
+
 	LoadMap(background);
-	
+
 
 	//LoadHUD();
 	LoadGUI();
@@ -34,7 +34,7 @@ void PollEventGame(sfEvent* _event)
 		if (DEV_ENNEMY)
 		{
 			sfVector2f viewPosition = GetViewPosition();
-			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x+viewPosition.x, _event->mouseButton.y+viewPosition.y });
+			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
 			printf("color is a = %d \n", tempColor.a);
 		}
 	default:
@@ -85,6 +85,7 @@ void UpdateGame(float _dt)
 	UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
+	UpdateCamera(_dt);
 }
 
 void UpdateCollider(void)

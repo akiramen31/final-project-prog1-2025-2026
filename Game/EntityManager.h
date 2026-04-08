@@ -111,6 +111,8 @@ void Cleanup(void);
 void SetViewCenter(sfVector2f _centre);
 void SetViewZoom(float _zoom);
 sfVector2f GetViewPosition(void);
+sfVector2f GetViewSize(void);
+void MoveView(sfVector2f _move);
 
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);

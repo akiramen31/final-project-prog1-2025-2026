@@ -3,6 +3,11 @@
 
 #include "Common.h"
 
-void MoveCameraSlow(sfVector2f _pos, float _dt);
+#define CAMERA_SPEED 10
+
+void UpdateCamera(float _dt);
+
+void MoveViewSlow(sfVector2f _pos, float _dt);
+void SetDefaultView(float _dt);
 
 #endif

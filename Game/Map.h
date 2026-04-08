@@ -63,6 +63,7 @@ MapState GetActualyMap(void);
 
 MapData* GetMapData(void);
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
+int GetTrigerCount(void);
 InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
 int GetMoveCount(void);
 

@@ -61,6 +61,7 @@ void SetMap(MapState _map)
 		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
 	SetPositionEntity(map.data.point, map.data.pointCount);
+	map.state = _map;
 }
 
 MapState GetActualyMap(void)
@@ -226,10 +227,15 @@ InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox)
 	{
 		if (sfFloatRect_intersects(&_hitbox, &map.data.triger[i].hitbox, NULL))
 		{
-			return &map.data.triger[i];
+			return map.data.triger;
 		}
 	}
 	return NULL;
+}
+
+int GetTrigerCount(void)
+{
+	return map.data.trigerCount;
 }
 
 InfoZone* GetInfoZoneMove(sfFloatRect _hitbox)
