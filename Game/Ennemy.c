@@ -8,7 +8,7 @@ float CalculResultAStar(Case _case);
 int MinResultCase(void);
 void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
-
+sfBool TestColision(unsigned x, unsigned y);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -320,11 +320,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		caseGet = (sfVector2u){ caseRecup->x,caseRecup->y };
 		//Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 
 					Case caseTemp = { 0 };
@@ -349,14 +349,14 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 
 		//Bas Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -379,11 +379,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -406,11 +406,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -434,14 +434,14 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -464,11 +464,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -492,11 +492,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0) // si espace libre
+			if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
 					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
@@ -519,7 +519,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 
 		}
@@ -702,6 +702,26 @@ void RetirerListWait(int _index)
 	Element* elementTemp = GetElement(listeWait, _index)->value;
 	free(elementTemp);
 	RemoveElement(listeWait, _index);
+}
+
+sfBool TestColision(unsigned x, unsigned y)
+{
+	if (sfImage_getPixel(mapData->image, x, y).a == 255)
+	{
+		return sfTrue;
+		//if (sfImage_getPixel(mapData->image, x, y).g == 255 && sfImage_getPixel(mapData->image, x, y).b == 0 && sfImage_getPixel(mapData->image, x, y).r == 0)
+		//{
+		//	return sfFalse;
+		//}
+		//else
+		//{
+		//	return sfTrue;
+		//}
+	}
+	else
+	{
+		return sfFalse;
+	}
 }
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
