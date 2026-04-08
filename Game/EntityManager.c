@@ -530,31 +530,42 @@ List* CreateList(void)
 
 void RemoveList(List* _list)
 {
-	for (int i = 0; i < entityManager.listListCount; i++)
+	if (_list)
 	{
-		if (_list == entityManager.listList[i])
+		Element* elementActualy = _list->first;
+		if (elementActualy)
 		{
-			for (int i = GetListSize(_list) - 1; i >= 0; i--)
+			Element* elementNext = elementActualy->next;
+
+			while (elementNext)
 			{
-				RemoveElement(_list, 0);
+				free(elementActualy);
+				elementActualy = elementNext;
+				elementNext = elementNext->next;
 			}
+		}
+		free(_list);
 
-			free(_list);
-
-			entityManager.listListCount--;
-			if (entityManager.listListCount)
+		for (int i = 0; i < entityManager.listListCount; i++)
+		{
+			if (_list == entityManager.listList[i])
 			{
-				entityManager.listList[i] = entityManager.listList[entityManager.listListCount];
-				void** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
-				if (!temp)
+				entityManager.listListCount--;
+				if (entityManager.listListCount)
 				{
-					return;
+					entityManager.listList[i] = entityManager.listList[entityManager.listListCount];
+					void** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
+					if (!temp)
+					{
+						return;
+					}
+					entityManager.listList = temp;
 				}
-				entityManager.listList = temp;
+				return;
 			}
-			return;
 		}
 	}
+	
 }
 
 unsigned GetListSize(List* _list)
@@ -752,7 +763,6 @@ sfVector2f GetViewPosition(void)
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();
-
 	entityManager.gameState = _gameState;
 
 	switch (entityManager.gameState)
@@ -769,7 +779,6 @@ void SetGameState(GameState _gameState)
 	default:
 		break;
 	}
-	PollEvent();
 }
 
 sfRenderWindow* GetRenderWindow(void)
