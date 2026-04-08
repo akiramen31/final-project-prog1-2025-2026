@@ -1,8 +1,9 @@
 #include "Cjson.h"
 
 #define FREE(_x) if (_x) free(_x)
-#define REALLOC(_exitBlock, _block, _size) _exitBlock = realloc(_block, _size); if (!temp) return
-#define ALLOC(_exitBlock, _count, _size) _exitBlock = calloc(_count, _size); if(!_exitBlock) return
+#define REALLOC(_output, _block, _size) _output = realloc(_block, _size); SECURITY(_output)
+#define ALLOC(_output, _count, _size) _output = calloc(_count, _size); SECURITY(_output)
+#define SECURITY(temp) if (!temp) return
 
 void GetObjectByNameCjson(char* _name, void* _saveValue, TypeValue _typeValue);
 Bool StringCompareCjson(char* _string1, char* _string2);
@@ -20,31 +21,28 @@ char* buffer;
 
 Cjson* LoadCjson(char* _file)
 {
+	//open file
+	int file = open(_file, 0, 0644);
+	SECURITY(file) NULL;
+
+	//gotoEndFile for get size
+	size_t fileSize = lseek(file, 0, 2);
+
+	//gotoStartFile
+	lseek(file, 0, 0);
+
+	//Alloc buffer
+	ALLOC(buffer, fileSize + 1, sizeof(char)) NULL;
+
+	//put file in buffer
+	read(file, buffer, fileSize);
+	//close file
+	close(file);
+
 	index = 0;
-	FILE* file = fopen(_file, "r");
+	char* FullBuffer = buffer;
+	Cjson* ALLOC(cjson, 1, sizeof(Cjson)) NULL;
 
-	if (!file)
-	{
-		return NULL;
-	}
-	Cjson* cjson = calloc(1, sizeof(Cjson));
-	if (!cjson)
-	{
-		return NULL;
-	}
-
-	fseek(file, 0, SEEK_END);
-	long fileSize = ftell(file);
-	fseek(file, 0, 0);
-
-	buffer = calloc((size_t)(fileSize + 1), sizeof(char));
-	if (!buffer)
-	{
-		fclose(file);
-		return NULL;
-	}
-
-	fread(buffer, sizeof(char), (size_t)(fileSize + 1), file);
 	GetObjectByNameCjson("compressionlevel", &cjson->compressionlevel, INT);
 	GetObjectByNameCjson("height", &cjson->height, INT);
 	GetObjectByNameCjson("infinite", &cjson->infinite, BOOL);
@@ -65,7 +63,8 @@ Cjson* LoadCjson(char* _file)
 	GetObjectByNameCjson("version", &cjson->version, CHAR_PTR);
 	GetObjectByNameCjson("width", &cjson->width, INT);
 
-	free(buffer);
+	free(FullBuffer);
+	buffer = NULL;
 	return cjson;
 }
 
@@ -95,13 +94,25 @@ void GetObjectByNameCjson(char* _name, void* _saveValue, TypeValue _typeValue)
 						*(Bool*)_saveValue = FALSE;
 					}
 				}
-				else if (_typeValue == CHAR)
-				{
-					sscanf_s(&buffer[i + j], "%*[^0-9-]%d", (int*)_saveValue);
-				}
 				else if (_typeValue == INT)
 				{
-					sscanf_s(&buffer[i + j], "%*[^0-9-]%d", (int*)_saveValue);
+					char* bufferTemp = &buffer[i + j + 2];
+					int value = 0;
+					int signe = 1;
+
+					if (*bufferTemp == '-')
+					{
+						signe = -1;
+						bufferTemp++;
+					}
+
+					while (*bufferTemp >= '0' && *bufferTemp <= '9')
+					{
+						value = value * 10 + *bufferTemp - '0';
+						bufferTemp++;
+						i++;
+					}
+					*(int*)_saveValue = value * signe;
 				}
 				else if (_typeValue == FLOAT)
 				{
@@ -157,26 +168,29 @@ void GetObjectByNameCjson(char* _name, void* _saveValue, TypeValue _typeValue)
 							return;
 						}
 					}
-
-					int indexChar = 0;
+					char* bufferTemp = &buffer[i + j + 3];
 					for (int row = 0; row < nbRow; row++)
 					{
 						for (int column = 0; column < nbColumn; column++)
 						{
-							if (buffer[i + j + indexChar - 1] == ',' || buffer[i + j + indexChar - 1] == '[')
+							while (*bufferTemp == ' ' || *bufferTemp == '\t' || *bufferTemp == '\n')
 							{
-								if (buffer[i + j + indexChar] == '\n')
-								{
-									indexChar += 6;
-								}
-								sscanf_s(&buffer[i + j + indexChar], "%d", &value[row][column]);
+								bufferTemp++;
+								i++;
+							}
 
-							}
-							else
+							while (*bufferTemp >= '0' && *bufferTemp <= '9')
 							{
-								column--;
+								value[row][column] = value[row][column] * 10 + *bufferTemp - '0';
+								bufferTemp++;
+								i++;
 							}
-							indexChar++;
+
+							if (*bufferTemp == ',')
+							{
+								bufferTemp++;
+								i++;
+							}
 						}
 					}
 				}

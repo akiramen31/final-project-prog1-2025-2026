@@ -25,9 +25,9 @@ void LoadEntityManager(void)
 	entityManager.callocListCount = 0;
 	entityManager.asset = calloc(1, sizeof(AssetEntity));
 	entityManager.sound = calloc(1, sizeof(SoundEntity));
-	entityManager.visual = NULL;
 	entityManager.listList = calloc(1, sizeof(List*));
 	entityManager.callocList = calloc(1, sizeof(void*));
+	entityManager.visual = NULL;
 	LoadGeneralAsset();
 }
 
@@ -346,6 +346,7 @@ void DestroyVisualEntity(void* _entity)
 			if (elementNext->type == SPRITE)
 			{
 				sfSprite_destroy(elementNext->ptr);
+				elementNext->ptr = NULL;
 			}
 			else if (elementNext->type == TEXT)
 			{
