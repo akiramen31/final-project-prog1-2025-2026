@@ -281,7 +281,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
 	positionDebutCase.y -= 1;
-	printf("position cible x:%d y:%d position debut x:%d y:%d\n", positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
+	//printf("position cible x:%d y:%d position debut x:%d y:%d\n", positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
 	int x = 0;
 	int y = 0;
 	// reset du tableau
@@ -577,12 +577,12 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 
 	if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
 	{
-		printf("Cible Ateinte");
+		//printf("Cible Ateinte");
 		flag = sfFalse;
 	}
 	else
 	{
-		printf("Cible Non Ateinte");
+		//printf("Cible Non Ateinte");
 		flag = sfTrue;
 	}
 	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
@@ -658,7 +658,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
-			printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
+			//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
 			return actionDemander;
 		}
 		caseGet = caseRecherche;
@@ -708,15 +708,16 @@ sfBool TestColision(unsigned x, unsigned y)
 {
 	if (sfImage_getPixel(mapData->image, x, y).a == 255)
 	{
-		return sfTrue;
-		//if (sfImage_getPixel(mapData->image, x, y).g == 255 && sfImage_getPixel(mapData->image, x, y).b == 0 && sfImage_getPixel(mapData->image, x, y).r == 0)
-		//{
-		//	return sfFalse;
-		//}
-		//else
-		//{
-		//	return sfTrue;
-		//}
+		sfColor color = sfImage_getPixel(mapData->image, x, y);
+		if ( color.r == 0 && color.g == 255 && color.b == 0
+			|| color.r == 255 && color.g == 0 && color.b == 255)
+		{
+			return sfFalse;
+		}
+		else
+		{
+			return sfTrue;
+		}
 	}
 	else
 	{
