@@ -709,7 +709,7 @@ sfBool TestColision(unsigned x, unsigned y)
 	if (sfImage_getPixel(mapData->image, x, y).a == 255)
 	{
 		sfColor color = sfImage_getPixel(mapData->image, x, y);
-		if ( color.r == 0 && color.g == 255 && color.b == 0
+		if (color.r == 0 && color.g == 255 && color.b == 0
 			|| color.r == 255 && color.g == 0 && color.b == 255)
 		{
 			return sfFalse;
@@ -771,12 +771,14 @@ void ResetEnnemy(void)
 		DestroyVisualEntity(ennemy->sprite);
 	}
 	RemoveList(listEnnemy);
-	
-	for (int i = 0; i < mapData->size.y; i++)
+	if (mapData)
 	{
-		Free(aStarMap[i]);
+		for (int i = 0; i < mapData->size.y; i++)
+		{
+			Free(aStarMap[i]);
+		}
+		Free(aStarMap);
 	}
-	Free(aStarMap);
 
 	RemoveList(listeWait);
 	sfTexture_destroy(texture);
