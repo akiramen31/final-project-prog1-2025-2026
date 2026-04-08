@@ -771,7 +771,13 @@ void ResetEnnemy(void)
 		DestroyVisualEntity(ennemy->sprite);
 	}
 	RemoveList(listEnnemy);
+	
+	for (int i = 0; i < mapData->size.y; i++)
+	{
+		Free(aStarMap[i]);
+	}
 	Free(aStarMap);
+
 	RemoveList(listeWait);
 	sfTexture_destroy(texture);
 	DestroyVisualEntity(sprite);
