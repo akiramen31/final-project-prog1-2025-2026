@@ -16,6 +16,7 @@ void LoadMap(sfSprite* _background)
 {
 	map = (Map){ 0 };
 	map.background = _background;
+	map.state = -1;
 	SetMap(LEVEL1);
 }
 
@@ -25,6 +26,11 @@ void SetMap(MapState _map)
 	if (map.data.image)
 	{
 		sfImage_destroy(map.data.image);
+	}
+
+	if (DEV_ENNEMY && map.state != -1)
+	{
+		ResetEnnemy();
 	}
 	switch (_map)
 	{
@@ -51,6 +57,7 @@ void SetMap(MapState _map)
 	default:
 		break;
 	}
+	map.state = _map;
 	if (cjson)
 	{
 		LoadMapData(cjson);
@@ -59,7 +66,6 @@ void SetMap(MapState _map)
 
 	if (DEV_ENNEMY)
 	{
-		ResetEnnemy();
 		LoadEnnemy();
 		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
