@@ -3,7 +3,8 @@
 
 #include "Common.h"
 
-#define CAMERA_SPEED 10
+#define CAMERA_SPEED 8
+#define CAMERA_LOCK 1
 
 void UpdateCamera(float _dt);
 

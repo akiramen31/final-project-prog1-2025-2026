@@ -11,6 +11,8 @@ void MoveZonePlayer(float _dt);
 
 sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color);
 
+sfVector2f pos;
+
 void LoadPlayer(void)
 {
 	{ player = (Player){ 0 }; }
@@ -23,7 +25,8 @@ void LoadPlayer(void)
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
-
+	pos.x = 100;
+	pos.y = 32;
 }
 
 sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color)
@@ -42,11 +45,30 @@ sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor
 
 void UpdatePlayer(float _dt)
 {
-	MoveZonePlayer(_dt);
-	MovePlayer(_dt);
+	//MoveZonePlayer(_dt);
+	//MovePlayer(_dt);
 
 	//MoveCameraSlow(GetPlayerPosition(), _dt);
-
+	{
+		int val = 10;
+		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		{
+			pos.x += val;
+		}
+		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		{
+			pos.x -= val;
+		}
+		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+		{
+			pos.y += val;
+		}
+		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+		{
+			pos.y -= val;
+		}
+		sfRectangleShape_setPosition(player.collision, pos);
+	}
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 
@@ -126,7 +148,7 @@ void MovePlayer(float _dt)
 	{
 		timerDash = 0;
 
-		player.velocity.y /= 1.5f;
+		player.velocity.y /= 1.2f;
 
 		if (player.direction)
 		{
