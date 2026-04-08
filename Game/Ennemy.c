@@ -700,7 +700,7 @@ void AjoutListWait(sfVector2u _caseAjout)
 void RetirerListWait(int _index)
 {
 	Element* elementTemp = GetElement(listeWait, _index)->value;
-	free(elementTemp);
+	Free(elementTemp);
 	RemoveElement(listeWait, _index);
 }
 
