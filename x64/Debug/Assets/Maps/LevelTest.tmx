@@ -5,7 +5,7 @@
  </editorsettings>
  <tileset firstgid="1" source="Tilesets/FullTiles.tsx"/>
  <imagelayer id="7" name="Calque d'Images 1">
-  <image source="MapTesteRéduite.png"/>
+  <image source="LevelTest.png" width="640" height="288"/>
  </imagelayer>
  <layer id="1" name="LevelIn" width="40" height="18">
   <data encoding="csv">

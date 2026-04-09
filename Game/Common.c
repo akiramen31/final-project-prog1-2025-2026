@@ -87,3 +87,20 @@ void** CreateGrid(sfVector2u _size, size_t _typeSize)
 	return grid;
 }
 
+sfBool StringCompare(char* _string1, char* _string2)
+{
+	int i = 0;
+	while (_string1[i] == _string2[i])
+	{
+		i++;
+		if (_string1[i] == 0 && _string2[i] == 0)
+		{
+			return TRUE;
+		}
+		else if (_string1[i] == 0 || _string2[i] == 0)
+		{
+			return FALSE;
+		}
+	}
+	return FALSE;
+}

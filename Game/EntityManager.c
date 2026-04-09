@@ -760,6 +760,18 @@ sfVector2f GetViewPosition(void)
 	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2 };
 }
 
+sfVector2f GetViewSize(void)
+{
+	sfVector2f size = sfView_getSize(entityManager.view);
+
+	return size;
+}
+
+void MoveView(sfVector2f _move)
+{
+	sfView_move(entityManager.view, _move);
+}
+
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();

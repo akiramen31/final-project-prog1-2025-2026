@@ -4,14 +4,14 @@
 #include "Common.h"
 #include "Aim.h"
 
-#define PLAYER_WALK_SPEED_MAX 400
+#define PLAYER_WALK_SPEED_MAX 290
 
 #define PLAYER_FALL_SPEED_MAX 1
-#define PLAYER_JUMP_POWER 1.9f
+#define PLAYER_JUMP_POWER 2.2f
 
 #define PLAYER_DASH_POWER 2.0f
 #define PLAYER_DASH_COOLDOWN 0.5f
-#define PLAYER_DASH_DURATION 0.1f
+#define PLAYER_DASH_DURATION 0.08f
 
 #define PLAYER_JUMP_FORGIVE 0.1f
 
