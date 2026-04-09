@@ -17,6 +17,6 @@ void LoadBullet(void);
 void UpdateBullet(float _dt);
 
 unsigned int GetBulletCount(void);
-void AddBullet(void);
+void AddBullet(sfVector2f _pos);
 
 #endif // !BULLET_H

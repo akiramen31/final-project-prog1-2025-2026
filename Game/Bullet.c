@@ -46,15 +46,15 @@ unsigned GetBulletCount(void)
 	return bulletCount;
 }
 
-void AddBullet(void)
+void AddBullet(sfVector2f _pos)
 {
 	Bullet newBullet = { 0 };
 
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
 	SetSpriteOriginMiddel(newBullet.sprite);
-	sfSprite_setPosition(newBullet.sprite, GetPlayerPosition());
-	sfVector2f playerPos = GetPlayerPosition();
-	sfVector2f aimPosition = GetAimPosition();
+	sfSprite_setPosition(newBullet.sprite, _pos);
+	sfVector2f playerPos = _pos;
+	sfVector2f aimPosition = _pos;
 
 	float dx = aimPosition.x - playerPos.x;
 	float dy = aimPosition.y - playerPos.y;

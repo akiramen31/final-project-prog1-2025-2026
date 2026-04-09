@@ -37,8 +37,8 @@ void PollEventGame(sfEvent* _event)
 			sfVector2f viewPosition = GetViewPosition();
 			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
 			printf("color is a = %d \n", tempColor.a);
-            sfVector2u pos = RealPositionConvertTableauPosition((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
-            printf("position x:%d y:%d\n", pos.x, pos.y);
+			sfVector2u pos = RealPositionConvertTableauPosition((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
+			printf("position x:%d y:%d\n", pos.x, pos.y);
 		}
 	default:
 		break;
@@ -89,7 +89,7 @@ void UpdateGame(float _dt)
 	UpdateCollider();
 	UpdateAim(_dt);
 	UpdateBullet(_dt);
-	UpdateMissile(_dt);
+	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
 }
 

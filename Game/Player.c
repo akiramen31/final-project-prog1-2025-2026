@@ -343,7 +343,7 @@ void UpdateFireControl(void)
 		if (player.canShoot && GetBulletCount() < BULLET_MAX)
 		{
 
-			AddBullet();
+			AddBullet(GetPlayerPosition());
 			player.canShoot = sfFalse;
 		}
 	}
@@ -351,10 +351,12 @@ void UpdateFireControl(void)
 	{
 		if (player.canShoot)
 		{
-			AddMissile();
+			AddMissile(GetPlayerPosition());
 			player.canShoot = sfFalse;
 		}
 	}
+}
+
 sfFloatRect GetPlayerRect(void)
 {
 	return sfRectangleShape_getGlobalBounds(player.collision);
