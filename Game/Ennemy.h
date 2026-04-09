@@ -6,6 +6,8 @@
 #include "Player.h"
 
 #define TIMER_ASTAR 0.1f
+#define JUMP_FORCE 5
+#define MAX_ENRGIE 300
 
 typedef enum Type
 {
