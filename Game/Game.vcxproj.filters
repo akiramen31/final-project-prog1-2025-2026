@@ -24,6 +24,9 @@
     <ClCompile Include="GameOver.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="GameState.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="Backup.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -36,7 +39,7 @@
     <ClCompile Include="Game.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.c">
+    <ClCompile Include="HUD.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">
@@ -45,20 +48,13 @@
     <ClCompile Include="Common.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Map.c">
+    <ClCompile Include="Box.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Cjson.c">
+    <ClCompile Include="Bomb.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Aim.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Missile.c">
-    <ClCompile Include="Camera.c">
+    <ClCompile Include="PowerUp.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,7 +68,13 @@
     <ClInclude Include="GameOver.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
     <ClInclude Include="Backup.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
@@ -81,32 +83,19 @@
     <ClInclude Include="Game.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
+    <ClInclude Include="HUD.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Ennemy.h">
+    <ClInclude Include="Box.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
+    <ClInclude Include="Bomb.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Cjson.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Aim.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Missile.h">
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="PowerUp.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
