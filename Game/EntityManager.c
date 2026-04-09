@@ -1,4 +1,7 @@
 #include "EntityManager.h"
+#include "Menu.h"
+#include "Game.h"
+#include "GameOver.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -22,9 +25,9 @@ void LoadEntityManager(void)
 	entityManager.callocListCount = 0;
 	entityManager.asset = calloc(1, sizeof(AssetEntity));
 	entityManager.sound = calloc(1, sizeof(SoundEntity));
-	entityManager.visual = NULL;
 	entityManager.listList = calloc(1, sizeof(List*));
 	entityManager.callocList = calloc(1, sizeof(void*));
+	entityManager.visual = NULL;
 	LoadGeneralAsset();
 }
 
@@ -77,6 +80,7 @@ void Draw(void)
 
 void CleanupGlobal(void)
 {
+	CleanupLocal();
 	for (int i = 0; i < entityManager.assetCount; i++)
 	{
 		char* buffer = GetFormatAsset(entityManager.asset[i].file);
@@ -95,45 +99,8 @@ void CleanupGlobal(void)
 		}
 	}
 	free(entityManager.asset);
-
-	while (entityManager.visual)
-	{
-		if (entityManager.visual->type == SPRITE)
-		{
-			sfSprite_destroy(entityManager.visual->ptr);
-		}
-		else if (entityManager.visual->type == TEXT)
-		{
-			sfText_destroy(entityManager.visual->ptr);
-		}
-		VisualEntity* temp = entityManager.visual;
-		entityManager.visual = (VisualEntity*)entityManager.visual->next;
-		free(temp);
-	}
-
-	for (int i = 0; i < entityManager.soundCount; i++)
-	{
-		if (entityManager.sound[i].type == SOUND)
-		{
-			sfSound_destroy(entityManager.sound[i].ptr);
-		}
-		else if (entityManager.sound[i].type == MUSIC)
-		{
-			sfMusic_destroy(entityManager.sound[i].ptr);
-		}
-	}
 	free(entityManager.sound);
-
-	for (int i = 0; i < entityManager.listListCount; i++)
-	{
-		RemoveList(entityManager.listList[i]);
-	}
 	free(entityManager.listList);
-
-	for (int i = 0; i < entityManager.callocListCount; i++)
-	{
-		free(entityManager.callocList[i]);
-	}
 	free(entityManager.callocList);
 
 	sfRenderWindow_destroy(entityManager.renderWindow);
@@ -193,6 +160,7 @@ void CleanupLocal(void)
 	for (int i = 0; i < entityManager.listListCount; i++)
 	{
 		RemoveList(entityManager.listList[i]);
+		entityManager.listList[i] = NULL;
 	}
 	entityManager.listListCount = 0;
 
@@ -312,7 +280,7 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	newElement->ptr = sfText_create();
 	sfText_setFont(newElement->ptr, _font);
 	sfText_setPosition(newElement->ptr, _position);
-	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale* GAME_SCALE);
+	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale * GAME_SCALE);
 
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
@@ -378,6 +346,7 @@ void DestroyVisualEntity(void* _entity)
 			if (elementNext->type == SPRITE)
 			{
 				sfSprite_destroy(elementNext->ptr);
+				elementNext->ptr = NULL;
 			}
 			else if (elementNext->type == TEXT)
 			{
@@ -544,85 +513,98 @@ void Free(void* _ptr)
 
 List* CreateList(void)
 {
-	entityManager.listListCount++;
-	List** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
-	if (!temp)
+	List** temp = realloc(entityManager.listList, (size_t)(entityManager.listListCount + 1) * sizeof(List*));
+	if (temp)
 	{
-		return NULL;
+		entityManager.listList = temp;
+		entityManager.listList[entityManager.listListCount] = calloc(1, sizeof(List));
+		if (entityManager.listList[entityManager.listListCount])
+		{
+			entityManager.listList[entityManager.listListCount]->first = NULL;
+		}
+		entityManager.listListCount++;
+		return entityManager.listList[entityManager.listListCount - 1];
 	}
-	entityManager.listList = temp;
-	entityManager.listList[entityManager.listListCount - 1] = calloc(1, sizeof(List));
-	if (entityManager.listList[entityManager.listListCount - 1] == NULL)
-	{
-		return NULL;
-	}
-	entityManager.listList[entityManager.listListCount - 1]->first = NULL;
-
-	return entityManager.listList[entityManager.listListCount - 1];
+	return NULL;
 }
 
 void RemoveList(List* _list)
 {
-	for (int i = GetListSize(_list) - 1; i >= 0; i--)
+	if (_list)
 	{
-		RemoveElement(_list, 0);
-	}
+		Element* elementActualy = _list->first;
+		if (elementActualy)
+		{
+			Element* elementNext = elementActualy->next;
 
-	free(_list);
-	_list = NULL;
+			while (elementNext)
+			{
+				free(elementActualy);
+				elementActualy = elementNext;
+				elementNext = elementNext->next;
+			}
+		}
+		free(_list);
+
+		for (int i = 0; i < entityManager.listListCount; i++)
+		{
+			if (_list == entityManager.listList[i])
+			{
+				entityManager.listListCount--;
+				if (entityManager.listListCount)
+				{
+					entityManager.listList[i] = entityManager.listList[entityManager.listListCount];
+					void** temp = realloc(entityManager.listList, entityManager.listListCount * sizeof(SoundEntity));
+					if (!temp)
+					{
+						return;
+					}
+					entityManager.listList = temp;
+				}
+				return;
+			}
+		}
+	}
+	
 }
 
 unsigned GetListSize(List* _list)
 {
-	if (!_list)
-	{
-		return 0;
-	}
-	Element* actualElement = _list->first;
 	unsigned listSize = 0;
-
-	while (actualElement != NULL)
+	if (_list)
 	{
-		listSize++;
-		actualElement = actualElement->next;
+		Element* actualElement = _list->first;
+		while (actualElement)
+		{
+			listSize++;
+			actualElement = actualElement->next;
+		}
 	}
-
 	return listSize;
 }
 
 Element* CreateElement(void* _value)
 {
 	Element* newElement = calloc(1, sizeof(Element));
-	if (newElement == NULL)
+	if (newElement)
 	{
-		exit(EXIT_FAILURE);
+		*newElement = (Element){ _value, NULL };
 	}
-
-	newElement->value = _value;
-	newElement->next = NULL;
-
 	return newElement;
 }
 
 Element* GetElement(List* _list, unsigned _index)
 {
-	Element* actualElement = _list->first;
-	for (unsigned i = 0; i < _index && actualElement; i++)
+	if (_list)
 	{
-		actualElement = actualElement->next;
+		Element* actualElement = _list->first;
+		for (unsigned i = 0; i < _index && actualElement; i++)
+		{
+			actualElement = actualElement->next;
+		}
+		return actualElement;
 	}
-	return actualElement;
-
-	/*Element* actualElement = _list->first;
-	unsigned actualIndex = 0;
-
-	while (actualIndex < _index && actualElement != NULL)
-	{
-		actualIndex++;
-		actualElement = actualElement->next;
-	}
-
-	return actualElement;*/
+	return NULL;
 }
 
 void InsertElement(List* _list, Element* _element, unsigned _index)
@@ -635,7 +617,7 @@ void InsertElement(List* _list, Element* _element, unsigned _index)
 	else
 	{
 		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
+		if (previousElement)
 		{
 			_element->next = previousElement->next;
 			previousElement->next = _element;
@@ -645,29 +627,7 @@ void InsertElement(List* _list, Element* _element, unsigned _index)
 
 void RemoveElement(List* _list, unsigned _index)
 {
-	Element* elementToRemove = _list->first;
 	if (_index == 0)
-	{
-		_list->first = elementToRemove->next;
-	}
-	else
-	{
-		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
-		{
-			Element* elementToRemove = previousElement->next;
-			if (elementToRemove != NULL)
-			{
-				previousElement->next = elementToRemove->next;
-			}
-		}
-	}
-	if (elementToRemove)
-	{
-		free(elementToRemove);
-	}
-
-	/*if (_index == 0)
 	{
 		Element* elementToRemove = _list->first;
 		_list->first = elementToRemove->next;
@@ -676,16 +636,13 @@ void RemoveElement(List* _list, unsigned _index)
 	else
 	{
 		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement != NULL)
+		if (previousElement && previousElement->next)
 		{
 			Element* elementToRemove = previousElement->next;
-			if (elementToRemove != NULL)
-			{
-				previousElement->next = elementToRemove->next;
-				free(elementToRemove);
-			}
+			previousElement->next = elementToRemove->next;
+			free(elementToRemove);
 		}
-	}*/
+	}
 }
 
 
@@ -732,9 +689,9 @@ void Update(void)
 {
 	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock));
 
-	if (dt > 0.025f)
+	if (dt > 0.05f)
 	{
-		dt = 0.025f;
+		dt = 0.05f;
 	}
 
 	switch (entityManager.gameState)
@@ -792,7 +749,7 @@ void SetViewZoom(float _zoom)
 {
 	sfVector2u windowSize = sfRenderWindow_getSize(entityManager.renderWindow);
 	entityManager.viewZoom = _zoom;
-	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x * entityManager.viewZoom, windowSize.y * entityManager.viewZoom});
+	sfView_setSize(entityManager.view, (sfVector2f) { windowSize.x* entityManager.viewZoom, windowSize.y* entityManager.viewZoom });
 }
 
 sfVector2f GetViewPosition(void)
@@ -803,10 +760,21 @@ sfVector2f GetViewPosition(void)
 	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2 };
 }
 
+sfVector2f GetViewSize(void)
+{
+	sfVector2f size = sfView_getSize(entityManager.view);
+
+	return size;
+}
+
+void MoveView(sfVector2f _move)
+{
+	sfView_move(entityManager.view, _move);
+}
+
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();
-
 	entityManager.gameState = _gameState;
 
 	switch (entityManager.gameState)

@@ -11,6 +11,9 @@
 
 #include "Backup.h"
 #include "EntityManager.h"
+#include "Camera.h"
+
+#include "Map.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
@@ -19,7 +22,7 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfFalse
+#define DEV_ENNEMY sfTrue
 #define DEV_MAP_COLIDER sfFalse
 
 #define TILE_SIZE 16.f
@@ -70,5 +73,5 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(sfVector2u _size, size_t _typeSize);
-
+sfBool StringCompare(char* _string1, char* _string2);
 #endif // !COMMON_H

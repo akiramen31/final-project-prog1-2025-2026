@@ -4,23 +4,18 @@ void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
 
 Game game;
-sfSprite* background;
 float timer;
 
 void LoadGame(void)
 {
 	game = (Game){ 0 };
+	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	LoadPlayer();
 
-	background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
-	LoadMap();
+	LoadMap(background);
 
-	if (DEV_ENNEMY)
-	{
-		LoadEnnemy();
-		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
-	}
-
-	LoadHUD();
+	//LoadHUD();
+	//LoadGUI();
 	LoadPlayer();
 	LoadBullet();
 	LoadMissile();
@@ -36,6 +31,15 @@ void PollEventGame(sfEvent* _event)
 		break;
 	case sfEvtMouseMoved:
 		break;
+	case sfEvtMouseButtonPressed:
+		if (DEV_ENNEMY)
+		{
+			sfVector2f viewPosition = GetViewPosition();
+			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
+			printf("color is a = %d \n", tempColor.a);
+            sfVector2u pos = RealPositionConvertTableauPosition((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
+            printf("position x:%d y:%d\n", pos.x, pos.y);
+		}
 	default:
 		break;
 	}
@@ -51,6 +55,26 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	default:
 		break;
 	}
+	if (DEV_MODE)
+	{
+		switch (_keyEvent->code)
+		{
+		case sfKeyF1:
+			SetMap(LEVEL1);
+			break;
+		case sfKeyF2:
+			SetMap(LEVEL2);
+			break;
+		case sfKeyF3:
+			SetMap(LEVEL3);
+			break;
+		case sfKeyF4:
+			SetMap(LEVEL_TEST);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void UpdateGame(float _dt)
@@ -60,11 +84,13 @@ void UpdateGame(float _dt)
 	{
 		UpdateEnnemy(_dt, 0);
 	}
-	UpdateHUD(_dt);
+	//UpdateHUD(_dt);
+	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
 	UpdateBullet(_dt);
 	UpdateMissile(_dt);
+	UpdateCamera(_dt);
 }
 
 void UpdateCollider(void)

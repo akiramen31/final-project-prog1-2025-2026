@@ -48,6 +48,10 @@ typedef struct Layers
     char* draworder;
     Object* objects;
 	int objectsCount;
+
+	Bool locked;
+	int offsetx;
+	int offsety;
 }Layers;
 
 typedef struct Colors

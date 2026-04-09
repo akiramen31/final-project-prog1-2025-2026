@@ -1,70 +1,113 @@
 #include "Map.h"
+#include "Ennemy.h"
 
 Map map;
 
-sfRectangleShape** colision;
+int rectShapeCount;
+sfRectangleShape** rectShape;
 
-MapData LoadMapData(Cjson* _cjson);
-sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount);
-Bool StringCompareMap(char* _string1, char* _string2);
+void LoadMapData(Cjson* _cjson);
+void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount);
+void SetPositionEntity(InfoZone* _point, int _count);
+void CreateRectVisible(InfoZone* _infoZone, int _count);
 
-void LoadMap(void)
+void LoadMap(sfSprite* _background)
 {
+	map = (Map){ 0 };
+	map.background = _background;
+	map.state = -1;
 	SetMap(LEVEL1);
 }
 
 void SetMap(MapState _map)
 {
 	Cjson* cjson = NULL;
+	if (map.data.image)
+	{
+		sfImage_destroy(map.data.image);
+	}
+
+	if (DEV_ENNEMY && map.state != -1)
+	{
+		ResetEnnemy();
+	}
 	switch (_map)
 	{
 	case LEVEL1:
 		cjson = LoadCjson("Assets/Maps/Level1.json");
-		if (cjson)
-		{
-			map.data = LoadMapData(cjson);
-			CleanupCjson(cjson);
-		}
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
+		break;
+	case LEVEL2:
+		cjson = LoadCjson("Assets/Maps/Level2.json");
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
+		break;
+	case LEVEL3:
+		cjson = LoadCjson("Assets/Maps/Level3.json");
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
+		break;
+	case LEVEL_TEST:
+		cjson = LoadCjson("Assets/Maps/LevelTest.json");
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
+		map.data.image = sfImage_createFromFile("Assets/Maps/MapTesteReduite.png");
 		break;
 	default:
 		break;
 	}
+	map.state = _map;
+	if (cjson)
+	{
+		LoadMapData(cjson);
+		CleanupCjson(cjson);
+	}
+
+	if (DEV_ENNEMY)
+	{
+		LoadEnnemy();
+		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
+	}
+	SetPositionEntity(map.data.point, map.data.pointCount);
+	map.state = _map;
 }
 
-MapData LoadMapData(Cjson* _cjson)
+MapState GetActualyMap(void)
 {
-	MapData data = { 0 };
+	return map.state;
+}
 
-	data.size = (sfVector2u){ _cjson->width, _cjson->height };
+void LoadMapData(Cjson* _cjson)
+{
+	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
 
 	for (int i = 0; i < _cjson->layersCount; i++)
 	{
-		if (StringCompareMap(_cjson->layers[i].name, "Collider"))
+		if (StringCompare(_cjson->layers[i].name, "Collider"))
 		{
-			data.colider = LoadRectMap(&data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
-			if (data.size.x < _cjson->layers[i].width)
-			{
-				data.size.x = _cjson->layers[i].width;
-			}
-			if (data.size.y < _cjson->layers[i].height)
-			{
-				data.size.y = _cjson->layers[i].height;
-			}
+			LoadObjectMap(&map.data.colider, &map.data.coliderCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Triger"))
+		else if (StringCompare(_cjson->layers[i].name, "Trigger"))
 		{
-			data.triger = LoadRectMap(&data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.triger, &map.data.trigerCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompareMap(_cjson->layers[i].name, "Move"))
+		else if (StringCompare(_cjson->layers[i].name, "Move"))
 		{
-			data.move = LoadRectMap(&data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.move, &map.data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
+		else if (StringCompare(_cjson->layers[i].name, "Point"))
+		{
+			LoadObjectMap(&map.data.point, &map.data.pointCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
+		else if (StringCompare(_cjson->layers[i].name, "PassThrough"))
+		{
+			LoadObjectMap(&map.data.passThrough, &map.data.PassThroughCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 	}
-	data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 
-	data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
+	CreateRectVisible(map.data.move, map.data.moveCount);
 
-	return data;
+	map.data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
 }
 
 
@@ -73,67 +116,60 @@ MapData* GetMapData(void)
 	return &map.data;
 }
 
-sfFloatRect* LoadRectMap(int* _floatRectCount, Object* _object, int _objectCount)
+void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount)
 {
-	sfFloatRect* hitbox = calloc(_objectCount, sizeof(sfFloatRect));
-	if (!hitbox)
+	*_infoZoneCountExit = 0;
+	*_infoZoneExit = NULL;
+	InfoZone* temp = calloc(_objectCount, sizeof(InfoZone));
+	if (temp)
 	{
-		return NULL;
-	}
-
-	if (DEV_MODE)
-	{
-		colision = calloc(_objectCount, sizeof(sfRectangleShape*));
-		if (!colision)
+		for (int i = 0; i < _objectCount; i++)
 		{
-			return NULL;
+			temp[i].hitbox = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
+			temp[i].name = _object[i].name;
+			temp[i].type = _object[i].type;
 		}
+		*_infoZoneCountExit = _objectCount;
+		*_infoZoneExit = temp;
 	}
-
-
-	*_floatRectCount = _objectCount;
-	for (int i = 0; i < _objectCount; i++)
-	{
-		hitbox[i] = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
-
-		if (DEV_MODE)
-		{
-			colision[i] = sfRectangleShape_create();
-			sfRectangleShape_setFillColor(colision[i], sfColor_fromRGBA(0, 0, 255, 125));
-			sfRectangleShape_setSize(colision[i], (sfVector2f) { hitbox[i].width, hitbox[i].height });
-			sfRectangleShape_setPosition(colision[i], (sfVector2f) { hitbox[i].left, hitbox[i].top });
-			sfRectangleShape_setOutlineColor(colision[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
-			sfRectangleShape_setOutlineThickness(colision[i], -1.f);
-		}
-	}
-	return hitbox;
 }
 
-Bool StringCompareMap(char* _string1, char* _string2)
+void SetPositionEntity(InfoZone* _point, int _count)
 {
-	int i = 0;
-	while (_string1[i] == _string2[i])
+	for (int i = 0; i < _count; i++)
 	{
-		i++;
-		if (_string1[i] == 0 && _string2[i] == 0)
+		if (StringCompare(_point[i].type, "Enemy"))
 		{
-			return TRUE;
+			if (DEV_ENNEMY)
+			{
+				SetPositionEnnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, 0);
+			}
 		}
-	}
-	return FALSE;
-}
-
-void LoadMapTexture(MapData* _data)
-{
-	sfImage* image = sfImage_create((unsigned)_data->caseSize.x * _data->size.x, (unsigned)_data->caseSize.y * _data->size.y);
-	for (int row = 0; row < _data->size.y; row++)
-	{
-		for (int column = 0; column < _data->size.y; column++)
+		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
-			sfImage_copyImage(image, NULL, column * (unsigned int)_data->caseSize.x, row * (unsigned int)_data->caseSize.y, (sfIntRect) { 0 }, sfTrue);
+			SetPlayerPosition((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
 	}
 }
+
+void CreateRectVisible(InfoZone* _infoZone, int _count)
+{
+	rectShapeCount = _count;
+	rectShape = calloc(_count, sizeof(sfRectangleShape*));
+	if (rectShape)
+	{
+		for (int i = 0; i < _count; i++)
+		{
+			rectShape[i] = sfRectangleShape_create();
+			sfRectangleShape_setFillColor(rectShape[i], sfColor_fromRGBA(0, 0, 255, 125));
+			sfRectangleShape_setSize(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.width, _infoZone[i].hitbox.height });
+			sfRectangleShape_setPosition(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.left, _infoZone[i].hitbox.top });
+			sfRectangleShape_setOutlineColor(rectShape[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
+			sfRectangleShape_setOutlineThickness(rectShape[i], -1.f);
+		}
+	}
+}
+
 
 sfVector2f Colision(sfFloatRect _hitbox)
 {
@@ -143,11 +179,11 @@ sfVector2f Colision(sfFloatRect _hitbox)
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
-		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i], &reaction))
+		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i].hitbox, &reaction))
 		{
 			if (reaction.width < reaction.height)
 			{
-				if (_hitbox.left + vectorMove.x - map.data.colider[i].left < (map.data.colider[i].width - _hitbox.width) / 2.0f)
+				if (_hitbox.left + vectorMove.x - map.data.colider[i].hitbox.left < (map.data.colider[i].hitbox.width - _hitbox.width) / 2.0f)
 				{
 					vectorMove.x -= reaction.width;
 				}
@@ -158,7 +194,7 @@ sfVector2f Colision(sfFloatRect _hitbox)
 			}
 			else
 			{
-				if (_hitbox.top + vectorMove.y - map.data.colider[i].top < (map.data.colider[i].height - _hitbox.height) / 2.0f)
+				if (_hitbox.top + vectorMove.y - map.data.colider[i].hitbox.top < (map.data.colider[i].hitbox.height - _hitbox.height) / 2.0f)
 				{
 					vectorMove.y -= reaction.height;
 				}
@@ -167,18 +203,73 @@ sfVector2f Colision(sfFloatRect _hitbox)
 					vectorMove.y += reaction.height;
 				}
 			}
+			_hitbox.left += vectorMove.x;
+			_hitbox.top += vectorMove.y;
 		}
 	}
 	return vectorMove;
+}
+
+sfVector2f CollisionPassThrough(sfFloatRect _hitbox)
+{
+	sfVector2f vectorMove = { 0 };
+	sfFloatRect reaction = { 0 };
+
+	for (int i = 0; i < map.data.PassThroughCount; i++)
+	{
+		if (sfFloatRect_intersects(&_hitbox, &map.data.passThrough[i].hitbox, &reaction))
+		{
+			if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - map.data.passThrough[i].hitbox.top < (map.data.passThrough[i].hitbox.height - _hitbox.height / 2))
+			{
+				vectorMove.y -= reaction.height;
+			}
+			_hitbox.top += vectorMove.y;
+		}
+	}
+	return vectorMove;
+}
+
+InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox)
+{
+	for (int i = 0; i < map.data.trigerCount; i++)
+	{
+		if (sfFloatRect_intersects(&_hitbox, &map.data.triger[i].hitbox, NULL))
+		{
+			return map.data.triger;
+		}
+	}
+	return NULL;
+}
+
+int GetTrigerCount(void)
+{
+	return map.data.trigerCount;
+}
+
+InfoZone* GetInfoZoneMove(sfFloatRect _hitbox)
+{
+	for (int i = 0; i < map.data.moveCount; i++)
+	{
+		if (sfFloatRect_intersects(&_hitbox, &map.data.move[i].hitbox, NULL))
+		{
+			return map.data.move;
+		}
+	}
+	return NULL;
+}
+
+int GetMoveCount(void)
+{
+	return map.data.moveCount;
 }
 
 void DrawDev(sfRenderWindow* _renderWindow)
 {
 	if (DEV_MAP_COLIDER)
 	{
-		for (int i = 0; i < map.data.coliderCount; i++)
+		for (int i = 0; i < rectShapeCount; i++)
 		{
-			sfRenderWindow_drawRectangleShape(_renderWindow, colision[i], NULL);
+			sfRenderWindow_drawRectangleShape(_renderWindow, rectShape[i], NULL);
 		}
 
 	}

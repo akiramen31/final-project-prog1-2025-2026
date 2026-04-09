@@ -1,7 +1,8 @@
 {
     "activeFile": "Level2.tmx",
-    "automapping.whileDrawing": false,
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -34,44 +35,44 @@
         "Level1.tmx": {
             "expandedObjectLayers": [
                 32,
-                31
+                31,
+                38
             ],
-            "scale": 1,
-            "selectedLayer": 3,
+            "scale": 0.75,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 738,
-                "y": 381
+                "x": 2145.333333333333,
+                "y": 510.6666666666666
             }
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
-                5,
-                6
+                7
             ],
             "scale": 0.25,
-            "selectedLayer": 3,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 3460,
-                "y": 972
+                "x": 2568,
+                "y": 1240
             }
         },
         "LevelTest.tmx": {
             "expandedObjectLayers": [
-                8
+                9
             ],
-            "scale": 1,
-            "selectedLayer": 3,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 306,
-                "y": 171
+                "x": 320,
+                "y": 143
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 2,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 211.5,
-                "y": 219
+                "x": 248,
+                "y": 296.25
             }
         },
         "Tilesets/FullTiles.tsx": {
@@ -99,6 +100,10 @@
             "scaleInDock": 1,
             "scaleInEditor": 8
         },
+        "Tilesets/SpritesList.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
+        },
         "Tilesets/TileForAutomaping.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
@@ -112,7 +117,7 @@
     "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.tileHeight": 145,
     "map.tileWidth": 320,
     "openFiles": [
@@ -120,11 +125,13 @@
         "Level2.tmx",
         "Tilesets/AutoTileRules.tmx",
         "Tilesets/FullTiles.tsx",
-        "LevelTest.tmx"
+        "LevelTest.tmx",
+        "Tilesets/SpritesList.tsx"
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
         "Level1.tmx",
+        "Tilesets/SpritesList.tsx",
         "LevelTest.tmx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
@@ -134,8 +141,7 @@
         "Tilesets/Pipes.tsx",
         "Tilesets/Metal_plate.tsx",
         "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_girder.tsx",
-        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx"
+        "Tilesets/Metal_girder.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

@@ -2,24 +2,40 @@
 #define MAP_H
 
 #include "Common.h"
-#include "Map.h"
 #include "Cjson.h"
 
 typedef enum MapState
 {
 	LEVEL1,
 	LEVEL2,
-	LEVEL3
+	LEVEL3,
+	LEVEL_TEST
 }MapState;
+
+typedef struct InfoZone
+{
+	sfFloatRect hitbox;
+	char* type;
+	char* name;
+}InfoZone;
 
 typedef struct MapData
 {
-	sfFloatRect* colider;
+	InfoZone* colider;
 	int coliderCount;
-	sfFloatRect* triger;
+
+	InfoZone* passThrough;
+	int PassThroughCount;
+
+	InfoZone* triger;
 	int trigerCount;
-	sfFloatRect* move;
+
+	InfoZone* move;
 	int moveCount;
+
+	InfoZone* point;
+	int pointCount;
+
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;
@@ -36,15 +52,22 @@ typedef struct HitboxMap
 typedef struct Map
 {
 	MapData data;
+	sfSprite* background;
 	MapState state;
 }Map;
 
-void LoadMap(void);
+void LoadMap(sfSprite* _background);
 void SetMap(MapState _map);
+MapState GetActualyMap(void);
 
 MapData* GetMapData(void);
+InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
+int GetTrigerCount(void);
+InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
+int GetMoveCount(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);
-void DrawDev(sfRenderWindow* _renderWindow);
+sfVector2f CollisionPassThrough(sfFloatRect _hitbox);
 
+void DrawDev(sfRenderWindow* _renderWindow);
 #endif // !MAP_H
