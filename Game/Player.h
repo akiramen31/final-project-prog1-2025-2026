@@ -2,7 +2,11 @@
 #define PLAYER_H
 
 #include "Common.h"
+#include "Bullet.h"
+#include "Missile.h"
 #include "Aim.h"
+
+#define FIRE_RATE 5
 
 #define PLAYER_WALK_SPEED_MAX 400
 
@@ -18,16 +22,36 @@
 #define PLAYER_COLLISION_WIDTH 14
 #define PLAYER_COLLISION_HEIGHT 32
 
+typedef enum WeaponType
+{
+	RAILGUN,
+	OTHER
+}WeaponType;
+
+typedef struct Weapon
+{
+
+	sfSprite* sprite;
+	WeaponType type;
+	sfBool isRight;
+
+}Weapon;
+
 typedef struct Player
 {
 	enum State state;
 	sfSprite* sprite;
 	sfRectangleShape* collision;
 
+	Weapon weapon;
+
 	float life;
 	float energyMax;
 	float energy;
 	sfVector2f velocity;
+
+	sfBool canShoot;
+	float cooldown;
 
 	// if True direction is right
 	sfBool direction;

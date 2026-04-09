@@ -22,6 +22,8 @@ void LoadGame(void)
 
 	LoadHUD();
 	LoadPlayer();
+	LoadBullet();
+	LoadMissile();
 	LoadAim();
 }
 
@@ -61,6 +63,8 @@ void UpdateGame(float _dt)
 	UpdateHUD(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
+	UpdateBullet(_dt);
+	UpdateMissile(_dt);
 }
 
 void UpdateCollider(void)

@@ -8,7 +8,7 @@ void LoadAim(void)
 {
 	aim = (Aim){ 0 };
 
-	sfTexture* texture = GetAsset("Assets/Sprites/Aim.png");
+	sfTexture* texture = GetAsset("Assets/Sprites/crosshair.png");
 	aim.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 41);
 	SetSpriteOriginMiddel(aim.sprite);
 
@@ -21,7 +21,7 @@ void LoadAim(void)
 void UpdateAim(float _dt)
 {
 	MoveAim(_dt);
-	CheckCollisionAimScreen();
+	// CheckCollisionAimScreen();
 }
 
 sfVector2f GetAimPosition(void)
