@@ -55,8 +55,6 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	{
 		MoveView(newPos);
 	}
-
-	//SetViewCenter(_pos);
 }
 
 void UpdatePositionCameraLevel1(float _dt)
