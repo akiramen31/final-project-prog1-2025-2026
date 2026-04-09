@@ -16,7 +16,6 @@ void LoadGame(void)
 
 	//LoadHUD();
 	//LoadGUI();
-	LoadPlayer();
 	LoadBullet();
 	LoadMissile();
 	LoadAim();

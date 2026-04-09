@@ -3,6 +3,7 @@
 void MoveAim(float _dt);
 void CheckCollisionAimScreen();
 Aim aim;
+float cameraCoef = 0.2f;
 
 void LoadAim(void)
 {
@@ -31,9 +32,10 @@ sfVector2f GetAimPosition(void)
 
 void MoveAim(float _dt)
 {
+	// Get cameraCoef 
 	sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
 	sfVector2f viewPos = GetViewPosition();
-	sfVector2f mousePos = { (float)mousePosI.x + viewPos.x, (float)mousePosI.y + viewPos.y };
+	sfVector2f mousePos = { (float)mousePosI.x * cameraCoef + viewPos.x, (float)mousePosI.y * cameraCoef + viewPos.y };
 	sfSprite_setPosition(aim.sprite, mousePos);
 }
 

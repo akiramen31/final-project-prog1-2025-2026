@@ -16,6 +16,14 @@ void UpdateBullet(float _dt)
 {
 	for (int i = bulletCount - 1; i >= 0; i--)
 	{
+		bulletList[i].lifetime -= _dt;
+		if (bulletList[i].lifetime <= 0)
+		{
+			DestroyVisualEntity(bulletList[i].sprite);
+			bulletList[i].isAlive = sfFalse;
+			SortBulletList(i);
+			bulletCount--;
+		}
 		if (bulletList[i].isAlive)
 		{
 			// Bullet move
@@ -48,15 +56,15 @@ unsigned GetBulletCount(void)
 	return bulletCount;
 }
 
-void AddBullet(sfVector2f _pos)
+void AddBullet(sfVector2f _posPlayer, sfVector2f _posAim)
 {
 	Bullet newBullet = { 0 };
 
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
 	SetSpriteOriginMiddel(newBullet.sprite);
-	sfSprite_setPosition(newBullet.sprite, _pos);
-	sfVector2f playerPos = _pos;
-	sfVector2f aimPosition = _pos;
+	sfSprite_setPosition(newBullet.sprite, _posPlayer);
+	sfVector2f playerPos = _posPlayer;
+	sfVector2f aimPosition = _posAim;
 
 	float dx = aimPosition.x - playerPos.x;
 	float dy = aimPosition.y - playerPos.y;
@@ -76,6 +84,7 @@ void AddBullet(sfVector2f _pos)
 	float angle = atan2f(dy, dx) * (180.0f / (float)M_PI);
 	sfSprite_setRotation(newBullet.sprite, angle);
 	newBullet.isAlive = sfTrue;
+	newBullet.lifetime = BULLET_LIFETIME;
 	bulletList[bulletCount] = newBullet;
 	bulletCount++;
 }
