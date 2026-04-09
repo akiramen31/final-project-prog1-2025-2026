@@ -41,7 +41,7 @@ void AddMissile(sfVector2f _pos)
 	}
 }
 
-void UpdateMissile(sfVector2f _pos,float _dt)
+void UpdateMissile(sfVector2f _posAim,float _dt)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -52,7 +52,7 @@ void UpdateMissile(sfVector2f _pos,float _dt)
 			{
 				CheckCollisionMissilesList();
 				CheckCollisionMissileScreen(i);
-				MoveMissile(i, _pos, _dt);
+				MoveMissile(i, _posAim, _dt);
 			}
 			else
 			{

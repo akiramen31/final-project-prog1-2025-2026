@@ -6,7 +6,7 @@
 #include "Missile.h"
 #include "Aim.h"
 
-#define FIRE_RATE 5
+#define FIRE_RATE_RAILGUN 1.1f
 
 #define PLAYER_WALK_SPEED_MAX 290
 
@@ -21,6 +21,8 @@
 
 #define PLAYER_COLLISION_WIDTH 14
 #define PLAYER_COLLISION_HEIGHT 32
+
+#define WEAPON_ANGLE_OFFSET 11.5f
 
 typedef enum WeaponType
 {
