@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 
-#define TIMER_ASTAR 1.f
+#define TIMER_ASTAR 0.1f
 #define JUMP_FORCE 5
 #define MAX_ENRGIE 300
 
