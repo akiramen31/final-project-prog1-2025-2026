@@ -29,13 +29,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -117,7 +117,6 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>csfml-audio.lib;csfml-graphics.lib;csfml-network.lib;csfml-system.lib;csfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,46 +134,38 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>csfml-audio.lib;csfml-graphics.lib;csfml-network.lib;csfml-system.lib;csfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Aim.c" />
     <ClCompile Include="Backup.c" />
-    <ClCompile Include="Bullet.c" />
-    <ClCompile Include="Camera.c" />
-    <ClCompile Include="Cjson.c" />
+    <ClCompile Include="Bomb.c" />
+    <ClCompile Include="Box.c" />
     <ClCompile Include="Common.c" />
     <ClCompile Include="Ennemy.c" />
     <ClCompile Include="EntityManager.c" />
     <ClCompile Include="Game.c" />
     <ClCompile Include="GameOver.c" />
-    <ClCompile Include="GUI.c" />
+    <ClCompile Include="GameState.c" />
     <ClCompile Include="HUD.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Menu.c" />
-    <ClCompile Include="Missile.c" />
     <ClCompile Include="Player.c" />
-    <ClCompile Include="Map.c" />
+    <ClCompile Include="PowerUp.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Aim.h" />
     <ClInclude Include="Backup.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cjson.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="GUI.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Missile.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Weapon.h" />
+    <ClInclude Include="PowerUp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
