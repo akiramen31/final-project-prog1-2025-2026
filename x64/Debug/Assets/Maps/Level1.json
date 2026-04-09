@@ -87,7 +87,7 @@
          "name":"LevelIn",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":260,
          "x":0,
          "y":0
@@ -1464,9 +1464,44 @@
          "visible":false,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":39,
+         "name":"Trigger",
+         "objects":[
+                {
+                 "height":320,
+                 "id":317,
+                 "name":"1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Camera",
+                 "visible":true,
+                 "width":624,
+                 "x":1744,
+                 "y":288
+                }, 
+                {
+                 "height":416,
+                 "id":318,
+                 "name":"2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Camera",
+                 "visible":true,
+                 "width":816,
+                 "x":2960,
+                 "y":352
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":39,
- "nextobjectid":317,
+ "nextlayerid":40,
+ "nextobjectid":319,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
