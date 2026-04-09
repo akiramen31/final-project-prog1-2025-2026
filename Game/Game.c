@@ -14,9 +14,8 @@ void LoadGame(void)
 
 	LoadMap(background);
 
-
 	//LoadHUD();
-	LoadGUI();
+	//LoadGUI();
 	LoadPlayer();
 	LoadAim();
 }
@@ -36,6 +35,8 @@ void PollEventGame(sfEvent* _event)
 			sfVector2f viewPosition = GetViewPosition();
 			sfColor tempColor = GetColorsPixelMap((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
 			printf("color is a = %d \n", tempColor.a);
+            sfVector2u pos = RealPositionConvertTableauPosition((sfVector2f) { _event->mouseButton.x + viewPosition.x, _event->mouseButton.y + viewPosition.y });
+            printf("position x:%d y:%d\n", pos.x, pos.y);
 		}
 	default:
 		break;
@@ -82,7 +83,7 @@ void UpdateGame(float _dt)
 		UpdateEnnemy(_dt, 0);
 	}
 	//UpdateHUD(_dt);
-	UpdateGUI(_dt);
+	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
 	UpdateCamera(_dt);

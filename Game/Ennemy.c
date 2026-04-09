@@ -8,7 +8,7 @@ float CalculResultAStar(Case _case);
 int MinResultCase(void);
 void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
-
+sfBool TestColision(unsigned x, unsigned y);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -32,14 +32,14 @@ void LoadEnnemy(void)
 	{
 		ennemyEntity[0].type = 0;
 		ennemyEntity[0].ennemydata.life = 20.f;
-		ennemyEntity[0].ennemydata.energyMax = 500.f;
-		ennemyEntity[0].ennemydata.energy = 500.f;
-		ennemyEntity[0].ennemydata.energyRegen = 50.f;
+		ennemyEntity[0].ennemydata.energyMax = 100.f;
+		ennemyEntity[0].ennemydata.energy = 100.f;
+		ennemyEntity[0].ennemydata.energyRegen = 15.f;
 		ennemyEntity[0].ennemydata.speedMax = 3.f;
 		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[0].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[0].isJetpack = sfFalse;
+		ennemyEntity[0].isJetpack = sfTrue;
 		ennemyEntity[0].jetpack.consomation = 50.f;
 		ennemyEntity[0].jetpack.life = 5.f;
 		ennemyEntity[0].jetpack.trust = 10.f;
@@ -47,9 +47,9 @@ void LoadEnnemy(void)
 
 		ennemyEntity[1].type = 1;
 		ennemyEntity[1].ennemydata.life = 10.f;
-		ennemyEntity[1].ennemydata.energyMax = 800.f;
-		ennemyEntity[1].ennemydata.energy = 800.f;
-		ennemyEntity[1].ennemydata.energyRegen = 50.f;
+		ennemyEntity[1].ennemydata.energyMax = 200.f;
+		ennemyEntity[1].ennemydata.energy = 200.f;
+		ennemyEntity[1].ennemydata.energyRegen = 15.f;
 		ennemyEntity[1].ennemydata.speedMax = 3.f;
 		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[1].ennemydata.jumForce = 700.f;
@@ -62,20 +62,21 @@ void LoadEnnemy(void)
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
 	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
-	aStarMap = CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
-	sprite = CreateSprite(GetAsset("Assets/Maps/Level1Reduite.png"), (sfVector2f) { 0 }, 1.f, 0.f);
+	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
+	texture = sfTexture_createFromImage(mapData->image, NULL);
+	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
+	sfSprite_setTexture(sprite, texture, sfTrue);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
-
 }
 
 void UpdateEnnemy(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.timer += _dt;
-	ennemy->ennemyEntity.ennemydata.energyRegen += ennemy->ennemyEntity.ennemydata.energyRegen; //regen de l'energie passive
+	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
-		//ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
@@ -98,9 +99,6 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.move.y = 0;
 	}
 	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
-	sfTexture_destroy(texture);
-	texture = sfTexture_createFromImage(mapData->image, NULL);
-	sfSprite_setTexture(sprite, texture, sfTrue);
 }
 
 void CreateEnnemyRandom(EnnemyEntity* _ennemy)
@@ -143,56 +141,122 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 void CalculMoveEnnemy(float _dt, int _index)
 {
 	sfBool test = 0;
+	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if (sfKeyboard_isKeyPressed(sfKeyRight))
+	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 	{
-		ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyLeft))
-	{
-		ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyUp))
-	{
-		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
-		collisionEnnemy.top += 1;
-		sfVector2f collision = Colision(collisionEnnemy);
-		//printf("collision %f", collision.y);
-		if (collision.y)
+		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
+
+		ennemy->ennemyEntity.acceleration.y -= G * 4;
+		if (sfKeyboard_isKeyPressed(sfKeyM))
 		{
-			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
 		}
-		test = 1;
-	}
-	if (sfKeyboard_isKeyPressed(sfKeyDown))
-	{
-		ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.ennemydata.accelerationMax;
-		test = 1;
-	}
-	if (test == 0)
-	{
-		sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
-		collisionEnnemy.top += 1;
-		sfVector2f collision = Colision(collisionEnnemy);
-		//printf("collision %f", collision.y);
-		if (collision.y)
+		if (sfKeyboard_isKeyPressed(sfKeyK))
+		{
+			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.jetpack.trust;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyO))
+		{
+			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jetpack.trust;
+			test2 = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyL))
+		{
+			ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.jetpack.trust;
+			test2 = 1;
+		}
+		if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.jetpack.trust / 3)
+		{
+			ennemy->ennemyEntity.move.y = ennemy->ennemyEntity.ennemydata.speedMax;
+		}
+		else if (ennemy->ennemyEntity.move.y < -ennemy->ennemyEntity.jetpack.trust / 3)
+		{
+			ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
+		}
+		if (!test)
 		{
 			if (ennemy->ennemyEntity.move.x > 0)
 			{
-				ennemy->ennemyEntity.move.x -= 1;
+				ennemy->ennemyEntity.move.x -= ennemy->ennemyEntity.jetpack.trust * _dt;
 			}
-			if (ennemy->ennemyEntity.move.x < 0)
+			else if (ennemy->ennemyEntity.move.x < 0)
 			{
-				ennemy->ennemyEntity.move.x += 1;
+				ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.jetpack.trust * _dt;;
 			}
-			if (ennemy->ennemyEntity.move.x > -2 && ennemy->ennemyEntity.move.x < 2)
+
+			if (ennemy->ennemyEntity.move.x > (float)-0.5 && ennemy->ennemyEntity.move.x < (float)0.5)
 			{
 				ennemy->ennemyEntity.move.x = 0;
 			}
+		}
+		if (!test2)
+		{
+			if (ennemy->ennemyEntity.move.y > 0)
+			{
+				ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.jetpack.trust * _dt;
+			}
+			else if (ennemy->ennemyEntity.move.y < 0)
+			{
+				ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.jetpack.trust * _dt;;
+			}
 
+			if (ennemy->ennemyEntity.move.y > (float)-0.5 && ennemy->ennemyEntity.move.y < (float)0.5)
+			{
+				ennemy->ennemyEntity.move.y = 0;
+			}
+		}
+	}
+	else
+	{
+		if (sfKeyboard_isKeyPressed(sfKeyM) || ennemy->actiondemander.droite)
+		{
+			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyK) || ennemy->actiondemander.gauche)
+		{
+			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
+			test = 1;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyO) || ennemy->actiondemander.Saut)
+		{
+			sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+			collisionEnnemy.top += 1;
+			sfVector2f collision = Colision(collisionEnnemy);
+			//printf("collision %f", collision.y);
+			if (collision.y)
+			{
+				ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			}
+			test = 1;
+		}
+		if (test == 0)
+		{
+			sfFloatRect collisionEnnemy = GetBounsEnnemy(_index);
+			collisionEnnemy.top += 1;
+			sfVector2f collision = Colision(collisionEnnemy);
+			//printf("collision %f", collision.y);
+			if (collision.y)
+			{
+				if (ennemy->ennemyEntity.move.x > 0)
+				{
+					ennemy->ennemyEntity.move.x -= 1;
+				}
+				else if (ennemy->ennemyEntity.move.x < 0)
+				{
+					ennemy->ennemyEntity.move.x += 1;
+				}
+
+				if (ennemy->ennemyEntity.move.x > (float)-1.5 && ennemy->ennemyEntity.move.x < (float)1.5)
+				{
+					ennemy->ennemyEntity.move.x = 0;
+				}
+
+			}
 		}
 	}
 	ennemy->ennemyEntity.acceleration.y += G * 4;
@@ -207,13 +271,17 @@ void CalculMoveEnnemy(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.move.x = -ennemy->ennemyEntity.ennemydata.speedMax;
 	}
+
 }
 
 ActionDemander AStar(int _index, sfVector2f _positionCible)
 {
 	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
+	positionCibleCase.y -= 1;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
+	positionDebutCase.y -= 1;
+	//printf("position cible x:%d y:%d position debut x:%d y:%d\n", positionCibleCase.x, positionCibleCase.y, positionDebutCase.x, positionDebutCase.y);
 	int x = 0;
 	int y = 0;
 	// reset du tableau
@@ -224,7 +292,6 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			aStarMap[y][x] = (Case){ 0 };
 		}
 	}
-
 	//création du tableau chainé de sfVecteur2u
 	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
 	Element* element = CreateElement(emplacement);
@@ -234,7 +301,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
-	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = NORM_POW2(positionCibleCase, positionDebutCase);
+	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = (float)NORM_POW2(positionCibleCase, positionDebutCase);
 	aStarMap[positionDebutCase.y][positionDebutCase.x].energie = ennemy->ennemyEntity.ennemydata.energy;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
@@ -253,15 +320,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		caseGet = (sfVector2u){ caseRecup->x,caseRecup->y };
 		//Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
+
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = LEFT;
@@ -278,20 +346,21 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				}
 			}
 		}
+
 		//Bas Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = UP_LEFT;
@@ -310,15 +379,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Droite
 		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = DOWN_LEFT;
@@ -337,15 +406,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = RIGHT;
@@ -365,18 +434,18 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 		}
 		else
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = UP_RIGHT;
@@ -395,15 +464,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut Gauche
 		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0)
+			if (!TestColision(caseRecherche.x, caseRecherche.y))
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = DOWN_RIGHT;
@@ -423,15 +492,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Haut
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
-			if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y).a == 0) // si espace libre
+			if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 			{
-				if (sfImage_getPixel(mapData->image, caseRecherche.x, caseRecherche.y - 1).a == 0) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 				{
 					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 					caseTemp.Résultat = CalculResultAStar(caseTemp);
 					caseTemp.direction = RIGHT;
@@ -450,15 +519,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		//Bas
 		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
-		if (sfImage_getPixel(mapData->image, caseGet.x, caseGet.y + 1).a == 255) // si sur sol
+		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 		{
 
 		}
 		else
 		{
 			Case caseTemp = { 0 };
-			caseTemp.rangeToDestination = NORM_POW2(caseRecherche, positionCibleCase);
-			caseTemp.action = NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
+			caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
+			caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
 			caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
 			caseTemp.Résultat = CalculResultAStar(caseTemp);
 			caseTemp.direction = RIGHT;
@@ -479,22 +548,52 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		{
 			flag = sfTrue;
 		}
+		/*
+		for (unsigned y = 0; y < mapData->size.y; y++)
+		{
+			for (unsigned x = 0; x < mapData->size.x; x++)
+			{
+				if (aStarMap[y][x].rangeToDestination)
+				{
+					printf("X");
+				}
+				else
+				{
+					printf("O");
+				}
+
+			}
+			printf("\n");
+		printf("\n");
+		printf("\n");
+		printf("\n");
+		}*/
 	}
+
+	for (int i = GetListSize(listeWait) - 1; i >= 0; i--)
+	{
+		RetirerListWait(i);
+	}
+
 	if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
 	{
+		//printf("Cible Ateinte");
 		flag = sfFalse;
 	}
 	else
 	{
+		//printf("Cible Non Ateinte");
 		flag = sfTrue;
 	}
 	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
-	
+
+
 	while (flag == sfFalse) // rechercher les action demander
 	{
 		switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 		{
 		case NO_DIRECTION:
+			return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 			break;
 		case UP:
 			caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
@@ -523,7 +622,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		default:
 			break;
 		}
-		if (caseRecherche.x == positionCibleCase.x && caseRecherche.y == positionCibleCase.y) // retourne le bloc d'action nésésaire
+		if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
 		{
 			ActionDemander actionDemander = { 0 };
 			switch (aStarMap[caseGet.y][caseGet.x].direction)
@@ -559,6 +658,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
+			//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
 			return actionDemander;
 		}
 		caseGet = caseRecherche;
@@ -594,14 +694,35 @@ void AjoutListWait(sfVector2u _caseAjout)
 	sfVector2u* emplacementTemp = Calloc(1, sizeof(sfVector2u));
 	Element* elementTemp = CreateElement(emplacementTemp);
 	*emplacementTemp = _caseAjout;
-	InsertElement(listeWait, elementTemp, 0);
+	InsertElement(listeWait, elementTemp, GetListSize(listeWait));
 }
 
 void RetirerListWait(int _index)
 {
 	Element* elementTemp = GetElement(listeWait, _index)->value;
-	free(elementTemp);
+	Free(elementTemp);
 	RemoveElement(listeWait, _index);
+}
+
+sfBool TestColision(unsigned x, unsigned y)
+{
+	if (sfImage_getPixel(mapData->image, x, y).a == 255)
+	{
+		sfColor color = sfImage_getPixel(mapData->image, x, y);
+		if (color.r == 0 && color.g == 255 && color.b == 0
+			|| color.r == 255 && color.g == 0 && color.b == 255)
+		{
+			return sfFalse;
+		}
+		else
+		{
+			return sfTrue;
+		}
+	}
+	else
+	{
+		return sfFalse;
+	}
 }
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
@@ -644,9 +765,57 @@ void SetPositionEnnemy(sfVector2f _position, int _index)
 
 void ResetEnnemy(void)
 {
+	for (int i = 0; i < GetListSize(listEnnemy); i++)
+	{
+		Ennemy* ennemy = GetElement(listEnnemy, i)->value;
+		DestroyVisualEntity(ennemy->sprite);
+	}
 	RemoveList(listEnnemy);
-	Free(aStarMap);
+	if (mapData)
+	{
+		for (int i = 0; i < mapData->size.y; i++)
+		{
+			Free(aStarMap[i]);
+		}
+		Free(aStarMap);
+	}
+
 	RemoveList(listeWait);
+	sfTexture_destroy(texture);
+	DestroyVisualEntity(sprite);
+
+}
+
+int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
+{
+	int index = -1;
+	sfBool test = 1;
+	for (unsigned i = 0; i < GetListSize(listEnnemy); i++)
+	{
+		if (index >= 0)
+		{
+			if (NORM_POW2(GetPositionEnnemy(i), _position) < NORM_POW2(GetPositionEnnemy(index), _position))
+			{
+				for (unsigned r = 0; r < GetListSize(_listeIgnore); r++)
+				{
+					int* temp = GetElement(listEnnemy, r)->value;
+					if (index == *temp)
+					{
+						test = 0;
+					}
+				}
+				if (test)
+				{
+					index = i;
+				}
+			}
+		}
+		else
+		{
+			index = 0;
+		}
+	}
+	return index;
 }
 
 void AddEnnemy(sfVector2f _position, enum Type _type)
@@ -700,3 +869,4 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 	}
 	return isTouch;
 }
+

@@ -3,8 +3,9 @@
 
 #include "Common.h"
 #include "Map.h"
+#include "Player.h"
 
-#define TIMER_ASTAR 0.5f
+#define TIMER_ASTAR 0.1f
 
 typedef enum Type
 {
@@ -60,6 +61,7 @@ typedef struct Ennemy
 
 typedef struct Case
 {
+	int jumpForce;
 	float rangeToDestination;
 	float action;
 	float Résultat;
@@ -79,5 +81,6 @@ sfColor GetColorsPixelMap(sfVector2f _position);
 void SetPositionEnnemy(sfVector2f _position, int _index);
 
 void ResetEnnemy(void);
+int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position);
 
 #endif // !GAME_H
