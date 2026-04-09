@@ -3,7 +3,19 @@
 
 #include "Common.h"
 
-void LoadWeapon(void);
-void UpdateWeapon(void);
+typedef enum WeaponType 
+{
+	RAILGUN,
+	OTHER
+}WeaponType;
 
-#endif // !WEAPOn_H
+typedef struct Weapon 
+{
+
+	sfSprite* sprite;
+	WeaponType type;
+	sfVector2f velocity;
+
+}Weapon;
+
+#endif // !WEAPON_H

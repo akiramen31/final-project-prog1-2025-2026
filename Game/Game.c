@@ -17,6 +17,8 @@ void LoadGame(void)
 	//LoadHUD();
 	//LoadGUI();
 	LoadPlayer();
+	LoadBullet();
+	LoadMissile();
 	LoadAim();
 }
 
@@ -86,6 +88,8 @@ void UpdateGame(float _dt)
 	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
+	UpdateBullet(_dt);
+	UpdateMissile(_dt);
 	UpdateCamera(_dt);
 }
 

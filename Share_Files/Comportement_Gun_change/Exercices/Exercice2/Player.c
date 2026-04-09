@@ -176,8 +176,8 @@ void UpdateFireControl(void)
 	{
 		if (player.canShoot && GetBulletCount() < BULLET_MAX)
 		{
-			sfVector2f shotPosition = GetPlayerPosition();
-			AddBullet(shotPosition, GetAimPosition());
+			
+			AddBullet(GetPlayerPosition(), GetAimPosition());
 
 			player.canShoot = sfFalse;
 		}
