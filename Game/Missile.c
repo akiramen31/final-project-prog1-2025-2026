@@ -25,7 +25,7 @@ void LoadMissile(void)
 	}
 }
 
-void AddMissile(void)
+void AddMissile(sfVector2f _pos)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -34,14 +34,14 @@ void AddMissile(void)
 			missileList[i].isAlive = sfTrue;
 			missileList[i].lifetime = 0; 
 			missileList[i].rotation = 0; 
-			sfSprite_setPosition(missileList[i].sprite, GetPlayerPosition());
+			sfSprite_setPosition(missileList[i].sprite, _pos);
 
 			return;
 		}
 	}
 }
 
-void UpdateMissile(float _dt)
+void UpdateMissile(sfVector2f _pos,float _dt)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -52,7 +52,7 @@ void UpdateMissile(float _dt)
 			{
 				CheckCollisionMissilesList();
 				CheckCollisionMissileScreen(i);
-				MoveMissile(i, GetAimPosition(), _dt);
+				MoveMissile(i, _pos, _dt);
 			}
 			else
 			{
