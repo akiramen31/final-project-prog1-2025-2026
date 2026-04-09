@@ -60,10 +60,10 @@ void UpdatePlayer(float _dt)
 {
 	UpdateCooldown(_dt);
 	UpdateFireControl();
+
 	//MoveZonePlayer(_dt);
 	//MovePlayer(_dt);
 
-	//MoveCameraSlow(GetPlayerPosition(), _dt);
 	{
 		int val = 10;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
@@ -175,7 +175,7 @@ void MovePlayer(float _dt)
 		}
 	}
 
-	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_WALK_SPEED_MAX* player.velocity.y* _dt });
+	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 
 	ColisionMapPlayer(_dt);
 }
@@ -224,7 +224,7 @@ void ColisionMapPlayer(float _dt)
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt / 10, 0 });
+			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt / 10, 0 });
 			reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 
 			if (reaction.x != 0)
@@ -236,7 +236,7 @@ void ColisionMapPlayer(float _dt)
 	// GUN CODE PART WILL BE MODIFIED NEXT WEEK
 	else
 	{
-		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_WALK_SPEED_MAX* player.velocity.x* _dt, 0 });
+		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt, 0 });
 		reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 
 		if (reaction.x != 0)
