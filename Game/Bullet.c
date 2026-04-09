@@ -36,8 +36,10 @@ void UpdateBullet(float _dt)
 			}
 		}
 	}
-
-	printf("nombre de tirs : %u\n", bulletCount);
+	if (DEV_WEAPON)
+	{
+		printf("nombre de tirs : %u\n", bulletCount);
+	}
 }
 
 
