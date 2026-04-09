@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "Common.h"
+#include "Player.h"
 
 #define CAMERA_SPEED 8
 #define CAMERA_LOCK 1
