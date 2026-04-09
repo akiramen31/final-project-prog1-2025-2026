@@ -61,29 +61,29 @@ void UpdatePlayer(float _dt)
 	UpdateCooldown(_dt);
 	UpdateFireControl();
 
-	//MoveZonePlayer(_dt);
-	//MovePlayer(_dt);
+	MoveZonePlayer(_dt);
+	MovePlayer(_dt);
 
-	{
-		int val = 10;
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
-		{
-			pos.x += val;
-		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
-		{
-			pos.x -= val;
-		}
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
-		{
-			pos.y += val;
-		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
-		{
-			pos.y -= val;
-		}
-		sfRectangleShape_setPosition(player.collision, pos);
-	}
+	//{
+	//	int val = 10;
+	//	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+	//	{
+	//		pos.x += val;
+	//	}
+	//	else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+	//	{
+	//		pos.x -= val;
+	//	}
+	//	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+	//	{
+	//		pos.y += val;
+	//	}
+	//	else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+	//	{
+	//		pos.y -= val;
+	//	}
+	//	sfRectangleShape_setPosition(player.collision, pos);
+	//}
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 

@@ -1,6 +1,6 @@
 {
     "activeFile": "Level2.tmx",
-    "automapping.whileDrawing": true,
+    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         "."
     ],

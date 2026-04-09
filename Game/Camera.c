@@ -39,9 +39,6 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f newPos = (sfVector2f){ VECTOR(tempPos, _pos) };
 
-	printf("%f %f", _pos.x, _pos.y);
-	printf("	%f %f\n", newPos.x, newPos.y);
-
 	newPos.x *= _dt;
 	newPos.y *= _dt;
 
@@ -71,7 +68,23 @@ void UpdatePositionCameraLevel1(float _dt)
 		{
 			switch (lastCamPositonName)
 			{
+				//for wide room
 			case 1:
+				cameraZoom = 0.3f;
+				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
+				}
+				else if (zone[val].hitbox.left + zone[val].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 3;
+				}
+				else
+				{
+					pos.x = hitbox.left + hitbox.width / 2;
+				}
+				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
+				break;
 			case 2:
 				cameraZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
@@ -111,12 +124,6 @@ void UpdatePositionCameraLevel1(float _dt)
 		{
 			int num = GetTrigerCount();
 			sfFloatRect area = { 0 };
-
-			for (int i = 0; i < num; i++)
-			{
-				printf("%f ", zone[i].hitbox.height);
-			}
-
 
 			for (int i = 0; i < num; i++)
 			{
@@ -264,18 +271,12 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 			}
 			MoveViewSlow(pos, _dt);
- 			SetViewZoom(cameraZoom);
+			SetViewZoom(cameraZoom);
 		}
 		else
 		{
 			int num = GetTrigerCount();
 			sfFloatRect area = { 0 };
-
-			for (int i = 0; i < num; i++)
-			{
-				printf("%f ", zone[i].hitbox.height);
-			}
-
 
 			for (int i = 0; i < num; i++)
 			{
