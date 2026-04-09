@@ -312,7 +312,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	}
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
-	aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = 0;
+	aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
 
 	// préparation des variable nécéssaire
 	sfBool flag = sfFalse;
@@ -393,6 +393,40 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						}
 					}
 				}
+				
+			}
+			else if (ennemy->ennemyEntity.isJetpack)
+			{
+				/*
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = LEFT;
+						caseTemp.jumpForce = -1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+				*/
 			}
 
 			//Bas Droite
@@ -442,7 +476,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 
 				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					if (!TestColision(caseGet.x + 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					if (!TestColision(caseGet.x + 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
 						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 						{
@@ -475,7 +509,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			{
 				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					if (!TestColision(caseGet.x + 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					if (!TestColision(caseGet.x + 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
 						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 						{
@@ -613,7 +647,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			{
 				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					if (!TestColision(caseGet.x - 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					if (!TestColision(caseGet.x - 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
 						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 						{
@@ -647,7 +681,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			{
 				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					if (!TestColision(caseGet.x - 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					if (!TestColision(caseGet.x - 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
 						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 						{
