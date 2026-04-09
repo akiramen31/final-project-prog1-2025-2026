@@ -12,4 +12,5 @@ void UpdateCamera(float _dt);
 void MoveViewSlow(sfVector2f _pos, float _dt);
 void SetDefaultView(float _dt);
 
+float GetCameraZoom(void);
 #endif

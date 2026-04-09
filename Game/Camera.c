@@ -2,6 +2,7 @@
 
 int lastCamPositonName;
 int val;
+float cameraZoom;
 
 void UpdatePositionCameraLevel1(float _dt);
 void UpdatePositionCameraLevel2(float _dt);
@@ -38,9 +39,6 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f newPos = (sfVector2f){ VECTOR(tempPos, _pos) };
 
-	printf("%f %f", _pos.x, _pos.y);
-	printf("	%f %f\n", newPos.x, newPos.y);
-
 	newPos.x *= _dt;
 	newPos.y *= _dt;
 
@@ -59,7 +57,93 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 void UpdatePositionCameraLevel1(float _dt)
 {
-	SetDefaultView(_dt);
+	sfFloatRect hitbox = GetPlayerRect();
+	InfoZone* zone = GetInfoZoneTriger(hitbox);
+
+	if (zone != NULL)
+	{
+		sfVector2f pos = { 0 };
+
+		if (sfFloatRect_intersects(&hitbox, &zone[val].hitbox, NULL) && lastCamPositonName != 0)
+		{
+			switch (lastCamPositonName)
+			{
+				//for wide room
+			case 1:
+				cameraZoom = 0.3f;
+				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
+				}
+				else if (zone[val].hitbox.left + zone[val].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 3;
+				}
+				else
+				{
+					pos.x = hitbox.left + hitbox.width / 2;
+				}
+				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
+				break;
+			case 2:
+				cameraZoom = 0.3f;
+				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
+				}
+				else if (zone[val].hitbox.left + zone[val].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				{
+					pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 3;
+				}
+				else
+				{
+					pos.x = hitbox.left + hitbox.width / 2;
+				}
+
+				if (zone[val].hitbox.top + zone[val].hitbox.height - zone[val].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
+				{
+					pos.y = zone[val].hitbox.top + zone[val].hitbox.height - zone[val].hitbox.height / 3;
+				}
+				else if (zone[val].hitbox.top + zone[val].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
+				{
+					pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 3;
+				}
+				else
+				{
+					pos.y = hitbox.top + hitbox.height / 2;
+				}
+				break;
+			default:
+				pos = GetPlayerPosition();
+				break;
+			}
+			MoveViewSlow(pos, _dt);
+			SetViewZoom(cameraZoom);
+		}
+		else
+		{
+			int num = GetTrigerCount();
+			sfFloatRect area = { 0 };
+
+			for (int i = 0; i < num; i++)
+			{
+				if (sfFloatRect_intersects(&hitbox, &zone[i].hitbox, &area))
+				{
+					if (StringCompare(zone[i].type, "Camera"))
+					{
+						int camName = 0;
+						sscanf_s(zone[i].name, "%d", &camName);
+						ChangeLastPos(camName, i);
+						return;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		SetDefaultView(_dt);
+	}
 }
 
 void UpdatePositionCameraLevel2(float _dt)
@@ -88,7 +172,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 16:
 			case 19:
 			case 26:
-				SetViewZoom(0.2f);
+				cameraZoom = 0.2f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -100,7 +184,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 22:
 			case 23:
 			case 25:
-				SetViewZoom(0.3f);
+				cameraZoom = 0.3f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -114,7 +198,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 24:
 			case 31:
 			case 32:
-				SetViewZoom(0.3f);
+				cameraZoom = 0.3f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				if (zone[val].hitbox.top + zone[val].hitbox.height - zone[val].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
 				{
@@ -132,7 +216,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				//for wide room
 			case 27:
 			case 29:
-				SetViewZoom(0.3f);
+				cameraZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
 					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
@@ -149,7 +233,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 				//for biggest room
 			case 28:
-				SetViewZoom(0.3f);
+				cameraZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
 					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
@@ -178,7 +262,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 				//for boss room
 			case 30:
-				SetViewZoom(0.42f);
+				cameraZoom = 0.42f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -187,17 +271,12 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 			}
 			MoveViewSlow(pos, _dt);
+			SetViewZoom(cameraZoom);
 		}
 		else
 		{
 			int num = GetTrigerCount();
 			sfFloatRect area = { 0 };
-
-			for (int i = 0; i < num; i++)
-			{
-				printf("%f ", zone[i].hitbox.height);
-			}
-
 
 			for (int i = 0; i < num; i++)
 			{
@@ -235,6 +314,12 @@ void SetDefaultView(float _dt)
 {
 	sfVector2f pos = GetPlayerPosition();
 	MoveViewSlow((sfVector2f) { pos.x, pos.y - TILE_SIZE * 3 }, _dt);
-	SetViewZoom(0.2f);
+	cameraZoom = 0.2f;
+	SetViewZoom(cameraZoom);
 	ChangeLastPos(0, 0);
+}
+
+float GetCameraZoom(void)
+{
+	return cameraZoom;
 }

@@ -2189,6 +2189,29 @@
         }, 
         {
          "draworder":"topdown",
+         "id":9,
+         "name":"Move",
+         "objects":[
+                {
+                 "height":192,
+                 "id":885,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"UP",
+                 "visible":true,
+                 "width":32,
+                 "x":3488,
+                 "y":1728
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":6,
          "name":"PassThrough",
          "objects":[
@@ -4927,6 +4950,18 @@
                  "width":32,
                  "x":4448,
                  "y":2048
+                }, 
+                {
+                 "height":16,
+                 "id":886,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":3488,
+                 "y":1728
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6471,8 +6506,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":885,
+ "nextlayerid":10,
+ "nextobjectid":887,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

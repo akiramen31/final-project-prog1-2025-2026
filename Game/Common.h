@@ -21,8 +21,10 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfFalse
+#define DEV_ENNEMY sfTrue
 #define DEV_MAP_COLIDER sfFalse
+#define DEV_WEAPON sfFalse
+#define DEV_MODE_FLY sfTrue
 
 #define TILE_SIZE 16.f
 
@@ -58,7 +60,7 @@ typedef struct Animation
 
 #define POW2(x) (x * x)
 #define VECTOR(u,v) v.x - u.x, v.y - u.y
-#define NORM_POW2(u,v) POW2(v.x - u.x) + POW2(v.y - u.y)
+#define NORM_POW2(u,v) (POW2((v.x - u.x))) + (POW2((v.y - u.y)))
 #define RAD_DEG(r) r * 180 / M_PI
 #define DEG_RAD(d) d * M_PI / 180
 #define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)

@@ -32,8 +32,8 @@ void LoadEnnemy(void)
 	{
 		ennemyEntity[0].type = 0;
 		ennemyEntity[0].ennemydata.life = 20.f;
-		ennemyEntity[0].ennemydata.energyMax = 100.f;
-		ennemyEntity[0].ennemydata.energy = 100.f;
+		ennemyEntity[0].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[0].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[0].ennemydata.energyRegen = 15.f;
 		ennemyEntity[0].ennemydata.speedMax = 3.f;
 		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
@@ -47,8 +47,8 @@ void LoadEnnemy(void)
 
 		ennemyEntity[1].type = 1;
 		ennemyEntity[1].ennemydata.life = 10.f;
-		ennemyEntity[1].ennemydata.energyMax = 200.f;
-		ennemyEntity[1].ennemydata.energy = 200.f;
+		ennemyEntity[1].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[1].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[1].ennemydata.energyRegen = 15.f;
 		ennemyEntity[1].ennemydata.speedMax = 3.f;
 		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
@@ -61,7 +61,10 @@ void LoadEnnemy(void)
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
-	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
+	if (DEV_ENNEMY)
+	{
+		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
+	}
 	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
@@ -301,9 +304,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	// aplication des donné dans le point de départ de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
-	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = (float)NORM_POW2(positionCibleCase, positionDebutCase);
-	aStarMap[positionDebutCase.y][positionDebutCase.x].energie = ennemy->ennemyEntity.ennemydata.energy;
+	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = sqrtf((float)NORM_POW2(positionCibleCase, positionDebutCase));
+	aStarMap[positionDebutCase.y][positionDebutCase.x].energie = ennemy->ennemyEntity.ennemydata.energy + ennemy->ennemyEntity.ennemydata.energyRegen;
+	if (aStarMap[positionDebutCase.y][positionDebutCase.x].energie > MAX_ENRGIE)
+	{
+		aStarMap[positionDebutCase.y][positionDebutCase.x].energie = MAX_ENRGIE;
+	}
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
+
+	aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = 0;
 
 	// préparation des variable nécéssaire
 	sfBool flag = sfFalse;
@@ -311,364 +320,582 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	int indexMin = 0;
 	sfVector2u* caseRecup = NULL;
 	sfVector2u caseGet = { 0 };
-
-	//remplisage / exécution du code principale de l'algorytme A*
-	while (GetListSize(listeWait) && flag == sfFalse)
+	if (positionDebutCase.x != positionCibleCase.x || positionDebutCase.y != positionCibleCase.y)
 	{
-		indexMin = MinResultCase();
-		caseRecup = GetElement(listeWait, indexMin)->value;
-		caseGet = (sfVector2u){ caseRecup->x,caseRecup->y };
-		//Droite
-		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
-			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
-				{
 
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = LEFT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-				}
-			}
-		}
 
-		//Bas Droite
-		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
+		//remplisage / exécution du code principale de l'algorytme A*
+		while (GetListSize(listeWait) && flag == sfFalse)
 		{
-		}
-		else
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
+			indexMin = MinResultCase();
+			caseRecup = GetElement(listeWait, indexMin)->value;
+			caseGet = (sfVector2u){ caseRecup->x,caseRecup->y };
+			//Droite
+			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = UP_LEFT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
+
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = LEFT;
+						caseTemp.jumpForce = 0;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
 					}
 				}
 			}
-		}
-		//Haut Droite
-		caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce == 0) // sinon si on est au sommet du saut ()
 			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = DOWN_LEFT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
 					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-				}
-			}
-		}
-		//Gauche
-		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
-			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
-				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = RIGHT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
+
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = LEFT;
+						caseTemp.jumpForce = -1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
 					}
 				}
 			}
 
-		}
-		//Bas Gauche
-		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-		}
-		else
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
+			//Bas Droite
+			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+			}
+			else
+			{
+				if (aStarMap[caseGet.y][caseGet.x].jumpForce <= 0)
 				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = UP_RIGHT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+
+
+					if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = UP_LEFT;
+							caseTemp.jumpForce = -1;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
 					}
 				}
 			}
-		}
-		//Haut Gauche
-		caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y))
+			//Haut Droite
+			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = DOWN_RIGHT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+					if (!TestColision(caseGet.x + 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_LEFT;
+							caseTemp.jumpForce = JUMP_FORCE;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
 					}
 				}
 			}
-
-		}
-		//Haut
-		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-			if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce > 0) // sinon si on est en plein saut ()
 			{
-				if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
-					Case caseTemp = { 0 };
-					caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-					caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-					caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-					caseTemp.Résultat = CalculResultAStar(caseTemp);
-					caseTemp.direction = RIGHT;
-					if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+					if (!TestColision(caseGet.x + 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
 					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
-					}
-					else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-					{
-						aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-						AjoutListWait(caseRecherche);
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_LEFT;
+							caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
 					}
 				}
 			}
-		}
-		//Bas
-		caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
-		if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
-		{
-
-		}
-		else
-		{
-			Case caseTemp = { 0 };
-			caseTemp.rangeToDestination = (float)NORM_POW2(caseRecherche, positionCibleCase);
-			caseTemp.action = (float)NORM_POW2(caseRecherche, caseGet) + aStarMap[caseGet.y][caseGet.x].action;
-			caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
-			caseTemp.Résultat = CalculResultAStar(caseTemp);
-			caseTemp.direction = RIGHT;
-			if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+			//Gauche
+			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 			{
-				aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-				AjoutListWait(caseRecherche);
-			}
-			else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
-			{
-				aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
-				AjoutListWait(caseRecherche);
-			}
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = RIGHT;
+						caseTemp.jumpForce = 0;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
 
+			}
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce == 0)
+			{
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = RIGHT;
+						caseTemp.jumpForce = -1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+			}
+			//Bas Gauche
+			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
+			{
+			}
+			else
+			{
+				if (aStarMap[caseGet.y][caseGet.x].jumpForce <= 0)
+				{
+
+
+					if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+					{
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.jumpForce = -1;
+							caseTemp.direction = UP_RIGHT;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
+					}
+				}
+			}
+			//Haut Gauche
+			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
+			{
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseGet.x - 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					{
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_RIGHT;
+							caseTemp.jumpForce = JUMP_FORCE;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
+					}
+				}
+
+			}
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce > 0) // sinon si on est en plein saut ()
+			{
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseGet.x - 1, caseGet.y) || !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					{
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_RIGHT;
+							caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
+					}
+				}
+			}
+			//Haut
+			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
+			{
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = DOWN;
+						caseTemp.jumpForce = JUMP_FORCE;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+			}
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce > 0) // sinon si on est en plein saut ()
+			{
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = DOWN;
+						caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+			}
+			//Bas
+			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
+			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
+			{
+
+			}
+			else if (aStarMap[caseGet.y][caseGet.x].jumpForce <= 0)
+			{
+				Case caseTemp = { 0 };
+				caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+				caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+				caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+				if (caseTemp.energie > MAX_ENRGIE)
+				{
+					caseTemp.energie = MAX_ENRGIE;
+				}
+				caseTemp.Résultat = CalculResultAStar(caseTemp);
+				caseTemp.direction = UP;
+				caseTemp.jumpForce = -1;
+				if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+				{
+					aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+					AjoutListWait(caseRecherche);
+				}
+				else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+				{
+					aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+					AjoutListWait(caseRecherche);
+				}
+
+			}
+			RetirerListWait(indexMin);
+			if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
+			{
+				flag = sfTrue;
+			}
+			/*
+			for (unsigned y = 0; y < mapData->size.y; y++)
+			{
+				for (unsigned x = 0; x < mapData->size.x; x++)
+				{
+					if (aStarMap[y][x].rangeToDestination)
+					{
+						printf("X");
+					}
+					else
+					{
+						printf("O");
+					}
+
+				}
+				printf("\n");
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			}*/
 		}
-		RetirerListWait(indexMin);
+
+		for (int i = GetListSize(listeWait) - 1; i >= 0; i--)
+		{
+			RetirerListWait(i);
+		}
+
 		if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
 		{
+			//printf("Cible Ateinte");
+			flag = sfFalse;
+		}
+		else
+		{
+			//printf("Cible Non Ateinte");
 			flag = sfTrue;
 		}
-		/*
-		for (unsigned y = 0; y < mapData->size.y; y++)
+		caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
+
+
+		while (flag == sfFalse) // rechercher les action demander
 		{
-			for (unsigned x = 0; x < mapData->size.x; x++)
-			{
-				if (aStarMap[y][x].rangeToDestination)
-				{
-					printf("X");
-				}
-				else
-				{
-					printf("O");
-				}
-
-			}
-			printf("\n");
-		printf("\n");
-		printf("\n");
-		printf("\n");
-		}*/
-	}
-
-	for (int i = GetListSize(listeWait) - 1; i >= 0; i--)
-	{
-		RetirerListWait(i);
-	}
-
-	if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
-	{
-		//printf("Cible Ateinte");
-		flag = sfFalse;
-	}
-	else
-	{
-		//printf("Cible Non Ateinte");
-		flag = sfTrue;
-	}
-	caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
-
-
-	while (flag == sfFalse) // rechercher les action demander
-	{
-		switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
-		{
-		case NO_DIRECTION:
-			return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-			break;
-		case UP:
-			caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
-			break;
-		case DOWN:
-			caseRecherche = (sfVector2u){ caseGet.x, caseGet.y + 1 };
-			break;
-		case LEFT:
-			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
-			break;
-		case RIGHT:
-			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
-			break;
-		case UP_LEFT:
-			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
-			break;
-		case UP_RIGHT:
-			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
-			break;
-		case DOWN_LEFT:
-			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
-			break;
-		case DOWN_RIGHT:
-			caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
-			break;
-		default:
-			break;
-		}
-		if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
-		{
-			ActionDemander actionDemander = { 0 };
-			switch (aStarMap[caseGet.y][caseGet.x].direction)
+			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 			{
 			case NO_DIRECTION:
+				return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 				break;
 			case UP:
-
+				caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
 				break;
 			case DOWN:
-				actionDemander.Saut = 1;
+				caseRecherche = (sfVector2u){ caseGet.x, caseGet.y + 1 };
 				break;
 			case LEFT:
-				actionDemander.droite = 1;
+				caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
 				break;
 			case RIGHT:
-				actionDemander.gauche = 1;
+				caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
 				break;
 			case UP_LEFT:
-				actionDemander.droite = 1;
+				caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y - 1 };
 				break;
 			case UP_RIGHT:
-				actionDemander.gauche = 1;
+				caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y - 1 };
 				break;
 			case DOWN_LEFT:
-				actionDemander.droite = 1;
-				actionDemander.Saut = 1;
+				caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
 				break;
 			case DOWN_RIGHT:
-				actionDemander.gauche = 1;
-				actionDemander.Saut = 1;
+				caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y + 1 };
 				break;
 			default:
 				break;
 			}
-			//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
-			return actionDemander;
+			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
+			{
+				ActionDemander actionDemander = { 0 };
+				switch (aStarMap[caseGet.y][caseGet.x].direction)
+				{
+				case NO_DIRECTION:
+					break;
+				case UP:
+
+					break;
+				case DOWN:
+					actionDemander.Saut = 1;
+					break;
+				case LEFT:
+					actionDemander.droite = 1;
+					break;
+				case RIGHT:
+					actionDemander.gauche = 1;
+					break;
+				case UP_LEFT:
+					actionDemander.droite = 1;
+					break;
+				case UP_RIGHT:
+					actionDemander.gauche = 1;
+					break;
+				case DOWN_LEFT:
+					actionDemander.droite = 1;
+					actionDemander.Saut = 1;
+					break;
+				case DOWN_RIGHT:
+					actionDemander.gauche = 1;
+					actionDemander.Saut = 1;
+					break;
+				default:
+					break;
+				}
+				//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
+				return actionDemander;
+			}
+			caseGet = caseRecherche;
 		}
-		caseGet = caseRecherche;
 	}
 	return (ActionDemander) { 0 };
 }
 
 float CalculResultAStar(Case _case)
 {
-	return (float) { _case.rangeToDestination + _case.action - (_case.energie * 1) };
+	return (float) { _case.rangeToDestination + _case.action + MAX_ENRGIE - _case.energie };
 }
 
 int MinResultCase(void) // recherche du plus petit resultat dans la liste chainé listeWait
