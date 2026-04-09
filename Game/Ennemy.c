@@ -61,7 +61,10 @@ void LoadEnnemy(void)
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
-	printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
+	if (DEV_ENNEMY)
+	{
+		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
+	}
 	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*) 
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
