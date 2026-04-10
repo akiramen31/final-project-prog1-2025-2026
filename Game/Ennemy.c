@@ -9,6 +9,7 @@ int MinResultCase(void);
 void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 sfBool TestColision(unsigned x, unsigned y);
+void DebugTab(Case _case);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -147,22 +148,22 @@ void CalculMoveEnnemy(float _dt, int _index)
 	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
+	if ((sfKeyboard_isKeyPressed(sfKeyNumpad0) || ennemy->actiondemander.Saut) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 	{
 		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
 
 		ennemy->ennemyEntity.acceleration.y -= G * 4;
-		if (sfKeyboard_isKeyPressed(sfKeyM))
+		if (sfKeyboard_isKeyPressed(sfKeyM) || ennemy->actiondemander.droite)
 		{
 			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.jetpack.trust;
 			test = 1;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyK))
+		if (sfKeyboard_isKeyPressed(sfKeyK) || ennemy->actiondemander.gauche)
 		{
 			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.jetpack.trust;
 			test = 1;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyO))
+		if (sfKeyboard_isKeyPressed(sfKeyO) || ennemy->actiondemander.Saut)
 		{
 			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jetpack.trust;
 			test2 = 1;
@@ -312,7 +313,22 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	}
 	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
-	aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
+	if (ennemy->actiondemander.jetPack)
+	{
+		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
+	}
+	else if (ennemy->ennemyEntity.move.y < 0)
+	{
+		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
+	}
+	else if (ennemy->ennemyEntity.move.y == 0)
+	{
+		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
+	}
+	else
+	{
+		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = 1;
+	}
 
 	// préparation des variable nécéssaire
 	sfBool flag = sfFalse;
@@ -393,11 +409,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						}
 					}
 				}
-				
+
 			}
-			else if (ennemy->ennemyEntity.isJetpack)
+			else if (ennemy->ennemyEntity.isJetpack) // si a un jet pack
 			{
-				/*
+
 				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
 				{
 					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
@@ -407,6 +423,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
 						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
 						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						caseTemp.energie -= ennemy->ennemyEntity.jetpack.consomation;
 						if (caseTemp.energie > MAX_ENRGIE)
 						{
 							caseTemp.energie = MAX_ENRGIE;
@@ -414,6 +431,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						caseTemp.Résultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = LEFT;
 						caseTemp.jumpForce = -1;
+						caseTemp.jetPackActive = 1;
 						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
@@ -426,7 +444,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						}
 					}
 				}
-				*/
+
 			}
 
 			//Bas Droite
@@ -538,6 +556,44 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
+			else if (ennemy->ennemyEntity.isJetpack) // si a un jet pack
+			{
+
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseGet.x + 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					{
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							caseTemp.energie -= ennemy->ennemyEntity.jetpack.consomation;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_LEFT;
+							caseTemp.jumpForce = -1;
+							caseTemp.jetPackActive = 1;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
+					}
+				}
+
+			}
 			//Gauche
 			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -600,6 +656,41 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						}
 					}
 				}
+			}
+			else if (ennemy->ennemyEntity.isJetpack) // si a un jet pack
+			{
+
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						caseTemp.energie -= ennemy->ennemyEntity.jetpack.consomation;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = RIGHT;
+						caseTemp.jumpForce = -1;
+						caseTemp.jetPackActive = 1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+
 			}
 			//Bas Gauche
 			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
@@ -710,6 +801,44 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
+			else if (ennemy->ennemyEntity.isJetpack) // si a un jet pack
+			{
+
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseGet.x - 1, caseGet.y) && !TestColision(caseGet.x, caseGet.y - 2)) // si chemin libre
+					{
+						if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+						{
+
+							Case caseTemp = { 0 };
+							caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+							caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+							caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+							caseTemp.energie -= ennemy->ennemyEntity.jetpack.consomation;
+							if (caseTemp.energie > MAX_ENRGIE)
+							{
+								caseTemp.energie = MAX_ENRGIE;
+							}
+							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.direction = DOWN_RIGHT;
+							caseTemp.jumpForce = -1;
+							caseTemp.jetPackActive = 1;
+							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							{
+								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+								AjoutListWait(caseRecherche);
+							}
+						}
+					}
+				}
+
+			}
 			//Haut
 			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -772,6 +901,41 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
+			else if (ennemy->ennemyEntity.isJetpack) // si a un jet pack
+			{
+
+				if (!TestColision(caseRecherche.x, caseRecherche.y)) // si espace libre
+				{
+					if (!TestColision(caseRecherche.x, caseRecherche.y - 1)) // si espace au dessu de cible libre
+					{
+
+						Case caseTemp = { 0 };
+						caseTemp.rangeToDestination = sqrtf((float)NORM_POW2(caseRecherche, positionCibleCase));
+						caseTemp.action = sqrtf((float)NORM_POW2(caseRecherche, caseGet)) + aStarMap[caseGet.y][caseGet.x].action;
+						caseTemp.energie = aStarMap[caseGet.y][caseGet.x].energie + ennemy->ennemyEntity.ennemydata.energyRegen;
+						caseTemp.energie -= ennemy->ennemyEntity.jetpack.consomation;
+						if (caseTemp.energie > MAX_ENRGIE)
+						{
+							caseTemp.energie = MAX_ENRGIE;
+						}
+						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.direction = DOWN;
+						caseTemp.jumpForce = -1;
+						caseTemp.jetPackActive = 1;
+						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						{
+							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
+							AjoutListWait(caseRecherche);
+						}
+					}
+				}
+
+			}
 			//Bas
 			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -808,26 +972,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			{
 				flag = sfTrue;
 			}
-			/*
-			for (unsigned y = 0; y < mapData->size.y; y++)
-			{
-				for (unsigned x = 0; x < mapData->size.x; x++)
-				{
-					if (aStarMap[y][x].rangeToDestination)
-					{
-						printf("X");
-					}
-					else
-					{
-						printf("O");
-					}
 
-				}
-				printf("\n");
-			printf("\n");
-			printf("\n");
-			printf("\n");
-			}*/
 		}
 
 		for (int i = GetListSize(listeWait) - 1; i >= 0; i--)
@@ -846,8 +991,10 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			flag = sfTrue;
 		}
 		caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
-
-
+		if (DEBUG_MODE_A_STAR)
+		{
+			system("cls");
+		}
 		while (flag == sfFalse) // rechercher les action demander
 		{
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -918,6 +1065,10 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				default:
 					break;
 				}
+				if (aStarMap[caseGet.y][caseGet.x].jetPackActive)
+				{
+					actionDemander.jetPack = 1;
+				}
 				//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
 				return actionDemander;
 			}
@@ -983,6 +1134,14 @@ sfBool TestColision(unsigned x, unsigned y)
 	else
 	{
 		return sfFalse;
+	}
+}
+
+void DebugTab(Case _case)
+{
+	if (DEBUG_MODE_A_STAR)
+	{
+
 	}
 }
 
