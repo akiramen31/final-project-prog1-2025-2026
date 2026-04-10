@@ -27,7 +27,7 @@ void LoadPlayer(void)
 
 	sfTexture* textureWeapon = GetAsset("Assets/Sprites/raygun.png");
 	player.weapon.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
-	sfSprite_setOrigin(player.weapon.sprite, (sfVector2f) { 4,6 });
+	sfSprite_setOrigin(player.weapon.sprite, (sfVector2f) { 4, 6 });
 	player.weapon.isRight = sfTrue;
 
 
@@ -249,7 +249,7 @@ void ColisionMapPlayer(float _dt)
 	}
 	sfRectangleShape_move(player.collision, reaction);
 	sfVector2f gunPosition = GetPlayerPosition();
-	gunPosition.y -= PLAYER_COLLISION_HEIGHT * 3 / 4 - 1 ;
+	gunPosition.y -= WEAPON_ORIGIN;
 	sfSprite_setPosition(player.weapon.sprite, gunPosition);
 
 	sfVector2f playerPos = GetPlayerPosition(); //start
@@ -275,7 +275,14 @@ void ColisionMapPlayer(float _dt)
 			player.weapon.isRight = sfTrue;
 		}
 	}
-	sfSprite_setRotation(player.weapon.sprite, angleRect + 11.5f);
+	if (player.weapon.isRight)
+	{
+		sfSprite_setRotation(player.weapon.sprite, angleRect + WEAPON_ANGLE_OFFSET);
+	}
+	else
+	{
+		sfSprite_setRotation(player.weapon.sprite, angleRect - WEAPON_ANGLE_OFFSET);
+	}
 }
 
 void MoveZonePlayer(float _dt)
@@ -346,7 +353,7 @@ void UpdateFireControl(void)
 		if (player.canShoot && GetBulletCount() < BULLET_MAX)
 		{
 
-			AddBullet(GetPlayerPosition(), GetAimPosition());
+			AddBullet(GetPlayerPosition(), GetAimPosition(), (int){ WEAPON_ORIGIN }, player.weapon.isRight);
 			player.canShoot = sfFalse;
 		}
 	}

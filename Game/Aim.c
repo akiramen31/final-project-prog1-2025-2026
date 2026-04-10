@@ -32,7 +32,7 @@ sfVector2f GetAimPosition(void)
 
 void MoveAim(float _dt)
 {
-	// Get cameraCoef 
+	cameraCoef = GetCameraZoom();
 	sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
 	sfVector2f viewPos = GetViewPosition();
 	sfVector2f mousePos = { (float)mousePosI.x * cameraCoef + viewPos.x, (float)mousePosI.y * cameraCoef + viewPos.y };

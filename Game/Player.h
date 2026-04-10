@@ -5,6 +5,7 @@
 #include "Bullet.h"
 #include "Missile.h"
 #include "Aim.h"
+#include "Weapon.h"
 
 #define FIRE_RATE_RAILGUN 1.1f
 
@@ -24,21 +25,7 @@
 #define PLAYER_COLLISION_HEIGHT 32
 
 #define WEAPON_ANGLE_OFFSET 11.5f
-
-typedef enum WeaponType
-{
-	RAILGUN,
-	OTHER
-}WeaponType;
-
-typedef struct Weapon
-{
-
-	sfSprite* sprite;
-	WeaponType type;
-	sfBool isRight;
-
-}Weapon;
+#define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
 typedef struct Player
 {

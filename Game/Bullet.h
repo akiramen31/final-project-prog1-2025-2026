@@ -20,6 +20,6 @@ void LoadBullet(void);
 void UpdateBullet(float _dt);
 
 unsigned int GetBulletCount(void);
-void AddBullet(sfVector2f _posPlayer, sfVector2f _posAim);
+void AddBullet(sfVector2f _posPlayer, sfVector2f _posAim, int _weaponPos, sfBool _isRighted);
 
 #endif // !BULLET_H
