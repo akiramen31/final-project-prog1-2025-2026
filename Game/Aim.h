@@ -2,6 +2,7 @@
 #define AIM_H
 
 #include "Common.h"
+#include "Camera.h"
 
 #define AIM_SIZE 16 
 
