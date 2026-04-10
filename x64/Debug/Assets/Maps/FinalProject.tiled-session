@@ -1,6 +1,6 @@
 {
-    "activeFile": "Level2.tmx",
-    "automapping.whileDrawing": false,
+    "activeFile": "Level1_2.tmx",
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
     ],
@@ -34,28 +34,39 @@
         },
         "Level1.tmx": {
             "expandedObjectLayers": [
-                38,
-                31,
-                32
+                31
             ],
-            "scale": 1,
-            "selectedLayer": 7,
+            "scale": 0.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 2131,
-                "y": 617
+                "x": 2996,
+                "y": 356
+            }
+        },
+        "Level1_2.tmx": {
+            "expandedObjectLayers": [
+                38,
+                31
+            ],
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 3053.333333333333,
+                "y": 691.3333333333333
             }
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
+                8,
                 6,
                 7,
                 9
             ],
-            "scale": 0.33,
+            "scale": 0.125,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 3112.121212121212,
-                "y": 2027.2727272727273
+                "x": 2848,
+                "y": 1728
             }
         },
         "LevelTest.tmx": {
@@ -65,21 +76,21 @@
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320,
-                "y": 143
+                "x": 416,
+                "y": 142
             }
         },
         "Tilesets/AutoTileRules.tmx": {
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 248,
-                "y": 295.6666666666667
+                "x": 280.6666666666667,
+                "y": 295.33333333333326
             }
         },
         "Tilesets/FullTiles.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 1.5,
             "scaleInEditor": 3
         },
         "Tilesets/LevelTest.json": {
@@ -124,6 +135,7 @@
     "map.tileWidth": 320,
     "openFiles": [
         "Level1.tmx",
+        "Level1_2.tmx",
         "Level2.tmx",
         "Tilesets/AutoTileRules.tmx",
         "Tilesets/FullTiles.tsx",
@@ -138,12 +150,12 @@
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
         "Level2.tmx",
+        "Level1_2.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
         "Tilesets/Pipes.tsx",
         "Tilesets/Metal_plate.tsx",
-        "Tilesets/individual_tiles.tsx",
-        "Tilesets/Metal_girder.tsx"
+        "Tilesets/individual_tiles.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
