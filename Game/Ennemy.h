@@ -51,6 +51,7 @@ typedef struct ActionDemander
 	sfBool gauche;
 	sfBool droite;
 	sfBool Saut;
+	sfBool jetPack;
 }ActionDemander;
 
 typedef struct Ennemy
@@ -69,6 +70,7 @@ typedef struct Case
 	float Résultat;
 	float energie;
 	enum Direction direction;
+	sfBool jetPackActive;
 }Case;
 
 void LoadEnnemy(void);
