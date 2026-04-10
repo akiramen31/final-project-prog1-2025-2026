@@ -119,5 +119,8 @@
     <ClCompile Include="Player.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Weapon.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -10,13 +10,13 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
 	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	LoadBullet();
+	LoadWeapon();
 	LoadPlayer();
-
 	LoadMap(background);
 
 	//LoadHUD();
 	//LoadGUI();
-	LoadBullet();
 	LoadMissile();
 	LoadAim();
 }

@@ -29,6 +29,7 @@ void LoadEntityManager(void)
 	entityManager.callocList = calloc(1, sizeof(void*));
 	entityManager.visual = NULL;
 	LoadGeneralAsset();
+
 }
 
 void LoadGeneralAsset(void)
@@ -46,6 +47,7 @@ void Draw(void)
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
+	sfWindow_setVerticalSyncEnabled(GetRenderWindow(), sfTrue);
 
 	while (elementActual)
 	{

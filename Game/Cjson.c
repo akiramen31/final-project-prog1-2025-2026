@@ -23,7 +23,10 @@ Cjson* LoadCjson(char* _file)
 {
 	//open file
 	int file = open(_file, 0, 0644);
-	SECURITY(file) NULL;
+	if (file == -1)
+	{
+		return;
+	}
 
 	//gotoEndFile for get size
 	size_t fileSize = lseek(file, 0, 2);

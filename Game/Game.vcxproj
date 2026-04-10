@@ -55,6 +55,7 @@
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Missile.c" />
     <ClCompile Include="Player.c" />
+    <ClCompile Include="Weapon.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
