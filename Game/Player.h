@@ -2,7 +2,6 @@
 #define PLAYER_H
 
 #include "Common.h"
-#include "Bullet.h"
 #include "Missile.h"
 #include "Aim.h"
 #include "Weapon.h"
@@ -20,13 +19,6 @@
 #define PLAYER_DASH_DURATION 0.08f
 
 #define PLAYER_JUMP_FORGIVE 0.1f
-
-#define PLAYER_COLLISION_WIDTH 14
-#define PLAYER_COLLISION_HEIGHT 32
-
-#define WEAPON_ANGLE_OFFSET 11.5f
-#define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
-
 typedef struct Player
 {
 	enum State state;

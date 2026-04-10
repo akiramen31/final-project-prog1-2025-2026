@@ -12,24 +12,15 @@ void UpdateFireControl(void);
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
 
-sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color);
-
 sfVector2f pos;
 
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
-	weapon = (Weapon){ 0 };
-
+	player.weapon = GetWeapon();
 	sfTexture* texture = GetAsset("Assets/Sprites/capsul.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
 	SetSpriteOriginFoot(player.sprite);
-
-	sfTexture* textureWeapon = GetAsset("Assets/Sprites/raygun.png");
-	player.weapon.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
-	sfSprite_setOrigin(player.weapon.sprite, (sfVector2f) { 4, 6 });
-	player.weapon.isRight = sfTrue;
-
 
 	player.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
@@ -40,20 +31,6 @@ void LoadPlayer(void)
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
 	pos.x = 100;
 	pos.y = 32;
-}
-
-sfVertexArray* CreateLineOfSight(sfVector2f _pointA, sfVector2f _pointB, sfColor _color)
-{
-	sfVertexArray* newLine = sfVertexArray_create();
-	sfVertexArray_setPrimitiveType(newLine, sfLines);
-
-	sfVertex vertexA = { _pointA, _color };
-	sfVertexArray_append(newLine, vertexA);
-
-	sfVertex vertexB = { _pointB, _color };
-	sfVertexArray_append(newLine, vertexB);
-
-	return newLine;
 }
 
 void UpdatePlayer(float _dt)
@@ -248,41 +225,7 @@ void ColisionMapPlayer(float _dt)
 		}
 	}
 	sfRectangleShape_move(player.collision, reaction);
-	sfVector2f gunPosition = GetPlayerPosition();
-	gunPosition.y -= WEAPON_ORIGIN;
-	sfSprite_setPosition(player.weapon.sprite, gunPosition);
-
-	sfVector2f playerPos = GetPlayerPosition(); //start
-	sfVector2f aimPosition = GetAimPosition(); // target
-
-	float dx = aimPosition.x - playerPos.x;
-	float dy = aimPosition.y - playerPos.y;
-
-	float angleRect = atan2f(dy, dx) * (180.0f / (float)M_PI);
-	if (angleRect > 90.0f || angleRect < -90)
-	{
-		if (player.weapon.isRight)
-		{
-			sfSprite_setScale(player.weapon.sprite, (sfVector2f) { 1.f, -1.f });
-			player.weapon.isRight = sfFalse;
-		}
-	}
-	else
-	{
-		if (!player.weapon.isRight)
-		{
-			sfSprite_setScale(player.weapon.sprite, (sfVector2f) { 1.f, 1.f });
-			player.weapon.isRight = sfTrue;
-		}
-	}
-	if (player.weapon.isRight)
-	{
-		sfSprite_setRotation(player.weapon.sprite, angleRect + WEAPON_ANGLE_OFFSET);
-	}
-	else
-	{
-		sfSprite_setRotation(player.weapon.sprite, angleRect - WEAPON_ANGLE_OFFSET);
-	}
+	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt);
 }
 
 void MoveZonePlayer(float _dt)
@@ -348,16 +291,15 @@ void UpdateCooldown(float _dt)
 
 void UpdateFireControl(void)
 {
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)))
+	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
 	{
 		if (player.canShoot && GetBulletCount() < BULLET_MAX)
 		{
-
-			AddBullet(GetPlayerPosition(), GetAimPosition(), (int){ WEAPON_ORIGIN }, player.weapon.isRight);
+			UseWeapon(GetPlayerPosition(), GetAimPosition());
 			player.canShoot = sfFalse;
 		}
 	}
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)))
+	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
 	{
 		if (player.canShoot)
 		{
