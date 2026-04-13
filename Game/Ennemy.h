@@ -5,6 +5,66 @@
 #include "Map.h"
 #include "Player.h"
 
+#define MAX_FALL_SPEED_ENEMY 1000
+
+typedef struct EnemyData
+{
+	sfTexture* texture;
+	float speed;
+	float maxEnegie;
+	float jumpForce;
+	float weight;
+}EnemyData;
+
+typedef enum EnemyType
+{
+	DRONE_SMALL,
+	DRONE_MEDIUM,
+	DRONE_HEAVY,
+	CROWLER_SMALL,
+	CROWLER_MEDIUM,
+	CROWLER_HEAVY,
+	SOLDIER_SMALL,
+	SOLDIER_MEDIUM,
+	SOLDIER_HEAVY,
+	ENEMY_TYPE_COUNT
+}EnemyType;
+
+typedef struct EnemyEntity
+{
+	sfSprite* sprite;
+	sfVector2f acceleration;
+	EnemyType type;
+	State state;
+	float life;
+	float energy;
+	sfFloatRect region;
+	sfVector2f velocity;
+}EnemyEntity;
+
+typedef struct Enemy
+{
+	EnemyEntity* entity;
+	EnemyData data[ENEMY_TYPE_COUNT];
+	int count;
+
+}Enemy;
+
+void LoadEnemy(void);
+void UpdateEnemy(float _dt);
+void HitEnemy(sfFloatRect* _hitbox);
+void ReloadEnemy(void);
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region);
+
+/*
+
+#ifndef ENNEMY_H
+#define ENNEMY_H
+
+#include "Common.h"
+#include "Map.h"
+#include "Player.h"
+
 #define TIMER_ASTAR 0.1f
 #define JUMP_FORCE 5
 #define MAX_ENRGIE 300
@@ -32,7 +92,7 @@ typedef struct EnnemyData
 	float accelerationMax;
 	float speedMax;
 	float jumForce;
-} EnnemyData;
+}EnnemyData;
 
 typedef struct EnnemyEntity
 {
@@ -86,5 +146,10 @@ void SetPositionEnnemy(sfVector2f _position, int _index);
 
 void ResetEnnemy(void);
 int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position);
+
+#endif // !GAME_H
+
+
+*/
 
 #endif // !GAME_H

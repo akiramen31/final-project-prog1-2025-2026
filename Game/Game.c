@@ -13,6 +13,7 @@ void LoadGame(void)
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
+	LoadEnemy();
 	LoadMap(background);
 
 	//LoadHUD();
@@ -33,13 +34,7 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
-			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
-			sfVector2f viewPos = GetViewPosition();
-			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y};
-			sfColor tempColor = GetColorsPixelMap(mousePos);
-			printf("color is a = %d \n", tempColor.a);
-			sfVector2u pos = RealPositionConvertTableauPosition(mousePos);
-			printf("position x:%d y:%d\n", pos.x, pos.y);
+
 		}
 	default:
 		break;
@@ -81,10 +76,8 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-	if (DEV_ENNEMY)
-	{
-		UpdateEnnemy(_dt, 0);
-	}
+	UpdateEnemy(_dt);
+
 	//UpdateHUD(_dt);
 	//UpdateGUI(_dt);
 	UpdateCollider();

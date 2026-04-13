@@ -6,8 +6,8 @@ Map map;
 int rectShapeCount;
 sfRectangleShape** rectShape;
 
-void LoadMapData(Cjson* _cjson);
-void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount);
+void LoadMapData(CjsonB* _cjson);
+void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount);
 void SetPositionEntity(InfoZone* _point, int _count);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 
@@ -21,15 +21,10 @@ void LoadMap(sfSprite* _background)
 
 void SetMap(MapState _map)
 {
-	Cjson* cjson = NULL;
+	CjsonB* cjson = NULL;
 	if (map.data.image)
 	{
 		sfImage_destroy(map.data.image);
-	}
-
-	if (DEV_ENNEMY && map.state != -1)
-	{
-		ResetEnnemy();
 	}
 	switch (_map)
 	{
@@ -62,12 +57,7 @@ void SetMap(MapState _map)
 		LoadMapData(cjson);
 		CleanupCjsonB(cjson);
 	}
-
-	if (DEV_ENNEMY)
-	{
-		LoadEnnemy();
-		AddEnnemy((sfVector2f) { 200, 500 }, ALEATORY);
-	}
+	ReloadEnemy();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
 }
@@ -77,7 +67,7 @@ MapState GetActualyMap(void)
 	return map.state;
 }
 
-void LoadMapData(Cjson* _cjson)
+void LoadMapData(CjsonB* _cjson)
 {
 	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
 
@@ -116,7 +106,7 @@ MapData* GetMapData(void)
 	return &map.data;
 }
 
-void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, Object* _object, int _objectCount)
+void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount)
 {
 	*_infoZoneCountExit = 0;
 	*_infoZoneExit = NULL;
@@ -142,7 +132,13 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		{
 			if (DEV_ENNEMY)
 			{
-				SetPositionEnnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, 0);
+				for (unsigned j = 0; j < map.data.trigerCount; j++)
+				{
+					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
+					{
+						AddEnemy((sfVector2f) { map.data.point[i].hitbox.left, map.data.point[i].hitbox.top }, 0, map.data.triger[j].hitbox);
+					}
+				}
 			}
 		}
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))
@@ -155,7 +151,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 void CreateRectVisible(InfoZone* _infoZone, int _count)
 {
 	rectShapeCount = _count;
-	rectShape = calloc(_count, sizeof(sfRectangleShape*));
+	rectShape = Calloc(_count, sizeof(sfRectangleShape*));
 	if (rectShape)
 	{
 		for (int i = 0; i < _count; i++)
@@ -246,16 +242,9 @@ int GetTrigerCount(void)
 	return map.data.trigerCount;
 }
 
-InfoZone* GetInfoZoneMove(sfFloatRect _hitbox)
+InfoZone* GetInfoZoneMove(void)
 {
-	for (int i = 0; i < map.data.moveCount; i++)
-	{
-		if (sfFloatRect_intersects(&_hitbox, &map.data.move[i].hitbox, NULL))
-		{
-			return map.data.move;
-		}
-	}
-	return NULL;
+	return map.data.move;
 }
 
 int GetMoveCount(void)
