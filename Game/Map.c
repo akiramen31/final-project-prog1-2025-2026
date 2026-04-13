@@ -13,6 +13,7 @@ void CreateRectVisible(InfoZone* _infoZone, int _count);
 
 void LoadMap(sfSprite* _background)
 {
+	LoadBox();
 	map = (Map){ 0 };
 	map.background = _background;
 	map.state = -1;
@@ -58,6 +59,7 @@ void SetMap(MapState _map)
 		CleanupCjsonB(cjson);
 	}
 	ReloadEnemy();
+	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
 }
@@ -128,7 +130,11 @@ void SetPositionEntity(InfoZone* _point, int _count)
 {
 	for (int i = 0; i < _count; i++)
 	{
-		if (StringCompare(_point[i].type, "Enemy"))
+		if (StringCompare(_point[i].type, "Box"))
+		{
+			AddBox((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
+		else if (StringCompare(_point[i].type, "Enemy"))
 		{
 			if (DEV_ENNEMY)
 			{
@@ -171,7 +177,6 @@ sfVector2f Colision(sfFloatRect _hitbox)
 {
 	sfVector2f vectorMove = { 0 };
 	sfFloatRect reaction = { 0 };
-
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{

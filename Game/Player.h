@@ -5,6 +5,7 @@
 #include "Missile.h"
 #include "Aim.h"
 #include "Weapon.h"
+#include "Box.h"
 
 #define FIRE_RATE_RAILGUN 1.1f
 

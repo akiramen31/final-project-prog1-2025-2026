@@ -2,8 +2,8 @@
 #define ENNEMY_H
 
 #include "Common.h"
-#include "Map.h"
 #include "Player.h"
+#include "Box.h"
 
 #define MAX_FALL_SPEED_ENEMY 1000
 

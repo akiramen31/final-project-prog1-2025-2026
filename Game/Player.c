@@ -184,6 +184,10 @@ void ColisionMapPlayer(float _dt)
 {
 	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
+	sfVector2f reactionBox = ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse);
+	reaction.x += reactionBox.x; 
+	reaction.y += reactionBox.y;
+
 
 	if (reactionPassThrough.y < 0)
 	{
