@@ -62,7 +62,7 @@ MapState GetActualyMap(void);
 MapData* GetMapData(void);
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
 int GetTrigerCount(void);
-InfoZone* GetInfoZoneMove(sfFloatRect _hitbox);
+InfoZone* GetInfoZoneMove(void);
 int GetMoveCount(void);
 
 sfVector2f Colision(sfFloatRect _hitbox);

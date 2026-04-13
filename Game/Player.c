@@ -230,37 +230,32 @@ void ColisionMapPlayer(float _dt)
 
 void MoveZonePlayer(float _dt)
 {
-	InfoZone* zone = GetInfoZoneMove(sfRectangleShape_getGlobalBounds(player.collision));
+	InfoZone* zone = GetInfoZoneMove();
+	int num = GetMoveCount();
+	sfFloatRect hitbox = GetPlayerRect();
+	int speed = 0;
 
-	if (zone != NULL)
+	for (int i = 0; i < num; i++)
 	{
-		int num = GetMoveCount();
-		sfFloatRect hitbox = GetPlayerRect();
+		sscanf_s(zone[i].name, "%d", &speed);
 
-		for (int i = 0; i < num; i++)
+		if (sfFloatRect_intersects(&hitbox, &zone[i].hitbox, NULL))
 		{
-			int speed = 0;
-			sscanf_s(zone[i].name, "%d", &speed);
-
-
-			if (sfFloatRect_intersects(&hitbox, &zone[i].hitbox, NULL))
+			if (StringCompare(zone[i].type, "RIGHT"))
 			{
-				if (StringCompare(zone[i].type, "RIGHT"))
-				{
-					sfRectangleShape_move(player.collision, (sfVector2f) { speed* _dt, 0 });
-				}
-				else if (StringCompare(zone[i].type, "LEFT"))
-				{
-					sfRectangleShape_move(player.collision, (sfVector2f) { -speed * _dt, 0 });
-				}
-				else if (StringCompare(zone[i].type, "DOWN"))
-				{
-					sfRectangleShape_move(player.collision, (sfVector2f) { 0, speed* _dt });
-				}
-				else if (StringCompare(zone[i].type, "UP"))
-				{
-					sfRectangleShape_move(player.collision, (sfVector2f) { 0, -speed * _dt });
-				}
+				sfRectangleShape_move(player.collision, (sfVector2f) { speed* _dt, 0 });
+			}
+			else if (StringCompare(zone[i].type, "LEFT"))
+			{
+				sfRectangleShape_move(player.collision, (sfVector2f) { -speed * _dt, 0 });
+			}
+			else if (StringCompare(zone[i].type, "DOWN"))
+			{
+				sfRectangleShape_move(player.collision, (sfVector2f) { 0, speed* _dt });
+			}
+			else if (StringCompare(zone[i].type, "UP"))
+			{
+				sfRectangleShape_move(player.collision, (sfVector2f) { 0, -speed * _dt });
 			}
 		}
 	}

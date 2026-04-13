@@ -1,18 +1,32 @@
 #ifndef CJSONB_H
 #define CJSONB_H
 
-typedef enum TypeValue
+typedef enum TypeValueCjsonB
 {
 	BOOL,
 	INT,
 	FLOAT,
 	CHAR_PTR,
 	INT_PTR,
-}TypeValue;
+}TypeValueCjsonB;
 
-typedef struct Object
+typedef struct PolylineCjsonB
 {
+	float x;
+	float y;
+}PolylineCjsonB;
+
+typedef struct TextCjsonB
+{
+	char wrap;
+	char* text;
+}TextCjsonB;
+
+typedef struct ObjectCjsonB
+{
+	char point;
 	char visible;
+	char ellipse;
 	unsigned id;
 	float x;
 	float y;
@@ -22,9 +36,16 @@ typedef struct Object
 	float opacity;
 	char* name;
 	char* type;
-}Object;
+	TextCjsonB text;
 
-typedef struct Layers
+	PolylineCjsonB* polygon;
+	unsigned polygonCount;
+
+	PolylineCjsonB* polyline;
+	unsigned polylineCount;
+}ObjectCjsonB;
+
+typedef struct LayersCjsonB
 {
 	char visible;
 	char locked;
@@ -42,40 +63,58 @@ typedef struct Layers
 	char* type;
 	char* draworder;
 	char* image;
+	char* classe;
 	unsigned* data;
 
-	Object* objects;
+	ObjectCjsonB* objects;
 	unsigned objectsCount;
-}Layers;
 
-typedef struct Colors
+	struct LayersCjsonB* layers;
+	unsigned layersCount;
+}LayersCjsonB;
+
+typedef struct ColorsCjsonB
 {
 	unsigned tile;
 	float probability;
 	char* color;
 	char* name;
-}Colors;
+}ColorsCjsonB;
 
-typedef struct Wangtiles
+typedef struct WangtilesCjsonB
 {
 	unsigned tileid;
-	int* wangid;
-}Wangtiles;
+	unsigned* wangid;
+}WangtilesCjsonB;
 
-typedef struct Wangsets
+typedef struct WangsetsCjsonB
 {
 	unsigned tile;
 	char* name;
 	char* type;
 
-	Colors* colors;
+	ColorsCjsonB* colors;
 	unsigned colorsCount;
 
-	Wangtiles* wangtiles;
+	WangtilesCjsonB* wangtiles;
 	unsigned wangtilesCount;
-}Wangsets;
+}WangsetsCjsonB;
 
-typedef struct Tilesets
+typedef struct AnimationCjsonB
+{
+	unsigned tileid;
+	float duration;
+}AnimationCjsonB;
+
+typedef struct TilesCjsonB
+{
+	unsigned id;
+
+	AnimationCjsonB* animation;
+	unsigned animationCount;
+}TilesCjsonB;
+
+typedef struct TilesetsCjsonB
 {
 	unsigned columns;
 	unsigned firstgid;
@@ -90,11 +129,14 @@ typedef struct Tilesets
 	char* name;
 	char* source;
 
-	Wangsets* wangsets;
+	WangsetsCjsonB* wangsets;
 	unsigned wangsetsCount;
-}Tilesets;
 
-typedef struct Cjson
+	TilesCjsonB* tiles;
+	unsigned tilesCount;
+}TilesetsCjsonB;
+
+typedef struct CjsonB
 {
 	char infinite;
 	unsigned width;
@@ -110,14 +152,14 @@ typedef struct Cjson
 	char* type;
 	char* version;
 
-	Layers* layers;
+	LayersCjsonB* layers;
 	unsigned layersCount;
 
-	Tilesets* tilesets;
+	TilesetsCjsonB* tilesets;
 	unsigned tilesetsCount;
-}Cjson;
+}CjsonB;
 
-Cjson* LoadCjsonB(char* _file);
-void CleanupCjsonB(Cjson* _cjson);
+CjsonB* LoadCjsonB(char* _file);
+void CleanupCjsonB(CjsonB* _cjson);
 
 #endif // CJSONB_H

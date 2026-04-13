@@ -7,24 +7,28 @@
 void* __stdcall VirtualAlloc(void* addr, unsigned long long size, unsigned long type, unsigned long protect);
 int   __stdcall VirtualFree(void* addr, unsigned long long size, unsigned long type);
 
-int GetObjectStructLayerCjsonB(Layers** _layers);
-int GetObjectStructObjectCjsonB(Object** _object);
-int GetObjectStructTilesetCjsonB(Tilesets** _tilesets);
-int GetObjectStructWangsetsCjsonB(Wangsets** _wangsets);
-int GetObjectStructColorsCjsonB(Colors** _colors);
-int GetObjectStructWangtilesCjsonB(Wangtiles** _wangtiles);
+int GetObjectStructLayerCjsonB(LayersCjsonB** _layers);
+int GetObjectStructObjectCjsonB(ObjectCjsonB** _object);
+int GetObjectStructTilesetCjsonB(TilesetsCjsonB** _tilesets);
+int GetObjectStructWangsetsCjsonB(WangsetsCjsonB** _wangsets);
+int GetObjectStructColorsCjsonB(ColorsCjsonB** _colors);
+int GetObjectStructWangtilesCjsonB(WangtilesCjsonB** _wangtiles);
+int GetObjectStructPolylineCjsonB(PolylineCjsonB** _polynile);
+void GetObjectStructTextCjsonB(TextCjsonB* _text);
+int GetObjectStructTilesCjsonB(TilesCjsonB** _tiles);
+int GetObjectStructAnimationCjson(AnimationCjsonB** _animation);
 
 char StringCompareCjsonB(char* _string);
 char GoNextDataInStructCjsonB(void);
 unsigned GetStructCountCjsonB(void);
 
-void GetValueInBufferCjsonB(TypeValue _type, void* _value);
+void GetValueInBufferCjsonB(TypeValueCjsonB _type, void* _value);
 
 char* buffer;
 char* allocationFree;
 unsigned allocCount;
 
-Cjson* LoadCjsonB(char* _file)
+CjsonB* LoadCjsonB(char* _file)
 {
 	//open file
 	int file = open(_file, 0, 0644);
@@ -38,7 +42,7 @@ Cjson* LoadCjsonB(char* _file)
 	read(file, buffer, fileSize);
 	close(file);
 	allocationFree = VirtualAlloc(0, fileSize * 2, 0x3000, 4);
-	Cjson* cjson = (Cjson*)ALLOC(sizeof(Cjson));
+	CjsonB* cjson = (CjsonB*)ALLOC(sizeof(CjsonB));
 
 	while (GoNextDataInStructCjsonB())
 	{
@@ -113,7 +117,7 @@ Cjson* LoadCjsonB(char* _file)
 	{
 		allocationFree[i] = buffer[i];
 	}
-	cjson = (Cjson*)allocationFree;
+	cjson = (CjsonB*)allocationFree;
 
 	buffer = 0;
 	allocationFree = 0;
@@ -140,7 +144,7 @@ char GoNextDataInStructCjsonB(void)
 	return 0;
 }
 
-void GetValueInBufferCjsonB(TypeValue _type, void* _value)
+void GetValueInBufferCjsonB(TypeValueCjsonB _type, void* _value)
 {
 	unsigned i = 0;
 	while (buffer[i] != ':')
@@ -295,13 +299,13 @@ unsigned GetStructCountCjsonB(void)
 	return count;
 }
 
-int GetObjectStructLayerCjsonB(Layers** _layers)
+int GetObjectStructLayerCjsonB(LayersCjsonB** _layers)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer-= 2;
-	Layers* temp = *_layers = (Layers*)ALLOC(sizeof(Layers) * count);
+	LayersCjsonB* temp = *_layers = (LayersCjsonB*)ALLOC(sizeof(LayersCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
@@ -374,27 +378,43 @@ int GetObjectStructLayerCjsonB(Layers** _layers)
 			{
 				GetValueInBufferCjsonB(INT_PTR, &temp[i].data);
 			}
+			else if (StringCompareCjsonB("classe"))
+			{
+				GetValueInBufferCjsonB(INT_PTR, &temp[i].classe);
+			}
 			else if (StringCompareCjsonB("objects"))
 			{
 				temp[i].objectsCount = GetObjectStructObjectCjsonB(&temp[i].objects);
+			}
+			else if (StringCompareCjsonB("layers"))
+			{
+				temp[i].layersCount = GetObjectStructLayerCjsonB(&temp[i].layers);
 			}
 		}
 	}
 	return count;
 }
 
-int GetObjectStructObjectCjsonB(Object** _object)
+int GetObjectStructObjectCjsonB(ObjectCjsonB** _object)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
-	Object* temp = *_object = (Object*)ALLOC(sizeof(Object) * count);
+	ObjectCjsonB* temp = *_object = (ObjectCjsonB*)ALLOC(sizeof(ObjectCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
 		{
-			if (StringCompareCjsonB("visible"))
+			if (StringCompareCjsonB("point"))
+			{
+				GetValueInBufferCjsonB(BOOL, &temp[i].point);
+			}
+			else if (StringCompareCjsonB("ellipse"))
+			{
+				GetValueInBufferCjsonB(BOOL, &temp[i].ellipse);
+			}
+			else if (StringCompareCjsonB("visible"))
 			{
 				GetValueInBufferCjsonB(BOOL, &temp[i].visible);
 			}
@@ -434,18 +454,70 @@ int GetObjectStructObjectCjsonB(Object** _object)
 			{
 				GetValueInBufferCjsonB(CHAR_PTR, &temp[i].type);
 			}
+			else if (StringCompareCjsonB("text"))
+			{
+				GetObjectStructTextCjsonB(&temp[count].text);
+			}
+			else if (StringCompareCjsonB("polygon"))
+			{
+				temp[count].polygonCount = GetObjectStructPolylineCjsonB(&temp[count].polygon);
+			}
+			else if (StringCompareCjsonB("polyline"))
+			{
+				temp[count].polylineCount = GetObjectStructPolylineCjsonB(&temp[count].polyline);
+			}
 		}
 	}
 	return count;
 }
 
-int GetObjectStructTilesetCjsonB(Tilesets** _tilesets)
+int GetObjectStructPolylineCjsonB(PolylineCjsonB** _polynile)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
-	Tilesets* temp = *_tilesets = (Tilesets*)ALLOC(sizeof(Tilesets) * count);
+	PolylineCjsonB* temp = *_polynile = (PolylineCjsonB*)ALLOC(sizeof(PolylineCjsonB) * count);
+	for (unsigned i = 0; i < count; i++)
+	{
+		while (GoNextDataInStructCjsonB())
+		{
+			if (StringCompareCjsonB("x"))
+			{
+				GetValueInBufferCjsonB(FLOAT, &temp[i].x);
+			}
+			else if (StringCompareCjsonB("y"))
+			{
+				GetValueInBufferCjsonB(FLOAT, &temp[i].y);
+			}
+		}
+		count++;
+	}
+	return count;
+}
+
+void GetObjectStructTextCjsonB(TextCjsonB* _text)
+{
+	while (GoNextDataInStructCjsonB());
+	{
+		if (StringCompareCjsonB("text"))
+		{
+			GetValueInBufferCjsonB(CHAR_PTR, _text->text);
+		}
+		else if (StringCompareCjsonB("wrap"))
+		{
+			GetValueInBufferCjsonB(BOOL, _text->wrap);
+		}
+	}
+}
+
+int GetObjectStructTilesetCjsonB(TilesetsCjsonB** _tilesets)
+{
+	GoNextDataInStructCjsonB();
+	GoNextDataInStructCjsonB();
+	unsigned count = GetStructCountCjsonB();
+	buffer -= 2;
+	TilesetsCjsonB* temp = *_tilesets = (TilesetsCjsonB*)ALLOC(sizeof(TilesetsCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
@@ -502,18 +574,70 @@ int GetObjectStructTilesetCjsonB(Tilesets** _tilesets)
 			{
 				temp[i].wangsetsCount = GetObjectStructWangsetsCjsonB(&temp[count].wangsets);
 			}
+			else if (StringCompareCjsonB("tiles"))
+			{
+				temp[i].wangsetsCount = GetObjectStructWangsetsCjsonB(&temp[count].wangsets);
+			}
 		}
 	}
 	return count;
 }
 
-int GetObjectStructWangsetsCjsonB(Wangsets** _wangsets)
+int GetObjectStructTilesCjsonB(TilesCjsonB** _tiles)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
-	Wangsets* temp = *_wangsets = (Wangsets*)ALLOC(sizeof(Wangsets) * count);
+	TilesCjsonB* temp = *_tiles = (TilesCjsonB*)ALLOC(sizeof(TilesCjsonB) * count);
+	for (unsigned i = 0; i < count; i++)
+	{
+		while (GoNextDataInStructCjsonB())
+		{
+			if (StringCompareCjsonB("animation"))
+			{
+				temp[count].animationCount = GetObjectStructAnimationCjson(&temp[count].animation);
+			}
+			else if (StringCompareCjsonB("id"))
+			{
+				GetValueInBufferCjsonB(INT, &temp[count].id);
+			}
+		}
+	}
+	return count;
+}
+
+int GetObjectStructAnimationCjson(AnimationCjsonB** _animation)
+{
+	GoNextDataInStructCjsonB();
+	GoNextDataInStructCjsonB();
+	unsigned count = GetStructCountCjsonB();
+	buffer -= 2;
+	AnimationCjsonB* temp = *_animation = (AnimationCjsonB*)ALLOC(sizeof(AnimationCjsonB) * count);
+	for (unsigned i = 0; i < count; i++)
+	{
+		while (GoNextDataInStructCjsonB())
+		{
+			if (StringCompareCjsonB("columns"))
+			{
+				GetValueInBufferCjsonB(FLOAT, &temp[count].duration);
+			}
+			else if (StringCompareCjsonB("firstgid"))
+			{
+				GetValueInBufferCjsonB(INT, &temp[count].tileid);
+			}
+		}
+	}
+	return count;
+}
+
+int GetObjectStructWangsetsCjsonB(WangsetsCjsonB** _wangsets)
+{
+	GoNextDataInStructCjsonB();
+	GoNextDataInStructCjsonB();
+	unsigned count = GetStructCountCjsonB();
+	buffer -= 2;
+	WangsetsCjsonB* temp = *_wangsets = (WangsetsCjsonB*)ALLOC(sizeof(WangsetsCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
@@ -543,13 +667,13 @@ int GetObjectStructWangsetsCjsonB(Wangsets** _wangsets)
 	return count;
 }
 
-int GetObjectStructColorsCjsonB(Colors** _colors)
+int GetObjectStructColorsCjsonB(ColorsCjsonB** _colors)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
-	Colors* temp = *_colors = (Colors*)ALLOC(sizeof(Colors) * count);
+	ColorsCjsonB* temp = *_colors = (ColorsCjsonB*)ALLOC(sizeof(ColorsCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
@@ -575,13 +699,13 @@ int GetObjectStructColorsCjsonB(Colors** _colors)
 	return count;
 }
 
-int GetObjectStructWangtilesCjsonB(Wangtiles** _wangtiles)
+int GetObjectStructWangtilesCjsonB(WangtilesCjsonB** _wangtiles)
 {
 	GoNextDataInStructCjsonB();
 	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
-	Wangtiles* temp = *_wangtiles = (Wangtiles*)ALLOC(sizeof(Wangtiles) * count);
+	WangtilesCjsonB* temp = *_wangtiles = (WangtilesCjsonB*)ALLOC(sizeof(WangtilesCjsonB) * count);
 	for (unsigned i = 0; i < count; i++)
 	{
 		while (GoNextDataInStructCjsonB())
@@ -598,7 +722,8 @@ int GetObjectStructWangtilesCjsonB(Wangtiles** _wangtiles)
 	}
 	return count;
 }
-void CleanupCjsonB(Cjson* _cjson)
+
+void CleanupCjsonB(CjsonB* _cjson)
 {
 	VirtualFree(_cjson, 0, 0x8000);
 }
