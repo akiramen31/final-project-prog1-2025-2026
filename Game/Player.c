@@ -5,12 +5,18 @@ Weapon weapon;
 
 float timerDash = 0;
 float timerFaling = 0;
+float timerLastEnergyConso = 0;
+
 
 void MovePlayer(float _dt);
-void UpdateCooldown(float _dt);
-void UpdateFireControl(void);
+
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
+
+void UpdateCooldown(float _dt);
+void UpdateFireControl(void);
+
+void UpdateEnergy(float _dt);
 
 sfVector2f pos;
 
@@ -31,12 +37,20 @@ void LoadPlayer(void)
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
 	pos.x = 100;
 	pos.y = 32;
+
+	player.ener.energyMax = 100;
+	player.ener.energy = player.ener.energyMax;
+	player.ener.energyRegen = 5;
+	player.ener.energyRegenCooldown = 0.5f;
+	player.ener.dashConsuption = 5.f;
 }
 
 void UpdatePlayer(float _dt)
 {
 	UpdateCooldown(_dt);
 	UpdateFireControl();
+	UpdateEnergy(_dt);
+
 
 	if (DEV_MODE_FLY)
 	{
@@ -64,6 +78,9 @@ void UpdatePlayer(float _dt)
 		MoveZonePlayer(_dt);
 		MovePlayer(_dt);
 	}
+
+	//printf("%f\n", player.ener.energy);
+
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 
@@ -139,11 +156,14 @@ void MovePlayer(float _dt)
 		}
 	}
 
-	if (timerDash >= PLAYER_DASH_COOLDOWN && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
+	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
 	{
 		timerDash = 0;
 
 		player.velocity.y /= 1.2f;
+
+		player.ener.energy -= player.ener.dashConsuption;
+		timerLastEnergyConso = 0;
 
 		if (player.direction)
 		{
@@ -309,9 +329,71 @@ void UpdateFireControl(void)
 	}
 }
 
+void UpdateEnergy(float _dt)
+{
+	if (timerLastEnergyConso < player.ener.energyRegenCooldown)
+	{
+		timerLastEnergyConso += _dt;
+	}
+	else
+	{
+		if (player.ener.energy < player.ener.energyMax)
+		{
+			player.ener.energy += _dt * player.ener.energyRegen;
+		}
+		else if (player.ener.energy > player.ener.energyMax)
+		{
+			player.ener.energy = player.ener.energyMax;
+		}
+	}
+}
+
 sfFloatRect GetPlayerRect(void)
 {
 	return sfRectangleShape_getGlobalBounds(player.collision);
+}
+
+float GetPlayerEnergyInfo(int _index)
+{
+	switch (_index)
+	{
+	case ENERGY:
+		return player.ener.energy;
+		break;
+	case ENERGY_MAX:
+		return player.ener.energyMax;
+		break;
+	case ENERGY_REGEN:
+		return player.ener.energyRegen;
+		break;
+	case ENERGY_REGEN_COOLDOWN:
+		return player.ener.energyRegenCooldown;
+		break;
+	default:
+		return 0;
+		break;
+	}
+}
+
+void SetPlayerEnergyInfo(float _val, int _index)
+{
+	switch (_index)
+	{
+	case ENERGY:
+		player.ener.energy = _val;
+		break;
+	case ENERGY_MAX:
+		player.ener.energyMax = _val;
+		break;
+	case ENERGY_REGEN:
+		player.ener.energyRegen = _val;
+		break;
+	case ENERGY_REGEN_COOLDOWN:
+		player.ener.energyRegenCooldown = _val;
+		break;
+	default:
+		break;
+	}
 }
 
 void SetPlayerPosition(sfVector2f _pos)

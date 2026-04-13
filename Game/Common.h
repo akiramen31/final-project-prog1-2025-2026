@@ -27,11 +27,11 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfTrue
+#define DEV_ENNEMY sfFalse
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfFalse
 #define DEV_MODE_FLY sfFalse
-#define DEBUG_MODE_A_STAR sfTrue
+#define DEBUG_MODE_A_STAR sfFalse
 
 #define TILE_SIZE 16.f
 
@@ -42,6 +42,14 @@ typedef enum State
 	IDLE = 0,
 	WALK = 4
 }State;
+
+enum EnergyEnum
+{
+	ENERGY,
+	ENERGY_MAX,
+	ENERGY_REGEN,
+	ENERGY_REGEN_COOLDOWN,
+};
 
 typedef enum Direction
 {
