@@ -1,5 +1,5 @@
 {
-    "activeFile": "Level1_2.tmx",
+    "activeFile": "Level1.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
@@ -35,13 +35,14 @@
         "Level1.tmx": {
             "expandedObjectLayers": [
                 31,
-                39
+                39,
+                37
             ],
-            "scale": 0.33,
+            "scale": 0.25,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 4587.878787878788,
-                "y": 1163.6363636363635
+                "x": 3300,
+                "y": 840
             }
         },
         "Level1_2.tmx": {
@@ -146,13 +147,13 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Level1.tmx",
         "Tilesets/SpritesList.tsx",
         "LevelTest.tmx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
         "Level2.tmx",
         "Level1_2.tmx",
+        "Level1.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
         "Tilesets/Pipes.tsx",
