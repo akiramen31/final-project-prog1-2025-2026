@@ -47,7 +47,7 @@ void Draw(void)
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
-	sfWindow_setVerticalSyncEnabled(GetRenderWindow(), sfTrue);
+	sfRenderWindow_setVerticalSyncEnabled(GetRenderWindow(), sfTrue);
 
 	while (elementActual)
 	{
@@ -546,12 +546,12 @@ void RemoveList(List* _list)
 				elementNext = elementNext->next;
 			}
 		}
-		free(_list);
 
 		for (int i = 0; i < entityManager.listListCount; i++)
 		{
 			if (_list == entityManager.listList[i])
 			{
+				free(_list);
 				entityManager.listListCount--;
 				if (entityManager.listListCount)
 				{
@@ -561,7 +561,7 @@ void RemoveList(List* _list)
 					{
 						return;
 					}
-					entityManager.listList = temp;
+					entityManager.listList = (List**) temp;
 				}
 				return;
 			}

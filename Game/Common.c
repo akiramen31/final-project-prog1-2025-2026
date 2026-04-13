@@ -95,12 +95,12 @@ sfBool StringCompare(char* _string1, char* _string2)
 		i++;
 		if (_string1[i] == 0 && _string2[i] == 0)
 		{
-			return TRUE;
+			return sfTrue;
 		}
 		else if (_string1[i] == 0 || _string2[i] == 0)
 		{
-			return FALSE;
+			return sfFalse;
 		}
 	}
-	return FALSE;
+	return sfFalse;
 }

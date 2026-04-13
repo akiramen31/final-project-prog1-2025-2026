@@ -1,17 +1,9 @@
-#ifndef CJSON_H
-#define CJSON_H
-
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef char Bool;
-#define FALSE (Bool) 0
-#define TRUE (Bool) 1
+#ifndef CJSONB_H
+#define CJSONB_H
 
 typedef enum TypeValue
 {
 	BOOL,
-	CHAR,
 	INT,
 	FLOAT,
 	CHAR_PTR,
@@ -20,63 +12,67 @@ typedef enum TypeValue
 
 typedef struct Object
 {
+	char visible;
 	unsigned id;
-	unsigned x;
-	unsigned y;
-	unsigned width;
-	unsigned height;
-	unsigned rotation;
+	float x;
+	float y;
+	float width;
+	float height;
+	float rotation;
+	float opacity;
 	char* name;
 	char* type;
-	Bool visible;
 }Object;
 
 typedef struct Layers
 {
-	int id;
-	int x;
-	int y;
-    char* name;
+	char visible;
+	char locked;
+	unsigned id;
+	unsigned width;
+	unsigned height;
+	unsigned imageheight;
+	unsigned imagewidth;
+	float offsetx;
+	float offsety;
+	float x;
+	float y;
 	float opacity;
+	char* name;
 	char* type;
-    Bool visible;
+	char* draworder;
+	char* image;
+	unsigned* data;
 
-	unsigned** data;
-    unsigned width;
-    unsigned height;
-
-    char* draworder;
-    Object* objects;
-	int objectsCount;
-
-	Bool locked;
-	int offsetx;
-	int offsety;
+	Object* objects;
+	unsigned objectsCount;
 }Layers;
 
 typedef struct Colors
 {
+	unsigned tile;
+	float probability;
 	char* color;
 	char* name;
-	float probability;
-	int tile;
 }Colors;
 
 typedef struct Wangtiles
 {
-	int tileid;
+	unsigned tileid;
 	int* wangid;
 }Wangtiles;
 
 typedef struct Wangsets
 {
-	Colors* colors;
-	int colorsCount;
+	unsigned tile;
 	char* name;
-	int tile;
 	char* type;
+
+	Colors* colors;
+	unsigned colorsCount;
+
 	Wangtiles* wangtiles;
-	int wangtilesCount;
+	unsigned wangtilesCount;
 }Wangsets;
 
 typedef struct Tilesets
@@ -92,32 +88,36 @@ typedef struct Tilesets
 	unsigned tilewidth;
 	char* image;
 	char* name;
+	char* source;
+
 	Wangsets* wangsets;
-	int wangsetsCount;
+	unsigned wangsetsCount;
 }Tilesets;
 
 typedef struct Cjson
 {
-	int compressionlevel;
+	char infinite;
 	unsigned width;
 	unsigned height;
-	unsigned tileWidth;
-	unsigned tileHeight;
-	unsigned nextLayerId;
-	unsigned nextObjectId;
-	Bool infinite;
+	unsigned tilewidth;
+	unsigned tileheight;
+	unsigned nextlayerid;
+	unsigned nextobjectid;
+	float compressionlevel;
 	char* orientation;
 	char* renderOrder;
 	char* tiledVersion;
 	char* type;
 	char* version;
+
 	Layers* layers;
+	unsigned layersCount;
+
 	Tilesets* tilesets;
-	int layersCount;
-	int tilesetsCount;
+	unsigned tilesetsCount;
 }Cjson;
 
-Cjson* LoadCjson(char* _file);
-void CleanupCjson(Cjson* _cjson);
+Cjson* LoadCjsonB(char* _file);
+void CleanupCjsonB(Cjson* _cjson);
 
-#endif // CJSON_H
+#endif // CJSONB_H
