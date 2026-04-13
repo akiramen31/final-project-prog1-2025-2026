@@ -23,7 +23,7 @@
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cjson.h" />
+    <ClInclude Include="CjsonB.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Ennemy.h" />
     <ClInclude Include="EntityManager.h" />
@@ -42,7 +42,7 @@
     <ClCompile Include="Backup.c" />
     <ClCompile Include="Bullet.c" />
     <ClCompile Include="Camera.c" />
-    <ClCompile Include="Cjson.c" />
+    <ClCompile Include="CjsonB.c" />
     <ClCompile Include="Common.c" />
     <ClCompile Include="Ennemy.c" />
     <ClCompile Include="EntityManager.c" />

@@ -1185,7 +1185,7 @@ void SetPositionEnnemy(sfVector2f _position, int _index)
 
 void ResetEnnemy(void)
 {
-	for (int i = 0; i < GetListSize(listEnnemy); i++)
+	for (unsigned i = 0; i < GetListSize(listEnnemy); i++)
 	{
 		Ennemy* ennemy = GetElement(listEnnemy, i)->value;
 		DestroyVisualEntity(ennemy->sprite);
@@ -1193,7 +1193,7 @@ void ResetEnnemy(void)
 	RemoveList(listEnnemy);
 	if (mapData)
 	{
-		for (int i = 0; i < mapData->size.y; i++)
+		for (unsigned i = 0; i < mapData->size.y; i++)
 		{
 			Free(aStarMap[i]);
 		}

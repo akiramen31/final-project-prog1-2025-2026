@@ -1,6 +1,6 @@
 #include "Map.h"
 #include "Ennemy.h"
-
+#include "CjsonB.h"
 Map map;
 
 int rectShapeCount;
@@ -34,22 +34,22 @@ void SetMap(MapState _map)
 	switch (_map)
 	{
 	case LEVEL1:
-		cjson = LoadCjson("Assets/Maps/Level1.json");
+		cjson = LoadCjsonB("Assets/Maps/Level1.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 		break;
 	case LEVEL2:
-		cjson = LoadCjson("Assets/Maps/Level2.json");
+		cjson = LoadCjsonB("Assets/Maps/Level2.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
 		break;
 	case LEVEL3:
-		cjson = LoadCjson("Assets/Maps/Level3.json");
+		cjson = LoadCjsonB("Assets/Maps/Level3.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
 		break;
 	case LEVEL_TEST:
-		cjson = LoadCjson("Assets/Maps/LevelTest.json");
+		cjson = LoadCjsonB("Assets/Maps/LevelTest.json");
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/MapTesteReduite.png");
 		break;
@@ -60,7 +60,7 @@ void SetMap(MapState _map)
 	if (cjson)
 	{
 		LoadMapData(cjson);
-		CleanupCjson(cjson);
+		CleanupCjsonB(cjson);
 	}
 
 	if (DEV_ENNEMY)
@@ -81,7 +81,7 @@ void LoadMapData(Cjson* _cjson)
 {
 	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
 
-	for (int i = 0; i < _cjson->layersCount; i++)
+	for (unsigned i = 0; i < _cjson->layersCount; i++)
 	{
 		if (StringCompare(_cjson->layers[i].name, "Collider"))
 		{
@@ -107,7 +107,7 @@ void LoadMapData(Cjson* _cjson)
 
 	CreateRectVisible(map.data.move, map.data.moveCount);
 
-	map.data.caseSize = (sfVector2f){ (float)_cjson->tileWidth, (float)_cjson->tileHeight };
+	map.data.caseSize = (sfVector2f){ (float)_cjson->tilewidth, (float)_cjson->tileheight };
 }
 
 

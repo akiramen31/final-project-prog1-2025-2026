@@ -74,7 +74,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt)
 
 void UseWeapon(sfVector2f _posPlayer, sfVector2f _aimPos)
 {
-	AddBullet(_posPlayer, _aimPos, (int){ WEAPON_ORIGIN }, weapon.isRight);
+	AddBullet(_posPlayer, _aimPos, (int)WEAPON_ORIGIN, weapon.isRight);
 }
 
 Weapon GetWeapon()

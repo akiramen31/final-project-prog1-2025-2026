@@ -45,7 +45,7 @@
     <ClInclude Include="Ennemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Cjson.h">
+    <ClInclude Include="CjsonB.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
@@ -80,7 +80,7 @@
     <ClCompile Include="Ennemy.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Cjson.c">
+    <ClCompile Include="CjsonB.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="GUI.c">
