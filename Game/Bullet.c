@@ -26,6 +26,19 @@ void UpdateBullet(float _dt)
 			continue;
 		}
 
+		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite));
+		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue);
+		reaction.x += reactionBox.x;
+		reaction.y += reactionBox.y;
+
+		if (reaction.x != 0 || reaction.y != 0)
+		{
+			DestroyVisualEntity(bulletList[i].sprite);
+			SortBulletList(i);
+			bulletCount--;
+			continue;
+		}
+
 		bulletList[i].velocity.y += G * _dt;
 		sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
 
@@ -40,50 +53,51 @@ unsigned GetBulletCount(void)
 	return bulletCount;
 }
 
-void AddBullet(sfVector2f _posPlayer, sfVector2f _posAim, int _weaponPos,sfBool _isRighted)
+void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
 {
-    if (bulletCount >= BULLET_MAX) return;
+	if (bulletCount >= BULLET_MAX) return;
 
-    Bullet newBullet = { 0 };
-    newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
-    SetSpriteOriginMiddel(newBullet.sprite);
-
-
-    sfVector2f pivotPos = { _posPlayer.x, _posPlayer.y - (float)_weaponPos };
+	Bullet newBullet = { 0 };
+	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
+	SetSpriteOriginMiddel(newBullet.sprite);
 
 
-    float dxInitial = _posAim.x - pivotPos.x;
-    float dyInitial = _posAim.y - pivotPos.y;
-    float angleRadInitial = atan2f(dyInitial, dxInitial);
+	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
 
 
-    float gunLength = 10.0f;
-    float sideOffset = 7.0f;
+	float dxInitial = _posTarget.x - pivotPos.x;
+	float dyInitial = _posTarget.y - pivotPos.y;
+	float angleRadInitial = atan2f(dyInitial, dxInitial);
 
 
-    if (dxInitial < 0) {
-        sideOffset = -sideOffset;
-    }
+	if (dxInitial < 0)
+	{
+		_shooterType.shootPosition.x = -_shooterType.shootPosition.x;
+	}
 
-    sfVector2f spawnPos;
-    spawnPos.x = pivotPos.x + cosf(angleRadInitial) * gunLength - sinf(angleRadInitial) * sideOffset;
-    spawnPos.y = pivotPos.y + sinf(angleRadInitial) * gunLength + cosf(angleRadInitial) * sideOffset;
+	sfVector2f spawnPos;
+	spawnPos.x = pivotPos.x + cosf(angleRadInitial) * _shooterType.shootPosition.x - sinf(angleRadInitial) * _shooterType.shootPosition.y;
+	spawnPos.y = pivotPos.y + sinf(angleRadInitial) * _shooterType.shootPosition.x + cosf(angleRadInitial) * _shooterType.shootPosition.y;
 
-    float realDx = _posAim.x - spawnPos.x;
-    float realDy = _posAim.y - spawnPos.y;
-    float realAngleRad = atan2f(realDy, realDx);
+	float realDx = _posTarget.x - spawnPos.x;
+	float realDy = _posTarget.y - spawnPos.y;
+	float realAngleRad = atan2f(realDy, realDx);
 
-    newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED;
-    newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED;
+	newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED;
+	newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED;
 
-    sfSprite_setPosition(newBullet.sprite, spawnPos);
-    sfSprite_setRotation(newBullet.sprite, realAngleRad * (180.0f / (float)M_PI));
+	sfSprite_setPosition(newBullet.sprite, spawnPos);
+	sfSprite_setRotation(newBullet.sprite, realAngleRad * (180.0f / (float)M_PI));
 
-    newBullet.isAlive = sfTrue;
-    newBullet.lifetime = BULLET_LIFETIME;
-    bulletList[bulletCount] = newBullet;
-    bulletCount++;
+	newBullet.isAlive = sfTrue;
+	newBullet.isAlly = _shooterType.isAlly;
+	newBullet.bulletType = _shooterType.bulletType;
+	newBullet.lifetime = BULLET_LIFETIME;
+	bulletList[bulletCount] = newBullet;
+	bulletCount++;
 }
+
+
 
 void SortBulletList(unsigned _index)
 {
