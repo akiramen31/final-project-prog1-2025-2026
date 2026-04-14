@@ -204,7 +204,7 @@ void ColisionMapPlayer(float _dt)
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
 
 	// Assuming ColisionBox also takes an axis parameter now:
-	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).y;
+	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_Y).y;
 
 	// Handle Pass-Through Platforms
 	if (reactionPassThrough.y < 0)
@@ -254,7 +254,7 @@ void ColisionMapPlayer(float _dt)
 			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt / 10.0f, 0 });
 
 			sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
-			reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
+			reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
 
 			if (reactionX.x != 0)
 			{
@@ -270,7 +270,7 @@ void ColisionMapPlayer(float _dt)
 		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt, 0 });
 
 		sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
-		reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
+		reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
 
 		if (reactionX.x != 0)
 		{
@@ -558,7 +558,7 @@ void SetPlayerLifeMax(int _lifeMax)
 	player.lifeMax = _lifeMax;
 }
 
- void AddPlayerLife(int _life)
+void AddPlayerLife(int _life)
 {
 	player.life += _life;
 	if (player.life > player.lifeMax)

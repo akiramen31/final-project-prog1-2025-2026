@@ -2,7 +2,7 @@
 
 Missile missileList[MISSILE_MAX] = { 0 };
 sfTexture* missileTexture;
-void MoveMissile(unsigned _index,sfVector2f _playerPos, float _dt);
+void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt);
 void CheckCollisionMissileScreen(unsigned _index);
 
 void LoadMissile(void)
@@ -32,8 +32,8 @@ void AddMissile(sfVector2f _pos)
 		if (missileList[i].isAlive == sfFalse)
 		{
 			missileList[i].isAlive = sfTrue;
-			missileList[i].lifetime = 0; 
-			missileList[i].rotation = 0; 
+			missileList[i].lifetime = 0;
+			missileList[i].rotation = 0;
 			sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x, _pos.y - WEAPON_ORIGIN });
 
 			return;
@@ -41,7 +41,7 @@ void AddMissile(sfVector2f _pos)
 	}
 }
 
-void UpdateMissile(sfVector2f _posAim,float _dt)
+void UpdateMissile(sfVector2f _posAim, float _dt)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -60,8 +60,8 @@ void UpdateMissile(sfVector2f _posAim,float _dt)
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
 				continue;
 			}
-			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite));
-			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue);
+			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite), AXIS_BOTH);
+			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
 			if (reaction.x != 0 || reaction.y != 0)
