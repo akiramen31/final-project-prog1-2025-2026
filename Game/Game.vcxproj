@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Aim.h" />
     <ClInclude Include="Backup.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
@@ -41,6 +42,7 @@
   <ItemGroup>
     <ClCompile Include="Aim.c" />
     <ClCompile Include="Backup.c" />
+    <ClCompile Include="Boss.c" />
     <ClCompile Include="Box.c" />
     <ClCompile Include="Bullet.c" />
     <ClCompile Include="Camera.c" />

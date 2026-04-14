@@ -18,7 +18,7 @@ void UpdateEnemy(float _dt)
 	sfVector2f playerPosition = GetPlayerPosition();
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y))
+		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y - 1))
 		{
 			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 
@@ -38,9 +38,45 @@ void UpdateEnemy(float _dt)
 				}
 				enemy.entity[i].velocity.x = 0;
 			}
-			if (!enemy.entity[i].velocity.y && enemyHitbox.top + enemyHitbox.height > playerPosition.y)
+
+			if (!enemy.entity[i].velocity.y)
 			{
-				enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+				if (playerPosition.y > enemyHitbox.top)
+				{
+					if (enemy.entity[i].velocity.x < 0)
+					{
+						sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top - enemy.data[enemy.entity[i].type].jumpForce, enemyHitbox.width, enemyHitbox.height });
+						if (colision.x)
+						{
+							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+						}
+					}
+					else if (enemy.entity[i].velocity.x > 0)
+					{
+						sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top - enemy.data[enemy.entity[i].type].jumpForce, enemyHitbox.width, enemyHitbox.height });
+						if (colision.x)
+						{
+							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+						}
+					}
+				}
+				if (enemy.entity[i].velocity.x < 0)
+				{
+					sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height });
+					if (colision.x)
+					{
+						enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+					}
+				}
+				else if (enemy.entity[i].velocity.x > 0)
+				{
+					sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height });
+					if (colision.x)
+					{
+						enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+					}
+				}
+
 			}
 		}
 		else
@@ -54,18 +90,20 @@ void UpdateEnemy(float _dt)
 			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
 		}
 
-		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x * _dt, enemy.entity[i].velocity.y* _dt });
+		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
 
 		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite));
 		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
-		if (colision.x)
-		{
-			enemy.entity[i].velocity.x = 0;
-		}
 		if (colision.y)
 		{
 			enemy.entity[i].velocity.y = 0;
 		}
+		else if(colision.x)
+		{
+			colision.y -= abs(colision.x);
+			enemy.entity[i].velocity.x = 0;
+		}
+		
 		sfSprite_move(enemy.entity[i].sprite, colision);
 
 	}

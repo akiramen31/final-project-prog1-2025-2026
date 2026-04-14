@@ -339,29 +339,31 @@ sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play)
 
 void DestroyVisualEntity(void* _entity)
 {
-	VisualEntity* elementActual = entityManager.visual;
-	VisualEntity* elementNext = (VisualEntity*)elementActual->next;
-	while (elementNext)
+	if (_entity)
 	{
-		if (elementNext->ptr == _entity)
+		VisualEntity* elementActual = entityManager.visual;
+		VisualEntity* elementNext = (VisualEntity*)elementActual->next;
+		while (elementNext)
 		{
-			if (elementNext->type == SPRITE)
+			if (elementNext->ptr == _entity)
 			{
-				sfSprite_destroy(elementNext->ptr);
-				elementNext->ptr = NULL;
+				if (elementNext->type == SPRITE)
+				{
+					sfSprite_destroy(elementNext->ptr);
+					elementNext->ptr = NULL;
+				}
+				else if (elementNext->type == TEXT)
+				{
+					sfText_destroy(elementNext->ptr);
+				}
+				elementActual->next = elementNext->next;
+				free(elementNext);
+				return;
 			}
-			else if (elementNext->type == TEXT)
-			{
-				sfText_destroy(elementNext->ptr);
-			}
-			elementActual->next = elementNext->next;
-			free(elementNext);
-			return;
+			elementActual = elementNext;
+			elementNext = (VisualEntity*)elementActual->next;
 		}
-		elementActual = elementNext;
-		elementNext = (VisualEntity*)elementActual->next;
 	}
-	return;
 }
 
 void DestroySoundEntity(void* _entity)
@@ -561,13 +563,13 @@ void RemoveList(List* _list)
 					{
 						return;
 					}
-					entityManager.listList = (List**) temp;
+					entityManager.listList = (List**)temp;
 				}
 				return;
 			}
 		}
 	}
-	
+
 }
 
 unsigned GetListSize(List* _list)

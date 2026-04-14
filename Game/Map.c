@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "Ennemy.h"
 #include "CjsonB.h"
+#include "Boss.h"
 Map map;
 
 int rectShapeCount;
@@ -134,6 +135,10 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		{
 			AddBox((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
+		else if (StringCompare(_point[i].type, "Boss"))
+		{
+			//SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
 			if (DEV_ENNEMY)
@@ -150,6 +155,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
 			SetPlayerPosition((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+			SwitchBoss(map.state, (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
 	}
 }
