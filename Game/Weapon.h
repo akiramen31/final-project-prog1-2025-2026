@@ -45,7 +45,7 @@ typedef struct Weapon
 
 void LoadWeapon(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
-void UseWeapon(sfVector2f _posPlayer, sfVector2f _aimPos);
+void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 
 Weapon GetWeapon(void);
 
