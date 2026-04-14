@@ -160,7 +160,7 @@ void CalculMoveEnemy(float _dt, int _index)
 	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if ((sfKeyboard_isKeyPressed(sfKeyNumpad0) || ennemy->actiondemander.Saut) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
+	if (sfKeyboard_isKeyPressed(sfKeyNumpad0)  && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 	{
 		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
 
@@ -325,7 +325,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	}
 	aStarMap[positionDebutCase.y][positionDebutCase.x].resultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
-	if (ennemy->actiondemander.jetPack)
+	/*if (ennemy->actiondemander.jetPack)
 	{
 		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = -1;
 	}
@@ -340,7 +340,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	else
 	{
 		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = 1;
-	}
+	}*/
 
 	// préparation des variable nécéssaire
 	sfBool flag = sfFalse;
@@ -836,7 +836,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 			{
 			case NO_DIRECTION:
-				return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+				return(ActionDemander) { 0 }; 
 				break;
 			case UP:
 				caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
@@ -905,7 +905,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				{
 					actionDemander.jetPack = 1;
 				}
-				//printf("droite: %d gauche:%d saut:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut);
+				//printf("droite: %d gauche:%d saut:%d jetpack:%d\n", actionDemander.droite, actionDemander.gauche, actionDemander.Saut, actionDemander.jetPack);
 				return actionDemander;
 			}
 			caseGet = caseRecherche;
@@ -1103,6 +1103,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
 
 	InsertElement(listEnnemy, element, 0);
+	SetPositionEnemy(_position, 0);
 }
 
 sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)

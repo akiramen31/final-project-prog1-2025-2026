@@ -191,9 +191,7 @@ void ColisionMapPlayer(float _dt)
 {
 	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
-	sfVector2f reactionBox = ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse);
-	reaction.x += reactionBox.x;
-	reaction.y += reactionBox.y;
+	reaction.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).y;
 
 
 	if (reactionPassThrough.y < 0)
@@ -236,25 +234,28 @@ void ColisionMapPlayer(float _dt)
 		for (int i = 0; i < 10; i++)
 		{
 			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt / 10, 0 });
-			reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+			reaction.x = Colision(sfRectangleShape_getGlobalBounds(player.collision)).x;
+			reaction.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
 
 			if (reaction.x != 0)
 			{
 				player.velocity.x = 0;
+				break;
 			}
 		}
 	}
-	// GUN CODE PART WILL BE MODIFIED NEXT WEEK
 	else
 	{
 		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt, 0 });
-		reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+		reaction.x = Colision(sfRectangleShape_getGlobalBounds(player.collision)).x;
+		reaction.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
 
 		if (reaction.x != 0)
 		{
 			player.velocity.x = 0;
 		}
 	}
+
 	sfRectangleShape_move(player.collision, reaction);
 	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }

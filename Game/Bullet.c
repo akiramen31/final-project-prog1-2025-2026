@@ -27,7 +27,11 @@ void UpdateBullet(float _dt)
 		}
 
 		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite));
-		if (reaction.x || reaction.y)
+		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue);
+		reaction.x += reactionBox.x;
+		reaction.y += reactionBox.y;
+
+		if (reaction.x != 0 || reaction.y != 0)
 		{
 			DestroyVisualEntity(bulletList[i].sprite);
 			SortBulletList(i);
@@ -54,7 +58,7 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	if (bulletCount >= BULLET_MAX) return;
 
 	Bullet newBullet = { 0 };
-	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
+	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
 	SetSpriteOriginMiddel(newBullet.sprite);
 
 
@@ -66,9 +70,9 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	float angleRadInitial = atan2f(dyInitial, dxInitial);
 
 
-	if (!_shooterType.isRighted)
+	if (dxInitial < 0)
 	{
-		_shooterType.shootPosition.y = -_shooterType.shootPosition.y;
+		_shooterType.shootPosition.x = -_shooterType.shootPosition.x;
 	}
 
 	sfVector2f spawnPos;
