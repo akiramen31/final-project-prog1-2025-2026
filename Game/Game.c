@@ -1,4 +1,11 @@
 #include "Game.h"
+#include "GUI.h"
+#include "HUD.h"
+#include "Player.h"
+#include "Ennemy.h"
+#include "Map.h"
+#include "Camera.h"
+#include "Boss.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -14,6 +21,7 @@ void LoadGame(void)
 	LoadWeapon();
 	LoadPlayer();
 	LoadEnemy();
+	LoadBoss();
 	LoadMap(background);
 
 	//LoadHUD();
