@@ -20,14 +20,14 @@
 #define SCREEN_HEIGHT 1080
 
 // NEEDED FOR BULLET AND WEAPON
-#define PLAYER_COLLISION_WIDTH 14
+#define PLAYER_COLLISION_WIDTH 12
 #define PLAYER_COLLISION_HEIGHT 32
 #define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfTrue
+#define DEV_ENNEMY sfFalse
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfFalse
 #define DEV_MODE_FLY sfFalse

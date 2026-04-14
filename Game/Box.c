@@ -6,14 +6,14 @@ void LoadBox(void)
 {
 	box.count = 0;
 	box.entity = Calloc(1, sizeof(BoxEntity));
-	box.texture = GetAsset("Assets/Sprites/Aim_V2.png");
+	box.texture = GetAsset("Assets/Sprites/Box.png");
 }
 
 void AddBox(sfVector2f _position)
 {
 	box.entity = Realloc(box.entity, (size_t)(box.count + 1) * sizeof(BoxEntity));
 	box.entity[box.count].hitbox = (sfFloatRect){ _position.x, _position.y, 16.f, 16.f };
-	box.entity[box.count].sprite = CreateSprite(box.texture, _position, 1.f, 1.f);
+	box.entity[box.count].sprite = CreateSprite(box.texture, _position, 1.f, 50.f);
 	box.count++;
 }
 
@@ -23,7 +23,7 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy)
 	sfFloatRect reaction = { 0 };
 
 	for (unsigned i = 0; i < box.count; i++)
-	{		
+	{
 		if (sfFloatRect_intersects(&_hitbox, &box.entity[i].hitbox, &reaction))
 		{
 			if (_destroy)
@@ -32,6 +32,8 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy)
 				DestroyVisualEntity(box.entity[i].sprite);
 				box.entity[i] = box.entity[box.count];
 				box.entity = Realloc(box.entity, box.count);
+
+				return (sfVector2f) { 777, 777 };
 			}
 			else
 			{
