@@ -20,6 +20,8 @@ void UpdateFireControlSteamAxe(float _dt);
 void UpdateSteamAxe(float _dt);
 void UpdateEnergy(float _dt);
 
+void UpdateWeaponPlayer(float _dt);
+
 sfVector2f pos;
 
 void LoadPlayer(void)
@@ -51,13 +53,8 @@ void LoadPlayer(void)
 void UpdatePlayer(float _dt)
 {
 	player.weapon = GetWeapon();
-	UpdateCooldown(_dt);
-	UpdateFireControl(_dt);
+	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
-	if (player.weapon.weaponType == STEAMAXE)
-	{
-		UpdateSteamAxe(_dt);
-	}
 
 	if (DEV_MODE_FLY)
 	{
@@ -89,6 +86,16 @@ void UpdatePlayer(float _dt)
 	//printf("%f\n", player.ener.energy);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+}
+
+void UpdateWeaponPlayer(float _dt)
+{
+	UpdateCooldown(_dt);
+	UpdateFireControl(_dt);
+	if (player.weapon.weaponType == STEAMAXE)
+	{
+		UpdateSteamAxe(_dt);
+	}
 }
 
 void MovePlayer(float _dt)
