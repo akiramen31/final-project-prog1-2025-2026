@@ -55,7 +55,10 @@ void LoadPlayer(void)
 
 void UpdatePlayer(float _dt)
 {
-	player.weapon = GetWeapon();
+	if (!player.isAttacking)
+	{
+		player.weapon = GetWeapon();
+	}
 	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
 
@@ -86,17 +89,19 @@ void UpdatePlayer(float _dt)
 		MovePlayer(_dt);
 	}
 
+	printf("%f\n", player.ener.energy);
+
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
 
 void UpdateWeaponPlayer(float _dt)
 {
-	UpdateCooldown(_dt);
-	UpdateFireControl(_dt);
 	if (player.weapon.weaponType == STEAMAXE)
 	{
 		UpdateSteamAxe(_dt);
 	}
+	UpdateCooldown(_dt);
+	UpdateFireControl(_dt);
 }
 
 void MovePlayer(float _dt)
@@ -379,8 +384,25 @@ void UpdateFireControl(float _dt)
 	{
 		if (player.canShoot)
 		{
-			AddMissile(GetPlayerPosition());
+			AddMissile(GetPlayerPosition(), player.weapon.isRight);
 			player.canShoot = sfFalse;
+		}
+	}
+	if (DEV_WEAPON)
+	{
+		static sfBool k_wasPressed = sfFalse;
+
+		if (sfKeyboard_isKeyPressed(sfKeyK))
+		{
+			if (k_wasPressed == sfFalse)
+			{
+				SwitchGunDevMode();
+				k_wasPressed = sfTrue;
+			}
+		}
+		else
+		{
+			k_wasPressed = sfFalse;
 		}
 	}
 }
@@ -442,9 +464,17 @@ void UpdateFireControlSteamAxe(float _dt)
 		{
 			angleShift = STEAMAXE_ANGLE_HEAVY / 2.0f;
 		}
-		sfSprite_rotate(player.weapon.steamAxe.sprite, -angleShift);
+		if (player.weapon.isRight)
+		{
+			sfSprite_rotate(player.weapon.steamAxe.sprite, -angleShift);
+		}
+		else
+		{
+			sfSprite_rotate(player.weapon.steamAxe.sprite, angleShift);
+		}
 		player.isAttacking = sfTrue;
 		player.canShoot = sfFalse;
+		player.weapon.steamAxe.canHit = sfTrue;
 		player.cooldown = 1.0f / FIRE_RATE_STEAMAXE;
 		player.pressTime = 0.0f;
 	}
@@ -457,26 +487,29 @@ void UpdateSteamAxe(float _dt)
 		float range = 0;
 		if (player.weapon.steamAxe.attackType == LIGHT)
 		{
-			range = STEAMAXE_ANGLE_LIGHT;
+			range = (float)STEAMAXE_ANGLE_LIGHT;
 		}
 		else if (player.weapon.steamAxe.attackType == MEDIUM)
 		{
-			range = STEAMAXE_ANGLE_MEDIUM;
+			range = (float)STEAMAXE_ANGLE_MEDIUM;
 		}
-		else
+		else if (player.weapon.steamAxe.attackType == HEAVY)
 		{
-			range = STEAMAXE_ANGLE_HEAVY;
+			range = (float)STEAMAXE_ANGLE_HEAVY;
 		}
-		float frameRotation = (range * FIRE_RATE_STEAMAXE) * _dt;
+		float frameRotation = (range * (float)FIRE_RATE_STEAMAXE * _dt);
 		if (player.weapon.isRight)
 		{
-			printf("test droit");
-			sfSprite_rotate(player.weapon.steamAxe.sprite, -frameRotation);
+			sfSprite_rotate(player.weapon.steamAxe.sprite, frameRotation);
 		}
 		else
 		{
-			printf("test gauche");
-			sfSprite_rotate(player.weapon.steamAxe.sprite, frameRotation);
+			sfSprite_rotate(player.weapon.steamAxe.sprite, -frameRotation);
+		}
+		if (player.weapon.steamAxe.canHit == sfTrue)
+		{
+			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
+			ColisionBox(axeHitbox, sfTrue);
 		}
 	}
 }

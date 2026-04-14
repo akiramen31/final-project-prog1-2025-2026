@@ -7,7 +7,7 @@
 #define WEAPON_ANGLE_RAILGUN_OFFSET 11.5f
 #define WEAPON_ANGLE_STEAMAXE_OFFSET -70.f
 
-#define FIRE_RATE_STEAMAXE 2.f
+#define FIRE_RATE_STEAMAXE 4.f
 
 #define STEAMAXE_ANGLE_LIGHT 120.f
 #define STEAMAXE_ANGLE_MEDIUM 180.f
@@ -31,6 +31,7 @@ typedef struct SteamAxe
 {
 	sfSprite* sprite;
 	AttackType attackType;
+	sfBool canHit;
 
 }SteamAxe;
 
@@ -46,6 +47,7 @@ typedef struct Weapon
 void LoadWeapon(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
+void SwitchGunDevMode(void);
 
 Weapon GetWeapon(void);
 

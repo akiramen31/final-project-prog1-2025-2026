@@ -25,17 +25,23 @@ void LoadMissile(void)
 	}
 }
 
-void AddMissile(sfVector2f _pos)
+void AddMissile(sfVector2f _pos, sfBool _isRighted)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
 		if (missileList[i].isAlive == sfFalse)
 		{
 			missileList[i].isAlive = sfTrue;
-			missileList[i].lifetime = 0;
-			missileList[i].rotation = 0;
-			sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x, _pos.y - WEAPON_ORIGIN });
-
+			missileList[i].lifetime = 0; 
+			missileList[i].rotation = -90; 
+			if (_isRighted)
+			{
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x -12.f, _pos.y - WEAPON_ORIGIN });
+			}
+			else
+			{
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x +12.f, _pos.y - WEAPON_ORIGIN });
+			}
 			return;
 		}
 	}
@@ -110,7 +116,7 @@ void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt)
 	movement.x = cosf(angleInRadians) * SPEED_MISSILE * _dt;
 	movement.y = sinf(angleInRadians) * SPEED_MISSILE * _dt;
 
-	// 7. Application à la forme SFML
+	// 7. Application Ã  la forme SFML
 	sfSprite_setRotation(missileList[_index].sprite, missileList[_index].rotation);
 	sfSprite_move(missileList[_index].sprite, movement);
 }
@@ -148,8 +154,8 @@ void CheckCollisionMissilesList(void)
 	{
 		if (!missileList[i].isAlive) continue;
 
-		// On commence à j = i + 1 pour ne pas tester deux fois la même paire
-		// et ne pas tester le missile contre lui-même
+		// On commence Ã  j = i + 1 pour ne pas tester deux fois la mÃªme paire
+		// et ne pas tester le missile contre lui-mÃªme
 		for (unsigned j = i + 1; j < MISSILE_MAX; j++)
 		{
 			if (!missileList[j].isAlive) continue;
@@ -164,16 +170,16 @@ void CheckCollisionMissilesList(void)
 
 			if (distance < minDistance)
 			{
-				// 1. Calcul du décalage (pénétration)
+				// 1. Calcul du dÃ©calage (pÃ©nÃ©tration)
 				float overlap = minDistance - distance;
 
-				// 2. Normalisation du vecteur de direction (pour savoir où pousser)
-				// On évite la division par zéro si les missiles sont exactement au même point
+				// 2. Normalisation du vecteur de direction (pour savoir oÃ¹ pousser)
+				// On Ã©vite la division par zÃ©ro si les missiles sont exactement au mÃªme point
 				if (distance == 0) distance = 0.1f;
 				float nx = dx / distance;
 				float ny = dy / distance;
 
-				// 3. On décale chaque missile de la moitié de l'overlap dans des directions opposées
+				// 3. On dÃ©cale chaque missile de la moitiÃ© de l'overlap dans des directions opposÃ©es
 				sfVector2f moveA = { -nx * overlap / 2.0f, -ny * overlap / 2.0f };
 				sfVector2f moveB = { nx * overlap / 2.0f,  ny * overlap / 2.0f };
 
