@@ -905,7 +905,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				{
 					actionDemander.jetPack = 1;
 				}
-				printf("droite: %d gauche:%d saut:%d jetpack:%d", actionDemander.droite, actionDemander.gauche, actionDemander.Saut, actionDemander.jetPack);
+				//printf("droite: %d gauche:%d saut:%d jetpack:%d\n", actionDemander.droite, actionDemander.gauche, actionDemander.Saut, actionDemander.jetPack);
 				return actionDemander;
 			}
 			caseGet = caseRecherche;
