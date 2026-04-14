@@ -25,7 +25,7 @@ typedef struct Missile
 
 void LoadMissile(void);
 void UpdateMissile(sfVector2f _pos,float _dt);
-void AddMissile(sfVector2f _pos);
+void AddMissile(sfVector2f _pos, sfBool _isRighted);
 void CheckCollisionMissilesList(void);
 
 #endif // !ENEMY_H

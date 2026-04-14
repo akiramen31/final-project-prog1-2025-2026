@@ -25,7 +25,7 @@ void LoadMissile(void)
 	}
 }
 
-void AddMissile(sfVector2f _pos)
+void AddMissile(sfVector2f _pos, sfBool _isRighted)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -33,9 +33,15 @@ void AddMissile(sfVector2f _pos)
 		{
 			missileList[i].isAlive = sfTrue;
 			missileList[i].lifetime = 0; 
-			missileList[i].rotation = 0; 
-			sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x, _pos.y - WEAPON_ORIGIN });
-
+			missileList[i].rotation = -90; 
+			if (_isRighted)
+			{
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x -12.f, _pos.y - WEAPON_ORIGIN });
+			}
+			else
+			{
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x +12.f, _pos.y - WEAPON_ORIGIN });
+			}
 			return;
 		}
 	}

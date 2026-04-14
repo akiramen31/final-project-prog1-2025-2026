@@ -14,6 +14,7 @@ void LoadWeapon(void)
 
 
 	weapon.isRight = sfTrue;
+    weapon.steamAxe.canHit = sfTrue;
 	weapon.weaponType = RAILGUN;
 }
 
@@ -93,4 +94,18 @@ void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
 Weapon GetWeapon()
 {
 	return weapon;
+}
+
+void SwitchGunDevMode(void)
+{
+    if (weapon.weaponType == RAILGUN)
+    {
+        sfSprite_setPosition(weapon.railGun.sprite, (sfVector2f) { 0, 0 });
+        weapon.weaponType = STEAMAXE;
+    }
+    else if (weapon.weaponType == STEAMAXE)
+    {
+        sfSprite_setPosition(weapon.steamAxe.sprite, (sfVector2f) { 0, 0 });
+        weapon.weaponType = RAILGUN;
+    }
 }
