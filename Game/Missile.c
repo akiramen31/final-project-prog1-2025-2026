@@ -61,6 +61,9 @@ void UpdateMissile(sfVector2f _posAim,float _dt)
 				continue;
 			}
 			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite));
+			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue);
+			reaction.x += reactionBox.x;
+			reaction.y += reactionBox.y;
 			if (reaction.x != 0 || reaction.y != 0)
 			{
 				missileList[i].isAlive = sfFalse;

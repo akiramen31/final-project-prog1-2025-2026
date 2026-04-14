@@ -190,40 +190,47 @@ void CreateRectVisible(InfoZone* _infoZone, int _count)
 	}
 }
 
-
-sfVector2f Colision(sfFloatRect _hitbox)
+sfVector2f Colision(sfFloatRect _hitbox, int _axis)
 {
-	sfVector2f vectorMove = { 0 };
-	sfFloatRect reaction = { 0 };
+	sfVector2f vectorMove = { 0, 0 };
+	sfFloatRect reaction = { 0, 0, 0, 0 };
 
 	for (int i = 0; i < map.data.coliderCount; i++)
 	{
 		if (sfFloatRect_intersects(&_hitbox, &map.data.colider[i].hitbox, &reaction))
 		{
-			if (reaction.width < reaction.height)
+			int resolveX = 0;
+
+			// Determine which axis to resolve based on the passed parameter
+			if (_axis == AXIS_X) {
+				resolveX = 1;
+			}
+			else if (_axis == AXIS_Y) {
+				resolveX = 0;
+			}
+			else {
+				// Fallback for AXIS_BOTH (old behavior)
+				resolveX = (reaction.width < reaction.height);
+			}
+
+			if (resolveX)
 			{
-				if (_hitbox.left + vectorMove.x - map.data.colider[i].hitbox.left < (map.data.colider[i].hitbox.width - _hitbox.width) / 2.0f)
-				{
-					vectorMove.x -= reaction.width;
-				}
-				else
-				{
-					vectorMove.x += reaction.width;
-				}
+				float hitboxCenterX = _hitbox.left + (_hitbox.width / 2.0f);
+				float coliderCenterX = map.data.colider[i].hitbox.left + (map.data.colider[i].hitbox.width / 2.0f);
+
+				float push = (hitboxCenterX < coliderCenterX) ? -reaction.width : reaction.width;
+				vectorMove.x += push;
+				_hitbox.left += push; // Instantly update hitbox for the next loop iteration
 			}
 			else
 			{
-				if (_hitbox.top + vectorMove.y - map.data.colider[i].hitbox.top < (map.data.colider[i].hitbox.height - _hitbox.height) / 2.0f)
-				{
-					vectorMove.y -= reaction.height;
-				}
-				else
-				{
-					vectorMove.y += reaction.height;
-				}
+				float hitboxCenterY = _hitbox.top + (_hitbox.height / 2.0f);
+				float coliderCenterY = map.data.colider[i].hitbox.top + (map.data.colider[i].hitbox.height / 2.0f);
+
+				float push = (hitboxCenterY < coliderCenterY) ? -reaction.height : reaction.height;
+				vectorMove.y += push;
+				_hitbox.top += push; // Instantly update hitbox for the next loop iteration
 			}
-			_hitbox.left += vectorMove.x;
-			_hitbox.top += vectorMove.y;
 		}
 	}
 	return vectorMove;

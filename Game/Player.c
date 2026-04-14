@@ -43,6 +43,9 @@ void LoadPlayer(void)
 	pos.x = 100;
 	pos.y = 32;
 
+	player.lifeMax = 3;
+	player.life = player.lifeMax;
+
 	player.ener.energyMax = 100;
 	player.ener.energy = player.ener.energyMax;
 	player.ener.energyRegen = 5;
@@ -82,8 +85,6 @@ void UpdatePlayer(float _dt)
 		MoveZonePlayer(_dt);
 		MovePlayer(_dt);
 	}
-
-	//printf("%f\n", player.ener.energy);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
@@ -196,11 +197,16 @@ void MovePlayer(float _dt)
 
 void ColisionMapPlayer(float _dt)
 {
-	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
+	// ==========================================
+	// 1. RESOLVE Y-AXIS FIRST (Gravity / Falling)
+	// ==========================================
+	sfVector2f reactionY = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y);
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
-	reaction.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).y;
 
+	// Assuming ColisionBox also takes an axis parameter now:
+	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).y;
 
+	// Handle Pass-Through Platforms
 	if (reactionPassThrough.y < 0)
 	{
 		if (player.velocity.y >= 0 && !(sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN))))
@@ -208,44 +214,52 @@ void ColisionMapPlayer(float _dt)
 			player.isGrounded = sfTrue;
 			timerFaling = 0;
 			player.velocity.y = 0;
-
 			sfRectangleShape_move(player.collision, reactionPassThrough);
 		}
 	}
 	else
 	{
-		if (reaction.y < 0)
+		// Handle Normal Grounding
+		if (reactionY.y < 0)
 		{
 			player.isGrounded = sfTrue;
 			timerFaling = 0;
 		}
-		else if (reaction.y >= 0)
+		else if (reactionY.y >= 0)
 		{
 			player.isGrounded = sfFalse;
-
 			if (timerFaling <= PLAYER_JUMP_FORGIVE)
 			{
 				timerFaling += _dt;
 			}
 		}
 
-		if (reaction.y != 0 || reactionPassThrough.y != 0)
+		if (reactionY.y != 0 || reactionPassThrough.y != 0)
 		{
 			player.velocity.y = 0;
 		}
 	}
 
+	// Apply the Y pushback before starting X checks
+	sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 
+
+	// ==========================================
+	// 2. RESOLVE X-AXIS SECOND (Running / Dashing)
+	// ==========================================
 	if (timerDash <= PLAYER_DASH_DURATION)
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt / 10, 0 });
-			reaction.x = Colision(sfRectangleShape_getGlobalBounds(player.collision)).x;
-			reaction.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
+			sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt / 10.0f, 0 });
 
-			if (reaction.x != 0)
+			sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
+			reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
+
+			if (reactionX.x != 0)
 			{
+				// Push out of wall and halt X velocity immediately
+				sfRectangleShape_move(player.collision, (sfVector2f) { reactionX.x, 0 });
 				player.velocity.x = 0;
 				break;
 			}
@@ -254,16 +268,19 @@ void ColisionMapPlayer(float _dt)
 	else
 	{
 		sfRectangleShape_move(player.collision, (sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX* player.velocity.x* _dt, 0 });
-		reaction.x = Colision(sfRectangleShape_getGlobalBounds(player.collision)).x;
-		reaction.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
 
-		if (reaction.x != 0)
+		sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
+		reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse).x;
+
+		if (reactionX.x != 0)
 		{
+			// Push out of wall and halt X velocity
+			sfRectangleShape_move(player.collision, (sfVector2f) { reactionX.x, 0 });
 			player.velocity.x = 0;
 		}
 	}
 
-	sfRectangleShape_move(player.collision, reaction);
+	// Weapons logic remains unchanged
 	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }
 
@@ -300,9 +317,14 @@ void MoveZonePlayer(float _dt)
 	}
 }
 
+void DamagePlayer(int _damage)
+{
+	player.life -= _damage;
+}
+
 void KillPlayer(void)
 {
-
+	player.life = 0;
 }
 
 sfVector2f GetPlayerPosition(void)
@@ -523,6 +545,25 @@ void SetPlayerEnergyInfo(float _val, int _index)
 		break;
 	default:
 		break;
+	}
+}
+
+int GetPlayerLife(void)
+{
+	return player.life;
+}
+
+void SetPlayerLifeMax(int _lifeMax)
+{
+	player.lifeMax = _lifeMax;
+}
+
+ void AddPlayerLife(int _life)
+{
+	player.life += _life;
+	if (player.life > player.lifeMax)
+	{
+		player.life = player.lifeMax;
 	}
 }
 

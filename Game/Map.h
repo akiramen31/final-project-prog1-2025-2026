@@ -65,7 +65,8 @@ int GetTrigerCount(void);
 InfoZone* GetInfoZoneMove(void);
 int GetMoveCount(void);
 
-sfVector2f Colision(sfFloatRect _hitbox);
+
+sfVector2f Colision(sfFloatRect _hitbox, int _axis);
 sfVector2f CollisionPassThrough(sfFloatRect _hitbox);
 
 void DrawDev(sfRenderWindow* _renderWindow);

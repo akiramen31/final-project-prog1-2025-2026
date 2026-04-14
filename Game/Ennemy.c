@@ -1,6 +1,6 @@
 #include "Ennemy.h"
 #include "Map.h"
-  
+
 
 
 void CreateEnemyRandom(EnnemyEntity* _ennemy);
@@ -76,7 +76,7 @@ void LoadEnemy(void)
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 }
 
-void UpdateTotalEnemy(float _dt) 
+void UpdateTotalEnemy(float _dt)
 {
 	for (unsigned i = GetNumberEnemy() ; i > 0 ; i--)
 	{
@@ -103,7 +103,7 @@ void UpdateEnemy(float _dt, int _index)
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
 
-	sfVector2f collision = Colision(GetBounsEnemy(_index));
+	sfVector2f collision = Colision(GetBounsEnemy(_index), AXIS_BOTH);
 	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
 	sfSprite_move(ennemy->sprite, collision);
 	if (collision.x != 0)
@@ -166,7 +166,7 @@ void CalculMoveEnemy(float _dt, int _index)
 	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if (sfKeyboard_isKeyPressed(sfKeyNumpad0)  && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
+	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 	{
 		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
 
@@ -248,7 +248,7 @@ void CalculMoveEnemy(float _dt, int _index)
 		{
 			sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
 			collisionEnnemy.top += 1;
-			sfVector2f collision = Colision(collisionEnnemy);
+			sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
 			//printf("collision %f", collision.y);
 			if (collision.y)
 			{
@@ -260,7 +260,7 @@ void CalculMoveEnemy(float _dt, int _index)
 		{
 			sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
 			collisionEnnemy.top += 1;
-			sfVector2f collision = Colision(collisionEnnemy);
+			sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
 			//printf("collision %f", collision.y);
 			if (collision.y)
 			{
@@ -540,7 +540,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
-			
+
 			//Gauche
 			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -604,7 +604,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
-			
+
 			//Bas Gauche
 			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -714,7 +714,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
-			
+
 			//Haut
 			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y - 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -777,7 +777,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 					}
 				}
 			}
-			
+
 			//Bas
 			caseRecherche = (sfVector2u){ caseGet.x , caseGet.y + 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
@@ -843,7 +843,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 			{
 			case NO_DIRECTION:
-				return(ActionDemander) { 0 }; 
+				return(ActionDemander) { 0 };
 				break;
 			case UP:
 				caseRecherche = (sfVector2u){ caseGet.x, caseGet.y - 1 };
