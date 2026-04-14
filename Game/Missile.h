@@ -2,6 +2,7 @@
 #define MISSILE_H
 
 #include "Common.h"
+#include "Box.h"
 
 #define MISSILE_HEIGHT 6
 #define MISSILE_WEIGHT 8
