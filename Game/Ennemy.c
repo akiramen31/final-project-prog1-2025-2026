@@ -75,6 +75,14 @@ void LoadEnnemy(void)
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 }
 
+void UpdateTotalEnemy(_dt) 
+{
+	for (unsigned i = 0; i < GetNumberEnnemy(); i++)
+	{
+		UpdateTotalEnemy(_dt);
+	}
+}
+
 void UpdateEnnemy(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;

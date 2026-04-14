@@ -84,6 +84,7 @@ typedef struct Case
 
 void LoadEnnemy(void);
 void UpdateEnnemy(float _dt, int _index);
+void UpdateTotalEnemy(_dt);
 void AddEnnemy(sfVector2f _position, enum EnemyType _type);
 sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
@@ -97,3 +98,4 @@ void ResetEnnemy(void);
 int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position);
 
 #endif // !GAME_H
+
