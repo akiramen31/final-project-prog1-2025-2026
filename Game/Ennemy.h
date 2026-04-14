@@ -76,26 +76,26 @@ typedef struct Case
 	int jumpForce;
 	float rangeToDestination;
 	float action;
-	float Résultat;
+	float resultat;
 	float energie;
 	enum Direction direction;
 	sfBool jetPackActive;
 }Case;
 
-void LoadEnnemy(void);
-void UpdateEnnemy(float _dt, int _index);
-void UpdateTotalEnemy(_dt);
-void AddEnnemy(sfVector2f _position, enum EnemyType _type);
-sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat);
+void LoadEnemy(void);
+void UpdateEnemy(float _dt, int _index);
+void UpdateTotalEnemy(float _dt);
+void AddEnemy(sfVector2f _position, enum EnemyType _type);
+sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
-sfVector2f GetPositionEnnemy(int _index);
-sfFloatRect GetBounsEnnemy(int _index);
-int GetNumberEnnemy();
+sfVector2f GetPositionEnemy(int _index);
+sfFloatRect GetBounsEnemy(int _index);
+int GetNumberEnemy(void);
 sfColor GetColorsPixelMap(sfVector2f _position);
-void SetPositionEnnemy(sfVector2f _position, int _index);
+void SetPositionEnemy(sfVector2f _position, int _index);
 
-void ResetEnnemy(void);
-int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position);
+void ResetEnemy(void);
+int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 
 #endif // !GAME_H
 

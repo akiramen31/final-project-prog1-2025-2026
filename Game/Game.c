@@ -20,7 +20,6 @@ void LoadGame(void)
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
-	LoadEnemy();
 	LoadBoss();
 	LoadMap(background);
 
@@ -84,7 +83,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-	UpdateEnemy(_dt);
+	UpdateTotalEnemy(_dt);
 
 	//UpdateHUD(_dt);
 	//UpdateGUI(_dt);
