@@ -70,9 +70,9 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	float angleRadInitial = atan2f(dyInitial, dxInitial);
 
 
-	if (dxInitial < 0)
+	if (!_shooterType.isRighted)
 	{
-		_shooterType.shootPosition.x = -_shooterType.shootPosition.x;
+		_shooterType.shootPosition.y = -_shooterType.shootPosition.y;
 	}
 
 	sfVector2f spawnPos;
