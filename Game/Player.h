@@ -56,6 +56,8 @@ typedef struct Player
 	sfBool direction;
 
 	sfBool isGrounded;
+
+	sfVector2f spawn;
 }Player;
 
 void LoadPlayer(void);
@@ -75,4 +77,6 @@ void SetPlayerLifeMax(int _life);
 void AddPlayerLife(int _life);
 
 void SetPlayerPosition(sfVector2f _pos);
+void TpPlayerToSpawn(void);
+void SetSpawnPlayer(sfVector2f _pos);
 #endif

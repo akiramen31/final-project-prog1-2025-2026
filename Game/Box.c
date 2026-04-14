@@ -32,8 +32,11 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 			{
 				box.count--;
 				DestroyVisualEntity(box.entity[i].sprite);
-				box.entity[i] = box.entity[box.count];
-				box.entity = Realloc(box.entity, box.count * sizeof(BoxEntity));
+				if (box.count)
+				{
+					box.entity[i] = box.entity[box.count];
+					box.entity = Realloc(box.entity, box.count * sizeof(BoxEntity));
+				}
 
 				return (sfVector2f) { 1.f, 1.f };
 			}

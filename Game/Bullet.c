@@ -16,8 +16,6 @@ void LoadBullet(void)
 void UpdateBullet(float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
-	sfVector2f reaction = { 0 };
-	sfVector2f reactionBox = { 0 };
 	for (int i = (int)bulletCount - 1; i >= 0; i--)
 	{
 		bulletList[i].lifetime -= _dt;
@@ -28,15 +26,8 @@ void UpdateBullet(float _dt)
 			continue;
 		}
 		hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
-		reaction = Colision(hitboxBullet, AXIS_BOTH);
-		reactionBox = ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH);
 
-		reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
-		reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
-		reaction.x += reactionBox.x;
-		reaction.y += reactionBox.y;
-
-		if (reaction.x != 0 || reaction.y != 0 || IfHitEnemy(hitboxBullet))
+		if (Colision(hitboxBullet, AXIS_BOTH).x || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || IfHitEnemy(hitboxBullet))
 		{
 			DeleteBullet(i);
 			continue;

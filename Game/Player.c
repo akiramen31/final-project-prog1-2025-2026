@@ -604,3 +604,14 @@ void SetPlayerPosition(sfVector2f _pos)
 {
 	sfRectangleShape_setPosition(player.collision, _pos);
 }
+
+void SetSpawnPlayer(sfVector2f _pos)
+{
+	SetPlayerPosition(_pos);
+	player.spawn = _pos;
+}
+
+void TpPlayerToSpawn(void)
+{
+	SetPlayerPosition(player.spawn);
+}
