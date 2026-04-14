@@ -78,9 +78,9 @@ void LoadEnemy(void)
 
 void UpdateTotalEnemy(float _dt)
 {
-	for (unsigned i = 0; i < GetNumberEnemy(); i++)
+	for (unsigned i = GetNumberEnemy() ; i > 0 ; i--)
 	{
-		UpdateEnemy(_dt, i);
+		UpdateEnemy(_dt, i-1);
 	}
 }
 
@@ -104,6 +104,7 @@ void UpdateEnemy(float _dt, int _index)
 	}
 
 	sfVector2f collision = Colision(GetBounsEnemy(_index), AXIS_BOTH);
+	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
 	sfSprite_move(ennemy->sprite, collision);
 	if (collision.x != 0)
 	{
@@ -114,6 +115,11 @@ void UpdateEnemy(float _dt, int _index)
 		ennemy->ennemyEntity.move.y = 0;
 	}
 	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
+	if (ennemy->ennemyEntity.ennemydata.life <= 0)
+	{
+		DestroyVisualEntity(ennemy->sprite);
+		RemoveElement(listEnnemy, _index);
+	}
 }
 
 void CreateEnemyRandom(EnnemyEntity* _ennemy)
@@ -1111,6 +1117,7 @@ sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
 	sfBool isTouch = sfFalse;
+	printf("Color a= %d ", pixelColor.a);
 	if (pixelColor.a == 255)
 	{
 		isTouch = sfTrue;
@@ -1122,7 +1129,9 @@ sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
 		{
 			ennemy->ennemyEntity.ennemydata.life = 0;
+			printf("Enemy toucher avec degat");
 		}
+		printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
 	}
 	return isTouch;
 }

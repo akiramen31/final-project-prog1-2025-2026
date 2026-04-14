@@ -27,7 +27,7 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfFalse
+#define DEV_ENNEMY sfTrue
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfFalse
 #define DEV_MODE_FLY sfFalse
@@ -94,6 +94,7 @@ typedef struct Animation
 #define DEG_RAD(d) d * M_PI / 180
 #define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)
 #define ANGLE_VECTOR(v) RAD_DEG(atan2f(v.y, v.x))
+#define ADD_VECTOR(u,v) {(u.x + v.x), (u.y + v.y)}
 
 sfBool CompareColor(sfColor _color1, sfColor _color2);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);

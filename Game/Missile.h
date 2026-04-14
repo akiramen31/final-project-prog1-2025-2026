@@ -2,13 +2,14 @@
 #define MISSILE_H
 
 #include "Common.h"
+#include "Box.h"
 
 #define MISSILE_HEIGHT 6
 #define MISSILE_WEIGHT 8
 #define MISSILE_MAX 3
 #define MISSILE_DURATION 3
-#define SPEED_MISSILE 400.0f
-#define DEGRE_ROTATION 180.0f
+#define SPEED_MISSILE 200.0f
+#define DEGRE_ROTATION 280.0f
 #define PI 3.1415
 
 typedef struct Missile

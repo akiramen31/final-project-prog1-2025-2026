@@ -68,8 +68,8 @@ void SetMap(MapState _map)
 	if (DEV_ENNEMY)
 	{
 		LoadEnemy();
-		AddEnemy((sfVector2f) { 200, 500 }, ALEATORY);
 	}
+	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
 }
@@ -150,15 +150,18 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
-			if (0)
+			if (DEV_ENNEMY)
 			{
-				for (int j = 0; j < map.data.trigerCount; j++)
+				AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY);
+				/*
+				for (unsigned j = 0; j < map.data.trigerCount; j++)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 					{
 						AddEnemy((sfVector2f) { map.data.point[i].hitbox.left, map.data.point[i].hitbox.top }, 0);
 					}
 				}
+				*/
 			}
 		}
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))

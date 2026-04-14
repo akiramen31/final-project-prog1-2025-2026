@@ -34,7 +34,7 @@ void AddMissile(sfVector2f _pos)
 			missileList[i].isAlive = sfTrue;
 			missileList[i].lifetime = 0; 
 			missileList[i].rotation = 0; 
-			sfSprite_setPosition(missileList[i].sprite, _pos);
+			sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x, _pos.y - WEAPON_ORIGIN });
 
 			return;
 		}
@@ -58,6 +58,17 @@ void UpdateMissile(sfVector2f _posAim,float _dt)
 			{
 				missileList[i].isAlive = sfFalse;
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
+				continue;
+			}
+			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite));
+			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue);
+			reaction.x += reactionBox.x;
+			reaction.y += reactionBox.y;
+			if (reaction.x != 0 || reaction.y != 0)
+			{
+				missileList[i].isAlive = sfFalse;
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
+				continue;
 			}
 		}
 	}

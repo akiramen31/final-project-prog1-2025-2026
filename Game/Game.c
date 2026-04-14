@@ -41,7 +41,11 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
-
+			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
+			sfVector2f viewPos = GetViewPosition();
+			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y};
+			sfColor pixelColor = sfImage_getPixel(GetMapData()->image, RealPositionConvertTableauPosition(mousePos).x, RealPositionConvertTableauPosition(mousePos).y);
+			printf("a = %d\n", pixelColor.a);
 		}
 	default:
 		break;
@@ -74,6 +78,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF4:
 			SetMap(LEVEL_TEST);
 			break;
+		case sfKeyP:
+			HitEnemy(0, (sfVector2f) { 7, 7 }, 5);
+			break;
 		default:
 			break;
 		}
@@ -83,6 +90,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
+
 	UpdateTotalEnemy(_dt);
 
 	//UpdateHUD(_dt);
