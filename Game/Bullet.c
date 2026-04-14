@@ -24,7 +24,7 @@ void UpdateBullet(float _dt)
 			continue;
 		}
 
-		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite));
+		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
 		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue);
 		reaction.x += reactionBox.x;
 		reaction.y += reactionBox.y;
