@@ -39,7 +39,8 @@ typedef struct Player
 
 	Weapon weapon;
 
-	float life;
+	int life;
+	int lifeMax;
 
 	EnergyPlayerStruct ener;
 
@@ -59,6 +60,8 @@ typedef struct Player
 
 void LoadPlayer(void);
 void UpdatePlayer(float _dt);
+
+void DamagePlayer(int _damage);
 void KillPlayer(void);
 
 sfVector2f GetPlayerPosition(void);
@@ -67,6 +70,9 @@ sfFloatRect GetPlayerRect(void);
 float GetPlayerEnergyInfo(int _index);
 void SetPlayerEnergyInfo(float _val, int _index);
 
-void SetPlayerPosition(sfVector2f _pos);
+int GetPlayerLife(void);
+void SetPlayerLifeMax(int _life);
+void AddPlayerLife(int _life);
 
+void SetPlayerPosition(sfVector2f _pos);
 #endif

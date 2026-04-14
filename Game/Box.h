@@ -18,6 +18,6 @@ typedef struct Box
 
 void LoadBox(void);
 void AddBox(sfVector2f _position);
-sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy);
+sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
 void ReloadBox(void);
 #endif //BOX_H

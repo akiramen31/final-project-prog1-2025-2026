@@ -37,6 +37,12 @@
 
 #define G 9.81f
 
+typedef enum {
+	AXIS_X,
+	AXIS_Y,
+	AXIS_BOTH
+} CollisionAxis;
+
 typedef enum AttackType
 {
 	LIGHT,
@@ -89,6 +95,7 @@ typedef struct Animation
 #define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)
 #define ANGLE_VECTOR(v) RAD_DEG(atan2f(v.y, v.x))
 #define ADD_VECTOR(u,v) {(u.x + v.x), (u.y + v.y)}
+#define IF_RECT_EGAL(_rect1, _rect2) (_rect1.left == _rect2.left && _rect1.top == _rect2.top && _rect1.height == _rect2.height && _rect1.width == _rect2.width)
 
 sfBool CompareColor(sfColor _color1, sfColor _color2);
 void UpdateText(sfText* _text, char* _format, char* _string, int _value);

@@ -2,7 +2,7 @@
 
 Missile missileList[MISSILE_MAX] = { 0 };
 sfTexture* missileTexture;
-void MoveMissile(unsigned _index,sfVector2f _playerPos, float _dt);
+void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt);
 void CheckCollisionMissileScreen(unsigned _index);
 
 void LoadMissile(void)
@@ -47,7 +47,7 @@ void AddMissile(sfVector2f _pos, sfBool _isRighted)
 	}
 }
 
-void UpdateMissile(sfVector2f _posAim,float _dt)
+void UpdateMissile(sfVector2f _posAim, float _dt)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
@@ -66,8 +66,8 @@ void UpdateMissile(sfVector2f _posAim,float _dt)
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
 				continue;
 			}
-			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite));
-			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue);
+			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite), AXIS_BOTH);
+			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
 			if (reaction.x != 0 || reaction.y != 0)
@@ -116,7 +116,7 @@ void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt)
 	movement.x = cosf(angleInRadians) * SPEED_MISSILE * _dt;
 	movement.y = sinf(angleInRadians) * SPEED_MISSILE * _dt;
 
-	// 7. Application à la forme SFML
+	// 7. Application Ã  la forme SFML
 	sfSprite_setRotation(missileList[_index].sprite, missileList[_index].rotation);
 	sfSprite_move(missileList[_index].sprite, movement);
 }
@@ -154,8 +154,8 @@ void CheckCollisionMissilesList(void)
 	{
 		if (!missileList[i].isAlive) continue;
 
-		// On commence à j = i + 1 pour ne pas tester deux fois la même paire
-		// et ne pas tester le missile contre lui-même
+		// On commence Ã  j = i + 1 pour ne pas tester deux fois la mÃªme paire
+		// et ne pas tester le missile contre lui-mÃªme
 		for (unsigned j = i + 1; j < MISSILE_MAX; j++)
 		{
 			if (!missileList[j].isAlive) continue;
@@ -170,16 +170,16 @@ void CheckCollisionMissilesList(void)
 
 			if (distance < minDistance)
 			{
-				// 1. Calcul du décalage (pénétration)
+				// 1. Calcul du dÃ©calage (pÃ©nÃ©tration)
 				float overlap = minDistance - distance;
 
-				// 2. Normalisation du vecteur de direction (pour savoir où pousser)
-				// On évite la division par zéro si les missiles sont exactement au même point
+				// 2. Normalisation du vecteur de direction (pour savoir oÃ¹ pousser)
+				// On Ã©vite la division par zÃ©ro si les missiles sont exactement au mÃªme point
 				if (distance == 0) distance = 0.1f;
 				float nx = dx / distance;
 				float ny = dy / distance;
 
-				// 3. On décale chaque missile de la moitié de l'overlap dans des directions opposées
+				// 3. On dÃ©cale chaque missile de la moitiÃ© de l'overlap dans des directions opposÃ©es
 				sfVector2f moveA = { -nx * overlap / 2.0f, -ny * overlap / 2.0f };
 				sfVector2f moveB = { nx * overlap / 2.0f,  ny * overlap / 2.0f };
 

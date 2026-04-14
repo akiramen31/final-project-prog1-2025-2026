@@ -96,6 +96,7 @@ void SetPositionEnemy(sfVector2f _position, int _index);
 
 void ResetEnemy(void);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
+sfBool IfHitEnemy(sfFloatRect _hitbox);
 
 #endif // !GAME_H
 

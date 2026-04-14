@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "Ennemy.h"
 
 sfTexture* bulletTexture;
 Bullet bulletList[BULLET_MAX];
@@ -14,6 +15,9 @@ void LoadBullet(void)
 
 void UpdateBullet(float _dt)
 {
+	sfFloatRect hitboxBullet = { 0 };
+	sfVector2f reaction = { 0 };
+	sfVector2f reactionBox = { 0 };
 	for (int i = (int)bulletCount - 1; i >= 0; i--)
 	{
 		bulletList[i].lifetime -= _dt;
@@ -23,17 +27,21 @@ void UpdateBullet(float _dt)
 			DeleteBullet(i);
 			continue;
 		}
+		hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
+		reaction = Colision(hitboxBullet, AXIS_BOTH);
+		reactionBox = ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH);
 
-		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite));
-		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue);
+		reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
+		reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
 		reaction.x += reactionBox.x;
 		reaction.y += reactionBox.y;
 
-		if (reaction.x != 0 || reaction.y != 0)
+		if (reaction.x != 0 || reaction.y != 0 || IfHitEnemy(hitboxBullet))
 		{
 			DeleteBullet(i);
 			continue;
 		}
+
 
 		bulletList[i].velocity.y += G * _dt;
 		sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
