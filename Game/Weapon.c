@@ -84,7 +84,7 @@ void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
     shooterType.shootPosition.x = 10.f;
     shooterType.shootPosition.y = 7.f;
     shooterType.bulletType = LIGHT;
-    shooterType.isRighted = sfTrue;
+    shooterType.isRighted = _isRighted;
     shooterType.isAlly = sfTrue;
     shooterType.weaponPos = WEAPON_ORIGIN;
 	AddBullet(_posShooter, _posTarget, shooterType);

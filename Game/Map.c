@@ -68,7 +68,7 @@ void SetMap(MapState _map)
 	if (DEV_ENNEMY)
 	{
 		LoadEnemy();
-		AddEnemy((sfVector2f) { 200, 500 }, ALEATORY);
+		AddEnemy((sfVector2f) { 200, 100 }, ALEATORY);
 	}
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
