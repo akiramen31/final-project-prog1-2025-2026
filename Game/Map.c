@@ -28,6 +28,11 @@ void SetMap(MapState _map)
 	{
 		sfImage_destroy(map.data.image);
 	}
+
+	if (DEV_ENNEMY && map.state != -1)
+	{
+		ResetEnemy();
+	}
 	switch (_map)
 	{
 	case LEVEL1:
@@ -59,8 +64,12 @@ void SetMap(MapState _map)
 		LoadMapData(cjson);
 		CleanupCjsonB(cjson);
 	}
-	ReloadEnemy();
-	ReloadBox();
+
+	if (DEV_ENNEMY)
+	{
+		LoadEnemy();
+		AddEnemy((sfVector2f) { 200, 500 }, ALEATORY);
+	}
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
 }
@@ -141,13 +150,13 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
-			if (DEV_ENNEMY)
+			if (0)
 			{
 				for (unsigned j = 0; j < map.data.trigerCount; j++)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 					{
-						AddEnemy((sfVector2f) { map.data.point[i].hitbox.left, map.data.point[i].hitbox.top }, 0, map.data.triger[j].hitbox);
+						AddEnemy((sfVector2f) { map.data.point[i].hitbox.left, map.data.point[i].hitbox.top }, 0);
 					}
 				}
 			}
