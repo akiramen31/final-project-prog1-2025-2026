@@ -86,6 +86,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
+
 	UpdateTotalEnemy(_dt);
 
 	//UpdateHUD(_dt);
