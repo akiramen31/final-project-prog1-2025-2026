@@ -299,6 +299,11 @@ void CalculMoveEnemy(float _dt, int _index)
 ActionDemander AStar(int _index, sfVector2f _positionCible)
 {
 	sfVector2u positionCibleCase = RealPositionConvertTableauPosition(_positionCible);
+	if (positionCibleCase.x <= 0 || positionCibleCase.y <= 0 || positionCibleCase.x >= mapData->size.x || positionCibleCase.y >= mapData->size.y)
+	{
+		TpPlayerToSpawn();
+		return (ActionDemander) { 0 };
+	}
 	positionCibleCase.y -= 1;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u positionDebutCase = RealPositionConvertTableauPosition(sfSprite_getPosition(ennemy->sprite));
