@@ -32,5 +32,6 @@ void UpdateBullet(float _dt);
 
 unsigned int GetBulletCount(void);
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
+void DeleteBullet(unsigned _index);
 
 #endif // !BULLET_H
