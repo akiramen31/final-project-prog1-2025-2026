@@ -72,7 +72,7 @@ void SetPlayerEnergyInfo(float _val, int _index);
 
 int GetPlayerLife(void);
 void SetPlayerLifeMax(int _life);
+void AddPlayerLife(int _life);
 
 void SetPlayerPosition(sfVector2f _pos);
-
 #endif

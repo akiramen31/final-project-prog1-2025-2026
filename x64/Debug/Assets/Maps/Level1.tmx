@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="450" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="595">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="450" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="596">
  <editorsettings>
   <export target="Level1.json" format="json"/>
  </editorsettings>
@@ -340,7 +340,7 @@
   <object id="392" x="2160" y="560" width="32" height="16"/>
   <object id="425" x="4080" y="288" width="112" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point" visible="0">
+ <objectgroup id="37" name="Point">
   <object id="514" type="SpawnPlayer" x="232" y="192">
    <point/>
   </object>
@@ -371,40 +371,40 @@
   <object id="531" type="Box" x="1648" y="128">
    <point/>
   </object>
-  <object id="544" type="Box" x="848" y="656">
+  <object id="544" type="Box" x="848" y="658">
    <point/>
   </object>
-  <object id="545" type="Box" x="848" y="672">
+  <object id="545" type="Box" x="848" y="674">
    <point/>
   </object>
-  <object id="549" type="Box" x="816" y="672">
+  <object id="549" type="Box" x="816" y="674">
    <point/>
   </object>
-  <object id="546" type="Box" x="864" y="656">
+  <object id="546" type="Box" x="864" y="658">
    <point/>
   </object>
-  <object id="547" type="Box" x="864" y="672">
+  <object id="547" type="Box" x="864" y="674">
    <point/>
   </object>
-  <object id="548" type="Box" x="832" y="672">
+  <object id="548" type="Box" x="832" y="674">
    <point/>
   </object>
-  <object id="550" type="Box" x="1024" y="656">
+  <object id="550" type="Box" x="1024" y="658">
    <point/>
   </object>
-  <object id="551" type="Box" x="1024" y="672">
+  <object id="551" type="Box" x="1024" y="674">
    <point/>
   </object>
-  <object id="552" type="Box" x="1040" y="656">
+  <object id="552" type="Box" x="1040" y="658">
    <point/>
   </object>
-  <object id="553" type="Box" x="1040" y="672">
+  <object id="553" type="Box" x="1040" y="674">
    <point/>
   </object>
-  <object id="554" type="Box" x="1056" y="672">
+  <object id="554" type="Box" x="1056" y="674">
    <point/>
   </object>
-  <object id="555" type="Box" x="1008" y="672">
+  <object id="555" type="Box" x="1008" y="674">
    <point/>
   </object>
   <object id="556" type="Box" x="1376" y="704">

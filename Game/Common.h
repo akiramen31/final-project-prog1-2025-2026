@@ -37,6 +37,12 @@
 
 #define G 9.81f
 
+typedef enum {
+	AXIS_X,
+	AXIS_Y,
+	AXIS_BOTH
+} CollisionAxis;
+
 typedef enum AttackType
 {
 	LIGHT,
