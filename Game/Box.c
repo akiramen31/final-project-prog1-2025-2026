@@ -21,19 +21,21 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy)
 {
 	sfVector2f vectorMove = { 0 };
 	sfFloatRect reaction = { 0 };
+	sfFloatRect hitbox = { 0 };
 
 	for (unsigned i = 0; i < box.count; i++)
 	{
-		if (sfFloatRect_intersects(&_hitbox, &box.entity[i].hitbox, &reaction))
+		hitbox = box.entity[i].hitbox;
+		if (sfFloatRect_intersects(&_hitbox, &hitbox, &reaction))
 		{
 			if (_destroy)
 			{
 				box.count--;
 				DestroyVisualEntity(box.entity[i].sprite);
 				box.entity[i] = box.entity[box.count];
-				box.entity = Realloc(box.entity, box.count);
+				box.entity = Realloc(box.entity, box.count * sizeof(BoxEntity));
 
-				return (sfVector2f) { 777, 777 };
+				return (sfVector2f) { 1.f, 1.f };
 			}
 			else
 			{
