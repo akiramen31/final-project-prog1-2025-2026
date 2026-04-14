@@ -349,13 +349,13 @@
   <object id="599" x="4768" y="256" width="48" height="48"/>
   <object id="600" x="4912" y="256" width="48" height="48"/>
  </objectgroup>
- <objectgroup id="32" name="Move" visible="0">
-  <object id="421" name="500" type="UP" x="4064" y="384" width="160" height="224"/>
+ <objectgroup id="32" name="Move">
+  <object id="421" name="500" type="UP" x="4080" y="384" width="112" height="224"/>
   <object id="422" name="250" type="RIGHT" x="4064" y="448" width="16" height="64"/>
   <object id="423" name="250" type="LEFT" x="4192" y="448" width="16" height="64"/>
   <object id="424" name="50" type="RIGHT" x="3440" y="607" width="783" height="17"/>
  </objectgroup>
- <objectgroup id="38" name="PassThrough" visible="0">
+ <objectgroup id="38" name="PassThrough">
   <object id="391" x="2032" y="656" width="32" height="16"/>
   <object id="392" x="2160" y="656" width="32" height="16"/>
   <object id="425" x="4080" y="384" width="112" height="16"/>

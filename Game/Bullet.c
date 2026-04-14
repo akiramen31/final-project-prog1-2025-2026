@@ -28,20 +28,28 @@ void UpdateBullet(float _dt)
 			continue;
 		}
 		hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
-		reaction = Colision(hitboxBullet);
-		reactionBox = ColisionBox(hitboxBullet, sfTrue);
 
-		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
-		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
+		reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
+		reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
 		reaction.x += reactionBox.x;
 		reaction.y += reactionBox.y;
+
+		if (reactionBox.x != 0)
+		{
+			printf("x : %f", reactionBox.x);
+		}
+
+		if (reactionBox.y != 0)
+		{
+			printf("y : %f", reactionBox.y);
+		}
 
 		if (reaction.x != 0 || reaction.y != 0 || IfHitEnemy(hitboxBullet))
 		{
 			DeleteBullet(i);
 			continue;
 		}
-		
+
 
 		bulletList[i].velocity.y += G * _dt;
 		sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
