@@ -34,16 +34,6 @@ void UpdateBullet(float _dt)
 		reaction.x += reactionBox.x;
 		reaction.y += reactionBox.y;
 
-		if (reactionBox.x != 0)
-		{
-			printf("x : %f", reactionBox.x);
-		}
-
-		if (reactionBox.y != 0)
-		{
-			printf("y : %f", reactionBox.y);
-		}
-
 		if (reaction.x != 0 || reaction.y != 0 || IfHitEnemy(hitboxBullet))
 		{
 			DeleteBullet(i);
