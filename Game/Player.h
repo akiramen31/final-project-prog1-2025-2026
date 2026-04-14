@@ -46,6 +46,9 @@ typedef struct Player
 	sfVector2f velocity;
 
 	sfBool canShoot;
+	sfBool isAttacking;
+
+	float pressTime;
 	float cooldown;
 
 	// if True direction is right
