@@ -41,7 +41,11 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
-
+			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
+			sfVector2f viewPos = GetViewPosition();
+			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y};
+			sfColor pixelColor = sfImage_getPixel(GetMapData()->image, RealPositionConvertTableauPosition(mousePos).x, RealPositionConvertTableauPosition(mousePos).y);
+			printf("a = %d\n", pixelColor.a);
 		}
 	default:
 		break;

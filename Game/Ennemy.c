@@ -104,6 +104,7 @@ void UpdateEnemy(float _dt, int _index)
 	}
 
 	sfVector2f collision = Colision(GetBounsEnemy(_index));
+	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
 	sfSprite_move(ennemy->sprite, collision);
 	if (collision.x != 0)
 	{
