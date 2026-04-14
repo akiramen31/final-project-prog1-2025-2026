@@ -60,7 +60,7 @@ void LoadMenu(void)
 	menu.name[3] = "Ylix";
 	menu.name[4] = "Pierre";
 	menu.name[5] = "AILLET";
-	menu.name[6] = "MEURISSE PEREZ";
+	menu.name[6] = "MEURISSE_PEREZ";
 	menu.name[7] = "VOLLAIRE";
 	menu.name[8] = "MASSON";
 	menu.name[9] = "PAGLIAZZO";

@@ -69,6 +69,7 @@ void SetMap(MapState _map)
 	{
 		LoadEnemy();
 	}
+	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
 }
