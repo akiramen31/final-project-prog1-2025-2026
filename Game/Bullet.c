@@ -20,9 +20,7 @@ void UpdateBullet(float _dt)
 
 		if (bulletList[i].lifetime <= 0)
 		{
-			DestroyVisualEntity(bulletList[i].sprite);
-			SortBulletList(i);
-			bulletCount--;
+			DeleteBullet(i);
 			continue;
 		}
 
@@ -33,9 +31,7 @@ void UpdateBullet(float _dt)
 
 		if (reaction.x != 0 || reaction.y != 0)
 		{
-			DestroyVisualEntity(bulletList[i].sprite);
-			SortBulletList(i);
-			bulletCount--;
+			DeleteBullet(i);
 			continue;
 		}
 
@@ -106,4 +102,11 @@ void SortBulletList(unsigned _index)
 		bulletList[i] = bulletList[i + 1];
 	}
 	bulletList[bulletCount - 1] = (Bullet){ 0 };
+}
+
+void DeleteBullet(unsigned _index)
+{
+	DestroyVisualEntity(bulletList[_index].sprite);
+	SortBulletList(_index);
+	bulletCount--;
 }
