@@ -360,7 +360,7 @@ void UpdateFireControlRailgun(void)
 {
 	if (GetBulletCount() < BULLET_MAX)
 	{
-		UseWeapon(GetPlayerPosition(), GetAimPosition());
+		UseWeapon(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
 	}
 }
 
