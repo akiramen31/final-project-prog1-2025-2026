@@ -74,6 +74,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF4:
 			SetMap(LEVEL_TEST);
 			break;
+		case sfKeyP:
+			HitEnemy(0, (sfVector2f) { 7, 7 }, 5);
+			break;
 		default:
 			break;
 		}
