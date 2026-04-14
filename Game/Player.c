@@ -41,6 +41,9 @@ void LoadPlayer(void)
 	pos.x = 100;
 	pos.y = 32;
 
+	player.lifeMax = 3;
+	player.life = player.lifeMax;
+
 	player.ener.energyMax = 100;
 	player.ener.energy = player.ener.energyMax;
 	player.ener.energyRegen = 5;
@@ -54,6 +57,7 @@ void UpdatePlayer(float _dt)
 	UpdateCooldown(_dt);
 	UpdateFireControl(_dt);
 	UpdateEnergy(_dt);
+
 	if (player.weapon.weaponType == STEAMAXE)
 	{
 		UpdateSteamAxe(_dt);
@@ -85,8 +89,6 @@ void UpdatePlayer(float _dt)
 		MoveZonePlayer(_dt);
 		MovePlayer(_dt);
 	}
-
-	//printf("%f\n", player.ener.energy);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
@@ -293,9 +295,14 @@ void MoveZonePlayer(float _dt)
 	}
 }
 
+void DamagePlayer(int _damage)
+{
+	player.life -= _damage;
+}
+
 void KillPlayer(void)
 {
-
+	player.life = 0;
 }
 
 sfVector2f GetPlayerPosition(void)
@@ -517,6 +524,16 @@ void SetPlayerEnergyInfo(float _val, int _index)
 	default:
 		break;
 	}
+}
+
+int GetPlayerLife(void)
+{
+	return player.life;
+}
+
+void SetPlayerLifeMax(int _lifeMax)
+{
+	player.lifeMax = _lifeMax;
 }
 
 void SetPlayerPosition(sfVector2f _pos)
