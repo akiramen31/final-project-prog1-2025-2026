@@ -31,8 +31,8 @@ void UpdateBullet(float _dt)
 		reaction = Colision(hitboxBullet, AXIS_BOTH);
 		reactionBox = ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH);
 
-		sfVector2f reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
-		sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
+		reaction = Colision(sfSprite_getGlobalBounds(bulletList[i].sprite), AXIS_BOTH);
+		reactionBox = ColisionBox(sfSprite_getGlobalBounds(bulletList[i].sprite), sfTrue, AXIS_BOTH);
 		reaction.x += reactionBox.x;
 		reaction.y += reactionBox.y;
 
@@ -41,7 +41,7 @@ void UpdateBullet(float _dt)
 			DeleteBullet(i);
 			continue;
 		}
-		
+
 
 		bulletList[i].velocity.y += G * _dt;
 		sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
