@@ -2,6 +2,7 @@
 #define BULLET_H
 
 #include "Common.h"
+#include "Box.h"
 
 #define BULLET_MAX 5
 #define BULLET_SPEED 500
