@@ -1,159 +1,11 @@
 #include "Ennemy.h"
 #include "Map.h"
-
-Enemy enemy;
-
-void LoadEnemy(void)
-{
-	enemy = (Enemy){ 0 };
-	enemy.entity = Calloc(1, sizeof(EnemyEntity));
-	void ReloadEnemy(void);
-
-	enemy.data[0] = (EnemyData){ GetAsset("Assets/Sprites/capsul.png") , 100.f, 5.f, 400.f, 100.f };
-}
-
-void UpdateEnemy(float _dt)
-{
-	sfFloatRect enemyHitbox = { 0 };
-	sfVector2f playerPosition = GetPlayerPosition();
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y - 1))
-		{
-			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-
-			if (enemyHitbox.left + enemyHitbox.width < playerPosition.x)
-			{
-				enemy.entity[i].velocity.x += enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else if (enemyHitbox.left > playerPosition.x)
-			{
-				enemy.entity[i].velocity.x -= enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else
-			{
-				if (playerPosition.y > enemyHitbox.top && playerPosition.y < enemyHitbox.top + enemyHitbox.width)
-				{
-					KillPlayer();
-				}
-				enemy.entity[i].velocity.x = 0;
-			}
-
-			if (!enemy.entity[i].velocity.y)
-			{
-				if (playerPosition.y > enemyHitbox.top)
-				{
-					if (enemy.entity[i].velocity.x < 0)
-					{
-						sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top - enemy.data[enemy.entity[i].type].jumpForce, enemyHitbox.width, enemyHitbox.height });
-						if (colision.x)
-						{
-							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-						}
-					}
-					else if (enemy.entity[i].velocity.x > 0)
-					{
-						sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top - enemy.data[enemy.entity[i].type].jumpForce, enemyHitbox.width, enemyHitbox.height });
-						if (colision.x)
-						{
-							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-						}
-					}
-				}
-				if (enemy.entity[i].velocity.x < 0)
-				{
-					sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height });
-					if (colision.x)
-					{
-						enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-					}
-				}
-				else if (enemy.entity[i].velocity.x > 0)
-				{
-					sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height });
-					if (colision.x)
-					{
-						enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-					}
-				}
-
-			}
-		}
-		else
-		{
-			enemy.entity[i].velocity.x = 0;
-		}
-
-		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
-		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
-		{
-			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
-		}
-
-		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
-
-		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite));
-		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
-		if (colision.y)
-		{
-			enemy.entity[i].velocity.y = 0;
-		}
-		else if(colision.x)
-		{
-			colision.y -= abs(colision.x);
-			enemy.entity[i].velocity.x = 0;
-		}
-		
-		sfSprite_move(enemy.entity[i].sprite, colision);
-
-	}
-}
-
-void HitEnemy(sfFloatRect* _hitbox)
-{
-	sfFloatRect hitboxEnemy = { 0 };
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-		if (sfFloatRect_intersects(_hitbox, &hitboxEnemy, NULL))
-		{
-			enemy.entity[i].life--;
-			if (enemy.entity[i].life <= 0)
-			{
-				enemy.count--;
-				DestroyVisualEntity(enemy.entity[i].sprite);
-				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
-				enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
-			}
-		}
-	}
-}
-
-void ReloadEnemy(void)
-{
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		DestroyVisualEntity(enemy.entity[i].sprite);
-	}
-	enemy.count = 0;
-}
-
-void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
-{
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].life = 1;
-	enemy.count++;
-}
-
-/*
+  
 
 
-void CreateEnnemyRandom(EnnemyEntity* _ennemy);
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type);
-void CalculMoveEnnemy(float _dt, int _index);
+void CreateEnemyRandom(EnnemyEntity* _ennemy);
+void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type);
+void CalculMoveEnemy(float _dt, int _index);
 ActionDemander AStar(int _index, sfVector2f _positionCible);
 float CalculResultAStar(Case _case);
 int MinResultCase(void);
@@ -180,36 +32,36 @@ void LoadEnnemy(void)
 	{
 		GetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY);
 	}
-	else // charger les diférent type d'ennemy
+	else // charger les difÃ©rent type d'ennemy
 	{
-		ennemyEntity[0].type = 0;
-		ennemyEntity[0].ennemydata.life = 20.f;
-		ennemyEntity[0].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[0].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[0].ennemydata.energyRegen = 15.f;
-		ennemyEntity[0].ennemydata.speedMax = 3.f;
-		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[0].ennemydata.jumForce = 700.f;
+		ennemyEntity[3].type = 0;
+		ennemyEntity[3].ennemydata.life = 20.f;
+		ennemyEntity[3].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[3].ennemydata.energy = (float)MAX_ENRGIE;
+		ennemyEntity[3].ennemydata.energyRegen = 15.f;
+		ennemyEntity[3].ennemydata.speedMax = 3.f;
+		ennemyEntity[3].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[3].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[0].isJetpack = sfTrue;
-		ennemyEntity[0].jetpack.consomation = 50.f;
-		ennemyEntity[0].jetpack.life = 5.f;
-		ennemyEntity[0].jetpack.trust = 10.f;
+		ennemyEntity[3].isJetpack = sfTrue;
+		ennemyEntity[3].jetpack.consomation = 50.f;
+		ennemyEntity[3].jetpack.life = 5.f;
+		ennemyEntity[3].jetpack.trust = 10.f;
 
 
-		ennemyEntity[1].type = 1;
-		ennemyEntity[1].ennemydata.life = 10.f;
-		ennemyEntity[1].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[1].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[1].ennemydata.energyRegen = 15.f;
-		ennemyEntity[1].ennemydata.speedMax = 3.f;
-		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[1].ennemydata.jumForce = 700.f;
+		ennemyEntity[6].type = 1;
+		ennemyEntity[6].ennemydata.life = 10.f;
+		ennemyEntity[6].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[6].ennemydata.energy = (float)MAX_ENRGIE;
+		ennemyEntity[6].ennemydata.energyRegen = 15.f;
+		ennemyEntity[6].ennemydata.speedMax = 3.f;
+		ennemyEntity[6].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[6].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[1].isJetpack = sfTrue;
-		ennemyEntity[1].jetpack.consomation = 20.f;
-		ennemyEntity[1].jetpack.life = 5.f;
-		ennemyEntity[1].jetpack.trust = 20.f;
+		ennemyEntity[6].isJetpack = sfTrue;
+		ennemyEntity[6].jetpack.consomation = 20.f;
+		ennemyEntity[6].jetpack.life = 5.f;
+		ennemyEntity[6].jetpack.trust = 20.f;
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
@@ -217,11 +69,19 @@ void LoadEnnemy(void)
 	{
 		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	}
-	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*)
+	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // crÃ©ation du tableau pour l'ia (A*)
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setTexture(sprite, texture, sfTrue);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
+}
+
+void UpdateTotalEnemy(_dt) 
+{
+	for (unsigned i = 0; i < GetNumberEnnemy(); i++)
+	{
+		UpdateTotalEnemy(_dt);
+	}
 }
 
 void UpdateEnnemy(float _dt, int _index)
@@ -235,9 +95,9 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
-	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
+	CalculMoveEnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
-	// sécuriter pour le max d'énergie en stock
+	// sÃ©curiter pour le max d'Ã©nergie en stock
 	if (ennemy->ennemyEntity.ennemydata.energy > ennemy->ennemyEntity.ennemydata.energyMax)
 	{
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
@@ -256,29 +116,30 @@ void UpdateEnnemy(float _dt, int _index)
 	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
 }
 
-void CreateEnnemyRandom(EnnemyEntity* _ennemy)
+void CreateEnemyRandom(EnnemyEntity* _ennemy)
 {
-	enum Type temp = rand() % ALEATORY;
+	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
 	{
-	case SOLDIER:
-		CreateEnnemy(_ennemy, 0);
+	case CROWLER_SMALL:
+		CreateEnemy(_ennemy, CROWLER_SMALL);
 		break;
-	case FLYER:
-		CreateEnnemy(_ennemy, 1);
+	case SOLDIER_SMALL:
+		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
 	default:
+		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
 	}
 }
 
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
+void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type)
 {
 	if (DEV_MODE)
 	{
 		printf("creation d'un ennemy de type %d\n", _type);
 	}
-	//création et aplication des donné de l'ennemy
+	//crÃ©ation et aplication des donnÃ© de l'ennemy
 	_ennemy->type = _type;
 	_ennemy->ennemydata = ennemyEntity[_type].ennemydata;
 	_ennemy->acceleration = (sfVector2f){ 0,0 };
@@ -293,7 +154,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 	}
 }
 
-void CalculMoveEnnemy(float _dt, int _index)
+void CalculMoveEnemy(float _dt, int _index)
 {
 	sfBool test = 0;
 	sfBool test2 = 0;
@@ -447,13 +308,13 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			aStarMap[y][x] = (Case){ 0 };
 		}
 	}
-	//création du tableau chainé de sfVecteur2u
+	//crÃ©ation du tableau chainÃ© de sfVecteur2u
 	sfVector2u* emplacement = Calloc(1, sizeof(sfVector2u));
 	Element* element = CreateElement(emplacement);
 	*emplacement = positionDebutCase;
 	InsertElement(listeWait, element, 0);
 
-	// aplication des donné dans le point de départ de l'agorytme A*
+	// aplication des donnÃ© dans le point de dÃ©part de l'agorytme A*
 	aStarMap[positionDebutCase.y][positionDebutCase.x].action = 0.f;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].direction = NO_DIRECTION;
 	aStarMap[positionDebutCase.y][positionDebutCase.x].rangeToDestination = sqrtf((float)NORM_POW2(positionCibleCase, positionDebutCase));
@@ -462,7 +323,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	{
 		aStarMap[positionDebutCase.y][positionDebutCase.x].energie = MAX_ENRGIE;
 	}
-	aStarMap[positionDebutCase.y][positionDebutCase.x].Résultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
+	aStarMap[positionDebutCase.y][positionDebutCase.x].RÃ©sultat = CalculResultAStar(aStarMap[positionDebutCase.y][positionDebutCase.x]);
 
 	if (ennemy->actiondemander.jetPack)
 	{
@@ -481,7 +342,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		aStarMap[positionDebutCase.y][positionDebutCase.x].jumpForce = 1;
 	}
 
-	// préparation des variable nécéssaire
+	// prÃ©paration des variable nÃ©cÃ©ssaire
 	sfBool flag = sfFalse;
 	sfVector2u caseRecherche = { 0 };
 	int indexMin = 0;
@@ -491,7 +352,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	{
 
 
-		//remplisage / exécution du code principale de l'algorytme A*
+		//remplisage / exÃ©cution du code principale de l'algorytme A*
 		while (GetListSize(listeWait) && flag == sfFalse)
 		{
 			indexMin = MinResultCase();
@@ -514,15 +375,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = LEFT;
 						caseTemp.jumpForce = 0;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -545,15 +406,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = LEFT;
 						caseTemp.jumpForce = -1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -579,16 +440,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = LEFT;
 						caseTemp.jumpForce = -1;
 						caseTemp.jetPackActive = 1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -621,15 +482,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = UP_LEFT;
 							caseTemp.jumpForce = -1;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -657,15 +518,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_LEFT;
 							caseTemp.jumpForce = JUMP_FORCE;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -690,15 +551,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_LEFT;
 							caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -726,16 +587,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_LEFT;
 							caseTemp.jumpForce = -1;
 							caseTemp.jetPackActive = 1;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -761,15 +622,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = RIGHT;
 						caseTemp.jumpForce = 0;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -792,15 +653,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = RIGHT;
 						caseTemp.jumpForce = -1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -825,16 +686,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = RIGHT;
 						caseTemp.jumpForce = -1;
 						caseTemp.jetPackActive = 1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -866,15 +727,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.jumpForce = -1;
 							caseTemp.direction = UP_RIGHT;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -901,15 +762,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_RIGHT;
 							caseTemp.jumpForce = JUMP_FORCE;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -935,15 +796,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_RIGHT;
 							caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -971,16 +832,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 							{
 								caseTemp.energie = MAX_ENRGIE;
 							}
-							caseTemp.Résultat = CalculResultAStar(caseTemp);
+							caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 							caseTemp.direction = DOWN_RIGHT;
 							caseTemp.jumpForce = -1;
 							caseTemp.jetPackActive = 1;
-							if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+							if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
 							}
-							else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+							else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 							{
 								aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 								AjoutListWait(caseRecherche);
@@ -1006,15 +867,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = DOWN;
 						caseTemp.jumpForce = JUMP_FORCE;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -1036,15 +897,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = DOWN;
 						caseTemp.jumpForce = aStarMap[caseGet.y][caseGet.x].jumpForce - 1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -1069,16 +930,16 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 						{
 							caseTemp.energie = MAX_ENRGIE;
 						}
-						caseTemp.Résultat = CalculResultAStar(caseTemp);
+						caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 						caseTemp.direction = DOWN;
 						caseTemp.jumpForce = -1;
 						caseTemp.jetPackActive = 1;
-						if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+						if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
 						}
-						else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+						else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 						{
 							aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 							AjoutListWait(caseRecherche);
@@ -1103,15 +964,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				{
 					caseTemp.energie = MAX_ENRGIE;
 				}
-				caseTemp.Résultat = CalculResultAStar(caseTemp);
+				caseTemp.RÃ©sultat = CalculResultAStar(caseTemp);
 				caseTemp.direction = UP;
 				caseTemp.jumpForce = -1;
-				if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat == 0)
+				if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat == 0)
 				{
 					aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 					AjoutListWait(caseRecherche);
 				}
-				else if (aStarMap[caseRecherche.y][caseRecherche.x].Résultat > caseTemp.Résultat)
+				else if (aStarMap[caseRecherche.y][caseRecherche.x].RÃ©sultat > caseTemp.RÃ©sultat)
 				{
 					aStarMap[caseRecherche.y][caseRecherche.x] = caseTemp;
 					AjoutListWait(caseRecherche);
@@ -1119,7 +980,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 
 			}
 			RetirerListWait(indexMin);
-			if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
+			if (aStarMap[positionCibleCase.y][positionCibleCase.x].RÃ©sultat)
 			{
 				flag = sfTrue;
 			}
@@ -1131,7 +992,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			RetirerListWait(i);
 		}
 
-		if (aStarMap[positionCibleCase.y][positionCibleCase.x].Résultat)
+		if (aStarMap[positionCibleCase.y][positionCibleCase.x].RÃ©sultat)
 		{
 			//printf("Cible Ateinte");
 			flag = sfFalse;
@@ -1148,7 +1009,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		}
 		while (flag == sfFalse) // rechercher les action demander
 		{
-			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
+			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la premiÃ¨re action pour le chemin trouver
 			{
 			case NO_DIRECTION:
 				return(ActionDemander) { 0 }; // ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
@@ -1180,7 +1041,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
-			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
+			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nÃ©sÃ©saire
 			{
 				ActionDemander actionDemander = { 0 };
 				switch (aStarMap[caseGet.y][caseGet.x].direction)
@@ -1234,7 +1095,7 @@ float CalculResultAStar(Case _case)
 	return (float) { _case.rangeToDestination + _case.action + MAX_ENRGIE - _case.energie };
 }
 
-int MinResultCase(void) // recherche du plus petit resultat dans la liste chainé listeWait
+int MinResultCase(void) // recherche du plus petit resultat dans la liste chainÃ© listeWait
 {
 	int min = 0;
 	if (GetListSize(listeWait) > 1)
@@ -1243,7 +1104,7 @@ int MinResultCase(void) // recherche du plus petit resultat dans la liste chainé
 		{
 			sfVector2u* caseGet = GetElement(listeWait, i)->value;
 			sfVector2u* caseMin = GetElement(listeWait, min)->value;
-			if (aStarMap[caseGet->y][caseGet->x].Résultat < aStarMap[caseMin->y][caseMin->x].Résultat)
+			if (aStarMap[caseGet->y][caseGet->x].RÃ©sultat < aStarMap[caseMin->y][caseMin->x].RÃ©sultat)
 			{
 				min = i;
 			}
@@ -1389,7 +1250,7 @@ int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
 	return index;
 }
 
-void AddEnnemy(sfVector2f _position, enum Type _type)
+void AddEnnemy(sfVector2f _position, enum EnemyType _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 
@@ -1398,14 +1259,14 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 
 	switch (_type)
 	{
-	case SOLDIER:
-		CreateEnnemy(&ennemy->ennemyEntity, 0);
+	case CROWLER_SMALL:
+		CreateEnemy(&ennemy->ennemyEntity, CROWLER_SMALL);
 		break;
-	case FLYER:
-		CreateEnnemy(&ennemy->ennemyEntity, 1);
+	case SOLDIER_SMALL:
+		CreateEnemy(&ennemy->ennemyEntity, SOLDIER_SMALL);
 		break;
 	case ALEATORY:
-		CreateEnnemyRandom(&ennemy->ennemyEntity);
+		CreateEnemyRandom(&ennemy->ennemyEntity);
 		break;
 	default:
 		break;
@@ -1441,6 +1302,3 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 	return isTouch;
 }
 
-
-
-*/

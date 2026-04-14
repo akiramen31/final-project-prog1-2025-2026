@@ -1,7 +1,6 @@
 #include "Player.h"
 
 Player player;
-Weapon weapon;
 
 float timerDash = 0;
 float timerFaling = 0;
@@ -14,8 +13,11 @@ void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
 
 void UpdateCooldown(float _dt);
-void UpdateFireControl(void);
+void UpdateFireControl(float _dt);
+void UpdateFireControlRailgun(void);
+void UpdateFireControlSteamAxe(float _dt);
 
+void UpdateSteamAxe(float _dt);
 void UpdateEnergy(float _dt);
 
 sfVector2f pos;
@@ -23,7 +25,6 @@ sfVector2f pos;
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
-	player.weapon = GetWeapon();
 	sfTexture* texture = GetAsset("Assets/Sprites/capsul.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
 	SetSpriteOriginFoot(player.sprite);
@@ -35,6 +36,8 @@ void LoadPlayer(void)
 
 	player.canShoot = sfTrue;
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
+	player.isAttacking = sfFalse;
+	player.pressTime = 0.f;
 	pos.x = 100;
 	pos.y = 32;
 
@@ -47,10 +50,14 @@ void LoadPlayer(void)
 
 void UpdatePlayer(float _dt)
 {
+	player.weapon = GetWeapon();
 	UpdateCooldown(_dt);
-	UpdateFireControl();
+	UpdateFireControl(_dt);
 	UpdateEnergy(_dt);
-
+	if (player.weapon.weaponType == STEAMAXE)
+	{
+		UpdateSteamAxe(_dt);
+	}
 
 	if (DEV_MODE_FLY)
 	{
@@ -185,7 +192,7 @@ void ColisionMapPlayer(float _dt)
 	sfVector2f reaction = Colision(sfRectangleShape_getGlobalBounds(player.collision));
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
 	sfVector2f reactionBox = ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse);
-	reaction.x += reactionBox.x; 
+	reaction.x += reactionBox.x;
 	reaction.y += reactionBox.y;
 
 
@@ -249,7 +256,7 @@ void ColisionMapPlayer(float _dt)
 		}
 	}
 	sfRectangleShape_move(player.collision, reaction);
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt);
+	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }
 
 void MoveZonePlayer(float _dt)
@@ -302,21 +309,41 @@ void UpdateCooldown(float _dt)
 		player.cooldown -= _dt;
 		if (player.cooldown < 0)
 		{
-			player.cooldown += 1.f / FIRE_RATE_RAILGUN;
+			switch (player.weapon.weaponType)
+			{
+			case RAILGUN:
+				player.cooldown += 1.f / FIRE_RATE_RAILGUN;
+				break;
+			case STEAMAXE:
+				player.weapon.steamAxe.attackType = NOATTACK;
+				player.cooldown += 1.f / FIRE_RATE_STEAMAXE;
+				break;
+			default:
+				break;
+			}
 			player.canShoot = sfTrue;
+			player.isAttacking = sfFalse;
 		}
 	}
 }
 
-void UpdateFireControl(void)
+void UpdateFireControl(float _dt)
 {
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+	if (player.weapon.weaponType == RAILGUN)
 	{
-		if (player.canShoot && GetBulletCount() < BULLET_MAX)
+		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
 		{
-			UseWeapon(GetPlayerPosition(), GetAimPosition());
-			player.canShoot = sfFalse;
+			if (player.canShoot)
+			{
+				UpdateFireControlRailgun();
+				player.isAttacking = sfTrue;
+				player.canShoot = sfFalse;
+			}
 		}
+	}
+	else if (player.weapon.weaponType == STEAMAXE)
+	{
+		UpdateFireControlSteamAxe(_dt);
 	}
 	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
 	{
@@ -324,6 +351,102 @@ void UpdateFireControl(void)
 		{
 			AddMissile(GetPlayerPosition());
 			player.canShoot = sfFalse;
+		}
+	}
+}
+
+void UpdateFireControlRailgun(void)
+{
+	if (GetBulletCount() < BULLET_MAX)
+	{
+		UseWeapon(GetPlayerPosition(), GetAimPosition());
+	}
+}
+
+void UpdateFireControlSteamAxe(float _dt)
+{
+	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+	{
+		if (player.canShoot)
+		{
+			player.pressTime += _dt;
+		}
+	}
+	else if (player.pressTime > 0.0f)
+	{
+		if (player.pressTime < 0.5f)
+		{
+			if (player.ener.energy >= 25.f)
+			{
+				player.weapon.steamAxe.attackType = MEDIUM;
+				player.ener.energy -= 25.f;
+			}
+			else
+			{
+				player.weapon.steamAxe.attackType = LIGHT;
+			}
+		}
+		else
+		{
+			if (player.ener.energy >= 50.0f)
+			{
+				player.weapon.steamAxe.attackType = HEAVY;
+				player.ener.energy -= 50.0f;
+			}
+			else
+			{
+				player.weapon.steamAxe.attackType = MEDIUM;
+				player.ener.energy -= 25.f;
+			}
+		}
+		float angleShift = 0.0f;
+		if (player.weapon.steamAxe.attackType == LIGHT)
+		{
+			angleShift = STEAMAXE_ANGLE_LIGHT / 2.0f;
+		}
+		else if (player.weapon.steamAxe.attackType == MEDIUM)
+		{
+			angleShift = STEAMAXE_ANGLE_MEDIUM / 2.0f;
+		}
+		else
+		{
+			angleShift = STEAMAXE_ANGLE_HEAVY / 2.0f;
+		}
+		sfSprite_rotate(player.weapon.steamAxe.sprite, -angleShift);
+		player.isAttacking = sfTrue;
+		player.canShoot = sfFalse;
+		player.cooldown = 1.0f / FIRE_RATE_STEAMAXE;
+		player.pressTime = 0.0f;
+	}
+}
+
+void UpdateSteamAxe(float _dt)
+{
+	if (player.isAttacking)
+	{
+		float range = 0;
+		if (player.weapon.steamAxe.attackType == LIGHT)
+		{
+			range = STEAMAXE_ANGLE_LIGHT;
+		}
+		else if (player.weapon.steamAxe.attackType == MEDIUM)
+		{
+			range = STEAMAXE_ANGLE_MEDIUM;
+		}
+		else
+		{
+			range = STEAMAXE_ANGLE_HEAVY;
+		}
+		float frameRotation = (range * FIRE_RATE_STEAMAXE) * _dt;
+		if (player.weapon.isRight)
+		{
+			printf("test droit");
+			sfSprite_rotate(player.weapon.steamAxe.sprite, -frameRotation);
+		}
+		else
+		{
+			printf("test gauche");
+			sfSprite_rotate(player.weapon.steamAxe.sprite, frameRotation);
 		}
 	}
 }

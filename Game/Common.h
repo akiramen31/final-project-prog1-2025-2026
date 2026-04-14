@@ -37,6 +37,14 @@
 
 #define G 9.81f
 
+typedef enum AttackType
+{
+	LIGHT,
+	MEDIUM,
+	HEAVY,
+	NOATTACK
+}AttackType;
+
 typedef enum State
 {
 	IDLE = 0,

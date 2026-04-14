@@ -270,7 +270,7 @@ sfSprite* CreateSprite(sfTexture* _texture, sfVector2f _position, float _scale, 
 	return newElement->ptr;
 }
 
-sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _drawPlan)
+sfText* CreateText(sfFont* _font, sfVector2f _position, unsigned _scale, float _drawPlan)
 {
 	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
 	if (!newElement)
@@ -282,7 +282,7 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, float _scale, float _dra
 	newElement->ptr = sfText_create();
 	sfText_setFont(newElement->ptr, _font);
 	sfText_setPosition(newElement->ptr, _position);
-	sfText_setCharacterSize(newElement->ptr, (unsigned int)_scale * GAME_SCALE);
+	sfText_setCharacterSize(newElement->ptr, _scale * GAME_SCALE);
 
 	VisualEntity* elementPrevious = entityManager.visual;
 	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
