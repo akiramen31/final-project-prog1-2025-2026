@@ -837,6 +837,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		{
 			system("cls");
 		}
+		sfVector2u vectortemp = { 0 };
 		while (flag == sfFalse) // rechercher les action demander
 		{
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -914,6 +915,11 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				//printf("droite: %d gauche:%d saut:%d jetpack:%d\n", actionDemander.droite, actionDemander.gauche, actionDemander.Saut, actionDemander.jetPack);
 				return actionDemander;
 			}
+			if (vectortemp.x == caseRecherche.x && vectortemp.y == caseRecherche.y)
+			{
+				return (ActionDemander) { 0 };
+			}
+			vectortemp = caseGet;
 			caseGet = caseRecherche;
 		}
 	}
@@ -1136,3 +1142,17 @@ sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)
 	return isTouch;
 }
 
+sfBool IfHitEnemy(sfFloatRect _hitbox)
+{
+	sfFloatRect hitboxEnemy = { 0 };
+	for (int i = 0; i < GetNumberEnemy(); i++)
+	{
+	    hitboxEnemy = GetBounsEnemy(i);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		{
+			HitEnemy(i, (sfVector2f) { 1, 1 }, 9.f);
+			return sfTrue;
+		}
+	}
+	return sfFalse;
+}
