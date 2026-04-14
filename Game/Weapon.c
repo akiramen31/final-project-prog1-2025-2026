@@ -14,7 +14,7 @@ void LoadWeapon(void)
 
 
 	weapon.isRight = sfTrue;
-	weapon.weaponType = STEAMAXE;
+	weapon.weaponType = RAILGUN;
 }
 
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking)
@@ -25,6 +25,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
     if (weapon.weaponType == RAILGUN)
     {
         weaponSprite = weapon.railGun.sprite;
+        _isAttacking = sfFalse;
         angleOffset = (float)WEAPON_ANGLE_RAILGUN_OFFSET;
     }
     else if (weapon.weaponType == STEAMAXE)
@@ -77,9 +78,16 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
     }
 }
 
-void UseWeapon(sfVector2f _posPlayer, sfVector2f _aimPos)
+void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
 {
-	AddBullet(_posPlayer, _aimPos, (int)WEAPON_ORIGIN, weapon.isRight);
+    ShooterType shooterType = { 0 };
+    shooterType.shootPosition.x = 10.f;
+    shooterType.shootPosition.y = 7.f;
+    shooterType.bulletType = LIGHT;
+    shooterType.isRighted = sfTrue;
+    shooterType.isAlly = sfTrue;
+    shooterType.weaponPos = WEAPON_ORIGIN;
+	AddBullet(_posShooter, _posTarget, shooterType);
 }
 
 Weapon GetWeapon()
