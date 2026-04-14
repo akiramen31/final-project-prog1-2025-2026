@@ -1,121 +1,10 @@
 #include "Ennemy.h"
 #include "Map.h"
+  
 
-Enemy enemy;
-
-void LoadEnemy(void)
-{
-	enemy = (Enemy){ 0 };
-	enemy.entity = Calloc(1, sizeof(EnemyEntity));
-	void ReloadEnemy(void);
-
-	enemy.data[0] = (EnemyData){ GetAsset("Assets/Sprites/capsul.png") , 100.f, 5.f, 400.f, 100.f };
-}
-
-void UpdateEnemy(float _dt)
-{
-	sfFloatRect enemyHitbox = { 0 };
-	sfVector2f playerPosition = GetPlayerPosition();
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y))
-		{
-			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-
-			if (enemyHitbox.left + enemyHitbox.width < playerPosition.x)
-			{
-				enemy.entity[i].velocity.x += enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else if (enemyHitbox.left > playerPosition.x)
-			{
-				enemy.entity[i].velocity.x -= enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else
-			{
-				if (playerPosition.y > enemyHitbox.top && playerPosition.y < enemyHitbox.top + enemyHitbox.width)
-				{
-					KillPlayer();
-				}
-				enemy.entity[i].velocity.x = 0;
-			}
-			if (!enemy.entity[i].velocity.y && enemyHitbox.top + enemyHitbox.height > playerPosition.y)
-			{
-				enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-			}
-		}
-		else
-		{
-			enemy.entity[i].velocity.x = 0;
-		}
-
-		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
-		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
-		{
-			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
-		}
-
-		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x * _dt, enemy.entity[i].velocity.y* _dt });
-
-		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite));
-		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
-		if (colision.x)
-		{
-			enemy.entity[i].velocity.x = 0;
-		}
-		if (colision.y)
-		{
-			enemy.entity[i].velocity.y = 0;
-		}
-		sfSprite_move(enemy.entity[i].sprite, colision);
-
-	}
-}
-
-void HitEnemy(sfFloatRect* _hitbox)
-{
-	sfFloatRect hitboxEnemy = { 0 };
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-		if (sfFloatRect_intersects(_hitbox, &hitboxEnemy, NULL))
-		{
-			enemy.entity[i].life--;
-			if (enemy.entity[i].life <= 0)
-			{
-				enemy.count--;
-				DestroyVisualEntity(enemy.entity[i].sprite);
-				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
-				enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
-			}
-		}
-	}
-}
-
-void ReloadEnemy(void)
-{
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		DestroyVisualEntity(enemy.entity[i].sprite);
-	}
-	enemy.count = 0;
-}
-
-void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
-{
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].life = 1;
-	enemy.count++;
-}
-
-/*
-
-
-void CreateEnnemyRandom(EnnemyEntity* _ennemy);
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type);
-void CalculMoveEnnemy(float _dt, int _index);
+void CreateEnemyRandom(EnnemyEntity* _ennemy);
+void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type);
+void CalculMoveEnemy(float _dt, int _index);
 ActionDemander AStar(int _index, sfVector2f _positionCible);
 float CalculResultAStar(Case _case);
 int MinResultCase(void);
@@ -144,34 +33,34 @@ void LoadEnnemy(void)
 	}
 	else // charger les diférent type d'ennemy
 	{
-		ennemyEntity[0].type = 0;
-		ennemyEntity[0].ennemydata.life = 20.f;
-		ennemyEntity[0].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[0].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[0].ennemydata.energyRegen = 15.f;
-		ennemyEntity[0].ennemydata.speedMax = 3.f;
-		ennemyEntity[0].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[0].ennemydata.jumForce = 700.f;
+		ennemyEntity[3].type = 0;
+		ennemyEntity[3].ennemydata.life = 20.f;
+		ennemyEntity[3].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[3].ennemydata.energy = (float)MAX_ENRGIE;
+		ennemyEntity[3].ennemydata.energyRegen = 15.f;
+		ennemyEntity[3].ennemydata.speedMax = 3.f;
+		ennemyEntity[3].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[3].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[0].isJetpack = sfTrue;
-		ennemyEntity[0].jetpack.consomation = 50.f;
-		ennemyEntity[0].jetpack.life = 5.f;
-		ennemyEntity[0].jetpack.trust = 10.f;
+		ennemyEntity[3].isJetpack = sfTrue;
+		ennemyEntity[3].jetpack.consomation = 50.f;
+		ennemyEntity[3].jetpack.life = 5.f;
+		ennemyEntity[3].jetpack.trust = 10.f;
 
 
-		ennemyEntity[1].type = 1;
-		ennemyEntity[1].ennemydata.life = 10.f;
-		ennemyEntity[1].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[1].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[1].ennemydata.energyRegen = 15.f;
-		ennemyEntity[1].ennemydata.speedMax = 3.f;
-		ennemyEntity[1].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[1].ennemydata.jumForce = 700.f;
+		ennemyEntity[6].type = 1;
+		ennemyEntity[6].ennemydata.life = 10.f;
+		ennemyEntity[6].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[6].ennemydata.energy = (float)MAX_ENRGIE;
+		ennemyEntity[6].ennemydata.energyRegen = 15.f;
+		ennemyEntity[6].ennemydata.speedMax = 3.f;
+		ennemyEntity[6].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[6].ennemydata.jumForce = 700.f;
 
-		ennemyEntity[1].isJetpack = sfTrue;
-		ennemyEntity[1].jetpack.consomation = 20.f;
-		ennemyEntity[1].jetpack.life = 5.f;
-		ennemyEntity[1].jetpack.trust = 20.f;
+		ennemyEntity[6].isJetpack = sfTrue;
+		ennemyEntity[6].jetpack.consomation = 20.f;
+		ennemyEntity[6].jetpack.life = 5.f;
+		ennemyEntity[6].jetpack.trust = 20.f;
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
@@ -197,7 +86,7 @@ void UpdateEnnemy(float _dt, int _index)
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
-	CalculMoveEnnemy(_dt, _index); // calcul du mouvement
+	CalculMoveEnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	// sécuriter pour le max d'énergie en stock
 	if (ennemy->ennemyEntity.ennemydata.energy > ennemy->ennemyEntity.ennemydata.energyMax)
@@ -218,23 +107,24 @@ void UpdateEnnemy(float _dt, int _index)
 	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
 }
 
-void CreateEnnemyRandom(EnnemyEntity* _ennemy)
+void CreateEnemyRandom(EnnemyEntity* _ennemy)
 {
-	enum Type temp = rand() % ALEATORY;
+	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
 	{
-	case SOLDIER:
-		CreateEnnemy(_ennemy, 0);
+	case CROWLER_SMALL:
+		CreateEnemy(_ennemy, CROWLER_SMALL);
 		break;
-	case FLYER:
-		CreateEnnemy(_ennemy, 1);
+	case SOLDIER_SMALL:
+		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
 	default:
+		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
 	}
 }
 
-void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
+void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type)
 {
 	if (DEV_MODE)
 	{
@@ -255,7 +145,7 @@ void CreateEnnemy(EnnemyEntity* _ennemy, Type _type)
 	}
 }
 
-void CalculMoveEnnemy(float _dt, int _index)
+void CalculMoveEnemy(float _dt, int _index)
 {
 	sfBool test = 0;
 	sfBool test2 = 0;
@@ -1351,7 +1241,7 @@ int GetNearestEnnemy(List* _listeIgnore, sfVector2f _position)
 	return index;
 }
 
-void AddEnnemy(sfVector2f _position, enum Type _type)
+void AddEnnemy(sfVector2f _position, enum EnemyType _type)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 
@@ -1360,14 +1250,14 @@ void AddEnnemy(sfVector2f _position, enum Type _type)
 
 	switch (_type)
 	{
-	case SOLDIER:
-		CreateEnnemy(&ennemy->ennemyEntity, 0);
+	case CROWLER_SMALL:
+		CreateEnemy(&ennemy->ennemyEntity, CROWLER_SMALL);
 		break;
-	case FLYER:
-		CreateEnnemy(&ennemy->ennemyEntity, 1);
+	case SOLDIER_SMALL:
+		CreateEnemy(&ennemy->ennemyEntity, SOLDIER_SMALL);
 		break;
 	case ALEATORY:
-		CreateEnnemyRandom(&ennemy->ennemyEntity);
+		CreateEnemyRandom(&ennemy->ennemyEntity);
 		break;
 	default:
 		break;
@@ -1404,5 +1294,3 @@ sfBool HitEnnemy(unsigned _index, sfVector2f _touch, float _degat)
 }
 
 
-
-*/
