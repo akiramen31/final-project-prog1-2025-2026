@@ -106,7 +106,7 @@ void UpdateBoss(float _dt)
 
 	sfVector2f push = TestCollisionBossPlayer(pRect, bossSolids, 3, AXIS_BOTH);
 
-	sfRectangleShape_move(GetPlayerGetCollision(), push);
+	MovePlayer(push);
 }
 
 void MoveBoss1(sfVector2f _move)

@@ -86,7 +86,7 @@ void UpdatePlayer(float _dt)
 	else
 	{
 		MoveZonePlayer(_dt);
-		MovePlayer(_dt);
+		UpdateMovePlayer(_dt);
 	}
 
 	printf("%f\n", player.ener.energy);
@@ -104,7 +104,7 @@ void UpdateWeaponPlayer(float _dt)
 	UpdateFireControl(_dt);
 }
 
-void MovePlayer(float _dt)
+void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
