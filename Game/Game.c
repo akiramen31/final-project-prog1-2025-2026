@@ -101,6 +101,7 @@ void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
 
+	UpdateBoss(_dt);
 	UpdateEnemy(_dt);
 
 	//UpdateHUD(_dt);
