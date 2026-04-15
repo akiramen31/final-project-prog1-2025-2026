@@ -1165,6 +1165,10 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 }
 
 #else
+
+sfVector2i GetMoveEnemyAISolDier(unsigned _i, sfVector2f _playerPos);
+sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos);
+
 Enemy enemy;
 
 void LoadEnemy(void)
@@ -1181,11 +1185,148 @@ void UpdateEnemy(float _dt)
 {
 	sfFloatRect enemyHitbox = { 0 };
 	sfVector2f playerPosition = GetPlayerPosition();
+	sfVector2i enemyMove = { 0 };
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y - 1))
+		sfVector2f p = sfSprite_getPosition(enemy.entity[i].sprite);
+		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+
+		if (enemyMove.x)
 		{
-			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+    		enemy.entity[i].velocity.x += enemyMove.x * enemy.data[enemy.entity[i].type].speed * _dt;
+		}
+		else
+		{
+			enemy.entity[i].velocity.x = 0;
+		}
+		if (enemyMove.y < 0)
+		{
+			enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+		}
+
+		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
+		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
+		}
+		else if (enemy.entity[i].velocity.y < -MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = -MAX_FALL_SPEED_ENEMY;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
+
+		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite), AXIS_BOTH);
+		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
+		if (colision.y > 0)
+		{
+			enemy.entity[i].velocity.y = -G * enemy.data[enemy.entity[i].type].weight * _dt;
+		}
+		else if (colision.y < 0)
+		{
+			enemy.entity[i].velocity.y = 0;
+		}
+		else if (colision.x)
+		{
+			colision.y -= abs(colision.x);
+			enemy.entity[i].velocity.x = 0;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, colision);
+
+	}
+}
+
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
+{
+	sfFloatRect hitboxEnemy = { 0 };
+	sfVector2f playerPos = GetPlayerPosition();
+	sfVector2i enemyAction = { 0 };
+	for (unsigned i = 0; i < enemy.count; i++)
+	{
+		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		{
+			enemyAction = GetMoveEnemyAITemp(i, playerPos);
+
+			enemy.entity[i].life -= _degat;
+			if (enemy.entity[i].life <= 0)
+			{
+				enemy.count--;
+				DestroyVisualEntity(enemy.entity[i].sprite);
+				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
+				if (enemy.count)
+				{
+					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+				}
+
+			}
+			return sfTrue;
+		}
+	}
+	return sfFalse;
+}
+
+void ResetEnemy(void)
+{
+	for (unsigned i = 0; i < enemy.count; i++)
+	{
+		DestroyVisualEntity(enemy.entity[i].sprite);
+	}
+	enemy.count = 0;
+}
+
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
+{
+	if (_type == ALEATORY)
+	{
+		_type = rand() % (SOLDIER_HEAVY + 1);
+	}
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
+	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
+	sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
+	enemy.entity[enemy.count].type = _type;
+	enemy.entity[enemy.count].region = _region;
+	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;
+	enemy.count++;
+}
+
+sfVector2i GetMoveEnemyAISolDier(unsigned _i, sfVector2f _playerPos)
+{
+
+}
+
+sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos)
+{
+	sfVector2i move = { 0 };
+	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
+	{
+		sfFloatRect enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+		if (enemyHitbox.left + enemyHitbox.width < _playerPos.x)
+		{
+			move.x = 1;
+		}
+		else if (enemyHitbox.left > _playerPos.x)
+		{
+			move.x = -1;
+		}
+
+		if (!enemy.entity[_i].velocity.y)
+		{
+			if (_playerPos.y < enemyHitbox.top && enemy.entity[_i].velocity.x)
+			{
+				move.y = -1;
+			}
+		}
+	}
+	return move;
+}
+
+#endif //  DEV_PIERRE_ENEMY == 1
+
+/*
+
+enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 
 			if (enemyHitbox.left + enemyHitbox.width < playerPosition.x)
 			{
@@ -1240,93 +1381,5 @@ void UpdateEnemy(float _dt)
 					}
 				}
 			}
-		}
-		else
-		{
-			enemy.entity[i].velocity.x = 0;
-		}
 
-		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
-		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
-		{
-			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
-		}
-		else if (enemy.entity[i].velocity.y < -MAX_FALL_SPEED_ENEMY)
-		{
-			enemy.entity[i].velocity.y = -MAX_FALL_SPEED_ENEMY;
-		}
-
-		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
-
-		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite), AXIS_BOTH);
-		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
-		if (colision.y > 0)
-		{
-			enemy.entity[i].velocity.y = -G * enemy.data[enemy.entity[i].type].weight * _dt;
-		}
-		else if (colision.y < 0)
-		{
-			enemy.entity[i].velocity.y = 0;
-		}
-		else if (colision.x)
-		{
-			colision.y -= abs(colision.x);
-			enemy.entity[i].velocity.x = 0;
-		}
-
-		sfSprite_move(enemy.entity[i].sprite, colision);
-
-	}
-}
-
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
-{
-	sfFloatRect hitboxEnemy = { 0 };
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
-		{
-			enemy.entity[i].life -= _degat;
-			if (enemy.entity[i].life <= 0)
-			{
-				enemy.count--;
-				DestroyVisualEntity(enemy.entity[i].sprite);
-				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
-				if (enemy.count)
-				{
-					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
-				}
-
-			}
-			return sfTrue;
-		}
-	}
-	return sfFalse;
-}
-
-void ResetEnemy(void)
-{
-	for (unsigned i = 0; i < enemy.count; i++)
-	{
-		DestroyVisualEntity(enemy.entity[i].sprite);
-	}
-	enemy.count = 0;
-}
-
-void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
-{
-	if (_type == ALEATORY)
-	{
-		_type = rand() % (SOLDIER_HEAVY + 1);
-	}
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
-	sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;
-	enemy.count++;
-}
-
-#endif //  DEV_PIERRE_ENEMY == 1
+*/

@@ -16,6 +16,7 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
+	SetIntToSave(DEV_MODE_FLY, 0);
 	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
@@ -84,6 +85,12 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 			HitEnemyI(0, (sfVector2f) { 7, 7 }, 5);
 			break;
 #endif
+		case sfKeyF5:
+			SetIntToSave(DEV_MODE_FLY, 1);
+			break;
+		case sfKeyF6:
+			SetIntToSave(DEV_MODE_FLY, 0);
+			break;
 		default:
 			break;
 		}

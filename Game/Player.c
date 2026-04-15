@@ -62,7 +62,7 @@ void UpdatePlayer(float _dt)
 	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
 
-	if (DEV_MODE_FLY)
+	if (GetIntFromSave(DEV_MODE_FLY))
 	{
 		int val = 10;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
@@ -88,8 +88,6 @@ void UpdatePlayer(float _dt)
 		MoveZonePlayer(_dt);
 		MovePlayer(_dt);
 	}
-
-	printf("%f\n", player.ener.energy);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
