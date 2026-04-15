@@ -207,13 +207,16 @@ sfVector2f Colision(sfFloatRect _hitbox, int _axis)
 			int resolveX = 0;
 
 			// Determine which axis to resolve based on the passed parameter
-			if (_axis == AXIS_X) {
+			if (_axis == AXIS_X) 
+			{
 				resolveX = 1;
 			}
-			else if (_axis == AXIS_Y) {
+			else if (_axis == AXIS_Y) 
+			{
 				resolveX = 0;
 			}
-			else {
+			else 
+			{
 				// Fallback for AXIS_BOTH (old behavior)
 				resolveX = (reaction.width < reaction.height);
 			}
