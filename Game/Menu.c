@@ -22,7 +22,7 @@ void LoadMenu(void)
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
 	}
 	//Logo
-	LoadBackground(GetAsset("Assets/Sprites/main_menu.png"), 8.f);
+	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
 	menu.logo[0] = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
 	menu.logo[1] = CreateSprite(GetAsset("Assets/Sprites/cog.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
 	menu.logo[2] = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);

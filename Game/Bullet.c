@@ -16,6 +16,7 @@ void LoadBullet(void)
 void UpdateBullet(float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
+	sfVector2f reactionWall = { 0 };
 	for (int i = (int)bulletCount - 1; i >= 0; i--)
 	{
 		bulletList[i].lifetime -= _dt;
@@ -23,25 +24,25 @@ void UpdateBullet(float _dt)
 		if (bulletList[i].lifetime <= 0)
 		{
 			DeleteBullet(i);
-			continue;
 		}
-		hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
-
-		if (Colision(hitboxBullet, AXIS_BOTH).x || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || IfHitEnemy(hitboxBullet))
+		else
 		{
-			DeleteBullet(i);
-			continue;
+			hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
+			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet))
+			{
+				DeleteBullet(i);
+			}
+			else
+			{
+				bulletList[i].velocity.y += G * _dt;
+				sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
+				sfSprite_setRotation(bulletList[i].sprite, RAD_DEG(atan2f(bulletList[i].velocity.y, bulletList[i].velocity.x)));
+			}
 		}
-
-
-		bulletList[i].velocity.y += G * _dt;
-		sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
-
-		float angle = atan2f(bulletList[i].velocity.y, bulletList[i].velocity.x) * (180.0f / (float)M_PI);
-		sfSprite_setRotation(bulletList[i].sprite, angle);
+		
 	}
 }
-
 
 unsigned GetBulletCount(void)
 {

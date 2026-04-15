@@ -20,6 +20,9 @@ void LoadGame(void)
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
+#if !DEV_PIERRE_ENEMY
+	LoadEnemy();
+#endif
 	LoadBoss();
 	LoadMap(background);
 
@@ -44,8 +47,6 @@ void PollEventGame(sfEvent* _event)
 			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
 			sfVector2f viewPos = GetViewPosition();
 			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y};
-			sfColor pixelColor = sfImage_getPixel(GetMapData()->image, RealPositionConvertTableauPosition(mousePos).x, RealPositionConvertTableauPosition(mousePos).y);
-			printf("a = %d\n", pixelColor.a);
 		}
 	default:
 		break;
@@ -78,9 +79,11 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF4:
 			SetMap(LEVEL_TEST);
 			break;
+#if DEV_PIERRE_ENEMY
 		case sfKeyP:
 			HitEnemy(0, (sfVector2f) { 7, 7 }, 5);
 			break;
+#endif
 		default:
 			break;
 		}
@@ -91,7 +94,7 @@ void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
 
-	UpdateTotalEnemy(_dt);
+	UpdateEnemy(_dt);
 
 	//UpdateHUD(_dt);
 	//UpdateGUI(_dt);
