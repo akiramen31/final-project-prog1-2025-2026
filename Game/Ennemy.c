@@ -1297,6 +1297,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 				{
 					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
 				}
+
 			}
 			return sfTrue;
 		}
