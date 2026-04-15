@@ -31,6 +31,7 @@ typedef enum IntSave
 	LIFE,
 	FULL_SCREEN,
 	TROPHY,
+	DEV_MODE_FLY,
 	INT_COUNT
 
 }IntSave;

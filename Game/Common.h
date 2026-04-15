@@ -31,7 +31,6 @@
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
-#define DEV_MODE_FLY sfFalse
 #define DEBUG_MODE_A_STAR sfTrue
 #define DEV_PIERRE_ENEMY sfFalse
 
