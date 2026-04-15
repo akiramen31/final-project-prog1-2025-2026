@@ -24,6 +24,7 @@ void LoadMap(sfSprite* _background)
 void SetMap(MapState _map)
 {
 	CjsonB* cjson = NULL;
+#if DEV_PIERRE_ENEMY
 	if (map.data.image)
 	{
 		sfImage_destroy(map.data.image);
@@ -33,6 +34,7 @@ void SetMap(MapState _map)
 	{
 		ResetEnemy();
 	}
+#endif
 	switch (_map)
 	{
 	case LEVEL1:
@@ -65,10 +67,12 @@ void SetMap(MapState _map)
 		CleanupCjsonB(cjson);
 	}
 
-	if (DEV_ENNEMY)
-	{
-		LoadEnemy();
-	}
+#if DEV_PIERRE_ENEMY && DEV_ENNEMY
+	LoadEnemy();
+#else
+	ResetEnemy();
+#endif
+
 	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
@@ -152,16 +156,17 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		{
 			if (DEV_ENNEMY)
 			{
+#if DEV_PIERRE_ENEMY
 				AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY);
-				/*
+#else
 				for (unsigned j = 0; j < map.data.trigerCount; j++)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 					{
-						AddEnemy((sfVector2f) { map.data.point[i].hitbox.left, map.data.point[i].hitbox.top }, 0);
+						AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY, map.data.triger[j].hitbox);
 					}
 				}
-				*/
+#endif
 			}
 		}
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))

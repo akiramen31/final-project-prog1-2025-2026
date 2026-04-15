@@ -1,8 +1,9 @@
 #include "Ennemy.h"
 #include "Map.h"
 
+#if DEV_PIERRE_ENEMY
 
-
+void UpdateEnemyI(float _dt, int _index);
 void CreateEnemyRandom(EnnemyEntity* _ennemy);
 void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type);
 void CalculMoveEnemy(float _dt, int _index);
@@ -13,13 +14,15 @@ void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 sfBool TestColision(unsigned x, unsigned y);
 void DebugTab(Case _case);
+sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
+sfColor GetColorsPixelMap(sfVector2f _position);
+int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
 MapData* mapData;
 Case** aStarMap;
 List* listeWait;
-
 
 sfSprite* sprite;
 sfTexture* texture;
@@ -76,15 +79,15 @@ void LoadEnemy(void)
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
 }
 
-void UpdateTotalEnemy(float _dt)
+void UpdateEnemy(float _dt)
 {
-	for (unsigned i = GetNumberEnemy() ; i > 0 ; i--)
+	for (unsigned i = GetEnemyCount(); i > 0; i--)
 	{
-		UpdateEnemy(_dt, i-1);
+		UpdateEnemyI(_dt, i - 1);
 	}
 }
 
-void UpdateEnemy(float _dt, int _index)
+void UpdateEnemyI(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.timer += _dt;
@@ -354,17 +357,15 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	}*/
 
 	// préparation des variable nécéssaire
-	sfBool flag = sfFalse;
+	sfBool flag = sfTrue;
 	sfVector2u caseRecherche = { 0 };
 	int indexMin = 0;
 	sfVector2u* caseRecup = NULL;
 	sfVector2u caseGet = { 0 };
 	if (positionDebutCase.x != positionCibleCase.x || positionDebutCase.y != positionCibleCase.y)
 	{
-
-
 		//remplisage / exécution du code principale de l'algorytme A*
-		while (GetListSize(listeWait) && flag == sfFalse)
+		while (GetListSize(listeWait) && flag == sfTrue)
 		{
 			indexMin = MinResultCase();
 			caseRecup = GetElement(listeWait, indexMin)->value;
@@ -614,6 +615,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y + 1 };
 			if (TestColision(caseGet.x, caseGet.y + 1)) // si sur sol
 			{
+
 			}
 			else
 			{
@@ -817,7 +819,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			RetirerListWait(indexMin);
 			if (aStarMap[positionCibleCase.y][positionCibleCase.x].resultat)
 			{
-				flag = sfTrue;
+				flag = sfFalse;
 			}
 
 		}
@@ -830,12 +832,12 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 		if (aStarMap[positionCibleCase.y][positionCibleCase.x].resultat)
 		{
 			//printf("Cible Ateinte");
-			flag = sfFalse;
+			flag = sfTrue;
 		}
 		else
 		{
 			//printf("Cible Non Ateinte");
-			flag = sfTrue;
+			flag = sfFalse;
 		}
 		caseGet = (sfVector2u){ positionCibleCase.x, positionCibleCase.y };
 		if (DEBUG_MODE_A_STAR)
@@ -843,7 +845,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			system("cls");
 		}
 		sfVector2u vectortemp = { 0 };
-		while (flag == sfFalse) // rechercher les action demander
+		while (flag) // rechercher les action demander
 		{
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
 			{
@@ -1019,7 +1021,7 @@ sfFloatRect GetBounsEnemy(int _index)
 	return sfSprite_getGlobalBounds(ennemy->sprite);
 }
 
-int GetNumberEnemy()
+int GetEnemyCount()
 {
 	return GetListSize(listEnnemy);
 }
@@ -1123,7 +1125,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	SetPositionEnemy(_position, 0);
 }
 
-sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
@@ -1147,17 +1149,184 @@ sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat)
 	return isTouch;
 }
 
-sfBool IfHitEnemy(sfFloatRect _hitbox)
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 {
 	sfFloatRect hitboxEnemy = { 0 };
-	for (int i = 0; i < GetNumberEnemy(); i++)
+	for (int i = 0; i < GetEnemyCount(); i++)
 	{
-	    hitboxEnemy = GetBounsEnemy(i);
+		hitboxEnemy = GetBounsEnemy(i);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
 		{
-			HitEnemy(i, (sfVector2f) { 1, 1 }, 9.f);
+			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat, & _hitbox);
 			return sfTrue;
 		}
 	}
 	return sfFalse;
 }
+
+#else
+Enemy enemy;
+
+void LoadEnemy(void)
+{
+	enemy = (Enemy){ 0 };
+	enemy.entity = Calloc(1, sizeof(EnemyEntity));
+
+	enemy.data[SOLDIER_SMALL] = (EnemyData){ GetAsset("Assets/Sprites/spider_small.png") , 100.f, 5.f, 200.f, 50.f, 1.f };
+	enemy.data[SOLDIER_MEDIUM] = (EnemyData){ GetAsset("Assets/Sprites/spider_medium.png") , 100.f, 5.f, 400.f, 100.f , 3.f };
+	enemy.data[SOLDIER_HEAVY] = (EnemyData){ GetAsset("Assets/Sprites/spider_large.png") , 100.f, 5.f, 1000.f, 300.f , 10.f };
+}
+
+void UpdateEnemy(float _dt)
+{
+	sfFloatRect enemyHitbox = { 0 };
+	sfVector2f playerPosition = GetPlayerPosition();
+	for (unsigned i = 0; i < enemy.count; i++)
+	{
+		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y - 1))
+		{
+			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+
+			if (enemyHitbox.left + enemyHitbox.width < playerPosition.x)
+			{
+				enemy.entity[i].velocity.x += enemy.data[enemy.entity[i].type].speed * _dt;
+			}
+			else if (enemyHitbox.left > playerPosition.x)
+			{
+				enemy.entity[i].velocity.x -= enemy.data[enemy.entity[i].type].speed * _dt;
+			}
+			else
+			{
+				if (playerPosition.y > enemyHitbox.top && playerPosition.y < enemyHitbox.top + enemyHitbox.height)
+				{
+					KillPlayer();
+				}
+				enemy.entity[i].velocity.x = 0;
+			}
+
+			if (!enemy.entity[i].velocity.y)
+			{
+				if (playerPosition.y < enemyHitbox.top && enemy.entity[i].velocity.x)
+				{
+					if (1)
+					{
+						if (enemy.entity[i].velocity.x < 0)
+						{
+							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+						}
+						else
+						{
+							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+						}
+					}
+					else
+					{
+						if (enemy.entity[i].velocity.x < 0)
+						{
+							sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height }, AXIS_BOTH);
+							if (colision.x)
+							{
+								enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+							}
+						}
+						else if (enemy.entity[i].velocity.x > 0)
+						{
+							sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height }, AXIS_BOTH);
+							if (colision.x)
+							{
+								enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			enemy.entity[i].velocity.x = 0;
+		}
+
+		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
+		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
+		}
+		else if (enemy.entity[i].velocity.y < -MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = -MAX_FALL_SPEED_ENEMY;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
+
+		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite), AXIS_BOTH);
+		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
+		if (colision.y > 0)
+		{
+			enemy.entity[i].velocity.y = -G * enemy.data[enemy.entity[i].type].weight * _dt;
+		}
+		else if (colision.y < 0)
+		{
+			enemy.entity[i].velocity.y = 0;
+		}
+		else if (colision.x)
+		{
+			colision.y -= abs(colision.x);
+			enemy.entity[i].velocity.x = 0;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, colision);
+
+	}
+}
+
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
+{
+	sfFloatRect hitboxEnemy = { 0 };
+	for (unsigned i = 0; i < enemy.count; i++)
+	{
+		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		{
+			enemy.entity[i].life -= _degat;
+			if (enemy.entity[i].life <= 0)
+			{
+				enemy.count--;
+				DestroyVisualEntity(enemy.entity[i].sprite);
+				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
+				if (enemy.count)
+				{
+					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+				}
+
+			}
+			return sfTrue;
+		}
+	}
+	return sfFalse;
+}
+
+void ResetEnemy(void)
+{
+	for (unsigned i = 0; i < enemy.count; i++)
+	{
+		DestroyVisualEntity(enemy.entity[i].sprite);
+	}
+	enemy.count = 0;
+}
+
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
+{
+	if (_type == ALEATORY)
+	{
+		_type = rand() % (SOLDIER_HEAVY + 1);
+	}
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
+	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
+	sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
+	enemy.entity[enemy.count].type = _type;
+	enemy.entity[enemy.count].region = _region;
+	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;
+	enemy.count++;
+}
+
+#endif //  DEV_PIERRE_ENEMY == 1

@@ -187,21 +187,21 @@ void MovePlayer(float _dt)
 
 		if (player.direction)
 		{
-			player.velocity.x += PLAYER_DASH_POWER;
+			player.velocity.x = PLAYER_DASH_POWER;
 		}
 		else
 		{
-			player.velocity.x += -PLAYER_DASH_POWER;
+			player.velocity.x = -PLAYER_DASH_POWER;
 		}
 	}
 
-	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 
 	ColisionMapPlayer(_dt);
 }
 
 void ColisionMapPlayer(float _dt)
 {
+	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 	// ==========================================
 	// 1. RESOLVE Y-AXIS FIRST (Gravity / Falling)
 	// ==========================================
@@ -243,10 +243,10 @@ void ColisionMapPlayer(float _dt)
 		{
 			player.velocity.y = 0;
 		}
+		sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 	}
 
 	// Apply the Y pushback before starting X checks
-	sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 
 
 	// ==========================================
@@ -509,7 +509,7 @@ void UpdateSteamAxe(float _dt)
 		if (player.weapon.steamAxe.canHit == sfTrue)
 		{
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
-			ColisionBox(axeHitbox, sfTrue);
+			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
 		}
 	}
 }
@@ -531,11 +531,25 @@ void UpdateEnergy(float _dt)
 			player.ener.energy = player.ener.energyMax;
 		}
 	}
+	if (sfKeyboard_isKeyPressed(sfKeyP))
+	{
+		player.ener.energy = player.ener.energyMax;
+	}
 }
 
 sfFloatRect GetPlayerRect(void)
 {
 	return sfRectangleShape_getGlobalBounds(player.collision);
+}
+
+sfVector2f GetPlayerVelocity(void)
+{
+	return player.velocity;
+}
+
+void SetPlayerVelocity(sfVector2f _velocity)
+{
+	player.velocity = _velocity;
 }
 
 float GetPlayerEnergyInfo(int _index)
