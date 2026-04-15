@@ -172,7 +172,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
 			SetSpawnPlayer((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
-			SwitchBoss(map.state, (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+			SwitchBoss(map.state, (sfVector2f) { 350, 865});
 		}
 	}
 }
