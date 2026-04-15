@@ -195,13 +195,13 @@ void MovePlayer(float _dt)
 		}
 	}
 
-	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 
 	ColisionMapPlayer(_dt);
 }
 
 void ColisionMapPlayer(float _dt)
 {
+	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 	// ==========================================
 	// 1. RESOLVE Y-AXIS FIRST (Gravity / Falling)
 	// ==========================================
@@ -243,10 +243,10 @@ void ColisionMapPlayer(float _dt)
 		{
 			player.velocity.y = 0;
 		}
+		sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 	}
 
 	// Apply the Y pushback before starting X checks
-	sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 
 
 	// ==========================================
@@ -530,6 +530,10 @@ void UpdateEnergy(float _dt)
 		{
 			player.ener.energy = player.ener.energyMax;
 		}
+	}
+	if (sfKeyboard_isKeyPressed(sfKeyP))
+	{
+		player.ener.energy = player.ener.energyMax;
 	}
 }
 

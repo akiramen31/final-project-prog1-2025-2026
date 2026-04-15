@@ -3,7 +3,6 @@
 
 #include "Common.h"
 
-#define NB_TOP_BUTTONS 5
 #define NB_INFO_BUTTONS 6
 #define NB_KEY 8
 #define MAX_INFO 6
@@ -11,27 +10,48 @@
 
 typedef enum MenuState
 {
-	MENU_BASE,
+	STARTING_MENU,
 	PLAY,
 	SETTINGS,
 	CREDITS,
-	CONTROLS
+	CONTROLS,
+	SELECTION_MAP,
+	SELECTION_WEAPON,
+	SELECTION_BONUS
 }MenuState;
 
 
-typedef struct Menu
+typedef struct MainMenu
 {
 	char* name[10];
-	sfText* topButtons[NB_TOP_BUTTONS];
+	sfText* topButtons[5];
 	sfText* infoDisplay[6];
 	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
 	sfSprite* logo[3];
-	sfMusic* musics[NB_MUSICS];
-	MenuState state;
+}MainMenu;
+
+typedef struct SelectionMenu
+{
+	sfSprite* sideButton[3];
+	sfSprite* sideIcon[3];
+	int selectedOption;
+	sfText* bottomText[2];
+
+}SelectionMenu;
+
+typedef struct Menu
+{
 	sfColor highlightTextColor;
 	sfColor textColor;
+	sfSprite* overlay;
+	sfMusic* musics[NB_MUSICS];
+	MenuState state;
+	MainMenu mainMenu;
+	SelectionMenu selectionMenu;
 }Menu;
+
+
 
 void LoadMenu(void);
 void PollEventMenu(sfEvent* _event);
