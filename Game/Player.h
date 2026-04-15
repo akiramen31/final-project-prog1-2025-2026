@@ -9,7 +9,7 @@
 
 #define FIRE_RATE_RAILGUN 1.1f
 
-#define PLAYER_HORIZONTAL_SPEED_MAX 290
+#define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
 #define PLAYER_FALL_SPEED_MAX 1
@@ -68,6 +68,9 @@ void KillPlayer(void);
 
 sfVector2f GetPlayerPosition(void);
 sfFloatRect GetPlayerRect(void);
+
+sfVector2f GetPlayerVelocity(void);
+void SetPlayerVelocity(sfVector2f _velocity);
 
 float GetPlayerEnergyInfo(int _index);
 void SetPlayerEnergyInfo(float _val, int _index);

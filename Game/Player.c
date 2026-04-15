@@ -187,11 +187,11 @@ void MovePlayer(float _dt)
 
 		if (player.direction)
 		{
-			player.velocity.x += PLAYER_DASH_POWER;
+			player.velocity.x = PLAYER_DASH_POWER;
 		}
 		else
 		{
-			player.velocity.x += -PLAYER_DASH_POWER;
+			player.velocity.x = -PLAYER_DASH_POWER;
 		}
 	}
 
@@ -540,6 +540,16 @@ void UpdateEnergy(float _dt)
 sfFloatRect GetPlayerRect(void)
 {
 	return sfRectangleShape_getGlobalBounds(player.collision);
+}
+
+sfVector2f GetPlayerVelocity(void)
+{
+	return player.velocity;
+}
+
+void SetPlayerVelocity(sfVector2f _velocity)
+{
+	player.velocity = _velocity;
 }
 
 float GetPlayerEnergyInfo(int _index)
