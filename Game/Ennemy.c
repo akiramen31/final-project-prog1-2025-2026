@@ -1183,8 +1183,6 @@ void UpdateEnemy(float _dt)
 	sfVector2f playerPosition = GetPlayerPosition();
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		sfVector2f pos = sfSprite_getPosition(enemy.entity[i].sprite);
-		printf("%f , %f\n", pos.x, pos.y);
 		if (sfFloatRect_contains(&enemy.entity[i].region, playerPosition.x, playerPosition.y - 1))
 		{
 			enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
@@ -1295,7 +1293,10 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 				enemy.count--;
 				DestroyVisualEntity(enemy.entity[i].sprite);
 				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
-				enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+				if (enemy.count)
+				{
+					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+				}
 			}
 			return sfTrue;
 		}
