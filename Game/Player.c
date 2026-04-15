@@ -509,7 +509,7 @@ void UpdateSteamAxe(float _dt)
 		if (player.weapon.steamAxe.canHit == sfTrue)
 		{
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
-			ColisionBox(axeHitbox, sfTrue);
+			ColisionBox(axeHitbox, sfTrue, 0);
 		}
 	}
 }

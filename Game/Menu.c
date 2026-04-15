@@ -27,41 +27,6 @@ void LoadMenu(void)
 	//Sprites
 	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
 	menu.overlay = CreateSprite(GetAsset("Assets/Sprites/starting_menu_overlay.png"), (sfVector2f) { 0 }, 8.f, 60.f);
-	//Top buttons
-	sfVector2f positionTopButton[5] = { { 35, 23 }, { 332, 23 }, { 850, 23 },{ 1308, 23 }, { 1600, 23 } };
-	for (int i = 0; i < NB_TOP_BUTTONS; i++)
-	{
-		menu.topButtons[i] = CreateText(font, positionTopButton[i], 50, 5.f);
-	}
-	//Keybinds
-	char* bufferKeyType[NB_KEY] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
-	for (int i = 0; i < NB_KEY; i++)
-	{
-		menu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, 30, 5.f);
-		menu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
-		sfText_setString(menu.keyType[i], bufferKeyType[i]);
-	}
-	for (int i = 0; i < NB_KEY; i++)
-	{
-		UpdateTextKey(i, GetKeyFromSave(i));
-	}
-	//credits
-	menu.name[0] = "Akira";
-	menu.name[1] = "Benjamin";
-	menu.name[2] = "Alice";
-	menu.name[3] = "Ylix";
-	menu.name[4] = "Pierre";
-	menu.name[5] = "AILLET";
-	menu.name[6] = "MEURISSE_PEREZ";
-	menu.name[7] = "VOLLAIRE";
-	menu.name[8] = "MASSON";
-	menu.name[9] = "PAGLIAZZO";
-
-	//infoDisplay
-	for (int i = 0; i < MAX_INFO; i++)
-	{
-		menu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * (float)i }, 50, 5.f);
-	}
 	//Musics
 	menu.musics[0] = CreateMusic("Assets/Musics/1914-Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfFalse);
 	menu.musics[1] = CreateMusic("Assets/Musics/1914-United_Forces_March.ogg", 10.f, sfFalse);
