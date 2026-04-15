@@ -7,7 +7,7 @@ float timerFaling = 0;
 float timerLastEnergyConso = 0;
 
 
-void MovePlayer(float _dt);
+void UpdateMovePlayer(float _dt);
 
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
