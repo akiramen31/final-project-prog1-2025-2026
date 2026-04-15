@@ -48,16 +48,25 @@
    <wangtile tileid="162" wangid="0,0,1,0,1,0,1,0"/>
    <wangtile tileid="163" wangid="0,0,0,0,1,0,1,0"/>
    <wangtile tileid="168" wangid="0,0,0,0,4,0,0,0"/>
+   <wangtile tileid="169" wangid="0,0,4,0,4,0,0,0"/>
+   <wangtile tileid="170" wangid="0,0,4,0,4,0,4,0"/>
+   <wangtile tileid="171" wangid="0,0,0,0,4,0,4,0"/>
    <wangtile tileid="192" wangid="1,0,0,0,1,0,0,0"/>
    <wangtile tileid="193" wangid="1,0,1,0,1,0,0,0"/>
    <wangtile tileid="194" wangid="1,0,1,0,1,0,1,0"/>
    <wangtile tileid="195" wangid="1,0,0,0,1,0,1,0"/>
    <wangtile tileid="200" wangid="4,0,0,0,4,0,0,0"/>
+   <wangtile tileid="201" wangid="4,0,4,0,4,0,0,0"/>
+   <wangtile tileid="202" wangid="4,0,4,0,4,0,4,0"/>
+   <wangtile tileid="203" wangid="4,0,0,0,4,0,4,0"/>
    <wangtile tileid="224" wangid="1,0,0,0,1,0,0,0"/>
    <wangtile tileid="225" wangid="1,0,1,0,0,0,0,0"/>
    <wangtile tileid="226" wangid="1,0,1,0,0,0,1,0"/>
    <wangtile tileid="227" wangid="1,0,0,0,0,0,1,0"/>
    <wangtile tileid="232" wangid="4,0,0,0,0,0,0,0"/>
+   <wangtile tileid="233" wangid="4,0,4,0,0,0,0,0"/>
+   <wangtile tileid="234" wangid="4,0,4,0,0,0,4,0"/>
+   <wangtile tileid="235" wangid="4,0,0,0,0,0,4,0"/>
   </wangset>
  </wangsets>
 </tileset>
