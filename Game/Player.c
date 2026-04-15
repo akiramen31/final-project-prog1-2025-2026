@@ -619,6 +619,11 @@ void SetPlayerPosition(sfVector2f _pos)
 	sfRectangleShape_setPosition(player.collision, _pos);
 }
 
+void MovePlayer(sfVector2f _move)
+{
+	sfRectangleShape_move(player.collision, _move);
+}
+
 void SetSpawnPlayer(sfVector2f _pos)
 {
 	SetPlayerPosition(_pos);

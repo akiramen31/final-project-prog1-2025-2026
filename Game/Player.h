@@ -80,6 +80,8 @@ void SetPlayerLifeMax(int _life);
 void AddPlayerLife(int _life);
 
 void SetPlayerPosition(sfVector2f _pos);
+void MovePlayer(sfVector2f _move);
+
 void TpPlayerToSpawn(void);
 void SetSpawnPlayer(sfVector2f _pos);
 #endif
