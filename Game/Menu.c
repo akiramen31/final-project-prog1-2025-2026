@@ -93,7 +93,7 @@ void LoadMenu(void)
 	sfTexture* tempIcons = GetAsset("Assets/Sprites/selection_menu_icons.png");
 	sfVector2f buttonPos[3] = { {25, 300}, {25, 400 }, {25, 600} };
 	sfIntRect buttonRect = { 56, 76, 18, 18 };
-	sfIntRect iconRect[3] = { {0,16,16,16},{16,16,16,16},{32,16,16,16} };
+	sfIntRect iconRect[3] = { {0,0,16,16},{16,0,16,16},{32,0,16,16} };
 
 	sfVector2f temp[2] = { {830, 840}, {1410, 840} };
 	for (int i = 0; i < 2; i++)
@@ -251,7 +251,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			}
 			if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
 			{
-				if (menu.state = 5)
+				if (menu.state == 5)
 				{
 					SetMenuState(STARTING_MENU);
 				}

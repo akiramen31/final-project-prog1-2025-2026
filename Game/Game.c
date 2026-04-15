@@ -81,7 +81,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 			break;
 #if DEV_PIERRE_ENEMY
 		case sfKeyP:
-			HitEnemy(0, (sfVector2f) { 7, 7 }, 5);
+			HitEnemyI(0, (sfVector2f) { 7, 7 }, 5);
 			break;
 #endif
 		default:

@@ -86,7 +86,7 @@ typedef struct Case
 
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
-void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
+void AddEnemy(sfVector2f _position, enum EnemyType _type);
 sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
@@ -99,6 +99,20 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
 #else
 #define MAX_FALL_SPEED_ENEMY 1000
 
+typedef enum EnemyType
+{
+	SOLDIER_SMALL,
+	SOLDIER_MEDIUM,
+	SOLDIER_HEAVY,
+	DRONE_SMALL,
+	DRONE_MEDIUM,
+	DRONE_HEAVY,
+	CROWLER_SMALL,
+	CROWLER_MEDIUM,
+	CROWLER_HEAVY,
+	ALEATORY,
+}EnemyType;
+
 typedef struct EnemyData
 {
 	sfTexture* texture;
@@ -106,21 +120,8 @@ typedef struct EnemyData
 	float maxEnegie;
 	float jumpForce;
 	float weight;
+	float lifeMax;
 }EnemyData;
-
-typedef enum EnemyType
-{
-	DRONE_SMALL,
-	DRONE_MEDIUM,
-	DRONE_HEAVY,
-	CROWLER_SMALL,
-	CROWLER_MEDIUM,
-	CROWLER_HEAVY,
-	SOLDIER_SMALL,
-	SOLDIER_MEDIUM,
-	SOLDIER_HEAVY,
-	ALEATORY,
-}EnemyType;
 
 typedef struct EnemyEntity
 {
