@@ -5,6 +5,8 @@
 #include "Map.h"
 #include "Player.h"
 
+#if DEV_PIERRE_ENEMY == 1
+
 #define TIMER_ASTAR 0.1f
 #define JUMP_FORCE 5
 #define MAX_ENRGIE 300
@@ -83,20 +85,71 @@ typedef struct Case
 }Case;
 
 void LoadEnemy(void);
-void UpdateEnemy(float _dt, int _index);
-void UpdateTotalEnemy(float _dt);
-void AddEnemy(sfVector2f _position, enum EnemyType _type);
-sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat);
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
+void UpdateEnemy(float _dt);
+void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
+sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
-int GetNumberEnemy(void);
-sfColor GetColorsPixelMap(sfVector2f _position);
+int GetEnemyCount(void);
 void SetPositionEnemy(sfVector2f _position, int _index);
 
 void ResetEnemy(void);
-int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
-sfBool IfHitEnemy(sfFloatRect _hitbox);
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
+
+#else
+#define MAX_FALL_SPEED_ENEMY 1000
+
+typedef struct EnemyData
+{
+	sfTexture* texture;
+	float speed;
+	float maxEnegie;
+	float jumpForce;
+	float weight;
+}EnemyData;
+
+typedef enum EnemyType
+{
+	DRONE_SMALL,
+	DRONE_MEDIUM,
+	DRONE_HEAVY,
+	CROWLER_SMALL,
+	CROWLER_MEDIUM,
+	CROWLER_HEAVY,
+	SOLDIER_SMALL,
+	SOLDIER_MEDIUM,
+	SOLDIER_HEAVY,
+	ALEATORY,
+}EnemyType;
+
+typedef struct EnemyEntity
+{
+	sfSprite* sprite;
+	sfVector2f acceleration;
+	EnemyType type;
+	State state;
+	float life;
+	float energy;
+	sfFloatRect region;
+	sfVector2f velocity;
+}EnemyEntity;
+
+typedef struct Enemy
+{
+	EnemyEntity* entity;
+	EnemyData data[ALEATORY];
+	int count;
+
+}Enemy;
+
+void LoadEnemy(void);
+void UpdateEnemy(float _dt); 
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
+void ResetEnemy(void);
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region);
+
+#endif //  DEV_PIERRE_ENEMY == 1
+
 
 #endif // !GAME_H
 
