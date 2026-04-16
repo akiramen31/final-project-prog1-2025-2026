@@ -113,6 +113,12 @@ void UpdatePositionCameraLevel1(float _dt)
 					pos.y = hitbox.top + hitbox.height / 2;
 				}
 				break;
+				//for boss room
+			case 5:
+				cameraZoom = 0.42f;
+				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
+				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
+				break;
 			default:
 				pos = GetPlayerPosition();
 				break;

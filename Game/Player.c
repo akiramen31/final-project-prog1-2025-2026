@@ -7,7 +7,7 @@ float timerFaling = 0;
 float timerLastEnergyConso = 0;
 
 
-void MovePlayer(float _dt);
+void UpdateMovePlayer(float _dt);
 
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
@@ -62,7 +62,7 @@ void UpdatePlayer(float _dt)
 	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
 
-	if (DEV_MODE_FLY)
+	if (GetIntFromSave(DEV_MODE_FLY))
 	{
 		int val = 10;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
@@ -86,10 +86,8 @@ void UpdatePlayer(float _dt)
 	else
 	{
 		MoveZonePlayer(_dt);
-		MovePlayer(_dt);
+		UpdateMovePlayer(_dt);
 	}
-
-	printf("%f\n", player.ener.energy);
 
 	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
 }
@@ -104,7 +102,7 @@ void UpdateWeaponPlayer(float _dt)
 	UpdateFireControl(_dt);
 }
 
-void MovePlayer(float _dt)
+void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
@@ -187,11 +185,11 @@ void MovePlayer(float _dt)
 
 		if (player.direction)
 		{
-			player.velocity.x += PLAYER_DASH_POWER;
+			player.velocity.x = PLAYER_DASH_POWER;
 		}
 		else
 		{
-			player.velocity.x += -PLAYER_DASH_POWER;
+			player.velocity.x = -PLAYER_DASH_POWER;
 		}
 	}
 
@@ -542,6 +540,16 @@ sfFloatRect GetPlayerRect(void)
 	return sfRectangleShape_getGlobalBounds(player.collision);
 }
 
+sfVector2f GetPlayerVelocity(void)
+{
+	return player.velocity;
+}
+
+void SetPlayerVelocity(sfVector2f _velocity)
+{
+	player.velocity = _velocity;
+}
+
 float GetPlayerEnergyInfo(int _index)
 {
 	switch (_index)
@@ -609,6 +617,11 @@ void SetPlayerPosition(sfVector2f _pos)
 	sfRectangleShape_setPosition(player.collision, _pos);
 }
 
+void MovePlayer(sfVector2f _move)
+{
+	sfRectangleShape_move(player.collision, _move);
+}
+
 void SetSpawnPlayer(sfVector2f _pos)
 {
 	SetPlayerPosition(_pos);
@@ -618,4 +631,27 @@ void SetSpawnPlayer(sfVector2f _pos)
 void TpPlayerToSpawn(void)
 {
 	SetPlayerPosition(player.spawn);
+}
+
+void HandlePlayerBossCollision(sfVector2f _push)
+{
+	if (_push.x != 0.f || _push.y != 0.f)
+	{
+		sfRectangleShape_move(player.collision, _push);
+
+		if (_push.y < 0.f)
+		{
+			player.isGrounded = sfTrue;
+			player.velocity.y = 0.f;
+			timerFaling = 0.f;
+		}
+		else if (_push.y > 0.f)
+		{
+			player.velocity.y = 0.f;
+		}
+		if (_push.x != 0.f)
+		{
+			player.velocity.x = 0.f;
+		}
+	}
 }

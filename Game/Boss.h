@@ -6,20 +6,37 @@
 #include "Player.h"
 #include "Box.h"
 
+typedef enum bossReactionToPlayer
+{
+	PLAYER_AWAY,
+	PLAYER_RANGE_SHOOT,
+	PLAYER_UNDER,
+	PLAYER_ON_TOP,
+	PLAYER_TURRET,
+	PLAYER_RIGHT,
+	PLAYER_LEFT
+
+}bossReactionToPlayer;
+
 typedef struct Boss1
 {
-	sfSprite* sprite1;
-	sfSprite* sprite2;
+	sfSprite* track;
+	sfSprite* steamTank;
+	sfSprite* gunCariage;
 	sfSprite* spriteCanon;
 	float timerCanon;
-	sfSprite* spriteTurret1;
-	sfSprite* spriteTurret1Bis;
+	sfSprite* spriteTurret1Case;
+	sfSprite* spriteTurret1Base;
 	sfSprite* spriteTurret1Canon;
 	float timerTurret1Canon;
-	sfSprite* spriteTurret2;
-	sfSprite* spriteTurret2Bis;
+	sfSprite* spriteTurret2Case;
+	sfSprite* spriteTurret2Base;
 	sfSprite* spriteTurret2Canon;
 	float timerTurret2Canon;
+
+	float runAwayTiming;
+
+
 	sfVector2f velocity;
 }Boss1;
 
@@ -34,6 +51,7 @@ void LoadBoss(void);
 void SwitchBoss(char _index, sfVector2f _position);
 
 void UpdateBoss(float _dt);
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
 
 void HitBoss(sfFloatRect _hitbox);
 

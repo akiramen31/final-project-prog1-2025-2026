@@ -16,6 +16,7 @@ float timer;
 void LoadGame(void)
 {
 	game = (Game){ 0 };
+	SetIntToSave(DEV_MODE_FLY, 0);
 	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
@@ -81,9 +82,15 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 			break;
 #if DEV_PIERRE_ENEMY
 		case sfKeyP:
-			HitEnemy(0, (sfVector2f) { 7, 7 }, 5);
+			HitEnemyI(0, (sfVector2f) { 7, 7 }, 5);
 			break;
 #endif
+		case sfKeyF5:
+			SetIntToSave(DEV_MODE_FLY, 1);
+			break;
+		case sfKeyF6:
+			SetIntToSave(DEV_MODE_FLY, 0);
+			break;
 		default:
 			break;
 		}
@@ -93,13 +100,13 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-
 	UpdateEnemy(_dt);
 
 	//UpdateHUD(_dt);
 	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
+	UpdateBoss(_dt);
 	UpdateBullet(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
