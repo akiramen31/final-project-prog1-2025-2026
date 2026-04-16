@@ -39,11 +39,11 @@
                 38,
                 31
             ],
-            "scale": 1,
-            "selectedLayer": 2,
+            "scale": 0.25,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 6959,
-                "y": 475
+                "x": 8456,
+                "y": 1304
             }
         },
         "Level1_2.tmx": {
@@ -79,8 +79,8 @@
             "scale": 0.25,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 2560,
-                "y": 1166
+                "x": 2784,
+                "y": 1164
             }
         },
         "LevelTest.tmx": {
@@ -158,9 +158,9 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
+        "LevelTest.tmx",
         "Level1_Demo.tmx",
         "Tilesets/SpritesList.tsx",
-        "LevelTest.tmx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
         "Level2.tmx",
