@@ -7,8 +7,6 @@
 #include "Weapon.h"
 #include "Box.h"
 
-#define FIRE_RATE_RAILGUN 1.1f
-
 #define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
