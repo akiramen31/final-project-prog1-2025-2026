@@ -93,14 +93,13 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 void UpdateGame(float _dt)
 {
 	UpdatePlayer(_dt);
-
-	UpdateBoss(_dt);
 	UpdateEnemy(_dt);
 
 	//UpdateHUD(_dt);
 	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
+	UpdateBoss(_dt);
 	UpdateBullet(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);

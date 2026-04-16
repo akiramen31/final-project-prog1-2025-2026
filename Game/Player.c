@@ -634,3 +634,26 @@ void TpPlayerToSpawn(void)
 {
 	SetPlayerPosition(player.spawn);
 }
+
+void HandlePlayerBossCollision(sfVector2f _push)
+{
+	if (_push.x != 0.f || _push.y != 0.f)
+	{
+		sfRectangleShape_move(player.collision, _push);
+
+		if (_push.y < 0.f)
+		{
+			player.isGrounded = sfTrue;
+			player.velocity.y = 0.f;
+			timerFaling = 0.f;
+		}
+		else if (_push.y > 0.f)
+		{
+			player.velocity.y = 0.f;
+		}
+		if (_push.x != 0.f)
+		{
+			player.velocity.x = 0.f;
+		}
+	}
+}
