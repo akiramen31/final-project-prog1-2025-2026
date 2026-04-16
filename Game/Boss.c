@@ -99,14 +99,14 @@ void UpdateBoss(float _dt)
 	}
 	sfFloatRect pRect = GetPlayerRect();
 
-	sfFloatRect bossSolids[3];
+	sfFloatRect bossSolids[3] = { 0 };
 	bossSolids[0] = sfSprite_getGlobalBounds(boss.boss1->steamTank);
 	bossSolids[1] = sfSprite_getGlobalBounds(boss.boss1->spriteTurret1Case);
 	bossSolids[2] = sfSprite_getGlobalBounds(boss.boss1->spriteTurret2Case);
 
 	sfVector2f push = TestCollisionBossPlayer(pRect, bossSolids, 3, AXIS_BOTH);
 
-	MovePlayer(push);
+	HandlePlayerBossCollision(push);
 }
 
 void MoveBoss1(sfVector2f _move)
@@ -154,7 +154,7 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 			{
 				float hitboxCenterX = _hitbox.left + (_hitbox.width / 2.0f);
 				float coliderCenterX = _bossParts[i].left + (_bossParts[i].width / 2.0f);
-				float push = (hitboxCenterX < coliderCenterX) ? -reaction.width : reaction.width;
+				float push = (hitboxCenterX < coliderCenterX) ? -reaction.width : reaction.width; 
 				vectorMove.x += push;
 				_hitbox.left += push;
 			}
@@ -162,7 +162,7 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 			{
 				float hitboxCenterY = _hitbox.top + (_hitbox.height / 2.0f);
 				float coliderCenterY = _bossParts[i].top + (_bossParts[i].height / 2.0f);
-				float push = (hitboxCenterY < coliderCenterY) ? -reaction.height : reaction.height;
+				float push = (hitboxCenterY < coliderCenterY) ? -reaction.height : reaction.height; 
 				vectorMove.y += push;
 				_hitbox.top += push;
 			}

@@ -84,4 +84,7 @@ void MovePlayer(sfVector2f _move);
 
 void TpPlayerToSpawn(void);
 void SetSpawnPlayer(sfVector2f _pos);
+
+void HandlePlayerBossCollision(sfVector2f _push);
+
 #endif
