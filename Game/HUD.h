@@ -2,10 +2,12 @@
 #define HUD_H
 
 #include "Common.h"
+#include "Player.h"
 
 typedef struct HUD
 {
 	sfSprite* life;
+	sfSprite* gauge;
 }HUD;
 
 void LoadHUD(void);

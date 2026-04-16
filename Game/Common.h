@@ -36,7 +36,7 @@
 
 #define TILE_SIZE 16.f
 
-#define G 9.81f
+#define G 5.81f
 
 typedef enum {
 	AXIS_X,

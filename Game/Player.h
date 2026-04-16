@@ -8,7 +8,7 @@
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
 #define PLAYER_FALL_SPEED_MAX 1
-#define PLAYER_JUMP_POWER 1.9f
+#define PLAYER_JUMP_POWER 1.5f
 
 #define PLAYER_DASH_POWER 2.0f
 #define PLAYER_DASH_COOLDOWN 0.5f
@@ -53,7 +53,13 @@ typedef struct Player
 	sfBool isGrounded;
 
 	sfVector2f spawn;
+<<<<<<< A
 	sfVector2f tpBoss;
+=======
+
+	Animation running;
+	Animation walking;
+>>>>>>> main
 }Player;
 
 void LoadPlayer(void);

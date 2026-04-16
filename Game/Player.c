@@ -9,11 +9,12 @@ float timerDash = 0;
 float timerFaling = 0;
 float timerLastEnergyConso = 0;
 
-
 void UpdateMovePlayer(float _dt);
 
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
+
+void UpdateAnimation(float _dt);
 
 void UpdateCooldown(float _dt);
 void UpdateFireControl(float _dt);
@@ -30,14 +31,24 @@ sfVector2f pos;
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
-	sfTexture* texture = GetAsset("Assets/Sprites/capsul.png");
+	sfTexture* texture = GetAsset("Assets/Sprites/player_sprite_sheet.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
-	SetSpriteOriginFoot(player.sprite);
+	player.direction == sfTrue;
 
 	player.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
+
+	player.running.frameCount = 8;
+	player.running.frameDuration = 0.1;
+	player.running.isLooping = sfTrue;
+	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
+
+	player.walking.frameCount = 8;
+	player.walking.frameDuration = 0.1;
+	player.walking.isLooping = sfTrue;
+	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
 
 	player.canShoot = sfTrue;
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
@@ -67,22 +78,22 @@ void UpdatePlayer(float _dt)
 
 	if (GetIntFromSave(DEV_MODE_FLY))
 	{
-		int val = 10;
+		int val = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += val;
+			pos.x += val *_dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			pos.x -= val;
+			pos.x -= val * _dt;
 		}
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
 		{
-			pos.y += val;
+			pos.y += val * _dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 		{
-			pos.y -= val;
+			pos.y -= val * _dt;
 		}
 		sfRectangleShape_setPosition(player.collision, pos);
 	}
@@ -92,7 +103,7 @@ void UpdatePlayer(float _dt)
 		UpdateMovePlayer(_dt);
 	}
 
-	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+	UpdateAnimation(_dt);
 }
 
 void UpdateWeaponPlayer(float _dt)
@@ -323,6 +334,30 @@ void MoveZonePlayer(float _dt)
 	}
 }
 
+void UpdateAnimation(float _dt)
+{
+	if (player.velocity.x != 0 && player.velocity.y == 0)
+	{
+		UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+	}
+	else /*if (player.velocity.x == 0)*/
+	{
+		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
+	}
+
+	if (player.direction)
+	{
+		sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+	}
+	else
+	{
+		sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+	}
+	SetSpriteOriginFoot(player.sprite);
+
+	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+}
+
 void DamagePlayer(int _damage)
 {
 	player.life -= _damage;
@@ -532,7 +567,15 @@ void UpdateEnergy(float _dt)
 			player.ener.energy = player.ener.energyMax;
 		}
 	}
+<<<<<<< A
 	if (DEV_WEAPON)
+=======
+	if (player.ener.energy < 0)
+	{
+		player.ener.energy = 0;
+	}
+	if (sfKeyboard_isKeyPressed(sfKeyP))
+>>>>>>> main
 	{
 		if (sfKeyboard_isKeyPressed(sfKeyP))
 		{

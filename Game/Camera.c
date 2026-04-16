@@ -68,24 +68,23 @@ void UpdatePositionCameraLevel1(float _dt)
 		{
 			switch (lastCamPositonName)
 			{
-				//for wide room
 			case 1:
-				cameraZoom = 0.3f;
-				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
-				{
-					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
-				}
-				else if (zone[val].hitbox.left + zone[val].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
-				{
-					pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 3;
-				}
-				else
-				{
-					pos.x = hitbox.left + hitbox.width / 2;
-				}
+				cameraZoom = 0.2f;
+				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
 			case 2:
+				cameraZoom = 0.35f;
+				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
+				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
+				break;
+			case 3:
+				cameraZoom = 0.25f;
+				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
+				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
+				break;
+				//for biggest room
+			case 4:
 				cameraZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
@@ -141,6 +140,10 @@ void UpdatePositionCameraLevel1(float _dt)
 						sscanf_s(zone[i].name, "%d", &camName);
 						ChangeLastPos(camName, i);
 						return;
+					}
+					else
+					{
+						SetDefaultView(_dt);
 					}
 				}
 			}
