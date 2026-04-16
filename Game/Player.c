@@ -75,22 +75,22 @@ void UpdatePlayer(float _dt)
 
 	if (GetIntFromSave(DEV_MODE_FLY))
 	{
-		int val = 10;
+		int val = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += val;
+			pos.x += val *_dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			pos.x -= val;
+			pos.x -= val * _dt;
 		}
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
 		{
-			pos.y += val;
+			pos.y += val * _dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 		{
-			pos.y -= val;
+			pos.y -= val * _dt;
 		}
 		sfRectangleShape_setPosition(player.collision, pos);
 	}
