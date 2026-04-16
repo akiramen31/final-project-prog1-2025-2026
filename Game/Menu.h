@@ -35,6 +35,8 @@ typedef struct SelectionMenu
 {
 	sfSprite* sideButton[3];
 	sfSprite* sideIcon[3];
+	sfSprite* mapIcon[3];
+	sfSprite* mapOverlay[3];
 	int selectedOption;
 	sfText* bottomText[2];
 
