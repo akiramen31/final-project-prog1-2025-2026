@@ -108,4 +108,5 @@ void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(sfVector2u _size, size_t _typeSize);
 sfBool StringCompare(char* _string1, char* _string2);
+float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 #endif // !COMMON_H
