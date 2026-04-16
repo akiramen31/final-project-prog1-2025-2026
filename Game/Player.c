@@ -564,6 +564,10 @@ void UpdateEnergy(float _dt)
 			player.ener.energy = player.ener.energyMax;
 		}
 	}
+	if (player.ener.energy < 0)
+	{
+		player.ener.energy = 0;
+	}
 	if (sfKeyboard_isKeyPressed(sfKeyP))
 	{
 		player.ener.energy = player.ener.energyMax;

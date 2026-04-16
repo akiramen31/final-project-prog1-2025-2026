@@ -48,6 +48,7 @@ void Draw(void)
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
 	sfRenderWindow_setVerticalSyncEnabled(GetRenderWindow(), sfTrue);
+	sfRenderWindow_setFramerateLimit(GetRenderWindow(), 60);
 
 	while (elementActual)
 	{
