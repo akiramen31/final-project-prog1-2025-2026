@@ -30,7 +30,7 @@ void LoadGame(void)
 	}
 	LoadMap(background);
 
-	//LoadHUD();
+	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
 	LoadAim();
@@ -105,7 +105,7 @@ void UpdateGame(float _dt)
 	UpdatePlayer(_dt);
 	UpdateEnemy(_dt);
 
-	//UpdateHUD(_dt);
+	UpdateHUD(_dt);
 	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
