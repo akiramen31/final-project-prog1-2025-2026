@@ -32,8 +32,8 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 	sfTexture* texture = GetAsset("Assets/Sprites/player_sprite_sheet.png");
-	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40);
-	player.direction == sfTrue;
+	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40.f);
+	player.direction = sfTrue;
 
 	player.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
@@ -41,6 +41,7 @@ void LoadPlayer(void)
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
 
 	player.running.frameCount = 8;
+
 	player.running.frameDuration = 0.1;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
