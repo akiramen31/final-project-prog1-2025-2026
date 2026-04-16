@@ -82,7 +82,7 @@ void UpdatePlayer(float _dt)
 		int val = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += val *_dt;
+			pos.x += val * _dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
@@ -568,15 +568,11 @@ void UpdateEnergy(float _dt)
 			player.ener.energy = player.ener.energyMax;
 		}
 	}
-<<<<<<< A
-	if (DEV_WEAPON)
-=======
 	if (player.ener.energy < 0)
 	{
 		player.ener.energy = 0;
 	}
-	if (sfKeyboard_isKeyPressed(sfKeyP))
->>>>>>> main
+	if (DEV_WEAPON)
 	{
 		if (sfKeyboard_isKeyPressed(sfKeyP))
 		{

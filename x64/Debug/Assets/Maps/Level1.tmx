@@ -418,7 +418,7 @@
   <object id="392" x="2160" y="688" width="32" height="16"/>
   <object id="425" x="4080" y="416" width="112" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point">
+ <objectgroup id="37" name="Point" visible="0">
   <object id="514" type="SpawnPlayer" x="232" y="320">
    <point/>
   </object>
@@ -696,7 +696,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="39" name="Trigger">
+ <objectgroup id="39" name="Trigger" visible="0">
   <object id="515" name="1" type="Camera" x="1952" y="560" width="320" height="192"/>
   <object id="517" name="2" type="Camera" x="2784" y="560" width="544" height="304"/>
   <object id="519" name="3" type="Camera" x="3920" y="192" width="432" height="224"/>

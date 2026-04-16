@@ -53,13 +53,10 @@ typedef struct Player
 	sfBool isGrounded;
 
 	sfVector2f spawn;
-<<<<<<< A
 	sfVector2f tpBoss;
-=======
 
 	Animation running;
 	Animation walking;
->>>>>>> main
 }Player;
 
 void LoadPlayer(void);
