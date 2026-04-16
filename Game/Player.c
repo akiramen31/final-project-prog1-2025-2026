@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "Missile.h"
+#include "Aim.h"
+#include "Box.h"
 
 Player player;
 
@@ -442,7 +445,7 @@ void UpdateFireControl(float _dt)
 
 void UpdateFireControlRailgun(void)
 {
-	if (GetBulletCount() < BULLET_MAX)
+	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
 		UseWeapon(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
 	}
@@ -564,13 +567,20 @@ void UpdateEnergy(float _dt)
 			player.ener.energy = player.ener.energyMax;
 		}
 	}
+<<<<<<< A
+	if (DEV_WEAPON)
+=======
 	if (player.ener.energy < 0)
 	{
 		player.ener.energy = 0;
 	}
 	if (sfKeyboard_isKeyPressed(sfKeyP))
+>>>>>>> main
 	{
-		player.ener.energy = player.ener.energyMax;
+		if (sfKeyboard_isKeyPressed(sfKeyP))
+		{
+			player.ener.energy = player.ener.energyMax;
+		}
 	}
 }
 
@@ -665,6 +675,15 @@ void SetSpawnPlayer(sfVector2f _pos)
 {
 	SetPlayerPosition(_pos);
 	player.spawn = _pos;
+}
+void SetTpPlayerBoss(sfVector2f _pos)
+{
+	player.tpBoss = _pos;
+}
+
+void TpPlayerBoss(void)
+{
+	SetPlayerPosition(player.tpBoss);
 }
 
 void TpPlayerToSpawn(void)

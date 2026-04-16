@@ -94,6 +94,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF6:
 			SetIntToSave(DEV_MODE_FLY, 0);
 			break;
+		case sfKeyF7:
+			TpPlayerBoss();
+			break;
 		default:
 			break;
 		}
