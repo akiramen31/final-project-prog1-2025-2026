@@ -1,11 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Common.h"
-#include "Missile.h"
-#include "Aim.h"
 #include "Weapon.h"
-#include "Box.h"
+#include "Common.h"
 
 #define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
@@ -56,6 +53,7 @@ typedef struct Player
 	sfBool isGrounded;
 
 	sfVector2f spawn;
+	sfVector2f tpBoss;
 }Player;
 
 void LoadPlayer(void);
@@ -82,6 +80,9 @@ void MovePlayer(sfVector2f _move);
 
 void TpPlayerToSpawn(void);
 void SetSpawnPlayer(sfVector2f _pos);
+
+void TpPlayerBoss(void);
+void SetTpPlayerBoss(sfVector2f _pos);
 
 void HandlePlayerBossCollision(sfVector2f _push);
 

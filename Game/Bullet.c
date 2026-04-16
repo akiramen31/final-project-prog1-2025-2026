@@ -1,57 +1,95 @@
 #include "Bullet.h"
 #include "Ennemy.h"
+#include "Boss.h"
 
 sfTexture* bulletTexture;
-Bullet bulletList[BULLET_MAX];
-unsigned bulletCount;
+Bullet bulletListAlly[BULLET_ALLY_MAX];
+Bullet bulletListEnemy[BULLET_ENEMY_MAX];
+unsigned bulletCountAlly;
+unsigned bulletCountEnemy;
 
-void SortBulletList(unsigned _index);
+void SortBulletListAlly(unsigned _index);
+void SortBulletListEnemy(unsigned _index);
 
 void LoadBullet(void)
 {
 	bulletTexture = GetAsset("Assets/Sprites/Bullet_Placeholder.png");
-	bulletCount = 0;
+	bulletCountAlly = 0;
+	bulletCountEnemy = 0;
 }
 
 void UpdateBullet(float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
 	sfVector2f reactionWall = { 0 };
-	for (int i = (int)bulletCount - 1; i >= 0; i--)
+	for (int i = (int)bulletCountAlly - 1; i >= 0; i--)
 	{
-		bulletList[i].lifetime -= _dt;
+		bulletListAlly[i].lifetime -= _dt;
 
-		if (bulletList[i].lifetime <= 0)
+		if (bulletListAlly[i].lifetime <= 0)
 		{
-			DeleteBullet(i);
+			DeleteBulletAlly(i);
 		}
 		else
 		{
-			hitboxBullet = sfSprite_getGlobalBounds(bulletList[i].sprite);
+			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet) || HitBoss(9.f, hitboxBullet))
 			{
-				DeleteBullet(i);
+				DeleteBulletAlly(i);
 			}
 			else
 			{
-				bulletList[i].velocity.y += G * _dt;
-				sfSprite_move(bulletList[i].sprite, (sfVector2f) { bulletList[i].velocity.x* _dt, bulletList[i].velocity.y* _dt });
-				sfSprite_setRotation(bulletList[i].sprite, RAD_DEG(atan2f(bulletList[i].velocity.y, bulletList[i].velocity.x)));
+				bulletListAlly[i].velocity.y += G * _dt;
+				sfSprite_move(bulletListAlly[i].sprite, (sfVector2f) { bulletListAlly[i].velocity.x* _dt, bulletListAlly[i].velocity.y* _dt });
+				sfSprite_setRotation(bulletListAlly[i].sprite, RAD_DEG(atan2f(bulletListAlly[i].velocity.y, bulletListAlly[i].velocity.x)));
 			}
 		}
 		
+	}
+	for (int i = (int)bulletCountEnemy - 1; i >= 0; i--)
+	{
+		bulletListEnemy[i].lifetime -= _dt;
+
+		if (bulletListEnemy[i].lifetime <= 0)
+		{
+			DeleteBulletEnemy(i);
+		}
+		else
+		{
+			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
+			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x /*|| HitPlayer(10.f, hitboxBullet)*/)
+			{
+				DeleteBulletEnemy(i);
+			}
+			else
+			{
+				bulletListEnemy[i].velocity.y += G * _dt;
+				sfSprite_move(bulletListEnemy[i].sprite, (sfVector2f) { bulletListEnemy[i].velocity.x* _dt, bulletListEnemy[i].velocity.y* _dt });
+				sfSprite_setRotation(bulletListEnemy[i].sprite, RAD_DEG(atan2f(bulletListEnemy[i].velocity.y, bulletListEnemy[i].velocity.x)));
+			}
+		}
+
 	}
 }
 
 unsigned GetBulletCount(void)
 {
-	return bulletCount;
+	return bulletCountAlly;
 }
 
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
 {
-	if (bulletCount >= BULLET_MAX) return;
+	if (_shooterType.isAlly && bulletCountAlly >= BULLET_ALLY_MAX)
+	{
+		return;
+	}
+	else if (!_shooterType.isAlly && bulletCountEnemy >= BULLET_ALLY_MAX)
+	{
+		return;
+	}
+	
 
 	Bullet newBullet = { 0 };
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
@@ -89,24 +127,47 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	newBullet.isAlly = _shooterType.isAlly;
 	newBullet.bulletType = _shooterType.bulletType;
 	newBullet.lifetime = BULLET_LIFETIME;
-	bulletList[bulletCount] = newBullet;
-	bulletCount++;
-}
-
-
-
-void SortBulletList(unsigned _index)
-{
-	for (unsigned i = _index; i < bulletCount - 1; i++)
+	if (_shooterType.isAlly)
 	{
-		bulletList[i] = bulletList[i + 1];
+	bulletListAlly[bulletCountAlly] = newBullet;
+	bulletCountAlly++;
 	}
-	bulletList[bulletCount - 1] = (Bullet){ 0 };
+	else
+	{
+	bulletListEnemy[bulletCountEnemy] = newBullet;
+	bulletCountEnemy++;
+	}
 }
 
-void DeleteBullet(unsigned _index)
+void SortBulletListAlly(unsigned _index)
 {
-	DestroyVisualEntity(bulletList[_index].sprite);
-	SortBulletList(_index);
-	bulletCount--;
+	for (unsigned i = _index; i < bulletCountAlly - 1; i++)
+	{
+		bulletListAlly[i] = bulletListAlly[i + 1];
+	}
+	bulletListAlly[bulletCountAlly - 1] = (Bullet){ 0 };
 }
+
+void SortBulletListEnemy(unsigned _index)
+{
+	for (unsigned i = _index; i < bulletCountEnemy - 1; i++)
+	{
+		bulletListEnemy[i] = bulletListEnemy[i + 1];
+	}
+	bulletListEnemy[bulletCountEnemy - 1] = (Bullet){ 0 };
+}
+
+void DeleteBulletAlly(unsigned _index)
+{
+	DestroyVisualEntity(bulletListAlly[_index].sprite);
+	SortBulletListAlly(_index);
+	bulletCountAlly--;
+}
+
+void DeleteBulletEnemy(unsigned _index)
+{
+	DestroyVisualEntity(bulletListEnemy[_index].sprite);
+	SortBulletListEnemy(_index);
+	bulletCountEnemy--;
+}
+

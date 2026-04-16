@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="590" height="72" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="689">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="590" height="72" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="689">
  <editorsettings>
   <export target="Level1.json" format="json"/>
  </editorsettings>
@@ -559,10 +559,10 @@
   <object id="592" name="1" type="Enemy" x="2048" y="656">
    <point/>
   </object>
-  <object id="627" type="Boss" x="8886.67" y="758.667">
+  <object id="627" type="Boss" x="8880" y="864">
    <point/>
   </object>
-  <object id="629" type="TpPlayer" x="8400" y="736">
+  <object id="629" type="TpPlayer" x="8400" y="864">
    <point/>
   </object>
   <object id="663" type="Box" x="7280" y="400">

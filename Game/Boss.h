@@ -6,19 +6,49 @@
 #include "Player.h"
 #include "Box.h"
 
-#define RELOAD_TIME_TURRET 2.f
-#define TURRET_ROTATION_SPEED 60.f
+#define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
+#define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2
 
-typedef enum bossReactionToPlayer
+#define RUNAWAY_TIMER 2.5f
+
+#define BOSS_FIRERATE 4.f
+
+#define RELOAD_TIME_TURRET 2.f
+#define TURRET_ROTATION_SPEED 75.f
+
+#define SHOOT_DISTANCE_MAX 242.f
+#define SHOOT_DISTANCE_MIN 80.f
+
+#define TARGET_DISTANCE_MAX 200.f
+
+#define ARENA_CENTER 8671.f
+#define ARENA_ENTRY 8290.f
+
+#define ARENA_LIMITE_LEFT 8451.f
+#define ARENA_LIMITE_RIGHT 8891.f
+
+typedef enum PlayerPositionToBoss
 {
-	PLAYER_AWAY,
-	PLAYER_RANGE_SHOOT,
+	PLAYER_NOT_IN_ARENA,
+	PLAYER_AWAY_RIGHT,
+	PLAYER_AWAY_LEFT,
+	PLAYER_RANGE_SHOOT_RIGHT,
+	PLAYER_RANGE_SHOOT_LEFT,
 	PLAYER_UNDER,
 	PLAYER_ON_TOP,
-	PLAYER_TURRET
+	PLAYER_TURRET_RIGHT,
+	PLAYER_TURRET_LEFT
 
-}bossReactionToPlayer;
+}PlayerPositionToBoss;
 
+typedef enum BossReactionToPlayer
+{
+	NONE,
+	GO_LEFT,
+	GO_RIGHT,
+	PUSH_LEFT,
+	PUSH_RIGHT
+}BossReactionToPlayer;
 typedef struct Boss1
 {
 	sfSprite* track;
@@ -29,14 +59,13 @@ typedef struct Boss1
 	sfSprite* spriteTurretLCase;
 	sfSprite* spriteTurretLBase;
 	sfSprite* spriteTurretLCanon;
-	float timerReloadTurretLCanon;
 	sfSprite* spriteTurretRCase;
 	sfSprite* spriteTurretRBase;
 	sfSprite* spriteTurretRCanon;
-	float timerReloadTurretRCanon;
 
-	int turretLMunitions;
-	int turretRMunitions;
+	float cooldownShoot;
+
+	sfBool bossReacting;
 
 	float bossLife;
 
@@ -44,7 +73,8 @@ typedef struct Boss1
 
 	sfVector2f velocity;
 
-	bossReactionToPlayer bossReactionToPlayer;
+	PlayerPositionToBoss playerPositionToBoss;
+	BossReactionToPlayer bossReactionToPlayer;
 }Boss1;
 
 typedef struct Boss
@@ -57,11 +87,14 @@ void LoadBoss(void);
 
 void SwitchBoss(char _index, sfVector2f _position);
 
+void CheckBossPlayerState(float _dt);
+
 void UpdateBoss(float _dt);
 void UpdateTurret(float _dt);
 
 sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
 
-void HitBoss(sfFloatRect _hitbox);
+sfBool HitBoss(float _degat, sfFloatRect _hitbox);
+void BossShoot(float _dt);
 
 #endif //BOSS_H
