@@ -24,7 +24,10 @@ void LoadGame(void)
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
-	LoadBoss();
+	if (GetActualyMap() == LEVEL1)
+	{
+		LoadBoss();
+	}
 	LoadMap(background);
 
 	//LoadHUD();
@@ -106,7 +109,10 @@ void UpdateGame(float _dt)
 	//UpdateGUI(_dt);
 	UpdateCollider();
 	UpdateAim(_dt);
-	UpdateBoss(_dt);
+	if (GetActualyMap() == LEVEL1)
+	{
+		UpdateBoss(_dt);
+	}
 	UpdateBullet(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);

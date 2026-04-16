@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="590" height="72" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="724">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="590" height="72" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="745">
  <editorsettings>
   <export target="Level1.json" format="json"/>
  </editorsettings>
@@ -418,7 +418,7 @@
   <object id="392" x="2160" y="688" width="32" height="16"/>
   <object id="425" x="4080" y="416" width="112" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point" visible="0">
+ <objectgroup id="37" name="Point">
   <object id="514" type="SpawnPlayer" x="232" y="320">
    <point/>
   </object>
@@ -639,6 +639,60 @@
    <point/>
   </object>
   <object id="722" type="ElevatorE" x="1728" y="288">
+   <point/>
+  </object>
+  <object id="727" name="2" type="Enemy" x="3040" y="672">
+   <point/>
+  </object>
+  <object id="728" name="1" type="Enemy" x="2944" y="704">
+   <point/>
+  </object>
+  <object id="729" name="2" type="Enemy" x="3248" y="720">
+   <point/>
+  </object>
+  <object id="730" name="1" type="Enemy" x="3152" y="752">
+   <point/>
+  </object>
+  <object id="731" name="2" type="Enemy" x="4224" y="368">
+   <point/>
+  </object>
+  <object id="732" name="1" type="Enemy" x="4000" y="384">
+   <point/>
+  </object>
+  <object id="733" name="2" type="Enemy" x="4104" y="341.333">
+   <point/>
+  </object>
+  <object id="734" name="1" type="Enemy" x="4160" y="400">
+   <point/>
+  </object>
+  <object id="735" name="2" type="Enemy" x="5344" y="592">
+   <point/>
+  </object>
+  <object id="736" name="1" type="Enemy" x="5248" y="624">
+   <point/>
+  </object>
+  <object id="737" name="2" type="Enemy" x="5504" y="704">
+   <point/>
+  </object>
+  <object id="738" name="1" type="Enemy" x="5408" y="736">
+   <point/>
+  </object>
+  <object id="739" name="2" type="Enemy" x="5168" y="752">
+   <point/>
+  </object>
+  <object id="740" name="1" type="Enemy" x="5072" y="784">
+   <point/>
+  </object>
+  <object id="741" name="2" type="Enemy" x="5136" y="576">
+   <point/>
+  </object>
+  <object id="742" name="1" type="Enemy" x="5040" y="608">
+   <point/>
+  </object>
+  <object id="743" name="2" type="Enemy" x="5344" y="784">
+   <point/>
+  </object>
+  <object id="744" name="1" type="Enemy" x="5248" y="816">
    <point/>
   </object>
  </objectgroup>

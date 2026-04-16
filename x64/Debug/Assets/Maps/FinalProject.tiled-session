@@ -39,11 +39,11 @@
                 38,
                 31
             ],
-            "scale": 0.25,
-            "selectedLayer": 0,
+            "scale": 0.33,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 8456,
-                "y": 1304
+                "x": 4363.636363636364,
+                "y": 290.909090909091
             }
         },
         "Level1_2.tmx": {
@@ -76,11 +76,11 @@
                 7,
                 6
             ],
-            "scale": 0.25,
+            "scale": 0.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 2784,
-                "y": 1164
+                "x": 4346,
+                "y": 2482
             }
         },
         "LevelTest.tmx": {
