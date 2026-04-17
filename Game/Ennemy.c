@@ -14,7 +14,6 @@ void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 sfBool TestColision(unsigned x, unsigned y);
 void DebugTab(Case _case);
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 sfColor GetColorsPixelMap(sfVector2f _position);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 
