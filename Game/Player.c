@@ -9,6 +9,7 @@ Player player;
 float timerDash = 0;
 float timerFaling = 0;
 float timerLastEnergyConso = 0;
+float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
 
 void UpdateMovePlayer(float _dt);
 
@@ -106,10 +107,17 @@ void UpdatePlayer(float _dt)
 	}
 
 	UpdateAnimation(_dt);
+	// Weapons logic remains unchanged
+	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
 		SetPlayerPosition(player.spawn);
+	}
+
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
+	{
+		timerlastDamageReceive += _dt;
 	}
 }
 
@@ -214,7 +222,6 @@ void UpdateMovePlayer(float _dt)
 		}
 	}
 
-
 	ColisionMapPlayer(_dt);
 }
 
@@ -303,9 +310,6 @@ void ColisionMapPlayer(float _dt)
 			player.velocity.x = 0;
 		}
 	}
-
-	// Weapons logic remains unchanged
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }
 
 void MoveZonePlayer(float _dt)
@@ -352,24 +356,48 @@ void UpdateAnimation(float _dt)
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
 	}
 
-	if (player.direction)
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		printf("%d", (int)timerlastDamageReceive);
+
+		if (((int)(timerlastDamageReceive * 100) % 2) == 0)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 0, 0 });
+		}
+		else
+		{
+			if (player.direction)
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+			}
+			else
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+			}
+		}
 	}
 	else
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		if (player.direction)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		}
+		else
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		}
 	}
 	SetSpriteOriginFoot(player.sprite);
 
-	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+	sfSprite_setPosition(player.sprite, GetPlayerPosition());
 }
 
 void DamagePlayer(int _damage)
 {
-	if (timerDash >= PLAYER_DASH_COOLDOWN)
+	if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
 		player.life -= _damage;
+		timerlastDamageReceive = 0;
 	}
 }
 
@@ -676,6 +704,7 @@ void SetPlayerLifeMax(int _lifeMax)
 void AddPlayerLife(int _life)
 {
 	player.life += _life;
+
 	if (player.life > player.lifeMax)
 	{
 		player.life = player.lifeMax;

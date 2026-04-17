@@ -1244,7 +1244,7 @@ void UpdateEnemy(float _dt)
 		sfFloatRect pBox = GetPlayerRect();
 		if (sfFloatRect_intersects(&pBox, &eBox, NULL))
 		{
-			KillPlayer();
+			DamagePlayer(1);
 		}
 	}
 }
