@@ -91,11 +91,8 @@ void LoadMenu(void)
 	//Selection
 	sfTexture* tempButtons = GetAsset("Assets/Sprites/selection_menu_buttons.png");
 	sfTexture* tempIcons = GetAsset("Assets/Sprites/selection_menu_icons.png");
-	sfVector2f buttonPos[3] = { {25, 300}, {25, 400 }, {25, 600} };
-	sfIntRect buttonRect = { 56, 76, 18, 18 };
-	sfIntRect iconRect[3] = { {0,16,16,16},{16,16,16,16},{32,16,16,16} };
-
-	sfVector2f temp[2] = { {830, 840}, {1410, 840} };
+	sfTexture* tempMap = GetAsset("Assets/Sprites/selection_menu_map.png");
+	sfVector2f temp[2] = { {830, 840}, {1410, 840}};
 	for (int i = 0; i < 2; i++)
 	{
 		menu.selectionMenu.bottomText[i] = CreateText(font, temp[i], 60, 5.f);
@@ -104,17 +101,19 @@ void LoadMenu(void)
 	}
 	sfText_setString(menu.selectionMenu.bottomText[0], "next");
 	sfText_setString(menu.selectionMenu.bottomText[1], "back");
-
 	for (int i = 0; i < 3; i++)
 	{
-		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 50.f);
+		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 60.f);
 		menu.selectionMenu.sideIcon[i] = CreateSprite(tempIcons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 50.f);
-		sfSprite_setTextureRect(menu.selectionMenu.sideButton[i], buttonRect);
-		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], iconRect[i]);
+		menu.selectionMenu.mapIcon[i] = CreateSprite(tempMap, (sfVector2f){ 288, 112 + (i * 232) }, 0.f, 60.f);
+		menu.selectionMenu.mapOverlay[i] = CreateSprite(tempMap, (sfVector2f) { 288, 112 + (i*232) }, 0.f, 50.f);
+		sfSprite_setTextureRect(menu.selectionMenu.sideButton[i], (sfIntRect) { 0, 0, 18, 18 });
+		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], (sfIntRect){16*i, 0, 16, 16});
+		sfSprite_setTextureRect(menu.selectionMenu.mapIcon[i], (sfIntRect) { 0, 24 * i, 56, 24 });
+		sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 48 , 56, 24 });
 		sfSprite_setOrigin(menu.selectionMenu.sideButton[i], (sfVector2f) { 9, 9 });
 		sfSprite_setOrigin(menu.selectionMenu.sideIcon[i], (sfVector2f) { 8, 8 });
 	}
-
 
 	SetMenuState(STARTING_MENU);
 }
@@ -251,7 +250,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			}
 			if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
 			{
-				if (menu.state = 5)
+				if (menu.state == 5)
 				{
 					SetMenuState(STARTING_MENU);
 				}
@@ -271,6 +270,10 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					switch (i)
 					{
 					case 0:
+						SetMenuState(SELECTION_MAP);
+						break;
+					case 1:
+						AddIntToSave(UNLOCKED_LEVEL, 0);
 						SetMenuState(SELECTION_MAP);
 						break;
 					default:
@@ -460,6 +463,8 @@ void SetMenuState(MenuState _state)
 			{
 				sfSprite_setScale(menu.selectionMenu.sideButton[i], invisible);
 				sfSprite_setScale(menu.selectionMenu.sideIcon[i], invisible);
+				sfSprite_setScale(menu.selectionMenu.mapIcon[i], invisible);
+				sfSprite_setScale(menu.selectionMenu.mapOverlay[i], invisible);
 			}
 			for (int i = 0; i < 2; i++)
 			{
@@ -496,13 +501,12 @@ void SetMenuState(MenuState _state)
 		{
 		case PLAY:
 			sfText_setString(menu.mainMenu.topButtons[0], "Back");
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);
 			}
-			sfText_setString(menu.mainMenu.infoDisplay[0], "New Game");
-			sfText_setString(menu.mainMenu.infoDisplay[1], "Load Save");
-			sfText_setString(menu.mainMenu.infoDisplay[2], "Delete Save");
+			sfText_setString(menu.mainMenu.infoDisplay[0], "Load Save");
+			sfText_setString(menu.mainMenu.infoDisplay[1], "New Save");
 			break;
 		case SETTINGS:
 			sfText_setString(menu.mainMenu.topButtons[1], "Back");
@@ -577,13 +581,18 @@ void SetMenuState(MenuState _state)
 				sfText_setScale(menu.selectionMenu.bottomText[i], visibleText);
 			}
 		}
-		sfIntRect unselected = { 56, 76, 18, 18 };
-		sfIntRect selected = { 74, 76, 18, 18 };
+		sfIntRect unselected = { 0, 0, 18, 18 };
+		sfIntRect selected = { 18, 0, 18, 18 };
 		switch (menu.state)
 		{
 		case SELECTION_MAP:
 			sfSprite_setTextureRect(menu.selectionMenu.sideButton[0], unselected);
 			sfSprite_setTextureRect(menu.selectionMenu.sideIcon[0], (sfIntRect) { 0, 0, 16, 16 });
+			for (int i = 0; i < 3; i++)
+			{
+				sfSprite_setScale(menu.selectionMenu.mapIcon[i], invisible);
+				sfSprite_setScale(menu.selectionMenu.mapOverlay[i], invisible);
+			}
 			break;
 		case SELECTION_WEAPON:
 			sfSprite_setTextureRect(menu.selectionMenu.sideButton[1], unselected);
@@ -602,6 +611,15 @@ void SetMenuState(MenuState _state)
 		case SELECTION_MAP:
 			sfSprite_setTextureRect(menu.selectionMenu.sideButton[0], selected);
 			sfSprite_setTextureRect(menu.selectionMenu.sideIcon[0], (sfIntRect) { 0, 16, 16, 16 });
+			for (int i = 0; i < 3; i++)
+			{
+				sfSprite_setScale(menu.selectionMenu.mapIcon[i], visibleSprite);
+				sfSprite_setScale(menu.selectionMenu.mapOverlay[i], visibleSprite);
+				if (GetIntFromSave(UNLOCKED_LEVEL) >= i)
+				{
+					sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) {56,24,56,24});
+				}
+			}
 			break;
 		case SELECTION_WEAPON:
 			sfSprite_setTextureRect(menu.selectionMenu.sideButton[1], selected);

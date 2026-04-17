@@ -117,3 +117,18 @@ sfBool StringCompare(char* _string1, char* _string2)
 	}
 	return sfFalse;
 }
+
+//for the boss and maybe enemy's so they turn their gun slower
+float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
+{
+	float diff = _target - _current;
+
+	while (diff < -180.0f) diff += 360.0f;
+	while (diff > 180.0f) diff -= 360.0f;
+
+	float step = _speed * _dt;
+
+	if (fabsf(diff) <= step) return _target;
+
+	return _current + (diff > 0 ? step : -step);
+}

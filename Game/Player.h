@@ -1,19 +1,14 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Common.h"
-#include "Missile.h"
-#include "Aim.h"
 #include "Weapon.h"
-#include "Box.h"
+#include "Common.h"
 
-#define FIRE_RATE_RAILGUN 1.1f
-
-#define PLAYER_HORIZONTAL_SPEED_MAX 290
+#define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
 #define PLAYER_FALL_SPEED_MAX 1
-#define PLAYER_JUMP_POWER 1.9f
+#define PLAYER_JUMP_POWER 1.5f
 
 #define PLAYER_DASH_POWER 2.0f
 #define PLAYER_DASH_COOLDOWN 0.5f
@@ -58,6 +53,10 @@ typedef struct Player
 	sfBool isGrounded;
 
 	sfVector2f spawn;
+	sfVector2f tpBoss;
+
+	Animation running;
+	Animation walking;
 }Player;
 
 void LoadPlayer(void);
@@ -69,6 +68,9 @@ void KillPlayer(void);
 sfVector2f GetPlayerPosition(void);
 sfFloatRect GetPlayerRect(void);
 
+sfVector2f GetPlayerVelocity(void);
+void SetPlayerVelocity(sfVector2f _velocity);
+
 float GetPlayerEnergyInfo(int _index);
 void SetPlayerEnergyInfo(float _val, int _index);
 
@@ -77,6 +79,14 @@ void SetPlayerLifeMax(int _life);
 void AddPlayerLife(int _life);
 
 void SetPlayerPosition(sfVector2f _pos);
+void MovePlayer(sfVector2f _move);
+
 void TpPlayerToSpawn(void);
 void SetSpawnPlayer(sfVector2f _pos);
+
+void TpPlayerBoss(void);
+void SetTpPlayerBoss(sfVector2f _pos);
+
+void HandlePlayerBossCollision(sfVector2f _push);
+
 #endif

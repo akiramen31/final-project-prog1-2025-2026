@@ -30,12 +30,13 @@
 #define DEV_ENNEMY sfTrue
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
+#define DEV_BOSS sfTrue
 #define DEBUG_MODE_A_STAR sfTrue
 #define DEV_PIERRE_ENEMY sfFalse
 
 #define TILE_SIZE 16
 
-#define G 9.81f
+#define G 5.81f
 
 typedef enum {
 	AXIS_X,
@@ -108,4 +109,5 @@ void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
+float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 #endif // !COMMON_H

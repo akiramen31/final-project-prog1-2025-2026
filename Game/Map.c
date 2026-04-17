@@ -151,6 +151,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "Boss"))
 		{
 			//SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+			SwitchBoss(map.state,  (sfVector2f) { 8671.f , 863.f });
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
@@ -172,7 +173,10 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
 			SetSpawnPlayer((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
-			SwitchBoss(map.state, (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
+		else if (StringCompare(_point[i].type, "TpPlayer"))
+		{
+			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
 	}
 }
@@ -207,13 +211,16 @@ sfVector2f Colision(sfFloatRect _hitbox, int _axis)
 			int resolveX = 0;
 
 			// Determine which axis to resolve based on the passed parameter
-			if (_axis == AXIS_X) {
+			if (_axis == AXIS_X) 
+			{
 				resolveX = 1;
 			}
-			else if (_axis == AXIS_Y) {
+			else if (_axis == AXIS_Y) 
+			{
 				resolveX = 0;
 			}
-			else {
+			else 
+			{
 				// Fallback for AXIS_BOTH (old behavior)
 				resolveX = (reaction.width < reaction.height);
 			}
