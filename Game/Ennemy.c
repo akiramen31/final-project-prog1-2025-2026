@@ -81,9 +81,14 @@ void LoadEnemy(void)
 
 void UpdateEnemy(float _dt)
 {
+	sfVector2f playerPos = GetPlayerPosition();
 	for (unsigned i = GetEnemyCount(); i > 0; i--)
 	{
-		UpdateEnemyI(_dt, i - 1);
+		Ennemy* enemy = GetElement(listEnnemy, i)->value;
+		if (enemy->ennemyEntity.region.left <= playerPos.x && enemy->ennemyEntity.region.left + enemy->ennemyEntity.region.width >= playerPos.x && enemy->ennemyEntity.region.top <= playerPos.y && enemy->ennemyEntity.region.top + enemy->ennemyEntity.region.height >= playerPos.y)
+		{
+			UpdateEnemyI(_dt, i - 1);
+		}
 	}
 }
 
@@ -845,6 +850,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			system("cls");
 		}
 		sfVector2u vectortemp = { 0 };
+		int itterateur = 0;
 		while (flag) // rechercher les action demander
 		{
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -860,6 +866,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				break;
 			case LEFT:
 				caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
+				itterateur++;
 				break;
 			case RIGHT:
 				caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
@@ -879,7 +886,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
-			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
+			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y || itterateur == 50) // retourne le bloc d'action nésésaire
 			{
 				ActionDemander actionDemander = { 0 };
 				switch (aStarMap[caseGet.y][caseGet.x].direction)
@@ -1093,7 +1100,7 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 	return index;
 }
 
-void AddEnemy(sfVector2f _position, enum EnemyType _type)
+void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 
@@ -1118,6 +1125,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), _position, 1, 1);
 	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 	ennemy->actiondemander = (ActionDemander){ 0 };
+	ennemy->ennemyEntity.region = _region;
 	sfFloatRect floatRect = sfSprite_getGlobalBounds(ennemy->sprite);
 	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
 
@@ -1125,7 +1133,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	SetPositionEnemy(_position, 0);
 }
 
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox)
+sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
@@ -1147,21 +1155,6 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* 
 		printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
 	}
 	return isTouch;
-}
-
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
-{
-	sfFloatRect hitboxEnemy = { 0 };
-	for (int i = 0; i < GetEnemyCount(); i++)
-	{
-		hitboxEnemy = GetBounsEnemy(i);
-		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
-		{
-			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat, & _hitbox);
-			return sfTrue;
-		}
-	}
-	return sfFalse;
 }
 
 #else
@@ -1298,8 +1291,8 @@ sfVector2i GetMoveEnemyAISolDier(unsigned _i, sfVector2f _playerPos)
 
 sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos)
 {
-	sfVector2i move = { 0 };
 	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
+	sfVector2i move = { 0 };
 	{
 		sfFloatRect enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
 		if (enemyHitbox.left + enemyHitbox.width < _playerPos.x)
