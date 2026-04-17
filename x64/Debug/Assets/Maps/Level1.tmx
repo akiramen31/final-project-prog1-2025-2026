@@ -418,7 +418,7 @@
   <object id="392" x="2160" y="688" width="32" height="16"/>
   <object id="425" x="4080" y="416" width="112" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point" visible="0">
+ <objectgroup id="37" name="Point">
   <object id="514" type="SpawnPlayer" x="232" y="320">
    <point/>
   </object>
@@ -653,16 +653,16 @@
   <object id="730" name="1" type="Enemy" x="3152" y="752">
    <point/>
   </object>
-  <object id="731" name="2" type="Enemy" x="4224" y="368">
+  <object id="731" name="2" type="Enemy" x="4326" y="372">
    <point/>
   </object>
-  <object id="732" name="1" type="Enemy" x="4000" y="384">
+  <object id="732" name="1" type="Enemy" x="3976" y="365">
    <point/>
   </object>
-  <object id="733" name="2" type="Enemy" x="4104" y="341.333">
+  <object id="733" name="2" type="Enemy" x="4037" y="404.333">
    <point/>
   </object>
-  <object id="734" name="1" type="Enemy" x="4160" y="400">
+  <object id="734" name="1" type="Enemy" x="4254" y="405">
    <point/>
   </object>
   <object id="735" name="2" type="Enemy" x="5344" y="592">
