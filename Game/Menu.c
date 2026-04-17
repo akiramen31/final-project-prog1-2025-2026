@@ -28,11 +28,11 @@ void LoadMenu(void)
 	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
 	menu.overlay = CreateSprite(GetAsset("Assets/Sprites/starting_menu_overlay.png"), (sfVector2f) { 0 }, 8.f, 60.f);
 	//Musics
-	menu.musics[0] = CreateMusic("Assets/Musics/1914-Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfFalse);
-	menu.musics[1] = CreateMusic("Assets/Musics/1914-United_Forces_March.ogg", 10.f, sfFalse);
-	menu.musics[2] = CreateMusic("Assets/Musics/1915-Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfFalse);
-	menu.musics[3] = CreateMusic("Assets/Musics/1917-Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfFalse);
-	menu.musics[4] = CreateMusic("Assets/Musics/1917-Over_There.ogg", 10.f, sfFalse);
+	menu.musics[0] = CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfFalse);
+	menu.musics[1] = CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 10.f, sfFalse);
+	menu.musics[2] = CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfFalse);
+	menu.musics[3] = CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfFalse);
+	menu.musics[4] = CreateMusic("Assets/Musics/1917_Over_There.ogg", 10.f, sfFalse);
 
 	sfMusic_play(menu.musics[rand() % NB_MUSICS]);
 
