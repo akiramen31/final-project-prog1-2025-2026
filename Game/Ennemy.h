@@ -94,7 +94,7 @@ sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
 int GetEnemyCount(void);
 void SetPositionEnemy(sfVector2f _position, int _index);
-
+sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 void ResetEnemy(void);
 #else
 #define MAX_FALL_SPEED_ENEMY 1000
