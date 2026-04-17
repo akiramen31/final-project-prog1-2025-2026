@@ -2,6 +2,7 @@
 #include "Missile.h"
 #include "Aim.h"
 #include "Box.h"
+#include "Ennemy.h"
 
 Player player;
 
@@ -42,12 +43,12 @@ void LoadPlayer(void)
 
 	player.running.frameCount = 8;
 
-	player.running.frameDuration = 0.1;
+	player.running.frameDuration = 0.1f;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
 	player.walking.frameCount = 8;
-	player.walking.frameDuration = 0.1;
+	player.walking.frameDuration = 0.1f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
 
@@ -63,7 +64,7 @@ void LoadPlayer(void)
 
 	player.ener.energyMax = 100;
 	player.ener.energy = player.ener.energyMax;
-	player.ener.energyRegen = 5;
+	player.ener.energyRegen = 10;
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
 }
@@ -105,6 +106,11 @@ void UpdatePlayer(float _dt)
 	}
 
 	UpdateAnimation(_dt);
+
+	if (VerificationEntityIsNotInMap(GetPlayerRect()))
+	{
+		SetPlayerPosition(player.spawn);
+	}
 }
 
 void UpdateWeaponPlayer(float _dt)
@@ -361,7 +367,10 @@ void UpdateAnimation(float _dt)
 
 void DamagePlayer(int _damage)
 {
-	player.life -= _damage;
+	if (timerDash >= PLAYER_DASH_COOLDOWN)
+	{
+		player.life -= _damage;
+	}
 }
 
 void KillPlayer(void)
@@ -547,6 +556,21 @@ void UpdateSteamAxe(float _dt)
 		{
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
 			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
+
+			switch (player.weapon.steamAxe.attackType)
+			{
+			case LIGHT:
+				HitEnemy(1.f, axeHitbox);
+				break;
+			case MEDIUM:
+				HitEnemy(2.f, axeHitbox);
+				break;
+			case HEAVY:
+				HitEnemy(3.f, axeHitbox);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }
@@ -660,6 +684,7 @@ void AddPlayerLife(int _life)
 
 void SetPlayerPosition(sfVector2f _pos)
 {
+	SetViewCenter(_pos);
 	sfRectangleShape_setPosition(player.collision, _pos);
 }
 
@@ -673,6 +698,7 @@ void SetSpawnPlayer(sfVector2f _pos)
 	SetPlayerPosition(_pos);
 	player.spawn = _pos;
 }
+
 void SetTpPlayerBoss(sfVector2f _pos)
 {
 	player.tpBoss = _pos;
