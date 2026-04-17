@@ -57,7 +57,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			if (missileList[i].lifetime <= MISSILE_DURATION)
 			{
 				CheckCollisionMissilesList();
-				CheckCollisionMissileScreen(i);
+				//CheckCollisionMissileScreen(i);
 				MoveMissile(i, _posAim, _dt);
 			}
 			else

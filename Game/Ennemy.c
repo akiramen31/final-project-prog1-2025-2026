@@ -14,7 +14,6 @@ void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 sfBool TestColision(unsigned x, unsigned y);
 void DebugTab(Case _case);
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 sfColor GetColorsPixelMap(sfVector2f _position);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 
@@ -87,7 +86,7 @@ void UpdateEnemy(float _dt)
 		Ennemy* enemy = GetElement(listEnnemy, i)->value;
 		if (enemy->ennemyEntity.region.left <= playerPos.x && enemy->ennemyEntity.region.left + enemy->ennemyEntity.region.width >= playerPos.x && enemy->ennemyEntity.region.top <= playerPos.y && enemy->ennemyEntity.region.top + enemy->ennemyEntity.region.height >= playerPos.y)
 		{
-			UpdateEnemyI(_dt, i - 1);
+			UpdateEnemyI(_dt, i);
 		}
 	}
 }

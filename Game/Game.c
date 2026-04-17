@@ -2,10 +2,12 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
+#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
+#include "Missile.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -48,9 +50,19 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
+			MapData* mapData = GetMapData();
 			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
 			sfVector2f viewPos = GetViewPosition();
-			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y};
+			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y };
+			printf("x = %d y = %d a= %d\n",
+				(int) {mousePos.x / mapData->caseSize.x},
+				(int){mousePos.y / mapData->caseSize.y},
+                sfImage_getPixel(
+                    mapData->image,
+                    (unsigned int)(mousePos.x / mapData->caseSize.x),
+                    (unsigned int)(mousePos.y / mapData->caseSize.y)
+                ).a
+            );
 		}
 	default:
 		break;
@@ -97,6 +109,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF7:
 			TpPlayerBoss();
 			break;
+		case sfKeyF12:
+			KillPlayer();
+			break;
 		default:
 			break;
 		}
@@ -105,6 +120,12 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
+	if (GetPlayerLife() <= 0)
+	{
+		SetMap(GetActualyMap());
+		AddPlayerLife(99);
+	}
+
 	UpdatePlayer(_dt);
 	UpdateEnemy(_dt);
 
@@ -116,9 +137,12 @@ void UpdateGame(float _dt)
 	{
 		UpdateBoss(_dt);
 	}
+
 	UpdateBullet(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
+
+
 }
 
 void UpdateCollider(void)

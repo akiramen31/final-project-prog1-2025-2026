@@ -27,11 +27,11 @@
 #define BPP 32
 
 #define DEV_MODE sfTrue
-#define DEV_ENNEMY sfTrue
+#define DEV_ENNEMY sfFalse
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
-#define DEBUG_MODE_A_STAR sfTrue
+#define DEBUG_MODE_A_STAR sfFalse
 #define DEV_PIERRE_ENEMY sfFalse
 
 #define TILE_SIZE 16
@@ -111,4 +111,5 @@ void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, uns
 void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
+sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 #endif // !COMMON_H
