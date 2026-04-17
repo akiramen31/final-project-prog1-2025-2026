@@ -68,23 +68,36 @@ void CopyStingToBuffer(char* _buffer, char* _string)
 	}
 }
 
-void** CreateGrid(sfVector2u _size, size_t _typeSize)
+void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
 {
-	void** grid = Calloc(_size.y, sizeof(void*));
+	char** grid = Calloc(_columnCount, sizeof(char*));
 	if (!grid)
 	{
-		return grid;
+		return NULL;
 	}
 
-	for (unsigned i = 0; i < _size.y; i++)
+	char* temp = Calloc((size_t)_rowCount * _columnCount, _typeSize);
+	if (!temp)
 	{
-		grid[i] = Calloc(_size.x, _typeSize);
-		if (!grid[i])
-		{
-			return grid;
-		}
+		Free(grid);
+		return NULL;
 	}
+
+	for (int i = 0; i < _rowCount; i++)
+	{
+		grid[i] = &temp[i * _typeSize * _columnCount];
+	}
+
 	return grid;
+}
+
+void FreeGrid(void** grid)
+{
+	if (grid)
+	{
+		Free(grid[0]);
+		Free(grid);
+	}
 }
 
 sfBool StringCompare(char* _string1, char* _string2)

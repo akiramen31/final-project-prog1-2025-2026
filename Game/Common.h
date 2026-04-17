@@ -33,7 +33,7 @@
 #define DEBUG_MODE_A_STAR sfTrue
 #define DEV_PIERRE_ENEMY sfFalse
 
-#define TILE_SIZE 16.f
+#define TILE_SIZE 16
 
 #define G 9.81f
 
@@ -105,6 +105,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animati
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
-void** CreateGrid(sfVector2u _size, size_t _typeSize);
+void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
+void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 #endif // !COMMON_H
