@@ -88,7 +88,8 @@ typedef struct Case
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
-sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox);
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat);
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
 int GetEnemyCount(void);

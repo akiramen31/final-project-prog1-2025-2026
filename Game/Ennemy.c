@@ -82,7 +82,7 @@ void LoadEnemy(void)
 void UpdateEnemy(float _dt)
 {
 	sfVector2f playerPos = GetPlayerPosition();
-	for (unsigned i = GetEnemyCount(); i > 0; i--)
+	for (int i = GetEnemyCount() - 1; i >= 0; i--)
 	{
 		Ennemy* enemy = GetElement(listEnnemy, i)->value;
 		if (enemy->ennemyEntity.region.left <= playerPos.x && enemy->ennemyEntity.region.left + enemy->ennemyEntity.region.width >= playerPos.x && enemy->ennemyEntity.region.top <= playerPos.y && enemy->ennemyEntity.region.top + enemy->ennemyEntity.region.height >= playerPos.y)
@@ -1133,7 +1133,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	SetPositionEnemy(_position, 0);
 }
 
-sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox)
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
@@ -1165,7 +1165,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 		hitboxEnemy = GetBounsEnemy(i);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
 		{
-			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat, & _hitbox);
+			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat);
 			return sfTrue;
 		}
 	}
@@ -1337,8 +1337,8 @@ sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos)
 
 sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos)
 {
-	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
 	sfVector2i move = { 0 };
+	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
 	{
 		sfFloatRect enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
 		if (enemyHitbox.left + enemyHitbox.width < _playerPos.x)

@@ -32,7 +32,7 @@
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
 #define DEBUG_MODE_A_STAR sfTrue
-#define DEV_PIERRE_ENEMY sfFalse
+#define DEV_PIERRE_ENEMY sfTrue
 
 #define TILE_SIZE 16
 
