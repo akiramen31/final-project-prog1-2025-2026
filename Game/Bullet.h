@@ -4,13 +4,13 @@
 #include "Common.h"
 #include "Box.h"
 
-
 #define BULLET_ALLY_MAX 5
 
 #define BULLET_ENEMY_MAX 20
 
-#define BULLET_SPEED 500
-#define BULLET_LIFETIME 2.f
+#define BULLET_SPEED_ALLY 500
+#define BULLET_SPEED_ENEMY 500
+#define BULLET_LIFETIME 10.f
 
 typedef struct ShooterType
 {
@@ -38,6 +38,4 @@ unsigned int GetBulletCount(void);
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
-
-
 #endif // !BULLET_H

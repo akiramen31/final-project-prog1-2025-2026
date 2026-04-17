@@ -54,15 +54,7 @@ void PollEventGame(sfEvent* _event)
 			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
 			sfVector2f viewPos = GetViewPosition();
 			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y };
-			printf("x = %d y = %d a= %d\n",
-				(int) {mousePos.x / mapData->caseSize.x},
-				(int){mousePos.y / mapData->caseSize.y},
-                sfImage_getPixel(
-                    mapData->image,
-                    (unsigned int)(mousePos.x / mapData->caseSize.x),
-                    (unsigned int)(mousePos.y / mapData->caseSize.y)
-                ).a
-            );
+			printf("x = %d y = %d a= %d\n", (int) { mousePos.x / mapData->caseSize.x }, (int) { mousePos.y / mapData->caseSize.y }, sfImage_getPixel(mapData->image, (unsigned int)(mousePos.x / mapData->caseSize.x), (unsigned int)(mousePos.y / mapData->caseSize.y)).a);
 		}
 	default:
 		break;
