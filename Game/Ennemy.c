@@ -1190,12 +1190,18 @@ void LoadEnemy(void)
 
 void UpdateEnemy(float _dt)
 {
+#if DEV_ENEMY_BASIC
 	sfVector2f playerPosition = GetPlayerPosition();
+#else
+#endif
 	sfVector2i enemyMove = { 0 };
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
+#if DEV_ENEMY_BASIC
 		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
-		//enemyMove = GetMoveEnemyAI(i, playerPosition);
+#else
+		enemyMove = GetMoveEnemyAI(i, playerPosition);
+#endif
 
 
 		if (enemyMove.x)
