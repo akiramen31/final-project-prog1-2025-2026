@@ -87,7 +87,7 @@ void UpdateEnemy(float _dt)
 		Ennemy* enemy = GetElement(listEnnemy, i)->value;
 		if (enemy->ennemyEntity.region.left <= playerPos.x && enemy->ennemyEntity.region.left + enemy->ennemyEntity.region.width >= playerPos.x && enemy->ennemyEntity.region.top <= playerPos.y && enemy->ennemyEntity.region.top + enemy->ennemyEntity.region.height >= playerPos.y)
 		{
-			UpdateEnemyI(_dt, i - 1);
+			UpdateEnemyI(_dt, i);
 		}
 	}
 }
