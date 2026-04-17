@@ -1194,7 +1194,8 @@ void UpdateEnemy(float _dt)
 	sfVector2i enemyMove = { 0 };
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+		//enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+		enemyMove = GetMoveEnemyAI(i, playerPosition);
 
 
 		if (enemyMove.x)
@@ -1259,8 +1260,6 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
 		{
-			enemyAction = GetMoveEnemyAITemp(i, playerPos);
-
 			enemy.entity[i].life -= _degat;
 			if (enemy.entity[i].life <= 0)
 			{
@@ -1271,7 +1270,6 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 				{
 					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
 				}
-
 			}
 			return sfTrue;
 		}
@@ -1559,15 +1557,25 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 
 	sfVector2i andCase = { 0 };
 	AStarNode** gridAS = CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
-	for (int y = 0; y < _start.height + _start.height; y++)
+	for (int y = 0; y < _end.top + _start.height; y++)
 	{
-		for (int x = 0; x < _start.width + _end.width; x++)
+		for (int x = 0; x < _end.left + _end.width; x++)
 		{
 			if (!CheckColisiontMap((sfIntRect) { _end.left - _start.width + x, _end.top - _start.height + y, _start.width, _start.height }, _grid, _gridSize))
 			{
 				gridAS[_end.top - _start.height + y][_end.left - _start.width + x].directionActual = (sfVector2i){ 99, 99 };
 			}
 		}
+	}
+
+	system("cls");
+	for (int y = 0; y < _gridSize.y; y++)
+	{
+		for (int x = 0; x < _gridSize.x; x++)
+		{
+			printf("%d %d  ", gridAS[y][x].directionActual.x, gridAS[y][x].directionActual.y);
+		}
+		printf("\n");
 	}
 
 	sfBool flag = sfTrue;
@@ -1580,7 +1588,7 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 			{
 				if (gridAS[y][x].directionActual.x || gridAS[y][x].directionActual.y)
 				{
-					if (x - 1 > 0 && !gridAS[y][x - 1].directionActual.x && !gridAS[y][x - 1].directionActual.y && !CheckColisiontMap((sfIntRect) { x - 1, y, _start.width, _start.height }, _grid, _gridSize))
+					if (x - 1 > 0 && !(gridAS[y][x - 1].directionActual.x + gridAS[y][x - 1].directionActual.y) && !CheckColisiontMap((sfIntRect) { x - 1, y, _start.width, _start.height }, _grid, _gridSize))
 					{
 						gridAS[y][x - 1].directionActual.x = -1;
 						flag = sfTrue;
@@ -1589,25 +1597,25 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 							return (sfVector2i) { 1, 0 };
 						}
 					}
-					if (x + 1 < _gridSize.x && !gridAS[y][x + 1].directionActual.x && !gridAS[y][x + 1].directionActual.y && !CheckColisiontMap((sfIntRect) { x + 1, y, _start.width, _start.height }, _grid, _gridSize))
+					if (x + 1 < _gridSize.x && !(gridAS[y][x + 1].directionActual.x + gridAS[y][x + 1].directionActual.y) && !CheckColisiontMap((sfIntRect) { x + 1, y, _start.width, _start.height }, _grid, _gridSize))
 					{
-						gridAS[y][x - 1].directionActual.x = 1;
+						gridAS[y][x + 1].directionActual.x = 1;
 						flag = sfTrue;
 						if (x + 1 == _start.left && y == _start.top)
 						{
 							return (sfVector2i) { 1, 0 };
 						}
 					}
-					if (y - 1 > 0 && !gridAS[y - 1][x].directionActual.x && !gridAS[y - 1][x].directionActual.y && !CheckColisiontMap((sfIntRect) { x, y - 1, _start.width, _start.height }, _grid, _gridSize))
+					if (y - 1 > 0 && !(gridAS[y - 1][x].directionActual.x + gridAS[y - 1][x].directionActual.y) && !CheckColisiontMap((sfIntRect) { x, y - 1, _start.width, _start.height }, _grid, _gridSize))
 					{
-						gridAS[y][x - 1].directionActual.x = 1;
+						gridAS[y - 1][x].directionActual.x = 1;
 						flag = sfTrue;
 						if (x == _start.left && y - 1 == _start.top)
 						{
 							return (sfVector2i) { 1, 0 };
 						}
 					}
-					if (y + 1 < _gridSize.y && !gridAS[y + 1][x].directionActual.x && !gridAS[y + 1][x].directionActual.y && !CheckColisiontMap((sfIntRect) { x, y + 1, _start.width, _start.height }, _grid, _gridSize))
+					if (y + 1 < _gridSize.y && !(gridAS[y + 1][x].directionActual.x + gridAS[y + 1][x].directionActual.y) && !CheckColisiontMap((sfIntRect) { x, y + 1, _start.width, _start.height }, _grid, _gridSize))
 					{
 						int jumpTotal = 0;
 						for (int i = 1; i < _jumpTile + 1; i++)
@@ -1626,7 +1634,7 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 						{
 							for (int i = 0; i < jumpTotal; i++)
 							{
-								gridAS[y][x + 1].directionActual.x = 1;
+								gridAS[y + i][x].directionActual.x = 1;
 								flag = sfTrue;
 								if (x == _start.left && y + i == _start.top)
 								{
@@ -1640,8 +1648,18 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 			}
 		}
 	}
+	
+	system("cls");
+	for (int y = 0; y < _gridSize.y; y++)
+	{
+		for (int x = 0; x < _gridSize.x; x++)
+		{
+			printf("%d %d,", gridAS[y][x].directionActual.x, gridAS[y][x].directionActual.y);
+		}
+		printf("\n");
+	}
 
-	return (sfVector2i) { 0 };
+  	return (sfVector2i) { 0 };
 }
 
 
