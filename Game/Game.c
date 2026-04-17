@@ -2,10 +2,12 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
+#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
+#include "Missile.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -107,6 +109,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF7:
 			TpPlayerBoss();
 			break;
+		case sfKeyF12:
+			KillPlayer();
+			break;
 		default:
 			break;
 		}
@@ -115,6 +120,12 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
+	if (GetPlayerLife() <= 0)
+	{
+		SetMap(GetActualyMap());
+		AddPlayerLife(99);
+	}
+
 	UpdatePlayer(_dt);
 	UpdateEnemy(_dt);
 
@@ -126,9 +137,12 @@ void UpdateGame(float _dt)
 	{
 		UpdateBoss(_dt);
 	}
+
 	UpdateBullet(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
+
+
 }
 
 void UpdateCollider(void)

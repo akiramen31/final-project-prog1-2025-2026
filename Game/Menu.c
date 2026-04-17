@@ -248,7 +248,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					SetMenuState(menu.state + 1);
 				}
 			}
-			if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
+			else if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
 			{
 				if (menu.state == 5)
 				{
