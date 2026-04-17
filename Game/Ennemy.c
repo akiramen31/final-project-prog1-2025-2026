@@ -72,7 +72,7 @@ void LoadEnemy(void)
 	{
 		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	}
-	aStarMap = (Case**)CreateGrid(mapData->size, sizeof(Case)); // création du tableau pour l'ia (A*)
+	aStarMap = (Case**)CreateGrid(mapData->size.x, mapData->size.y, sizeof(Case)); // création du tableau pour l'ia (A*)
 	texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setTexture(sprite, texture, sfTrue);
@@ -81,9 +81,14 @@ void LoadEnemy(void)
 
 void UpdateEnemy(float _dt)
 {
-	for (unsigned i = GetEnemyCount(); i > 0; i--)
+	sfVector2f playerPos = GetPlayerPosition();
+	for (int i = GetEnemyCount() - 1; i >= 0; i--)
 	{
-		UpdateEnemyI(_dt, i - 1);
+		Ennemy* enemy = GetElement(listEnnemy, i)->value;
+		if (enemy->ennemyEntity.region.left <= playerPos.x && enemy->ennemyEntity.region.left + enemy->ennemyEntity.region.width >= playerPos.x && enemy->ennemyEntity.region.top <= playerPos.y && enemy->ennemyEntity.region.top + enemy->ennemyEntity.region.height >= playerPos.y)
+		{
+			UpdateEnemyI(_dt, i);
+		}
 	}
 }
 
@@ -845,6 +850,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			system("cls");
 		}
 		sfVector2u vectortemp = { 0 };
+		int itterateur = 0;
 		while (flag) // rechercher les action demander
 		{
 			switch (aStarMap[caseGet.y][caseGet.x].direction) // retrace la première action pour le chemin trouver
@@ -860,6 +866,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 				break;
 			case LEFT:
 				caseRecherche = (sfVector2u){ caseGet.x - 1, caseGet.y };
+				itterateur++;
 				break;
 			case RIGHT:
 				caseRecherche = (sfVector2u){ caseGet.x + 1, caseGet.y };
@@ -879,7 +886,7 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 			default:
 				break;
 			}
-			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y) // retourne le bloc d'action nésésaire
+			if (caseRecherche.x == positionDebutCase.x && caseRecherche.y == positionDebutCase.y || itterateur == 50) // retourne le bloc d'action nésésaire
 			{
 				ActionDemander actionDemander = { 0 };
 				switch (aStarMap[caseGet.y][caseGet.x].direction)
@@ -1093,7 +1100,7 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 	return index;
 }
 
-void AddEnemy(sfVector2f _position, enum EnemyType _type)
+void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 
@@ -1118,6 +1125,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), _position, 1, 1);
 	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 	ennemy->actiondemander = (ActionDemander){ 0 };
+	ennemy->ennemyEntity.region = _region;
 	sfFloatRect floatRect = sfSprite_getGlobalBounds(ennemy->sprite);
 	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
 
@@ -1125,7 +1133,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type)
 	SetPositionEnemy(_position, 0);
 }
 
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox)
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
@@ -1157,7 +1165,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 		hitboxEnemy = GetBounsEnemy(i);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
 		{
-			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat, & _hitbox);
+			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat);
 			return sfTrue;
 		}
 	}
@@ -1166,8 +1174,9 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 
 #else
 
-sfVector2i GetMoveEnemyAISolDier(unsigned _i, sfVector2f _playerPos);
+sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos);
 sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos);
+sfVector2i AStar(char** _grid, sfVector2i _gridSize, sfIntRect _startRect, sfIntRect _goalRect, int _jumpHeightTiles);
 
 Enemy enemy;
 
@@ -1176,24 +1185,23 @@ void LoadEnemy(void)
 	enemy = (Enemy){ 0 };
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
 
-	enemy.data[SOLDIER_SMALL] = (EnemyData){ GetAsset("Assets/Sprites/spider_small.png") , 100.f, 5.f, 200.f, 50.f, 1.f };
-	enemy.data[SOLDIER_MEDIUM] = (EnemyData){ GetAsset("Assets/Sprites/spider_medium.png") , 100.f, 5.f, 400.f, 100.f , 3.f };
-	enemy.data[SOLDIER_HEAVY] = (EnemyData){ GetAsset("Assets/Sprites/spider_large.png") , 100.f, 5.f, 1000.f, 300.f , 10.f };
+	enemy.data[SOLDIER_SMALL] = (EnemyData){ GetAsset("Assets/Sprites/spider_small.png") , 100.f, 5.f, 450.f, 100.f, 1.f };
+	enemy.data[SOLDIER_MEDIUM] = (EnemyData){ GetAsset("Assets/Sprites/spider_medium.png") , 100.f, 5.f, 450.f, 100.f , 3.f };
+	enemy.data[SOLDIER_HEAVY] = (EnemyData){ GetAsset("Assets/Sprites/spider_large.png") , 100.f, 5.f, 450.f, 100.f , 10.f };
 }
 
 void UpdateEnemy(float _dt)
 {
-	sfFloatRect enemyHitbox = { 0 };
 	sfVector2f playerPosition = GetPlayerPosition();
 	sfVector2i enemyMove = { 0 };
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
 		sfVector2f p = sfSprite_getPosition(enemy.entity[i].sprite);
-		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+		enemyMove = GetMoveEnemyAI(i, playerPosition);
 
 		if (enemyMove.x)
 		{
-    		enemy.entity[i].velocity.x += enemyMove.x * enemy.data[enemy.entity[i].type].speed * _dt;
+			enemy.entity[i].velocity.x += enemyMove.x * enemy.data[enemy.entity[i].type].speed * _dt;
 		}
 		else
 		{
@@ -1291,9 +1299,40 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	enemy.count++;
 }
 
-sfVector2i GetMoveEnemyAISolDier(unsigned _i, sfVector2f _playerPos)
+sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos)
 {
+	sfVector2i move = { 0 };
+	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
+	{
+		sfIntRect playerHitbox = { (int)(_playerPos.x - enemy.entity[_i].region.left) / TILE_SIZE - 1,(int)(_playerPos.y - enemy.entity[_i].region.top) / TILE_SIZE, 1, 2 };
 
+		sfVector2i gridSize = { (int)enemy.entity[_i].region.width / TILE_SIZE, (int)enemy.entity[_i].region.height / TILE_SIZE };
+		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
+
+		for (int y = 0; y < gridSize.y; y++)
+		{
+			for (int x = 0; x < gridSize.x; x++)
+			{
+				sfVector2f reaction = Colision((sfFloatRect) { enemy.entity[_i].region.left + x * TILE_SIZE, enemy.entity[_i].region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+				if (reaction.x || reaction.y)
+				{
+					grid[y][x] = 2;
+				}
+				else if (CollisionPassThrough((sfFloatRect) { enemy.entity[_i].region.left + x * TILE_SIZE, enemy.entity[_i].region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+				{
+					grid[y][x] = 1;
+				}
+			}
+		}
+
+		sfFloatRect enemybox = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+		sfIntRect enemyHitbox = { (int)(enemybox.left - enemy.entity[_i].region.left) / TILE_SIZE,(int)(enemybox.top - enemy.entity[_i].region.top) / TILE_SIZE,(int)enemybox.width / TILE_SIZE + 1 ,(int)enemybox.height / TILE_SIZE + 1 };
+
+		move = AStar(grid, gridSize, enemyHitbox, playerHitbox, 6);
+
+		FreeGrid(grid);
+	}
+	return move;
 }
 
 sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos)
@@ -1322,64 +1361,167 @@ sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos)
 	return move;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Remplace les macros selon ton projet
+
+#define TRAVEL_MAX 1000
+
+typedef struct AStarNode
+{
+	sfVector2i directionActual;
+	sfBool right;
+	sfBool left;
+	sfBool up;
+	sfBool down;
+}AStarNode;
+
+sfVector2i AStar(char** _grid, sfVector2i _gridSize, sfIntRect _startRect, sfIntRect _goalRect, int _jumpHeightTiles)
+{
+	sfVector2i nextMove = { 0 };
+	if (_goalRect.left < 0 || _goalRect.top < 0 || _goalRect.left + _goalRect.width > _gridSize.x || _goalRect.top + _goalRect.height > _gridSize.y)
+	{
+		return nextMove;
+	}
+
+	AStarNode** gridAS = CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
+	sfBool flag = 0;
+
+	// je regarde ou l'enemy peut aller si il est sur une case
+	for (int y = 0; y < _gridSize.y; y++)
+	{
+		for (int x = 0; x < _gridSize.x; x++)
+		{
+			for (int i = 0; i < _startRect.height; i++)
+			{
+				for (int j = 0; j < _startRect.width; j++)
+				{
+					if (y + i >= _gridSize.y || x + j > _gridSize.x || _grid[y + i][x + j] == 2)
+					{
+						i = _startRect.height;
+						j = _startRect.width;
+						flag = 1;
+					}
+				}
+			}
+			if (flag)
+			{
+				flag = 0;
+				continue;
+			}
+
+			if (x < _gridSize.x - 1)
+			{
+				gridAS[y][x].right = sfTrue;
+				for (int i = 0; i < _startRect.height && gridAS[y][x].right; i++)
+				{
+					gridAS[y][x].right = (y + i < _gridSize.y && _grid[y + i][x + 1] != 2);
+				}
+			}
+
+			if (x > 0)
+			{
+				gridAS[y][x].left = sfTrue;
+				for (int i = 0; i < _startRect.height && gridAS[y][x].left; i++)
+				{
+					gridAS[y][x].left = (y + i < _gridSize.y && _grid[y + i][x - 1] != 2);
+				}
+			}
+
+			if (y > 0)
+			{
+				gridAS[y][x].up = sfTrue;
+				for (int i = 0; i < _startRect.width && gridAS[y][x].up; i++)
+				{
+					gridAS[y][x].up = (x + i < _gridSize.x && _grid[y - 1][x + i] != 2);
+				}
+			}
+
+			if (y < _gridSize.y - 1)
+			{
+				gridAS[y][x].down = sfTrue;
+				for (int i = 0; i < _startRect.width && gridAS[y][x].down; i++)
+				{
+					gridAS[y][x].down = (x + i < _gridSize.x && !_grid[y + 1][x + i]);
+				}
+			}
+		}
+	}
+
+	system("cls");
+	for (int y = 0; y < _gridSize.y; y++)
+	{
+		for (int x = 0; x < _gridSize.x; x++)
+		{
+			printf("%d %d %d %d\t\t", gridAS[y][x].right, gridAS[y][x].left, gridAS[y][x].up, gridAS[y][x].down);
+		}
+		printf("\n");
+	}
+
+	if (gridAS[_goalRect.top][_goalRect.left].left)
+	{
+		gridAS[_goalRect.top][_goalRect.left - 1].directionActual.x = 1;
+	}
+	if (gridAS[_goalRect.top][_goalRect.left].right)
+	{
+		gridAS[_goalRect.top][_goalRect.left + 1].directionActual.x = -1;
+	}
+	if (gridAS[_goalRect.top][_goalRect.left].down)
+	{
+		gridAS[_goalRect.top + 1][_goalRect.left].directionActual.y = -1;
+	}
+	else if (gridAS[_goalRect.top][_goalRect.left].up)
+	{
+		gridAS[_goalRect.top - 1][_goalRect.left].directionActual.y = 1;
+	}
+
+	flag = sfTrue;
+	while (flag)
+	{
+		flag = sfFalse;
+		for (int y = 0; y < _gridSize.y; y++)
+		{
+			for (int x = 0; x < _gridSize.x; x++)
+			{
+				if (gridAS[y][x].directionActual.x || gridAS[y][x].directionActual.y)
+				{
+					if (gridAS[y][x].left && !gridAS[y][x - 1].directionActual.x)
+					{
+						gridAS[y][x - 1].directionActual.x = 1;
+						flag = sfTrue;
+					}
+					if (gridAS[y][x].right && !gridAS[y][x + 1].directionActual.x)
+					{
+						gridAS[y][x + 1].directionActual.x = -1;
+						flag = sfTrue;
+					}
+					if (gridAS[y][x].down && !gridAS[y + 1][x].directionActual.y)
+					{
+						gridAS[y + 1][x].directionActual.y = -1;
+						flag = sfTrue;
+					}
+					else if (gridAS[y][x].up && !gridAS[y - 1][x].directionActual.y)
+					{
+						gridAS[y - 1][x].directionActual.y = 1;
+						flag = sfTrue;
+					}
+				}
+			}
+		}
+	}
+
+	system("cls");
+	for (int y = 0; y < _gridSize.y; y++)
+	{
+		for (int x = 0; x < _gridSize.x; x++)
+		{
+			printf("%d %d\t", gridAS[y][x].directionActual.x, gridAS[y][x].directionActual.y);
+		}
+		printf("\n");
+	}
+
+	nextMove = gridAS[_startRect.top][_startRect.left].directionActual;
+
+	return nextMove;
+}
+
 #endif //  DEV_PIERRE_ENEMY == 1
-
-/*
-
-enemyHitbox = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-
-			if (enemyHitbox.left + enemyHitbox.width < playerPosition.x)
-			{
-				enemy.entity[i].velocity.x += enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else if (enemyHitbox.left > playerPosition.x)
-			{
-				enemy.entity[i].velocity.x -= enemy.data[enemy.entity[i].type].speed * _dt;
-			}
-			else
-			{
-				if (playerPosition.y > enemyHitbox.top && playerPosition.y < enemyHitbox.top + enemyHitbox.height)
-				{
-					KillPlayer();
-				}
-				enemy.entity[i].velocity.x = 0;
-			}
-
-			if (!enemy.entity[i].velocity.y)
-			{
-				if (playerPosition.y < enemyHitbox.top && enemy.entity[i].velocity.x)
-				{
-					if (1)
-					{
-						if (enemy.entity[i].velocity.x < 0)
-						{
-							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-						}
-						else
-						{
-							enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-						}
-					}
-					else
-					{
-						if (enemy.entity[i].velocity.x < 0)
-						{
-							sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left - enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height }, AXIS_BOTH);
-							if (colision.x)
-							{
-								enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-							}
-						}
-						else if (enemy.entity[i].velocity.x > 0)
-						{
-							sfVector2f colision = Colision((sfFloatRect) { enemyHitbox.left + enemyHitbox.width, enemyHitbox.top, enemyHitbox.width, enemyHitbox.height }, AXIS_BOTH);
-							if (colision.x)
-							{
-								enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
-							}
-						}
-					}
-				}
-			}
-
-*/
