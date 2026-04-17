@@ -1190,12 +1190,18 @@ void LoadEnemy(void)
 
 void UpdateEnemy(float _dt)
 {
+#if DEV_ENEMY_BASIC
 	sfVector2f playerPosition = GetPlayerPosition();
+#else
+#endif
 	sfVector2i enemyMove = { 0 };
 	for (int i = 0; i < enemy.count; i++)
 	{
-		//enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+#if DEV_ENEMY_BASIC
+		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
+#else
 		enemyMove = GetMoveEnemyAI(i, playerPosition);
+#endif
 
 
 		if (enemyMove.x)
@@ -1310,7 +1316,8 @@ sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos)
 	sfVector2i move = { 0 };
 	if (enemy.entity[_i].region.left <= _playerPos.x && enemy.entity[_i].region.left + enemy.entity[_i].region.width >= _playerPos.x && enemy.entity[_i].region.top <= _playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height >= _playerPos.y)
 	{
-		sfIntRect playerHitbox = { (int)(_playerPos.x - enemy.entity[_i].region.left) / TILE_SIZE,(int)(_playerPos.y - enemy.entity[_i].region.top) / TILE_SIZE - 2, 1, 2 };
+		sfFloatRect playerBox = GetPlayerRect();
+		sfIntRect playerHitbox = { (int)(playerBox.left - enemy.entity[_i].region.left) / TILE_SIZE,(int)(playerBox.top - enemy.entity[_i].region.top) / TILE_SIZE, (int)playerBox.width / TILE_SIZE, (int)playerBox.height / TILE_SIZE };
 
 		sfVector2i gridSize = { (int)enemy.entity[_i].region.width / TILE_SIZE, (int)enemy.entity[_i].region.height / TILE_SIZE };
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
@@ -1563,7 +1570,7 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 		{
 			if (!CheckColisiontMap((sfIntRect) { _end.left - _start.width + x, _end.top - _start.height + y, _start.width, _start.height }, _grid, _gridSize))
 			{
-				gridAS[_end.top - _start.height + y][_end.left - _start.width + x].directionActual = (sfVector2i){ 99, 99 };
+				gridAS[_end.top - _start.height + y][_end.left - _start.width + x].directionActual = (sfVector2i){ 9, 9 };
 			}
 		}
 	}
@@ -1643,21 +1650,22 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 							}
 						}
 					}
+					system("cls");
+					for (int y = 0; y < _gridSize.y; y++)
+					{
+						for (int x = 0; x < _gridSize.x; x++)
+						{
+							printf("%d %d,", gridAS[y][x].directionActual.x, gridAS[y][x].directionActual.y);
+						}
+						printf("\n");
+					}
 				}
 
 			}
 		}
 	}
 	
-	system("cls");
-	for (int y = 0; y < _gridSize.y; y++)
-	{
-		for (int x = 0; x < _gridSize.x; x++)
-		{
-			printf("%d %d,", gridAS[y][x].directionActual.x, gridAS[y][x].directionActual.y);
-		}
-		printf("\n");
-	}
+	
 
   	return (sfVector2i) { 0 };
 }
