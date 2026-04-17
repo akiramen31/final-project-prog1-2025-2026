@@ -91,6 +91,36 @@ void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _t
 	return grid;
 }
 
+void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
+{
+	char** grid = CreateGrid(_columnCount, _rowCount, _typeSize);
+	char** previousGrid = _previousGrid;
+	if (!grid)
+	{
+		return NULL;
+	}
+	unsigned columnToCopy = _previousColumnCount;
+	if (_previousColumnCount > _columnCount)
+	{
+		columnToCopy = _columnCount;
+	}
+	unsigned rowToCopy = _previousRowCount * _typeSize;
+	if (_previousRowCount > _rowCount)
+	{
+		rowToCopy = _rowCount * _typeSize;
+	}
+
+	for (unsigned i = 0; i < columnToCopy; i++)
+	{
+		for (unsigned j = 0; j < rowToCopy; j++)
+		{
+			grid[i][j] = previousGrid[i][j];
+		}
+	}
+
+	return grid;
+}
+
 void FreeGrid(void** grid)
 {
 	if (grid)

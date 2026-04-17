@@ -32,7 +32,7 @@
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
 #define DEBUG_MODE_A_STAR sfTrue
-#define DEV_PIERRE_ENEMY sfTrue
+#define DEV_PIERRE_ENEMY sfFalse
 
 #define TILE_SIZE 16
 
@@ -107,6 +107,7 @@ void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
+void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
