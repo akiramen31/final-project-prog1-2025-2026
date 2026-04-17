@@ -1195,7 +1195,7 @@ void UpdateEnemy(float _dt)
 #else
 #endif
 	sfVector2i enemyMove = { 0 };
-	for (unsigned i = 0; i < enemy.count; i++)
+	for (int i = 0; i < enemy.count; i++)
 	{
 #if DEV_ENEMY_BASIC
 		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
@@ -1241,7 +1241,7 @@ void UpdateEnemy(float _dt)
 		}
 		else if (colision.x)
 		{
-			colision.y -= abs(colision.x);
+			colision.y -= (int) abs(colision.x );
 			enemy.entity[i].velocity.x = 0;
 		}
 
@@ -1259,9 +1259,9 @@ void UpdateEnemy(float _dt)
 sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 {
 	sfFloatRect hitboxEnemy = { 0 };
-	sfVector2f playerPos = GetPlayerPosition();
+	//sfVector2f playerPos = GetPlayerPosition();
 	sfVector2i enemyAction = { 0 };
-	for (unsigned i = 0; i < enemy.count; i++)
+	for (int i = 0; i < enemy.count; i++)
 	{
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
@@ -1285,7 +1285,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 
 void ResetEnemy(void)
 {
-	for (unsigned i = 0; i < enemy.count; i++)
+	for (int i = 0; i < enemy.count; i++)
 	{
 		DestroyVisualEntity(enemy.entity[i].sprite);
 	}
@@ -1300,7 +1300,7 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	}
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
 	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
-	sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
+	//sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
 	enemy.entity[enemy.count].type = _type;
 	enemy.entity[enemy.count].region = _region;
 	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;

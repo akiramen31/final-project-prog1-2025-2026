@@ -157,7 +157,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		{
 			if (DEV_ENNEMY)
 			{
-				for (unsigned j = 0; j < map.data.trigerCount; j++)
+				for (int j = 0; j < map.data.trigerCount; j++)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 					{
