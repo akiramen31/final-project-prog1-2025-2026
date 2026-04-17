@@ -356,7 +356,6 @@ void UpdateTurret(float _dt)
 	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
 	sfSprite_setRotation(boss.boss1->spriteTurretLCanon, newAngleL);
 
-
 	sfVector2f posR = sfSprite_getPosition(boss.boss1->spriteTurretRCanon);
 	float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
 
@@ -427,7 +426,12 @@ void BossShoot(float _dt)
 			shooterType.isRighted = sfTrue;
 			shooterType.isAlly = sfFalse;
 			shooterType.weaponPos = 0;
-			AddBullet(sfSprite_getPosition(boss.boss1->spriteTurretLCanon), GetPlayerPosition(), shooterType);
+
+			sfVector2f playerPos = GetPlayerPosition();
+
+			playerPos.y -= TILE_SIZE;
+
+			AddBullet(sfSprite_getPosition(boss.boss1->spriteTurretLCanon), playerPos, shooterType);
 		}
 		else if (boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_RIGHT)
 		{
@@ -438,7 +442,12 @@ void BossShoot(float _dt)
 			shooterType.isRighted = sfTrue;
 			shooterType.isAlly = sfFalse;
 			shooterType.weaponPos = 0;
-			AddBullet(sfSprite_getPosition(boss.boss1->spriteTurretRCanon), GetPlayerPosition(), shooterType);
+
+			sfVector2f playerPos = GetPlayerPosition();
+
+			playerPos.y -= TILE_SIZE;
+
+			AddBullet(sfSprite_getPosition(boss.boss1->spriteTurretRCanon), playerPos, shooterType);
 		}
 	}
 	else

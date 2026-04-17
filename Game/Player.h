@@ -16,6 +16,8 @@
 
 #define PLAYER_JUMP_FORGIVE 0.1f
 
+#define PLAYER_DAMAGE_IMUNITY_DURATION 2.f
+
 typedef struct EnergyPlayerStruct
 {
 	float energy;
@@ -88,5 +90,4 @@ void TpPlayerBoss(void);
 void SetTpPlayerBoss(sfVector2f _pos);
 
 void HandlePlayerBossCollision(sfVector2f _push);
-
 #endif

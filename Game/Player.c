@@ -2,12 +2,14 @@
 #include "Missile.h"
 #include "Aim.h"
 #include "Box.h"
+#include "Ennemy.h"
 
 Player player;
 
 float timerDash = 0;
 float timerFaling = 0;
 float timerLastEnergyConso = 0;
+float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
 
 void UpdateMovePlayer(float _dt);
 
@@ -42,12 +44,12 @@ void LoadPlayer(void)
 
 	player.running.frameCount = 8;
 
-	player.running.frameDuration = 0.1;
+	player.running.frameDuration = 0.1f;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
 	player.walking.frameCount = 8;
-	player.walking.frameDuration = 0.1;
+	player.walking.frameDuration = 0.1f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
 
@@ -63,7 +65,7 @@ void LoadPlayer(void)
 
 	player.ener.energyMax = 100;
 	player.ener.energy = player.ener.energyMax;
-	player.ener.energyRegen = 5;
+	player.ener.energyRegen = 10;
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
 }
@@ -105,6 +107,18 @@ void UpdatePlayer(float _dt)
 	}
 
 	UpdateAnimation(_dt);
+	// Weapons logic remains unchanged
+	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
+
+	if (VerificationEntityIsNotInMap(GetPlayerRect()))
+	{
+		SetPlayerPosition(player.spawn);
+	}
+
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
+	{
+		timerlastDamageReceive += _dt;
+	}
 }
 
 void UpdateWeaponPlayer(float _dt)
@@ -208,7 +222,6 @@ void UpdateMovePlayer(float _dt)
 		}
 	}
 
-
 	ColisionMapPlayer(_dt);
 }
 
@@ -297,9 +310,6 @@ void ColisionMapPlayer(float _dt)
 			player.velocity.x = 0;
 		}
 	}
-
-	// Weapons logic remains unchanged
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }
 
 void MoveZonePlayer(float _dt)
@@ -346,22 +356,49 @@ void UpdateAnimation(float _dt)
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
 	}
 
-	if (player.direction)
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		printf("%d", (int)timerlastDamageReceive);
+
+		if (((int)(timerlastDamageReceive * 100) % 2) == 0)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 0, 0 });
+		}
+		else
+		{
+			if (player.direction)
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+			}
+			else
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+			}
+		}
 	}
 	else
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		if (player.direction)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		}
+		else
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		}
 	}
 	SetSpriteOriginFoot(player.sprite);
 
-	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+	sfSprite_setPosition(player.sprite, GetPlayerPosition());
 }
 
 void DamagePlayer(int _damage)
 {
-	player.life -= _damage;
+	if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+	{
+		player.life -= _damage;
+		timerlastDamageReceive = 0;
+	}
 }
 
 void KillPlayer(void)
@@ -547,6 +584,21 @@ void UpdateSteamAxe(float _dt)
 		{
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
 			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
+
+			switch (player.weapon.steamAxe.attackType)
+			{
+			case LIGHT:
+				HitEnemy(1.f, axeHitbox);
+				break;
+			case MEDIUM:
+				HitEnemy(2.f, axeHitbox);
+				break;
+			case HEAVY:
+				HitEnemy(3.f, axeHitbox);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }
@@ -652,6 +704,7 @@ void SetPlayerLifeMax(int _lifeMax)
 void AddPlayerLife(int _life)
 {
 	player.life += _life;
+
 	if (player.life > player.lifeMax)
 	{
 		player.life = player.lifeMax;
@@ -660,6 +713,7 @@ void AddPlayerLife(int _life)
 
 void SetPlayerPosition(sfVector2f _pos)
 {
+	SetViewCenter(_pos);
 	sfRectangleShape_setPosition(player.collision, _pos);
 }
 
@@ -673,6 +727,7 @@ void SetSpawnPlayer(sfVector2f _pos)
 	SetPlayerPosition(_pos);
 	player.spawn = _pos;
 }
+
 void SetTpPlayerBoss(sfVector2f _pos)
 {
 	player.tpBoss = _pos;

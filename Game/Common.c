@@ -68,23 +68,66 @@ void CopyStingToBuffer(char* _buffer, char* _string)
 	}
 }
 
-void** CreateGrid(sfVector2u _size, size_t _typeSize)
+void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
 {
-	void** grid = Calloc(_size.y, sizeof(void*));
+	char** grid = Calloc(_columnCount, sizeof(char*));
 	if (!grid)
 	{
-		return grid;
+		return NULL;
 	}
 
-	for (unsigned i = 0; i < _size.y; i++)
+	char* temp = Calloc((size_t)_rowCount * _columnCount, _typeSize);
+	if (!temp)
 	{
-		grid[i] = Calloc(_size.x, _typeSize);
-		if (!grid[i])
+		Free(grid);
+		return NULL;
+	}
+
+	for (int i = 0; i < _rowCount; i++)
+	{
+		grid[i] = &temp[i * _typeSize * _columnCount];
+	}
+
+	return grid;
+}
+
+void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
+{
+	char** grid = CreateGrid(_columnCount, _rowCount, _typeSize);
+	char** previousGrid = _previousGrid;
+	if (!grid)
+	{
+		return NULL;
+	}
+	unsigned columnToCopy = _previousColumnCount;
+	if (_previousColumnCount > _columnCount)
+	{
+		columnToCopy = _columnCount;
+	}
+	unsigned rowToCopy = _previousRowCount * _typeSize;
+	if (_previousRowCount > _rowCount)
+	{
+		rowToCopy = _rowCount * _typeSize;
+	}
+
+	for (unsigned i = 0; i < columnToCopy; i++)
+	{
+		for (unsigned j = 0; j < rowToCopy; j++)
 		{
-			return grid;
+			grid[i][j] = previousGrid[i][j];
 		}
 	}
+
 	return grid;
+}
+
+void FreeGrid(void** grid)
+{
+	if (grid)
+	{
+		Free(grid[0]);
+		Free(grid);
+	}
 }
 
 sfBool StringCompare(char* _string1, char* _string2)
@@ -118,4 +161,17 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 	if (fabsf(diff) <= step) return _target;
 
 	return _current + (diff > 0 ? step : -step);
+}
+
+sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
+{
+	MapData data = *GetMapData();
+	if ((_rect.left <= 0) || (_rect.left + _rect.width >= data.size.x * TILE_SIZE) || (_rect.top <= 0) || (_rect.top + _rect.height >= data.size.y * TILE_SIZE))
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
 }

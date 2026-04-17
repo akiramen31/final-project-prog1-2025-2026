@@ -10,6 +10,7 @@ unsigned bulletCountEnemy;
 
 void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
+sfBool HitPlayer(sfFloatRect _rect);
 
 void LoadBullet(void)
 {
@@ -34,6 +35,7 @@ void UpdateBullet(float _dt)
 		{
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
+
 			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet) || HitBoss(9.f, hitboxBullet))
 			{
 				DeleteBulletAlly(i);
@@ -45,7 +47,7 @@ void UpdateBullet(float _dt)
 				sfSprite_setRotation(bulletListAlly[i].sprite, RAD_DEG(atan2f(bulletListAlly[i].velocity.y, bulletListAlly[i].velocity.x)));
 			}
 		}
-		
+
 	}
 	for (int i = (int)bulletCountEnemy - 1; i >= 0; i--)
 	{
@@ -59,7 +61,7 @@ void UpdateBullet(float _dt)
 		{
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x /*|| HitPlayer(10.f, hitboxBullet)*/)
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitPlayer(hitboxBullet))
 			{
 				DeleteBulletEnemy(i);
 			}
@@ -89,7 +91,7 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	{
 		return;
 	}
-	
+
 
 	Bullet newBullet = { 0 };
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
@@ -117,8 +119,16 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	float realDy = _posTarget.y - spawnPos.y;
 	float realAngleRad = atan2f(realDy, realDx);
 
-	newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED;
-	newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED;
+	if (_shooterType.isAlly == sfTrue)
+	{
+		newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED_ALLY;
+		newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED_ALLY;
+	}
+	else if (_shooterType.isAlly == sfFalse)
+	{
+		newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED_ENEMY;
+		newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED_ENEMY;
+	}
 
 	sfSprite_setPosition(newBullet.sprite, spawnPos);
 	sfSprite_setRotation(newBullet.sprite, realAngleRad * (180.0f / (float)M_PI));
@@ -129,13 +139,13 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	newBullet.lifetime = BULLET_LIFETIME;
 	if (_shooterType.isAlly)
 	{
-	bulletListAlly[bulletCountAlly] = newBullet;
-	bulletCountAlly++;
+		bulletListAlly[bulletCountAlly] = newBullet;
+		bulletCountAlly++;
 	}
 	else
 	{
-	bulletListEnemy[bulletCountEnemy] = newBullet;
-	bulletCountEnemy++;
+		bulletListEnemy[bulletCountEnemy] = newBullet;
+		bulletCountEnemy++;
 	}
 }
 
@@ -171,3 +181,14 @@ void DeleteBulletEnemy(unsigned _index)
 	bulletCountEnemy--;
 }
 
+sfBool HitPlayer(sfFloatRect _rect)
+{
+	sfFloatRect playerRect = GetPlayerRect();
+
+	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
+	{
+			DamagePlayer(1);
+			return sfTrue;
+	}
+	return sfFalse;
+}

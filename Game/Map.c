@@ -157,9 +157,6 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		{
 			if (DEV_ENNEMY)
 			{
-#if DEV_PIERRE_ENEMY
-				AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY);
-#else
 				for (unsigned j = 0; j < map.data.trigerCount; j++)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
@@ -167,7 +164,6 @@ void SetPositionEntity(InfoZone* _point, int _count)
 						AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY, map.data.triger[j].hitbox);
 					}
 				}
-#endif
 			}
 		}
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))

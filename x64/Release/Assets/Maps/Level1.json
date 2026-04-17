@@ -2287,7 +2287,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -3088,8 +3088,8 @@
                  "type":"Boss",
                  "visible":true,
                  "width":0,
-                 "x":8886.67,
-                 "y":758.667
+                 "x":8880,
+                 "y":864
                 }, 
                 {
                  "height":0,
@@ -3102,7 +3102,7 @@
                  "visible":true,
                  "width":0,
                  "x":8400,
-                 "y":736
+                 "y":864
                 }, 
                 {
                  "height":0,
@@ -3453,7 +3453,7 @@
                  "visible":true,
                  "width":0,
                  "x":4104,
-                 "y":341.333333333333
+                 "y":341.333
                 }, 
                 {
                  "height":0,
@@ -3646,7 +3646,7 @@
                  "y":192
                 }, 
                 {
-                 "height":400,
+                 "height":392,
                  "id":520,
                  "name":"4",
                  "opacity":1,
@@ -3655,7 +3655,7 @@
                  "visible":true,
                  "width":656,
                  "x":4960,
-                 "y":464
+                 "y":472
                 }, 
                 {
                  "height":400,

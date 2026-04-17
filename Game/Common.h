@@ -31,10 +31,11 @@
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
-#define DEBUG_MODE_A_STAR sfTrue
+#define DEBUG_MODE_A_STAR sfFalse
 #define DEV_PIERRE_ENEMY sfFalse
+#define DEV_ENEMY_BASIC sfTrue
 
-#define TILE_SIZE 16.f
+#define TILE_SIZE 16
 
 #define G 5.81f
 
@@ -106,7 +107,10 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animati
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddel(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
-void** CreateGrid(sfVector2u _size, size_t _typeSize);
+void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
+void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
+void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
+sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 #endif // !COMMON_H

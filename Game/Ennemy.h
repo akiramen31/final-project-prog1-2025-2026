@@ -55,6 +55,7 @@ typedef struct EnnemyEntity
 	sfVector2f move;
 	enum State state;
 	float timer;
+	sfFloatRect region;
 }EnnemyEntity;
 
 typedef struct ActionDemander
@@ -86,16 +87,15 @@ typedef struct Case
 
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
-void AddEnemy(sfVector2f _position, enum EnemyType _type);
-sfBool HitEnemy(unsigned _index, sfVector2f _touch, float _degat, sfFloatRect* _hitbox);
+void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat);
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
 int GetEnemyCount(void);
 void SetPositionEnemy(sfVector2f _position, int _index);
-
+sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 void ResetEnemy(void);
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
-
 #else
 #define MAX_FALL_SPEED_ENEMY 1000
 
@@ -132,6 +132,7 @@ typedef struct EnemyEntity
 	float life;
 	float energy;
 	sfFloatRect region;
+	char* gridColider;
 	sfVector2f velocity;
 }EnemyEntity;
 

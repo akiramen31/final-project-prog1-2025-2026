@@ -1,0 +1,178 @@
+{
+    "activeFile": "Level1.tmx",
+    "automapping.whileDrawing": true,
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx": {
+            "scale": 0.69765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 558.2978723404256,
+                "y": 639.2833146696529
+            }
+        },
+        "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Map/Map.tmx#Grassland@64x64": {
+            "scaleInDock": 1
+        },
+        "Level1.json": {
+            "expandedObjectLayers": [
+                31
+            ],
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 621.3333333333334,
+                "y": 844
+            }
+        },
+        "Level1.tmx": {
+            "expandedObjectLayers": [
+                38,
+                37,
+                39,
+                31
+            ],
+            "scale": 0.125,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 4556,
+                "y": 1048
+            }
+        },
+        "Level1_2.tmx": {
+            "expandedObjectLayers": [
+                38,
+                31,
+                32,
+                37,
+                39
+            ],
+            "scale": 0.75,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 2217.333333333333,
+                "y": 605.3333333333334
+            }
+        },
+        "Level1_Demo.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2763,
+                "y": 510
+            }
+        },
+        "Level2.tmx": {
+            "expandedObjectLayers": [
+                8,
+                7,
+                9,
+                6
+            ],
+            "scale": 0.5,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 2560,
+                "y": 1169
+            }
+        },
+        "LevelTest.tmx": {
+            "expandedObjectLayers": [
+                9
+            ],
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 320,
+                "y": 143.66666666666669
+            }
+        },
+        "Tilesets/AutoTileRules.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 248,
+                "y": 295.6666666666667
+            }
+        },
+        "Tilesets/FullTiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 2,
+            "scaleInEditor": 3
+        },
+        "Tilesets/LevelTest.json": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 239.75,
+                "y": 159.5
+            }
+        },
+        "Tilesets/Metal_girder.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Tilesets/Metal_plate.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Tilesets/Pipes.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Tilesets/SpritesList.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
+        },
+        "Tilesets/TileForAutomaping.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Tilesets/individual_tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 16
+        }
+    },
+    "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
+    "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
+    "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 145,
+    "map.tileWidth": 320,
+    "openFiles": [
+        "Level1.tmx",
+        "Level2.tmx",
+        "Tilesets/AutoTileRules.tmx",
+        "Tilesets/FullTiles.tsx",
+        "LevelTest.tmx",
+        "Tilesets/SpritesList.tsx"
+    ],
+    "project": "FinalProject.tiled-project",
+    "recentFiles": [
+        "Tilesets/SpritesList.tsx",
+        "LevelTest.tmx",
+        "Tilesets/FullTiles.tsx",
+        "Tilesets/AutoTileRules.tmx",
+        "Level2.tmx",
+        "Level1.tmx",
+        "Level1_Demo.tmx",
+        "Level1_2.tmx",
+        ":/automap-tiles.tsx",
+        "Tilesets/TileForAutomaping.tsx",
+        "Tilesets/Pipes.tsx",
+        "Tilesets/Metal_plate.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

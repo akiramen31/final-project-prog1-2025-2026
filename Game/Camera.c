@@ -29,6 +29,7 @@ void UpdateCamera(float _dt)
 	}
 }
 
+
 void MoveViewSlow(sfVector2f _pos, float _dt)
 {
 	sfVector2f tempPos = GetViewPosition();
@@ -44,6 +45,24 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	newPos.x *= CAMERA_SPEED;
 	newPos.y *= CAMERA_SPEED;
+
+	if (newPos.x > CAMERA_SPEED_MAX)
+	{
+		newPos.x = CAMERA_SPEED_MAX;
+	}
+	else if (newPos.x < -CAMERA_SPEED_MAX)
+	{
+		newPos.x = -CAMERA_SPEED_MAX;
+	}
+	if (newPos.y > CAMERA_SPEED_MAX)
+	{
+		newPos.y = CAMERA_SPEED_MAX;
+	}
+	else if (newPos.y < -CAMERA_SPEED_MAX)
+	{
+		newPos.y = -CAMERA_SPEED_MAX;
+	}
+
 
 	if (POW2(newPos.x) < CAMERA_LOCK && POW2(newPos.y) < CAMERA_LOCK)
 	{
