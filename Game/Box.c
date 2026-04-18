@@ -14,6 +14,7 @@ void AddBox(sfVector2f _position)
 	box.entity = Realloc(box.entity, (size_t)(box.count + 1) * sizeof(BoxEntity));
 	box.entity[box.count].hitbox = (sfFloatRect){ _position.x, _position.y, 16.f, 16.f };
 	box.entity[box.count].sprite = CreateSprite(box.texture, _position, 1.f, 50.f);
+	box.entity[box.count].breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 5.f, sfFalse);
 	box.count++;
 }
 
@@ -30,6 +31,7 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 		{
 			if (_destroy)
 			{
+				sfSound_play(box.entity[i].breakSound);
 				box.count--;
 				DestroyVisualEntity(box.entity[i].sprite);
 				if (box.count)

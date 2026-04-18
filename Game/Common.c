@@ -83,7 +83,7 @@ void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _t
 		return NULL;
 	}
 
-	for (int i = 0; i < _rowCount; i++)
+	for (unsigned i = 0; i < _rowCount; i++)
 	{
 		grid[i] = &temp[i * _typeSize * _columnCount];
 	}
@@ -93,8 +93,8 @@ void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _t
 
 void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
 {
-	char** grid = CreateGrid(_columnCount, _rowCount, _typeSize);
-	char** previousGrid = _previousGrid;
+	char** grid = (char**)CreateGrid(_columnCount, _rowCount, _typeSize);
+	char** previousGrid = (char**)_previousGrid;
 	if (!grid)
 	{
 		return NULL;
@@ -104,10 +104,10 @@ void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsi
 	{
 		columnToCopy = _columnCount;
 	}
-	unsigned rowToCopy = _previousRowCount * _typeSize;
+	unsigned rowToCopy = (unsigned)(_previousRowCount * _typeSize);
 	if (_previousRowCount > _rowCount)
 	{
-		rowToCopy = _rowCount * _typeSize;
+		rowToCopy = (int)(_rowCount * _typeSize);
 	}
 
 	for (unsigned i = 0; i < columnToCopy; i++)

@@ -34,7 +34,7 @@ void LoadMenu(void)
 	menu.musics[3] = CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfFalse);
 	menu.musics[4] = CreateMusic("Assets/Musics/1917_Over_There.ogg", 10.f, sfFalse);
 
-	sfMusic_play(menu.musics[rand() % NB_MUSICS]);
+	sfMusic_play(menu.musics[GetIntFromSave(MUSIC_ACTUALY)]);
 
 	SetViewZoom(1.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
@@ -92,7 +92,7 @@ void LoadMenu(void)
 	sfTexture* tempButtons = GetAsset("Assets/Sprites/selection_menu_buttons.png");
 	sfTexture* tempIcons = GetAsset("Assets/Sprites/selection_menu_icons.png");
 	sfTexture* tempMap = GetAsset("Assets/Sprites/selection_menu_map.png");
-	sfVector2f temp[2] = { {830, 840}, {1410, 840}};
+	sfVector2f temp[2] = { {830, 840}, {1410, 840} };
 	for (int i = 0; i < 2; i++)
 	{
 		menu.selectionMenu.bottomText[i] = CreateText(font, temp[i], 60, 5.f);
@@ -103,16 +103,16 @@ void LoadMenu(void)
 	sfText_setString(menu.selectionMenu.bottomText[1], "back");
 	for (int i = 0; i < 3; i++)
 	{
-		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 60.f);
-		menu.selectionMenu.sideIcon[i] = CreateSprite(tempIcons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 50.f);
-		menu.selectionMenu.mapIcon[i] = CreateSprite(tempMap, (sfVector2f){ 288, 112 + (i * 232) }, 0.f, 60.f);
-		menu.selectionMenu.mapOverlay[i] = CreateSprite(tempMap, (sfVector2f) { 288, 112 + (i*232) }, 0.f, 50.f);
+		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72.f, 376.f + 256.f * i }, 0.f, 60.f);
+		menu.selectionMenu.sideIcon[i] = CreateSprite(tempIcons, (sfVector2f) { 72.f, 376.f + 256.f * i }, 0.f, 50.f);
+		menu.selectionMenu.mapIcon[i] = CreateSprite(tempMap, (sfVector2f) { 288.f, 112.f + (i * 232.f) }, 0.f, 60.f);
+		menu.selectionMenu.mapOverlay[i] = CreateSprite(tempMap, (sfVector2f) { 288.f, 112.f + (i * 232.f) }, 0.f, 50.f);
 		sfSprite_setTextureRect(menu.selectionMenu.sideButton[i], (sfIntRect) { 0, 0, 18, 18 });
-		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], (sfIntRect){16*i, 0, 16, 16});
+		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], (sfIntRect) { 16 * i, 0, 16, 16 });
 		sfSprite_setTextureRect(menu.selectionMenu.mapIcon[i], (sfIntRect) { 0, 24 * i, 56, 24 });
-		sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 48 , 56, 24 });
-		sfSprite_setOrigin(menu.selectionMenu.sideButton[i], (sfVector2f) { 9, 9 });
-		sfSprite_setOrigin(menu.selectionMenu.sideIcon[i], (sfVector2f) { 8, 8 });
+		sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 48, 56, 24 });
+		sfSprite_setOrigin(menu.selectionMenu.sideButton[i], (sfVector2f) { 9.f, 9.f });
+		sfSprite_setOrigin(menu.selectionMenu.sideIcon[i], (sfVector2f) { 8.f, 8.f });
 	}
 
 	SetMenuState(STARTING_MENU);
@@ -471,7 +471,7 @@ void SetMenuState(MenuState _state)
 				sfText_setScale(menu.selectionMenu.bottomText[i], invisible);
 			}
 			//Loading the main menu
-			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), NULL);
+			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), sfFalse);
 			for (int i = 0; i < 3; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], visibleSprite);
@@ -570,7 +570,7 @@ void SetMenuState(MenuState _state)
 				sfText_setScale(menu.mainMenu.topButtons[i], invisible);
 			}
 			//Loading the selection menu
-			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/selection_menu_overlay.png"), NULL);
+			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/selection_menu_overlay.png"), sfFalse);
 			for (int i = 0; i < 3; i++)
 			{
 				sfSprite_setScale(menu.selectionMenu.sideButton[i], visibleSprite);
@@ -617,7 +617,7 @@ void SetMenuState(MenuState _state)
 				sfSprite_setScale(menu.selectionMenu.mapOverlay[i], visibleSprite);
 				if (GetIntFromSave(UNLOCKED_LEVEL) >= i)
 				{
-					sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) {56,24,56,24});
+					sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 24, 56, 24 });
 				}
 			}
 			break;
@@ -868,18 +868,12 @@ int WhichMusicPlaying()
 
 void NextMusic()
 {
-	int musicPlaying = WhichMusicPlaying();
-	sfMusic_stop(menu.musics[musicPlaying]);
-	if (musicPlaying == NB_MUSICS - 1)
-	{
-		sfMusic_play(menu.musics[0]);
-	}
-	else
-	{
-		sfMusic_play(menu.musics[musicPlaying + 1]);
-	}
 	if (menu.state < 5)
 	{
+		int musicPlaying = WhichMusicPlaying();
+		sfMusic_stop(menu.musics[musicPlaying]);
+		sfMusic_play(menu.musics[(musicPlaying + 1) % NB_MUSICS]);
+		SetIntToSave(MUSIC_ACTUALY, (musicPlaying + 1) % NB_MUSICS);
 		sfSprite_setRotation(menu.mainMenu.logo[0], 0);
 	}
 }

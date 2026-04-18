@@ -187,8 +187,8 @@ sfBool HitPlayer(sfFloatRect _rect)
 
 	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
 	{
-			DamagePlayer(1);
-			return sfTrue;
+		DamagePlayer(1);
+		return sfTrue;
 	}
 	return sfFalse;
 }

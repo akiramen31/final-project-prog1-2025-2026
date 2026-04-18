@@ -1241,7 +1241,7 @@ void UpdateEnemy(float _dt)
 		}
 		else if (colision.x)
 		{
-			colision.y -= (int) abs(colision.x );
+			colision.y -= (int) abs((int)colision.x );
 			enemy.entity[i].velocity.x = 0;
 		}
 
@@ -1320,7 +1320,7 @@ sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos)
 		sfIntRect playerHitbox = { (int)(playerBox.left - enemy.entity[_i].region.left) / TILE_SIZE,(int)(playerBox.top - enemy.entity[_i].region.top) / TILE_SIZE, (int)playerBox.width / TILE_SIZE, (int)playerBox.height / TILE_SIZE };
 
 		sfVector2i gridSize = { (int)enemy.entity[_i].region.width / TILE_SIZE, (int)enemy.entity[_i].region.height / TILE_SIZE };
-		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
+		char** grid = (char**)CreateGrid(gridSize.x, gridSize.y, sizeof(char));
 
 		for (int y = 0; y < gridSize.y; y++)
 		{
@@ -1395,7 +1395,7 @@ sfVector2i AStar1(char** _grid, sfVector2i _gridSize, sfIntRect _startRect, sfIn
 		return nextMove;
 	}
 
-	AStarNode** gridAS = CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
+	AStarNode** gridAS = (AStarNode**)CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
 	sfBool flag = 0;
 
 	// je regarde ou l'enemy peut aller si il est sur une case
@@ -1563,7 +1563,7 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 	}
 
 	sfVector2i andCase = { 0 };
-	AStarNode** gridAS = CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
+	AStarNode** gridAS = (AStarNode**)CreateGrid(_gridSize.x, _gridSize.y, sizeof(AStarNode));
 	for (int y = 0; y < _end.top + _start.height; y++)
 	{
 		for (int x = 0; x < _end.left + _end.width; x++)
@@ -1669,260 +1669,5 @@ sfVector2i AStar3(char** _grid, sfVector2i _gridSize, sfIntRect _start, sfIntRec
 
   	return (sfVector2i) { 0 };
 }
-
-
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-// ─── Structures ───────────────────────────────────────────────
-
-
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-
-// ─── Structures ───────────────────────────────────────────────
-
-typedef struct {
-	int x, y;
-	float g;        // coût depuis le départ
-	float f;        // g + h
-	int parentX;
-	int parentY;
-} OpenNode;
-
-typedef struct {
-	int     parentX;
-	int     parentY;
-	float   g;
-	int     inOpen;
-	int     inClosed;
-} Cell;
-
-// ─── Min-heap (open list) ──────────────────────────────────────
-
-typedef struct {
-	OpenNode* data;
-	int         size;
-	int         capacity;
-} MinHeap;
-
-static MinHeap HeapCreate(int capacity)
-{
-	MinHeap h;
-	h.data = malloc(sizeof(OpenNode) * capacity);
-	h.size = 0;
-	h.capacity = capacity;
-	return h;
-}
-
-static void HeapPush(MinHeap* h, OpenNode node)
-{
-	if (h->size >= h->capacity) {
-		h->capacity *= 2;
-		h->data = realloc(h->data, sizeof(OpenNode) * h->capacity);
-	}
-	h->data[h->size] = node;
-	// bubble up
-	int i = h->size++;
-	while (i > 0) {
-		int parent = (i - 1) / 2;
-		if (h->data[parent].f <= h->data[i].f) break;
-		OpenNode tmp = h->data[parent];
-		h->data[parent] = h->data[i];
-		h->data[i] = tmp;
-		i = parent;
-	}
-}
-
-static OpenNode HeapPop(MinHeap* h)
-{
-	OpenNode top = h->data[0];
-	h->data[0] = h->data[--h->size];
-	// bubble down
-	int i = 0;
-	while (1) {
-		int l = 2 * i + 1, r = 2 * i + 2, smallest = i;
-		if (l < h->size && h->data[l].f < h->data[smallest].f) smallest = l;
-		if (r < h->size && h->data[r].f < h->data[smallest].f) smallest = r;
-		if (smallest == i) break;
-		OpenNode tmp = h->data[i];
-		h->data[i] = h->data[smallest];
-		h->data[smallest] = tmp;
-		i = smallest;
-	}
-	return top;
-}
-
-// ─── Helpers ───────────────────────────────────────────────────
-
-// Heuristique Manhattan
-static float Heuristic(int x, int y, int gx, int gy)
-{
-	return (float)(abs(x - gx) + abs(y - gy));
-}
-
-// Vérifie si le rectangle de taille (w x h) placé en (x, y) est libre
-static int CanPlace(char** grid, int gw, int gh, int x, int y, int w, int h)
-{
-	for (int dy = 0; dy < h; dy++)
-		for (int dx = 0; dx < w; dx++) {
-			int nx = x + dx, ny = y + dy;
-			if (nx < 0 || ny < 0 || nx >= gw || ny >= gh) return 0;
-			if (grid[ny][nx] == 2)                         return 0;
-		}
-	return 1;
-}
-
-// ─── A* principal ─────────────────────────────────────────────
-
-/*
- * Retourne le premier mouvement à effectuer pour aller de _start à _goal.
- * .x : -1 (gauche), 0, +1 (droite)
- * .y : -1 (haut),   0, +1 (bas)
- * Retourne {0,0} si aucun chemin n'existe.
- *
- * _jumpHeightTiles : nombre de cases vers le haut que l'entité peut atteindre
- *                    (0 = pas de saut, mouvement sur sol uniquement)
- */
-sfVector2i AStar2(char** grid, sfVector2i gridSize, sfIntRect start, sfIntRect goal, int jumpHeightTiles)
-{
-	sfVector2i noMove = { 0, 0 };
-
-	// Validation des bornes
-	if (start.left < 0 || start.top < 0
-		|| start.left + start.width  > gridSize.x
-		|| start.top + start.height > gridSize.y)
-		return noMove;
-
-	if (goal.left < 0 || goal.top < 0
-		|| goal.left + goal.width  > gridSize.x
-		|| goal.top + goal.height > gridSize.y)
-		return noMove;
-
-	int W = gridSize.x, H = gridSize.y;
-	int sw = start.width, sh = start.height;
-
-	// Vérifie que start et goal sont placables
-	if (!CanPlace(grid, W, H, start.left, start.top, sw, sh)) return noMove;
-	if (!CanPlace(grid, W, H, goal.left, goal.top, sw, sh)) return noMove;
-
-	// Table des cellules (parent + coûts + flags open/closed)
-	Cell* cells = calloc(W * H, sizeof(Cell));
-#define CELL(x,y) cells[(y)*W+(x)]
-
-	for (int i = 0; i < W * H; i++) {
-		cells[i].parentX = -1;
-		cells[i].parentY = -1;
-		cells[i].g = 1e30f;
-	}
-
-	// Directions : droite, gauche, bas, + sauts vers le haut
-	// On génère les voisins à la volée dans la boucle principale.
-
-	MinHeap open = HeapCreate(256);
-
-	// Nœud de départ
-	int sx = start.left, sy = start.top;
-	int gx = goal.left, gy = goal.top;
-
-	CELL(sx, sy).g = 0.f;
-	OpenNode startNode = { sx, sy, 0.f, Heuristic(sx,sy,gx,gy), -1, -1 };
-	HeapPush(&open, startNode);
-	CELL(sx, sy).inOpen = 1;
-
-	int found = 0;
-
-	while (open.size > 0)
-	{
-		OpenNode cur = HeapPop(&open);
-		int cx = cur.x, cy = cur.y;
-
-		if (CELL(cx, cy).inClosed) continue;
-		CELL(cx, cy).inClosed = 1;
-
-		// Arrivée
-		if (cx == gx && cy == gy) { found = 1; break; }
-
-		// ── Voisins ──────────────────────────────────────────
-		// Mouvements de base : gauche, droite, bas
-		int dx[] = { -1,  1,  0,  0 };
-		int dy[] = { 0,  0,  1, -1 };   // bas = +1 en coords grille
-
-		// On ajoute les sauts (monter de 1..jumpHeightTiles cases)
-		// On traite ça dans une boucle unifiée ci-dessous.
-
-		for (int d = 0; d < 4 + jumpHeightTiles; d++)
-		{
-			int nx, ny;
-
-			if (d < 3) {
-				// gauche, droite, bas
-				nx = cx + dx[d];
-				ny = cy + dy[d];
-			}
-			else if (d == 3) {
-				// Mouvement "haut" classique (d=3, dy=-1)
-				// uniquement si l'entité peut monter (escaliers, etc.)
-				// Si pas de saut et pas de montée possible, skip
-				if (jumpHeightTiles == 0) continue;
-				nx = cx;
-				ny = cy - 1;
-			}
-			else {
-				// Sauts : on peut monter de (d-2) cases en une fois
-				int jumpHeight = d - 3;          // 1..jumpHeightTiles
-				nx = cx;
-				ny = cy - jumpHeight;
-			}
-
-			if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-			if (!CanPlace(grid, W, H, nx, ny, sw, sh))  continue;
-			if (CELL(nx, ny).inClosed)                   continue;
-
-			float newG = CELL(cx, cy).g + 1.f;
-			if (newG < CELL(nx, ny).g) {
-				CELL(nx, ny).g = newG;
-				CELL(nx, ny).parentX = cx;
-				CELL(nx, ny).parentY = cy;
-				OpenNode nb = {
-					nx, ny,
-					newG,
-					newG + Heuristic(nx, ny, gx, gy),
-					cx, cy
-				};
-				HeapPush(&open, nb);
-				CELL(nx, ny).inOpen = 1;
-			}
-		}
-	}
-
-	// Remonte le chemin jusqu'au premier pas
-	sfVector2i result = noMove;
-	if (found)
-	{
-		int cx = gx, cy = gy;
-		while (CELL(cx, cy).parentX != sx || CELL(cx, cy).parentY != sy)
-		{
-			int px = CELL(cx, cy).parentX;
-			int py = CELL(cx, cy).parentY;
-			if (px < 0) break;   // sécurité : ne devrait pas arriver
-			cx = px;
-			cy = py;
-		}
-		result.x = cx - sx;
-		result.y = cy - sy;
-	}
-
-	free(open.data);
-	free(cells);
-#undef CELL
-	return result;
-}
-
 
 #endif //  DEV_PIERRE_ENEMY == 1

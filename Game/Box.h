@@ -6,6 +6,7 @@
 typedef struct BoxEntity
 {
 	sfSprite* sprite;
+	sfSound* breakSound;
 	sfFloatRect hitbox;
 }BoxEntity;
 
