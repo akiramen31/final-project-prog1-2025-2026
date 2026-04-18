@@ -15,6 +15,7 @@
 typedef struct Missile
 {
 	sfSprite* sprite;
+	sfMusic* music;
 	float rotation;
 	float angle;
 	float speed;

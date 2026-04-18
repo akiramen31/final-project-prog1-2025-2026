@@ -59,6 +59,12 @@ typedef struct Player
 
 	Animation running;
 	Animation walking;
+
+	sfSound* walkSound;
+	sfSound* jumpSound;
+	sfSound* hitSound;
+	sfSound* cutSound;
+	sfSound* shootSound;
 }Player;
 
 void LoadPlayer(void);

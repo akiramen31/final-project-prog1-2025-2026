@@ -68,6 +68,12 @@ void LoadPlayer(void)
 	player.ener.energyRegen = 10;
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
+
+	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 5.f, sfFalse);
+	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 5.f, sfFalse);
+	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 5.f, sfFalse);
+	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 5.f, sfFalse);
+	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 5.f, sfFalse);
 }
 
 void UpdatePlayer(float _dt)
@@ -152,6 +158,7 @@ void UpdateMovePlayer(float _dt)
 			{
 				player.velocity.x = 1;
 			}
+
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
@@ -182,6 +189,7 @@ void UpdateMovePlayer(float _dt)
 			{
 				if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 				{
+					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
 					timerFaling += PLAYER_JUMP_FORGIVE;
@@ -349,6 +357,10 @@ void UpdateAnimation(float _dt)
 {
 	if (player.velocity.x != 0 && player.velocity.y == 0)
 	{
+		if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+		{
+			sfSound_play(player.walkSound);
+		}
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
 	}
 	else /*if (player.velocity.x == 0)*/
@@ -396,6 +408,7 @@ void DamagePlayer(int _damage)
 {
 	if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
+		sfSound_play(player.hitSound);
 		player.life -= _damage;
 		timerlastDamageReceive = 0;
 	}
@@ -485,6 +498,7 @@ void UpdateFireControlRailgun(void)
 {
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
+		sfSound_play(player.shootSound);
 		UseWeapon(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
 	}
 }
@@ -495,6 +509,7 @@ void UpdateFireControlSteamAxe(float _dt)
 	{
 		if (player.canShoot)
 		{
+			sfSound_play(player.cutSound);
 			player.pressTime += _dt;
 		}
 	}

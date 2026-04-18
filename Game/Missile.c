@@ -22,6 +22,8 @@ void LoadMissile(void)
 		missileList[i].isAlive = sfFalse;
 
 		missileList[i].speed = 30.f;
+
+		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 5.f, sfFalse);
 	}
 }
 
@@ -31,6 +33,7 @@ void AddMissile(sfVector2f _pos, sfBool _isRighted)
 	{
 		if (missileList[i].isAlive == sfFalse)
 		{
+			sfMusic_play(missileList[i].music);
 			missileList[i].isAlive = sfTrue;
 			missileList[i].lifetime = 0; 
 			missileList[i].rotation = -90; 
@@ -64,6 +67,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			{
 				missileList[i].isAlive = sfFalse;
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
+				sfMusic_stop(missileList[i].music);
 				continue;
 			}
 			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite), AXIS_BOTH);
@@ -72,6 +76,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			reaction.y += reactionBox.y;
 			if (reaction.x != 0 || reaction.y != 0)
 			{
+				sfMusic_stop(missileList[i].music);
 				missileList[i].isAlive = sfFalse;
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
 				continue;
