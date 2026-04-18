@@ -12,7 +12,7 @@ void UpdateHUD(float _dt)
 {
 	float max = GetPlayerEnergyInfo(ENERGY_MAX);
 	float current = GetPlayerEnergyInfo(ENERGY);
-	int row = (current / max)*15;
+	int row = (int)((current / max) * 15);
 	if (row < 0)
 	{
 		row = 0;

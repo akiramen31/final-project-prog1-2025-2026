@@ -10,7 +10,7 @@ void LoadGUI()
 
 	for (int i = 0; i < 4; i++)
 	{
-		pauseMenu.buttonText[i] = CreateText(font, (sfVector2f) { 0 }, 8.f, 0);
+		pauseMenu.buttonText[i] = CreateText(font, (sfVector2f) { 0 }, 8, 0.f);
 	}
 	sfText_setString(pauseMenu.buttonText[0], "Resume");
 	sfText_setString(pauseMenu.buttonText[1], "Settings");
