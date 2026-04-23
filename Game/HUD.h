@@ -6,7 +6,7 @@
 
 typedef struct HUD
 {
-	sfSprite* life;
+	sfSprite* life[PLAYER_MAX_HEALTH];
 	sfSprite* gauge;
 }HUD;
 

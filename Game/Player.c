@@ -60,7 +60,7 @@ void LoadPlayer(void)
 	pos.x = 100;
 	pos.y = 32;
 
-	player.lifeMax = 3;
+	player.lifeMax = PLAYER_MAX_HEALTH;
 	player.life = player.lifeMax;
 
 	player.ener.energyMax = 100;
