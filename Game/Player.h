@@ -18,7 +18,7 @@
 
 #define PLAYER_DAMAGE_IMUNITY_DURATION 2.f
 
-#define PLAYER_MAX_HEALTH 3
+#define PLAYER_MAX_HEALTH 10
 
 typedef struct EnergyPlayerStruct
 {

@@ -34,7 +34,8 @@ void UpdateHUD(float _dt)
 	int life = GetPlayerLife();
 	for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
 	{
-		sfVector2f lifePos = { viewPos.x + (xScale * (10 +(170 * i))), viewPos.y + (yScale * 10) };
+		sfSprite_setOrigin(hud.life[i], (sfVector2f) {16,16});
+		sfVector2f lifePos = { viewPos.x + (xScale * (90 +(32 * i))), viewPos.y + (yScale * 90) };
 		if (life <= i)
 		{
 			sfSprite_setScale(hud.life[i], (sfVector2f){0});
@@ -43,7 +44,7 @@ void UpdateHUD(float _dt)
 		{
 			sfSprite_setPosition(hud.life[i], lifePos);
 			sfSprite_setScale(hud.life[i], (sfVector2f) { xScale*5, yScale*5 });
-			printf("%f\n", xScale*5);
+			sfSprite_setRotation(hud.life[i], 45.f * i);
 		}		
 	}
 }

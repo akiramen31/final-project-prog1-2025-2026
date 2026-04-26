@@ -136,7 +136,7 @@ void UpdateGame(float _dt)
 	if (GetPlayerLife() <= 0)
 	{
 		SetMap(GetActualyMap());
-		AddPlayerLife(99);
+		AddPlayerLife(PLAYER_MAX_HEALTH);
 	}
 
 	UpdatePlayer(_dt);
