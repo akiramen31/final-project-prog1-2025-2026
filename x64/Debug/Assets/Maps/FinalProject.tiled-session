@@ -36,14 +36,14 @@
             "expandedObjectLayers": [
                 37,
                 38,
-                39,
-                31
+                31,
+                39
             ],
-            "scale": 0.33,
-            "selectedLayer": 7,
+            "scale": 0.75,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 3495.454545454545,
-                "y": 339.3939393939395
+                "x": 2530,
+                "y": 954.6666666666666
             }
         },
         "Level1_2.tmx": {
@@ -71,16 +71,16 @@
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
-                8,
-                7,
+                6,
                 9,
-                6
+                7,
+                8
             ],
             "scale": 0.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 2560,
-                "y": 1169
+                "x": 2659,
+                "y": 342
             }
         },
         "LevelTest.tmx": {
