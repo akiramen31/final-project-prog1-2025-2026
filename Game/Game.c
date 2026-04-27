@@ -66,6 +66,16 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtKeyPressed:
 		KeyPressedGame(&_event->key);
 		break;
+	case sfEvtKeyReleased:
+		switch (_event->key.code)
+		{
+		case sfKeyO:
+			ChangePlayerInvicibility();
+			break;
+		default:
+			break;
+		}
+		break;
 	case sfEvtMouseMoved:
 		break;
 	case sfEvtMouseButtonPressed:

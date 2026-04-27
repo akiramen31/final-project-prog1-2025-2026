@@ -11,6 +11,8 @@ float timerFaling = 0;
 float timerLastEnergyConso = 0;
 float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
 
+sfBool playerInvicible = sfFalse;
+
 void UpdateMovePlayer(float _dt);
 
 void ColisionMapPlayer(float _dt);
@@ -406,11 +408,14 @@ void UpdateAnimation(float _dt)
 
 void DamagePlayer(int _damage)
 {
-	if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+	if (!playerInvicible)
 	{
-		sfSound_play(player.hitSound);
-		player.life -= _damage;
-		timerlastDamageReceive = 0;
+		if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+		{
+			sfSound_play(player.hitSound);
+			player.life -= _damage;
+			timerlastDamageReceive = 0;
+		}
 	}
 }
 
@@ -778,5 +783,17 @@ void HandlePlayerBossCollision(sfVector2f _push)
 		{
 			player.velocity.x = 0.f;
 		}
+	}
+}
+
+void ChangePlayerInvicibility(void)
+{
+	if (playerInvicible)
+	{
+		playerInvicible = sfFalse;
+	}
+	else
+	{
+		playerInvicible = sfTrue;
 	}
 }
