@@ -40,29 +40,10 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f newPos = (sfVector2f){ VECTOR(tempPos, _pos) };
 
-	newPos.x *= _dt;
-	newPos.y *= _dt;
+	double angle = atan2f(newPos.y, newPos.x);
 
-	newPos.x *= CAMERA_SPEED;
-	newPos.y *= CAMERA_SPEED;
-
-	if (newPos.x > CAMERA_SPEED_MAX)
-	{
-		newPos.x = CAMERA_SPEED_MAX;
-	}
-	else if (newPos.x < -CAMERA_SPEED_MAX)
-	{
-		newPos.x = -CAMERA_SPEED_MAX;
-	}
-	if (newPos.y > CAMERA_SPEED_MAX)
-	{
-		newPos.y = CAMERA_SPEED_MAX;
-	}
-	else if (newPos.y < -CAMERA_SPEED_MAX)
-	{
-		newPos.y = -CAMERA_SPEED_MAX;
-	}
-
+	newPos.x *= _dt * cos(angle) * CAMERA_SPEED;
+	newPos.y *= _dt * sin(angle) * CAMERA_SPEED;
 
 	if (POW2(newPos.x) < CAMERA_LOCK && POW2(newPos.y) < CAMERA_LOCK)
 	{
@@ -70,6 +51,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	}
 	else
 	{
+		printf("%f %f\n", newPos.x, newPos.y);
 		MoveView(newPos);
 	}
 }

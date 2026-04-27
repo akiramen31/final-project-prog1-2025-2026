@@ -261,7 +261,7 @@ void CheckBossPlayerState(float _dt)
 			if (distance.x < 46 && distance.y < 32)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_UNDER;
-				boss.boss1->runAwayTiming += _dt;
+				boss.boss1->runAwayTiming += _dt * DT_SLOW;
 				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 				{
 					if (trackPosition.x > ARENA_CENTER)
@@ -280,7 +280,7 @@ void CheckBossPlayerState(float _dt)
 			if (distance.x < TARGET_DISTANCE_MAX && distance.y > 80)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_ON_TOP;
-				boss.boss1->runAwayTiming += _dt;
+				boss.boss1->runAwayTiming += _dt * DT_SLOW;
 				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 				{
 					if (trackPosition.x > ARENA_CENTER)
@@ -301,7 +301,7 @@ void CheckBossPlayerState(float _dt)
 				if (playerPos.x < trackPosition.x)
 				{
 					boss.boss1->playerPositionToBoss = PLAYER_TURRET_LEFT;
-					boss.boss1->runAwayTiming += _dt;
+					boss.boss1->runAwayTiming += _dt * DT_SLOW;
 					if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 					{
 						if (trackPosition.x > ARENA_CENTER)

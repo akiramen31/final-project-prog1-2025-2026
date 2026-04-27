@@ -18,6 +18,8 @@
 #define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
+#define DT_SLOW 2
+
 
 // NEEDED FOR BULLET AND WEAPON
 #define PLAYER_COLLISION_WIDTH 12
@@ -37,7 +39,8 @@
 
 #define TILE_SIZE 16
 
-#define G 5.81f
+//#define G 5.81f
+#define G 9.81f
 
 typedef enum {
 	AXIS_X,
