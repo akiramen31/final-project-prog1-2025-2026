@@ -14,6 +14,7 @@ void LoadMenu(void)
 {
 	//General
 	menu = (Menu){ 0 };
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfTrue);
 
 	//Sprites
 	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
@@ -451,7 +452,7 @@ void SetMenuState(MenuState _state)
 			}
 			//Loading the main menu
 			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), sfFalse);
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 0; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], visibleSprite);
 			}
@@ -535,7 +536,7 @@ void SetMenuState(MenuState _state)
 		if (menu.state < 5)
 		{
 			//Unloading the main menu
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 0; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], invisible);
 			}
@@ -552,6 +553,7 @@ void SetMenuState(MenuState _state)
 			{
 				sfText_setScale(menu.mainMenu.topButtons[i], invisible);
 			}
+			sfSprite_setScale(menu.mainMenu.infoBox, invisible);
 			//Loading the selection menu
 			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/selection_menu_overlay.png"), sfFalse);
 			for (int i = 0; i < 3; i++)

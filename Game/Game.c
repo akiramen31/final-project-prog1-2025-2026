@@ -31,7 +31,7 @@ void LoadGame(void)
 		LoadBoss();
 	}
 	LoadMap(background);
-
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
