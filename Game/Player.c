@@ -50,7 +50,7 @@ void LoadPlayer(void)
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.walking.frameCount = 8;
+	player.walking.frameCount = 2;
 	player.walking.frameDuration = 0.1f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
@@ -92,19 +92,19 @@ void UpdatePlayer(float _dt)
 		int val = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += val * _dt;
+			pos.x += val * _dt * DT_SLOW;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			pos.x -= val * _dt;
+			pos.x -= val * _dt * DT_SLOW;
 		}
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
 		{
-			pos.y += val * _dt;
+			pos.y += val * _dt * DT_SLOW;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 		{
-			pos.y -= val * _dt;
+			pos.y -= val * _dt * DT_SLOW;
 		}
 		sfRectangleShape_setPosition(player.collision, pos);
 	}
@@ -125,7 +125,7 @@ void UpdatePlayer(float _dt)
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		timerlastDamageReceive += _dt;
+		timerlastDamageReceive += _dt * DT_SLOW;
 	}
 }
 
@@ -143,7 +143,7 @@ void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
-		timerDash += _dt;
+		timerDash += _dt * DT_SLOW;
 	}
 
 	if (timerDash >= PLAYER_DASH_DURATION)
@@ -194,7 +194,7 @@ void UpdateMovePlayer(float _dt)
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
-					timerFaling += PLAYER_JUMP_FORGIVE;
+					timerFaling += PLAYER_JUMP_FORGIVE * DT_SLOW;
 					player.isGrounded = sfFalse;
 				}
 				else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
@@ -627,7 +627,7 @@ void UpdateEnergy(float _dt)
 {
 	if (timerLastEnergyConso < player.ener.energyRegenCooldown)
 	{
-		timerLastEnergyConso += _dt;
+		timerLastEnergyConso += _dt * DT_SLOW;
 	}
 	else
 	{

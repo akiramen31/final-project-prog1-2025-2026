@@ -27,7 +27,7 @@ sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position)
 
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _animation, const float _dt)
 {
-	_animation->timeActualy += _dt;
+	_animation->timeActualy += _dt * DT_SLOW;
 
 	sfSprite_setTextureRect(_sprite, _animation->rectActualy);
 	if (_animation->timeActualy > _animation->frameDuration)
