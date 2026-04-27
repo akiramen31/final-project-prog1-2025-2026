@@ -105,7 +105,7 @@ void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
-void SetSpriteOriginMiddel(sfSprite* _sprite);
+void SetSpriteOriginMiddle(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);

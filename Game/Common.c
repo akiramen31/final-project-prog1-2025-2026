@@ -52,7 +52,7 @@ void SetSpriteOriginFoot(sfSprite* _sprite)
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height });
 }
 
-void SetSpriteOriginMiddel(sfSprite* _sprite)
+void SetSpriteOriginMiddle(sfSprite* _sprite)
 {
 	sfFloatRect box = sfSprite_getLocalBounds(_sprite);
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });

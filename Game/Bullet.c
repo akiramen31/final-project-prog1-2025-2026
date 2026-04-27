@@ -95,7 +95,7 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 
 	Bullet newBullet = { 0 };
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
-	SetSpriteOriginMiddel(newBullet.sprite);
+	SetSpriteOriginMiddle(newBullet.sprite);
 
 
 	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };

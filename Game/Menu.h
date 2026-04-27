@@ -23,12 +23,14 @@ typedef enum MenuState
 
 typedef struct MainMenu
 {
-	char* name[10];
+	sfTexture* textBox[2];
+	sfSprite* infoBox;
+	sfSprite* logo[2];
 	sfText* topButtons[5];
 	sfText* infoDisplay[6];
 	sfText* keyType[NB_KEY];
 	sfText* key[NB_KEY];
-	sfSprite* logo[3];
+	char* name[5];
 }MainMenu;
 
 typedef struct SelectionMenu
@@ -44,9 +46,9 @@ typedef struct SelectionMenu
 
 typedef struct Menu
 {
+	sfSprite* overlay;
 	sfColor highlightTextColor;
 	sfColor textColor;
-	sfSprite* overlay;
 	sfMusic* musics[NB_MUSICS];
 	MenuState state;
 	MainMenu mainMenu;

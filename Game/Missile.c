@@ -11,7 +11,7 @@ void LoadMissile(void)
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
 		missileList[i].sprite = CreateSprite(missileTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
-		SetSpriteOriginMiddel(missileList[i].sprite);
+		SetSpriteOriginMiddle(missileList[i].sprite);
 
 		sfVector2f missilePosition = { 0 };
 
