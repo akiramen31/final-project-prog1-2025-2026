@@ -39,10 +39,11 @@ void UpdateCamera(float _dt)
 		{
 			cameraZoom += CAMERA_ZOOM_SPEED;
 		}
-	}
-	else
-	{
-		cameraZoom = cameraNewZoom;
+
+		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_SPEED && cameraZoom > cameraNewZoom - CAMERA_ZOOM_SPEED)
+		{
+			cameraZoom = cameraNewZoom;
+		}
 	}
 	SetViewZoom(cameraZoom);
 }
@@ -65,7 +66,6 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	move.x = _dt * cos(angle) * CAMERA_SPEED;
 	move.y = _dt * sin(angle) * CAMERA_SPEED;
 
-	printf("2 %f %f\n", move.x, move.y);
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{

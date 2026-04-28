@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Ennemy.h"
 #include "Boss.h"
+#include "Player.h"
 
 sfTexture* bulletTexture;
 sfTexture* mistealTexture;
@@ -14,7 +15,6 @@ unsigned bulletCountEnemy;
 void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
 void SortMistealList(unsigned _index);
-sfBool HitPlayer(sfFloatRect _rect, float _damage);
 
 void LoadBullet(void)
 {
@@ -67,8 +67,10 @@ void UpdateBullet(float _dt)
 		{
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitPlayer(hitboxBullet, 1))
+
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet))
 			{
+				DamagePlayer(1);
 				DeleteBulletEnemy(i);
 			}
 			else
@@ -341,4 +343,7 @@ sfBool HitPlayer(sfFloatRect _rect, float _damage)
 		return sfTrue;
 	}
 	return sfFalse;
+	DestroyVisualEntity(bulletListEnemy[_index].sprite);
+	SortBulletListEnemy(_index);
+	bulletCountEnemy--;
 }

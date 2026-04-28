@@ -7,12 +7,12 @@
 #define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
-#define PLAYER_FALL_SPEED_MAX 1
+#define PLAYER_FALL_SPEED_MAX 1.1f
 #define PLAYER_JUMP_POWER 2.f
 
-#define PLAYER_DASH_POWER 3.f
+#define PLAYER_DASH_POWER 3.5f
 #define PLAYER_DASH_COOLDOWN 0.5f
-#define PLAYER_DASH_DURATION 0.1f
+#define PLAYER_DASH_DURATION 0.15f
 
 #define PLAYER_JUMP_FORGIVE 0.1f
 
@@ -100,4 +100,6 @@ void SetTpPlayerBoss(sfVector2f _pos);
 void HandlePlayerBossCollision(sfVector2f _push);
 
 void ChangePlayerInvicibility(void);
+
+sfBool ColisionWithPlayer(sfFloatRect _rect);
 #endif
