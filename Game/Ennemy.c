@@ -93,6 +93,10 @@ void UpdateEnemy(float _dt)
 			UpdateEnemyI(_dt, i);
 		}
 	}
+	for (int i = 0; i < ALEATORY; i++)
+	{
+		tableau[i].new = sfTrue;
+	}
 }
 
 void UpdateEnemyI(float _dt, int _index)
@@ -950,7 +954,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	if (ennemy->ennemyEntity.region.top != tableau[ennemy->ennemyEntity.type].region.top
 		|| ennemy->ennemyEntity.region.left != tableau[ennemy->ennemyEntity.type].region.left)
 	{
-	
+
 		// liberer lancienne GRID
 		tableau[ennemy->ennemyEntity.type].region = ennemy->ennemyEntity.region;
 		tableau[ennemy->ennemyEntity.type].grid = CreateGrid((int)ennemy->ennemyEntity.region.width / TILE_SIZE, (int)ennemy->ennemyEntity.region.width / TILE_SIZE, sizeof(Case2));
@@ -990,10 +994,14 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	bouns.left -= ennemy->ennemyEntity.region.left;
 	bouns.top -= ennemy->ennemyEntity.region.top;
 	sfIntRect bounsEnnemy = FloatRectIntoIntRect(bouns);
+	_cible.left -= ennemy->ennemyEntity.region.left;
+	_cible.top -= ennemy->ennemyEntity.region.top;
+	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
 
 	if (tableau[ennemy->ennemyEntity.type].new)
 	{
-		tableau[ennemy->ennemyEntity.type].grid[bounsEnnemy.top][bounsEnnemy.left].direction = 8;
+		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top});
+		tableau[ennemy->ennemyEntity.type].grid[bounsCible.top][bounsCible.left].direction = 8;
 		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
 		{
 			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
@@ -1005,8 +1013,17 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		printf("\n");
 		printf("\n");
 		printf("\n");
-	}
 
+		tableau[ennemy->ennemyEntity.type].new = sfFalse;
+		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			{
+				tableau[ennemy->ennemyEntity.type].grid[y][x].direction = 0;
+			}
+		}
+	}
+	
 	return (ActionDemander) { 0 };
 }
 
@@ -1173,8 +1190,8 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect)
 {
 	sfIntRect intRect = { 0 };
-	intRect.left = (int)(_floatRect.left / TILE_SIZE) ;
-	intRect.top = (int)(_floatRect.top / TILE_SIZE) ;
+	intRect.left = (int)(_floatRect.left / TILE_SIZE);
+	intRect.top = (int)(_floatRect.top / TILE_SIZE);
 	intRect.height = (int)(_floatRect.height / TILE_SIZE) + 1;
 	intRect.width = (int)(_floatRect.width / TILE_SIZE) + 1;
 
