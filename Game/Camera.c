@@ -39,10 +39,11 @@ void UpdateCamera(float _dt)
 		{
 			cameraZoom += CAMERA_ZOOM_SPEED;
 		}
-	}
-	else
-	{
-		cameraZoom = cameraNewZoom;
+
+		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_SPEED && cameraZoom > cameraNewZoom - CAMERA_ZOOM_SPEED)
+		{
+			cameraZoom = cameraNewZoom;
+		}
 	}
 	SetViewZoom(cameraZoom);
 }
