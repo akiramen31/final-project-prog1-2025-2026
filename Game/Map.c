@@ -23,6 +23,8 @@ void LoadMap(sfSprite* _background)
 
 void SetMap(MapState _map)
 {
+	SetCameraZoom(0.f);
+
 	CjsonB* cjson = NULL;
 #if DEV_PIERRE_ENEMY
 	if (map.data.image)
