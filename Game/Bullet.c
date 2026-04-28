@@ -11,7 +11,6 @@ unsigned bulletCountEnemy;
 
 void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
-sfBool HitPlayer(sfFloatRect _rect);
 
 void LoadBullet(void)
 {
@@ -62,8 +61,9 @@ void UpdateBullet(float _dt)
 		{
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitPlayer(hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet))
 			{
+				DamagePlayer(1);
 				DeleteBulletEnemy(i);
 			}
 			else
@@ -180,16 +180,4 @@ void DeleteBulletEnemy(unsigned _index)
 	DestroyVisualEntity(bulletListEnemy[_index].sprite);
 	SortBulletListEnemy(_index);
 	bulletCountEnemy--;
-}
-
-sfBool HitPlayer(sfFloatRect _rect)
-{
-	sfFloatRect playerRect = GetPlayerRect();
-
-	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
-	{
-		DamagePlayer(1);
-		return sfTrue;
-	}
-	return sfFalse;
 }

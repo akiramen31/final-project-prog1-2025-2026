@@ -797,7 +797,7 @@ void ChangePlayerInvicibility(void)
 	}
 }
 
-sfBool HitPlayer(sfFloatRect _rect)
+sfBool ColisionWithPlayer(sfFloatRect _rect)
 {
 	sfFloatRect playerRect = GetPlayerRect();
 
