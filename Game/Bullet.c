@@ -155,7 +155,7 @@ void UpdateMisteal(float _dt)
 		else if (mistealList[i].isSticked)
 		{
 			hitboxMisteal = sfSprite_getGlobalBounds(mistealList[i].sprite);
-			if (HitPlayer(hitboxMisteal, 0))
+			if (ColisionWithPlayer(hitboxMisteal))
 			{
 				DeleteMisteal(i);
 			}
