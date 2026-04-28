@@ -8,8 +8,8 @@
 #define MISSILE_WEIGHT 8
 #define MISSILE_MAX 3
 #define MISSILE_DURATION 3
-#define SPEED_MISSILE 200.0f
-#define DEGRE_ROTATION 280.0f
+#define SPEED_MISSILE 300.0f
+#define DEGRE_ROTATION 600.0f
 #define PI 3.1415
 
 typedef struct Missile

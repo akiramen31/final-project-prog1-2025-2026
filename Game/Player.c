@@ -24,6 +24,7 @@ void UpdateCooldown(float _dt);
 void UpdateFireControl(float _dt);
 void UpdateFireControlRailgun(void);
 void UpdateFireControlSteamAxe(float _dt);
+void UpdateFireControlMisteal(void);
 
 void UpdateSteamAxe(float _dt);
 void UpdateEnergy(float _dt);
@@ -444,6 +445,9 @@ void UpdateCooldown(float _dt)
 				player.weapon.steamAxe.attackType = NOATTACK;
 				player.cooldown += 1.f / FIRE_RATE_STEAMAXE;
 				break;
+			case MISTEAL:
+				player.cooldown += 1.f / FIRE_RATE_MISTEAL;
+				break;
 			default:
 				break;
 			}
@@ -470,6 +474,18 @@ void UpdateFireControl(float _dt)
 	else if (player.weapon.weaponType == STEAMAXE)
 	{
 		UpdateFireControlSteamAxe(_dt);
+	}
+	if (player.weapon.weaponType == MISTEAL)
+	{
+		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		{
+			if (player.canShoot)
+			{
+				UpdateFireControlMisteal();
+				player.isAttacking = sfTrue;
+				player.canShoot = sfFalse;
+			}
+		}
 	}
 	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
 	{
@@ -503,7 +519,16 @@ void UpdateFireControlRailgun(void)
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
 		sfSound_play(player.shootSound);
-		UseWeapon(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		UseWeaponRailgun(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+	}
+}
+
+void UpdateFireControlMisteal(void)
+{
+	if (GetBulletCount() < MISTEAL_ALLY_MAX)
+	{
+		sfSound_play(player.shootSound);
+		UseWeaponMisteal(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
 	}
 }
 

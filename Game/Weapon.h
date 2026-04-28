@@ -9,6 +9,7 @@
 
 #define FIRE_RATE_STEAMAXE 5.5f
 #define FIRE_RATE_RAILGUN 2.2f
+#define FIRE_RATE_MISTEAL 0.75f
 
 #define STEAMAXE_ANGLE_LIGHT 120.f
 #define STEAMAXE_ANGLE_MEDIUM 180.f
@@ -55,7 +56,8 @@ typedef struct Weapon
 
 void LoadWeapon(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
-void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
+void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
+void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void SwitchGunDevMode(void);
 
 void ChangeAttackType(AttackType _attackType);

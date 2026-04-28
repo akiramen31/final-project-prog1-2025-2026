@@ -12,7 +12,7 @@ void LoadWeapon(void)
 	weapon.steamAxe.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.steamAxe.sprite, (sfVector2f) { 1, 1 });
 
-	textureWeapon = GetAsset("Assets/Sprites/miSteal_Placeholder.png");
+	textureWeapon = GetAsset("Assets/Sprites/Misteal_Launcher_Placeholder.png");
 	weapon.miSteal.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.miSteal.sprite, (sfVector2f) { 3, 5 });
 
@@ -30,16 +30,15 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 	{
 		weaponSprite = weapon.railGun.sprite;
 		_isAttacking = sfFalse;
-		//angleOffset = (float)WEAPON_ANGLE_RAILGUN_OFFSET;
 	}
 	else if (weapon.weaponType == STEAMAXE)
 	{
 		weaponSprite = weapon.steamAxe.sprite;
-		//angleOffset = (float)WEAPON_ANGLE_STEAMAXE_OFFSET;
 	}
 	else if (weapon.weaponType == MISTEAL)
 	{
 		weaponSprite = weapon.miSteal.sprite;
+		_isAttacking = sfFalse;
 	}
 
 	// --- PARTIE 1 : TOUJOURS ACTIVE (La Position) ---
@@ -86,7 +85,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 	}
 }
 
-void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
+void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
 {
 	ShooterType shooterType = { 0 };
 	shooterType.shootPosition.x = 10.f;
@@ -96,6 +95,18 @@ void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
 	shooterType.isAlly = sfTrue;
 	shooterType.weaponPos = WEAPON_ORIGIN;
 	AddBullet(_posShooter, _posTarget, shooterType);
+}
+
+void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
+{
+	ShooterType shooterType = { 0 };
+	shooterType.shootPosition.x = 12.f;
+	shooterType.shootPosition.y = -3.f;
+	shooterType.bulletType = HEAVY;
+	shooterType.isRighted = _isRighted;
+	shooterType.isAlly = sfTrue;
+	shooterType.weaponPos = WEAPON_ORIGIN;
+	AddMisteal(_posShooter, _posTarget, shooterType);
 }
 
 Weapon GetWeapon()
