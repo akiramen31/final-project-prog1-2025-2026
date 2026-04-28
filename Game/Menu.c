@@ -536,7 +536,7 @@ void SetMenuState(MenuState _state)
 		if (menu.state < 5)
 		{
 			//Unloading the main menu
-			for (int i = 0; i < 0; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], invisible);
 			}
