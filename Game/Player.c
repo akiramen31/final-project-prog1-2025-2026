@@ -51,7 +51,7 @@ void LoadPlayer(void)
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
 	player.walking.frameCount = 2;
-	player.walking.frameDuration = 0.1f;
+	player.walking.frameDuration = 0.2f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
 
@@ -795,4 +795,15 @@ void ChangePlayerInvicibility(void)
 	{
 		playerInvicible = sfTrue;
 	}
+}
+
+sfBool HitPlayer(sfFloatRect _rect)
+{
+	sfFloatRect playerRect = GetPlayerRect();
+
+	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
+	{
+		return sfTrue;
+	}
+	return sfFalse;
 }

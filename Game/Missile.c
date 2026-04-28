@@ -1,6 +1,7 @@
 #include "Missile.h"
 #include "Ennemy.h"
 #include "Boss.h"
+#include "Player.h"
 
 Missile missileList[MISSILE_MAX] = { 0 };
 sfTexture* missileTexture;

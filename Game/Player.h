@@ -100,4 +100,6 @@ void SetTpPlayerBoss(sfVector2f _pos);
 void HandlePlayerBossCollision(sfVector2f _push);
 
 void ChangePlayerInvicibility(void);
+
+sfBool ColisionWithPlayer(sfFloatRect _rect);
 #endif

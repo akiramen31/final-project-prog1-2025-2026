@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Ennemy.h"
 #include "Boss.h"
+#include "Player.h"
 
 sfTexture* bulletTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
