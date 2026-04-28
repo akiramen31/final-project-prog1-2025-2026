@@ -323,7 +323,6 @@ void DeleteMisteal(unsigned _index)
 	mistealCount--;
 }
 
-
 void SortMistealList(unsigned _index)
 {
 	for (unsigned i = _index; i < mistealCount - 1; i++)
@@ -331,19 +330,4 @@ void SortMistealList(unsigned _index)
 		mistealList[i] = mistealList[i + 1];
 	}
 	mistealList[mistealCount - 1] = (Misteal){ 0 };
-}
-
-sfBool HitPlayer(sfFloatRect _rect, float _damage)
-{
-	sfFloatRect playerRect = GetPlayerRect();
-
-	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
-	{
-		DamagePlayer(_damage);
-		return sfTrue;
-	}
-	return sfFalse;
-	DestroyVisualEntity(bulletListEnemy[_index].sprite);
-	SortBulletListEnemy(_index);
-	bulletCountEnemy--;
 }
