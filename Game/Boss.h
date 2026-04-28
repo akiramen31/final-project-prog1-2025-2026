@@ -66,6 +66,7 @@ typedef struct Boss1
 	float cooldownShoot;
 
 	sfBool bossReacting;
+	sfBool state;
 
 	float bossLife;
 
