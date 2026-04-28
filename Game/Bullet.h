@@ -10,7 +10,7 @@
 
 #define BULLET_SPEED_ALLY 500
 #define BULLET_SPEED_ENEMY 500
-#define BULLET_LIFETIME 10.f
+#define BULLET_LIFETIME 2.5f
 
 typedef struct ShooterType
 {
