@@ -80,10 +80,7 @@ void LoadPlayer(void)
 
 void UpdatePlayer(float _dt)
 {
-	if (!player.isAttacking)
-	{
-		player.weapon = GetWeapon();
-	}
+	player.weapon = GetWeapon();
 	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
 
@@ -524,24 +521,24 @@ void UpdateFireControlSteamAxe(float _dt)
 		{
 			if (player.ener.energy >= 25.f)
 			{
-				player.weapon.steamAxe.attackType = MEDIUM;
+				ChangeAttackType(MEDIUM);
 				player.ener.energy -= 25.f;
 			}
 			else
 			{
-				player.weapon.steamAxe.attackType = LIGHT;
+				ChangeAttackType(LIGHT);
 			}
 		}
 		else
 		{
 			if (player.ener.energy >= 50.0f)
 			{
-				player.weapon.steamAxe.attackType = HEAVY;
+				ChangeAttackType(HEAVY);
 				player.ener.energy -= 50.0f;
 			}
 			else
 			{
-				player.weapon.steamAxe.attackType = MEDIUM;
+				ChangeAttackType(MEDIUM);
 				player.ener.energy -= 25.f;
 			}
 		}

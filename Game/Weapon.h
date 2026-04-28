@@ -19,6 +19,7 @@ typedef enum WeaponType
 {
 	RAILGUN,
 	STEAMAXE,
+	MISTEAL,
 	OTHER
 }WeaponType;
 
@@ -27,6 +28,12 @@ typedef struct RailGun
 	sfSprite* sprite;
 
 }RailGun;
+
+typedef struct MiSteal
+{
+	sfSprite* sprite;
+
+}MiSteal;
 
 typedef struct SteamAxe
 {
@@ -40,6 +47,7 @@ typedef struct Weapon
 {
 	SteamAxe steamAxe;
 	RailGun railGun;
+	MiSteal miSteal;
 	WeaponType weaponType;
 	sfBool isRight;
 
@@ -49,6 +57,8 @@ void LoadWeapon(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeapon(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void SwitchGunDevMode(void);
+
+void ChangeAttackType(AttackType _attackType);
 
 Weapon GetWeapon(void);
 
