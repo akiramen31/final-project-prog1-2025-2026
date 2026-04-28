@@ -86,6 +86,7 @@ void UpdatePlayer(float _dt)
 
 	if (GetIntFromSave(DEV_MODE_FLY))
 	{
+		pos = GetPlayerPosition();
 		int val = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{

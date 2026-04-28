@@ -4,8 +4,9 @@
 #include "Common.h"
 #include "Player.h"
 
-#define CAMERA_SPEED 1
-#define CAMERA_LOCK 5
+#define CAMERA_SPEED 400
+#define CAMERA_LOCK 2.f
+#define CAMERA_ZOOM_SPEED 0.001f
 
 void UpdateCamera(float _dt);
 
@@ -13,4 +14,5 @@ void MoveViewSlow(sfVector2f _pos, float _dt);
 void SetDefaultView(float _dt);
 
 float GetCameraZoom(void);
+float SetCameraZoom(float zoom);
 #endif
