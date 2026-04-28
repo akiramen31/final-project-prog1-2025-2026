@@ -1,4 +1,6 @@
 #include "Missile.h"
+#include "Ennemy.h"
+#include "Boss.h"
 
 Missile missileList[MISSILE_MAX] = { 0 };
 sfTexture* missileTexture;
@@ -74,7 +76,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0)
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)))
 			{
 				sfMusic_stop(missileList[i].music);
 				missileList[i].isAlive = sfFalse;
