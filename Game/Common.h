@@ -40,8 +40,8 @@
 
 #define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
 
-//#define G 5.81f
-#define G 9.81f
+#define G 5.81f
+//#define G 9.81f
 
 typedef enum {
 	AXIS_X,
