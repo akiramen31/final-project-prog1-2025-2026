@@ -392,12 +392,12 @@ void SetCameraZoom(float zoom)
 
 sfBool PauseGameCameraMoveRoom(void)
 {
-		if (cameraZoom != cameraNewZoom || LastCamPositonName != CamPositonName)
-		{
-			return sfTrue;
-		}
-		else
-		{
-			return sfFalse;
-		}
+	if (cameraZoom != cameraNewZoom || LastCamPositonName != CamPositonName)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
 }
