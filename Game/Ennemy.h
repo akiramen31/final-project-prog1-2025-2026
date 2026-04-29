@@ -93,10 +93,10 @@ typedef struct Case2
 
 typedef struct Tableau
 {
-	Case2** grid;
-	sfFloatRect region;
+	Case2** grid[ALEATORY];
+	sfFloatRect region[ALEATORY];
 	char** collision;
-	sfBool new;
+	sfBool new[ALEATORY];
 }Tableau;
 
 void LoadEnemy(void);
