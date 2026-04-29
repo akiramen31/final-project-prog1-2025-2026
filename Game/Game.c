@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Boss.h"
 #include "Missile.h"
+#include "Parallax.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -19,9 +20,10 @@ float timerstartLevel = 0;
 
 void LoadGame(void)
 {
+	LoadParallax();
 	game = (Game){ 0 };
+	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
@@ -32,7 +34,6 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
-	LoadMap();
 	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
@@ -41,6 +42,7 @@ void LoadGame(void)
 
 	timerstartLevel = 0;
 
+	SetMap(LEVEL1);
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
 	case 0:
@@ -193,6 +195,7 @@ void UpdateGame(float _dt)
 		UpdateAim(_dt);
 
 		UpdateCamera(_dt);
+		UpdateParallax(_dt);
 	}
 }
 

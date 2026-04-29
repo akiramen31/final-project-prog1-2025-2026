@@ -90,7 +90,7 @@ void LoadEnemy(void)
 		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	}
 	aStarMap = (Case**)CreateGrid(mapData->size.x, mapData->size.y, sizeof(Case)); // création du tableau pour l'ia (A*)
-	texture = sfTexture_createFromImage(mapData->image, NULL);
+	//texture = sfTexture_createFromImage(mapData->image, NULL);
 	sprite = CreateSprite(texture, (sfVector2f) { 0 }, 1.f, 0.f);
 	sfSprite_setTexture(sprite, texture, sfTrue);
 	sfSprite_setColor(sprite, (sfColor) { 255, 255, 255, 50 });
