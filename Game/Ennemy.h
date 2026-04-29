@@ -7,7 +7,7 @@
 
 #if DEV_PIERRE_ENEMY == 1
 
-#define TIMER_ASTAR 0.5f
+#define TIMER_ASTAR 0.1f
 #define JUMP_FORCE 4
 #define MAX_ENRGIE 300
 
