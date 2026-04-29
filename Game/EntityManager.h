@@ -6,7 +6,8 @@
 typedef enum VisualEntityType
 {
 	SPRITE,
-	TEXT
+	TEXT,
+	VIEW
 }VisualEntityType;
 
 typedef enum SoundEntityType
@@ -84,6 +85,7 @@ sfSprite* CreateSprite(sfTexture* _texture, sfVector2f _position, float _scale, 
 sfText* CreateText(sfFont* _font, sfVector2f _position, unsigned _scale, float _drawPlan);
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play);
 sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play);
+sfView* CreateView(sfVector2f _centre, float _zoom, float _drawPlan);
 
 void DestroyVisualEntity(void* _entity);
 void DestroySoundEntity(void* _entity);
