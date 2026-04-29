@@ -15,7 +15,8 @@
 #define BULLET_SPEED_ENEMY 500
 #define BULLET_LIFETIME 2.5f
 
-#define MISTEAL_TIMER_OUTMAP 2.f
+#define MISTEAL_TIMER_OUTMAP_NOTSTICKED 2.f
+#define MISTEAL_TIMER_STICKED MISTEAL_TIMER_OUTMAP_NOTSTICKED * 10.f
 
 typedef struct ShooterType
 {
@@ -43,7 +44,7 @@ typedef struct Misteal
 	sfBool isSticked;
 	sfBool isAlreadyHit;
 
-	float timerOutMap;
+	float timer;
 }Misteal;
 
 void LoadBullet(void);

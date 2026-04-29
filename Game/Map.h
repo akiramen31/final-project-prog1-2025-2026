@@ -55,7 +55,7 @@ typedef struct Map
 	MapState state;
 }Map;
 
-void LoadMap(sfSprite* _background);
+void LoadMap(void);
 void SetMap(MapState _map);
 MapState GetActualyMap(void);
 

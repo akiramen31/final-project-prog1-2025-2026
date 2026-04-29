@@ -19,7 +19,7 @@ void LoadGame(void)
 {
 	game = (Game){ 0 };
 	SetIntToSave(DEV_MODE_FLY, 0);
-	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
+	LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
@@ -30,7 +30,7 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
-	LoadMap(background);
+	LoadMap();
 	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
 	LoadHUD();
 	//LoadGUI();

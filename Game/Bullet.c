@@ -50,7 +50,7 @@ void UpdateBullet(float _dt)
 			{
 				bulletListAlly[i].velocity.y += G * _dt;
 				sfSprite_move(bulletListAlly[i].sprite, (sfVector2f) { bulletListAlly[i].velocity.x* _dt, bulletListAlly[i].velocity.y* _dt });
-				sfSprite_setRotation(bulletListAlly[i].sprite, RAD_DEG(atan2f(bulletListAlly[i].velocity.y, bulletListAlly[i].velocity.x)));
+				sfSprite_setRotation(bulletListAlly[i].sprite, (float)RAD_DEG(atan2f(bulletListAlly[i].velocity.y, bulletListAlly[i].velocity.x)));
 			}
 		}
 
@@ -77,7 +77,7 @@ void UpdateBullet(float _dt)
 			{
 				bulletListEnemy[i].velocity.y += G * _dt;
 				sfSprite_move(bulletListEnemy[i].sprite, (sfVector2f) { bulletListEnemy[i].velocity.x* _dt, bulletListEnemy[i].velocity.y* _dt });
-				sfSprite_setRotation(bulletListEnemy[i].sprite, RAD_DEG(atan2f(bulletListEnemy[i].velocity.y, bulletListEnemy[i].velocity.x)));
+				sfSprite_setRotation(bulletListEnemy[i].sprite, (float)RAD_DEG(atan2f(bulletListEnemy[i].velocity.y, bulletListEnemy[i].velocity.x)));
 			}
 		}
 
@@ -90,7 +90,7 @@ void UpdateMisteal(float _dt)
 	sfVector2f reactionWall = { 0 };
 	for (int i = (int)mistealCount - 1; i >= 0; i--)
 	{
-		
+		mistealList[i].timer += _dt;
 		if (!mistealList[i].isSticked)
 		{
 			hitboxMisteal.left = sfSprite_getPosition(mistealList[i].sprite).x;
@@ -98,34 +98,33 @@ void UpdateMisteal(float _dt)
 			hitboxMisteal.width = 1;
 			hitboxMisteal.height = 1;
 			reactionWall = Colision(hitboxMisteal, AXIS_BOTH);
-			mistealList[i].timerOutMap += _dt;
-			if (mistealList[i].timerOutMap > MISTEAL_TIMER_OUTMAP)
+			if (mistealList[i].timer > MISTEAL_TIMER_OUTMAP_NOTSTICKED)
 			{
 				DeleteMisteal(i);
 				continue;
 			}
 			
 
-			if (reactionWall.x || reactionWall.y || HitBoss(36.f, hitboxMisteal))
+			if (reactionWall.x || reactionWall.y)
 			{
 				mistealList[i].isSticked = sfTrue;
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
-				if (HitEnemy(9.f, hitboxMisteal))
+				if (HitEnemy(9.f, hitboxMisteal) || HitBoss(36.f, hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)
 					{
 						if (mistealList[i].velocity.x > 0)
 						{
 							mistealList[i].velocity.x = -20.f;
-							mistealList[i].velocity.y = 180.f;
+							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
 						}
 						else if (mistealList[i].velocity.x < 0)
 						{
 							mistealList[i].velocity.x = 20.f;
-							mistealList[i].velocity.y = 180.f;
+							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
 						}
 
@@ -149,7 +148,7 @@ void UpdateMisteal(float _dt)
 			{
 				mistealList[i].velocity.y += G * _dt;
 				sfSprite_move(mistealList[i].sprite, (sfVector2f) { mistealList[i].velocity.x* _dt, mistealList[i].velocity.y* _dt });
-				sfSprite_setRotation(mistealList[i].sprite, RAD_DEG(atan2f(mistealList[i].velocity.y, mistealList[i].velocity.x)));
+				sfSprite_setRotation(mistealList[i].sprite, (float)RAD_DEG(atan2f(mistealList[i].velocity.y, mistealList[i].velocity.x)));
 			}
 		}
 		else if (mistealList[i].isSticked)
@@ -158,6 +157,12 @@ void UpdateMisteal(float _dt)
 			if (ColisionWithPlayer(hitboxMisteal))
 			{
 				DeleteMisteal(i);
+				continue;
+			}
+			else if (mistealList[i].timer > MISTEAL_TIMER_STICKED)
+			{
+				DeleteMisteal(i);
+				continue;
 			}
 		}
 	}
@@ -249,7 +254,7 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 	}
 
 	Misteal newMisteal = { 0 };
-	newMisteal.sprite = CreateSprite(mistealTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
+	newMisteal.sprite = CreateSprite(mistealTexture, (sfVector2f) { 0, 0 }, 1.f, 71.f);
 	sfSprite_setOrigin(newMisteal.sprite, (sfVector2f) { 12, 2 });
 
 	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
@@ -279,7 +284,7 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 
 	newMisteal.isSticked = sfFalse;
 	newMisteal.isAlreadyHit = sfFalse;
-	newMisteal.timerOutMap = 0.f;
+	newMisteal.timer = 0.f;
 	mistealList[mistealCount] = newMisteal;
 	mistealCount++;
 }

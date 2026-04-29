@@ -12,11 +12,11 @@ void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjso
 void SetPositionEntity(InfoZone* _point, int _count);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 
-void LoadMap(sfSprite* _background)
+void LoadMap(void)
 {
-	LoadBox();
 	map = (Map){ 0 };
-	map.background = _background;
+	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
+	LoadBox();
 	map.state = -1;
 	SetMap(LEVEL1);
 }

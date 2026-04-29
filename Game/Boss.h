@@ -98,4 +98,6 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 sfBool HitBoss(float _degat, sfFloatRect _hitbox);
 void BossShoot(float _dt);
 
+void DestroyBoss(void);
+
 #endif //BOSS_H
