@@ -2,6 +2,7 @@
 #include "Ennemy.h"
 #include "CjsonB.h"
 #include "Boss.h"
+#include "Parallax.h"
 Map map;
 
 int rectShapeCount;
@@ -52,12 +53,14 @@ void SetMap(MapState _map)
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1Back.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
+		SetParallaxLayerTexture(1,GetAsset("Assets/Maps/parallax_lv1_la1.png"));
 		break;
 	case LEVEL2:
 		cjson = LoadCjsonB("Assets/Maps/Level2.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level2Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2Back.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
+		SetParallaxLayerTexture(1, GetAsset("Assets/Maps/parallax_lv2_la1.png"));
 		break;
 	case LEVEL3:
 		cjson = LoadCjsonB("Assets/Maps/Level3.json");
