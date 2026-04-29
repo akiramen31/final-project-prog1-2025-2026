@@ -694,7 +694,7 @@ void PollEvent(void)
 
 void Update(void)
 {
-	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock)) / DT_SLOW;
+	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock));
 
 	if (dt > 0.05f)
 	{
