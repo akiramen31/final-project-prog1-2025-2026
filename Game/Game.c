@@ -2,7 +2,6 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
-#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
@@ -32,11 +31,9 @@ void LoadGame(void)
 		LoadBoss();
 	}
 	LoadMap();
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
-	LoadAim();
 
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
@@ -164,7 +161,7 @@ void UpdateGame(float _dt)
 
 		UpdateBullet(_dt);
 		UpdateMisteal(_dt);
-		UpdateMissile(GetAimPosition(), _dt);
+		UpdateMissile(GetMousePositionToOrigin(), _dt);
 	}
 	else
 	{
@@ -177,8 +174,6 @@ void UpdateGame(float _dt)
 	}
 
 	UpdateHUD(_dt);
-	UpdateAim(_dt);
-
 	UpdateCamera(_dt);
 }
 

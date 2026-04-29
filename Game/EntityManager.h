@@ -56,6 +56,8 @@ typedef enum GameState
 
 typedef struct EntityManager
 {
+	sfImage* cursorImage;
+	sfCursor* cursor;
 	GameState gameState;
 	sfRenderWindow* renderWindow;
 	sfClock* clock;
@@ -116,4 +118,5 @@ void MoveView(sfVector2f _move);
 void SetGameState(GameState _gameState);
 sfRenderWindow* GetRenderWindow(void);
 void ChangeFullSceen(void);
+sfVector2f GetMousePositionToOrigin(void);
 #endif // !ENTITY_MANAGER_H

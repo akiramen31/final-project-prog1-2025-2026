@@ -127,4 +127,5 @@ void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
+void ScaleImage(sfImage** _image, int _scale);
 #endif // !COMMON_H

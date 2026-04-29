@@ -2,6 +2,7 @@
 #include "Menu.h"
 #include "Game.h"
 #include "GameOver.h"
+#include "Camera.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -127,6 +128,8 @@ void CleanupGlobal(void)
 	sfRenderWindow_destroy(entityManager.renderWindow);
 	sfClock_destroy(entityManager.clock);
 	sfView_destroy(entityManager.view);
+	sfImage_destroy(entityManager.cursorImage);
+	sfCursor_destroy(entityManager.cursor);
 }
 
 void CleanupLocal(void)
@@ -476,7 +479,7 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
 	if (!newElement)
 	{
-		return NULL;
+		return;
 	}
 	VisualEntity data = { 0, 0, 0, entityManager.visual };
 	VisualEntity* previous = &data;
@@ -765,6 +768,13 @@ void LoadMainData(void)
 	//sfRenderWindow_setFramerateLimit(entityManager.renderWindow, (unsigned int) { 60 });
 
 	entityManager.clock = sfClock_create();
+
+	entityManager.cursorImage = sfImage_createFromFile("Assets/Sprites/crosshair.png");
+	ScaleImage(&entityManager.cursorImage, 5);
+
+	sfVector2u cursorSize = sfImage_getSize(entityManager.cursorImage);
+	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2});
+	sfRenderWindow_setMouseCursor(entityManager.renderWindow, entityManager.cursor);
 }
 
 void SetViewCenter(sfVector2f _centre)
@@ -844,4 +854,13 @@ void ChangeFullSceen(void)
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
 		SetIntToSave(FULL_SCREEN, 1);
 	}
+}
+
+sfVector2f GetMousePositionToOrigin(void)
+{
+	float cameraCoef = GetCameraZoom();
+	sfVector2i position = sfMouse_getPositionRenderWindow(GetRenderWindow());
+	sfVector2f center = sfView_getCenter(entityManager.view);
+	sfVector2f size = sfView_getSize(entityManager.view);
+	return (sfVector2f) { center.x - size.x / 2 + position.x * cameraCoef, center.y - size.y / 2 + position.y * cameraCoef};
 }
