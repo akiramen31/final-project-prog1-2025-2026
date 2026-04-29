@@ -4,6 +4,7 @@
 #include "Player.h"
 
 Missile missileList[MISSILE_MAX] = { 0 };
+ColdBreath coldBreath = { 0 };
 sfTexture* missileTexture;
 void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt);
 void CheckCollisionMissileScreen(unsigned _index);
@@ -11,6 +12,13 @@ void CheckCollisionMissileScreen(unsigned _index);
 void LoadMissile(void)
 {
 	missileTexture = GetAsset("Assets/Sprites/Drone_Placeholder.png");
+
+	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/ColdBreath_Placeholder.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
+	SetSpriteOriginMiddle(coldBreath.sprite);
+	coldBreath.lifetime = 0.f;
+	coldBreath.isAlive = sfFalse;
+	//missileList[i].music = CreateMusic("Assets/Musics/FREEZESOUNDAAJOUTER.ogg", 5.f, sfFalse);
+
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
 		missileList[i].sprite = CreateSprite(missileTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
@@ -24,9 +32,7 @@ void LoadMissile(void)
 
 		missileList[i].isAlive = sfFalse;
 
-		missileList[i].speed = 30.f;
-
-		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 5.f, sfFalse);
+		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
 	}
 }
 
@@ -38,19 +44,56 @@ void AddMissile(sfVector2f _pos, sfBool _isRighted)
 		{
 			sfMusic_play(missileList[i].music);
 			missileList[i].isAlive = sfTrue;
-			missileList[i].lifetime = 0; 
-			missileList[i].rotation = -90; 
+			missileList[i].lifetime = 0;
+			missileList[i].rotation = -90;
 			if (_isRighted)
 			{
-				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x -12.f, _pos.y - WEAPON_ORIGIN });
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x - 12.f, _pos.y - WEAPON_ORIGIN });
 			}
 			else
 			{
-				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x +12.f, _pos.y - WEAPON_ORIGIN });
+				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { _pos.x + 12.f, _pos.y - WEAPON_ORIGIN });
 			}
 			return;
 		}
 	}
+}
+
+void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
+{
+	//sfMusic_play(coldBreath.music);
+	if (coldBreath.isAlive)
+	{
+		return;
+	}
+
+	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
+
+	float dxInitial = _posTarget.x - pivotPos.x;
+	float dyInitial = _posTarget.y - pivotPos.y;
+	float angleRadInitial = atan2f(dyInitial, dxInitial);
+
+
+	if (!_shooterType.isRighted)
+	{
+		_shooterType.shootPosition.y = -_shooterType.shootPosition.y;
+	}
+
+	sfVector2f spawnPos;
+	spawnPos.x = pivotPos.x + cosf(angleRadInitial) * _shooterType.shootPosition.x - sinf(angleRadInitial) * _shooterType.shootPosition.y;
+	spawnPos.y = pivotPos.y + sinf(angleRadInitial) * _shooterType.shootPosition.x + cosf(angleRadInitial) * _shooterType.shootPosition.y;
+
+	float realDx = _posTarget.x - spawnPos.x;
+	float realDy = _posTarget.y - spawnPos.y;
+	float realAngleRad = atan2f(realDy, realDx);
+	coldBreath.velocity.x = cosf(realAngleRad) * MISTEAL_SPEED;
+	coldBreath.velocity.y = sinf(realAngleRad) * MISTEAL_SPEED;
+
+	sfSprite_setPosition(coldBreath.sprite, spawnPos);
+	sfSprite_setRotation(coldBreath.sprite, realAngleRad * (180.0f / (float)M_PI));
+
+	coldBreath.lifetime = 0.f;
+	coldBreath.isAlive = sfTrue;
 }
 
 void UpdateMissile(sfVector2f _posAim, float _dt)
@@ -60,7 +103,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 		if (missileList[i].isAlive == sfTrue)
 		{
 			missileList[i].lifetime += _dt;
-			if (missileList[i].lifetime <= MISSILE_DURATION)
+			if (missileList[i].lifetime <= SECONDARY_PROJECTILE_DURATION)
 			{
 				CheckCollisionMissilesList();
 				//CheckCollisionMissileScreen(i);
@@ -84,6 +127,35 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
 				continue;
 			}
+		}
+	}
+}
+
+void UpdateColdBreath(float _dt)
+{
+	if (coldBreath.isAlive)
+	{
+		coldBreath.lifetime += _dt;
+		if (coldBreath.lifetime > SECONDARY_PROJECTILE_DURATION)
+		{
+			coldBreath.isAlive = sfFalse;
+			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
+			return;
+		}
+		sfFloatRect hitboxColdBreath = { 0 };
+		sfVector2f reactionWall = { 0 };
+		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(-1.f, hitboxColdBreath) || HitBoss(-1.f, hitboxColdBreath))
+		{
+			coldBreath.isAlive = sfFalse;
+			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
+			return;
+		}
+		else
+		{
+			coldBreath.velocity.y += G * _dt;
+			sfSprite_move(coldBreath.sprite, (sfVector2f) { coldBreath.velocity.x* _dt, coldBreath.velocity.y* _dt });
+			sfSprite_setRotation(coldBreath.sprite, (float)RAD_DEG(atan2f(coldBreath.velocity.y, coldBreath.velocity.x)));
 		}
 	}
 }
@@ -136,23 +208,19 @@ void CheckCollisionMissileScreen(unsigned _index)
 	if (missileHitbox.left < 0)
 	{
 		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0 - missileHitbox.left, 0 });
-		missileList[_index].speed *= -1;
 	}
 	else if (missileHitbox.left + missileHitbox.width > SCREEN_WIDTH)
 	{
 		sfSprite_move(missileList[_index].sprite, (sfVector2f) { SCREEN_WIDTH - (missileHitbox.left + missileHitbox.width), 0 });
-		missileList[_index].speed *= -1;
 	}
 
 	if (missileHitbox.top < 0)
 	{
 		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0, 0 - missileHitbox.top });
-		missileList[_index].speed *= -1;
 	}
 	else if (missileHitbox.top + missileHitbox.height > SCREEN_HEIGHT)
 	{
 		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0, SCREEN_HEIGHT - (missileHitbox.top + missileHitbox.height) });
-		missileList[_index].speed *= -1;
 	}
 }
 
@@ -193,10 +261,6 @@ void CheckCollisionMissilesList(void)
 
 				sfSprite_move(missileList[i].sprite, moveA);
 				sfSprite_move(missileList[j].sprite, moveB);
-
-				// 4. Inversion des vitesses (ton code actuel)
-				missileList[i].speed *= -0.5f; // Un peu d'amorti rend le choc plus naturel
-				missileList[j].speed *= -0.5f;
 			}
 		}
 	}

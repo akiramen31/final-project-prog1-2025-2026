@@ -38,6 +38,8 @@
 
 #define TILE_SIZE 16
 
+#define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
+
 //#define G 5.81f
 #define G 9.81f
 
@@ -54,6 +56,15 @@ typedef enum AttackType
 	HEAVY,
 	NOATTACK
 }AttackType;
+
+typedef struct ShooterType
+{
+	float weaponPos;
+	sfVector2f shootPosition;
+	AttackType bulletType;
+	sfBool isAlly;
+	sfBool isRighted;
+}ShooterType;
 
 typedef enum State
 {

@@ -452,7 +452,7 @@ void DestroyBoss(void)
 	DestroyVisualEntity(boss.boss1->spriteTurretRCase);
 	DestroyVisualEntity(boss.boss1->spriteTurretRBase);
 	DestroyVisualEntity(boss.boss1->spriteTurretRCanon);
+	boss.boss1->state = sfFalse;
 	Free(boss.boss1);
 	boss.boss1 = NULL;
-	boss.boss1->state = sfFalse;
 }
