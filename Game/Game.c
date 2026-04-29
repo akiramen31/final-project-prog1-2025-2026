@@ -14,6 +14,7 @@ void UpdateCollider(void);
 
 Game game;
 float timer;
+float timerRoomPause = PAUSE_ROOM_DURATION;
 
 void LoadGame(void)
 {
@@ -31,7 +32,7 @@ void LoadGame(void)
 		LoadBoss();
 	}
 	LoadMap();
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
@@ -143,30 +144,42 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-	if (GetPlayerLife() <= 0)
+	if (!PauseGameCameraMoveRoom() && timerRoomPause >= PAUSE_ROOM_DURATION)
 	{
-		SetMap(GetActualyMap());
-		AddPlayerLife(PLAYER_MAX_HEALTH);
+		if (GetPlayerLife() <= 0)
+		{
+			SetMap(GetActualyMap());
+			AddPlayerLife(PLAYER_MAX_HEALTH);
+		}
+
+		UpdatePlayer(_dt);
+		UpdateEnemy(_dt);
+
+		//UpdateGUI(_dt);
+		UpdateCollider();
+		if (GetActualyMap() == LEVEL1)
+		{
+			UpdateBoss(_dt);
+		}
+
+		UpdateBullet(_dt);
+		UpdateMisteal(_dt);
+		UpdateMissile(GetAimPosition(), _dt);
+	}
+	else
+	{
+		//timerRoomPause = 0;
 	}
 
-	UpdatePlayer(_dt);
-	UpdateEnemy(_dt);
+	if (timerRoomPause <= PAUSE_ROOM_DURATION)
+	{
+		timerRoomPause += _dt;
+	}
 
 	UpdateHUD(_dt);
-	//UpdateGUI(_dt);
-	UpdateCollider();
 	UpdateAim(_dt);
-	if (GetActualyMap() == LEVEL1)
-	{
-		UpdateBoss(_dt);
-	}
 
-	UpdateBullet(_dt);
-	UpdateMisteal(_dt);
-	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
-
-
 }
 
 void UpdateCollider(void)

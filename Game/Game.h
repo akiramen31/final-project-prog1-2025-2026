@@ -3,6 +3,8 @@
 
 #include "Common.h"
 
+#define PAUSE_ROOM_DURATION 0.25f
+
 typedef struct
 {
 	sfSprite* temp;
