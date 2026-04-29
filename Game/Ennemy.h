@@ -89,14 +89,15 @@ typedef struct Case2
 	int jumpForce;
 	enum Direction direction;
 	sfBool jetPackActive;
+	int compteur;
 }Case2;
 
 typedef struct Tableau
 {
-	Case2** grid;
-	sfFloatRect region;
+	Case2** grid[ALEATORY];
+	sfFloatRect region[ALEATORY];
 	char** collision;
-	sfBool new;
+	sfBool new[ALEATORY];
 }Tableau;
 
 void LoadEnemy(void);
@@ -110,6 +111,8 @@ int GetEnemyCount(void);
 void SetPositionEnemy(sfVector2f _position, int _index);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 void ResetEnemy(void);
+int GetEnemyZone(void);
+
 #else
 #define MAX_FALL_SPEED_ENEMY 1000
 
