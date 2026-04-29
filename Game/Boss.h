@@ -51,6 +51,7 @@ typedef enum BossReactionToPlayer
 	PUSH_LEFT,
 	PUSH_RIGHT
 }BossReactionToPlayer;
+
 typedef struct Boss1
 {
 	sfSprite* track;
@@ -101,6 +102,6 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 sfBool HitBoss(float _degat, sfFloatRect _hitbox);
 void BossShoot(float _dt);
 
-void DestroyBoss(void);
+void DestroyBoss1(void);
 
 #endif //BOSS_H

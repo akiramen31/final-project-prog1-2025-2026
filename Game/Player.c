@@ -263,7 +263,7 @@ void ColisionMapPlayer(float _dt)
 		else if (reactionY.y >= 0)
 		{
 			player.isGrounded = sfFalse;
-			if (timerFaling <= PLAYER_JUMP_FORGIVE)
+			if (timerFaling <= PLAYER_JUMP_FORGIVE && timerDash >= PLAYER_DASH_DURATION)
 			{
 				timerFaling += _dt;
 			}

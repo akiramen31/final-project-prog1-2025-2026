@@ -42,8 +42,8 @@
 #define FREEZE_TIMER 4.f
 #define FREEZE_DMG -1.f
 
-//#define G 5.81f
-#define G 9.81f
+#define G 5.81f
+//#define G 9.81f
 
 typedef enum {
 	AXIS_X,
