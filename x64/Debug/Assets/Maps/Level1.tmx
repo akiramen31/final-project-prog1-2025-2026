@@ -6,7 +6,7 @@
  <tileset firstgid="1" source=":/automap-tiles.tsx"/>
  <tileset firstgid="6" source="Tilesets/FullTiles.tsx"/>
  <tileset firstgid="1030" source="Tilesets/SpritesList.tsx"/>
- <imagelayer id="2" name="Calque d'Images 1" visible="0">
+ <imagelayer id="2" name="Calque d'Images 1">
   <image source="colorMaplevel1.png" width="9440" height="1152"/>
  </imagelayer>
  <layer id="42" name="BackGroundSecond" width="590" height="72" tintcolor="#707070">
