@@ -18,7 +18,6 @@
 #define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define DT_SLOW 2
 
 
 // NEEDED FOR BULLET AND WEAPON
@@ -39,8 +38,10 @@
 
 #define TILE_SIZE 16
 
-//#define G 5.81f
-#define G 9.81f
+#define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
+
+#define G 5.81f
+//#define G 9.81f
 
 typedef enum {
 	AXIS_X,
@@ -55,6 +56,15 @@ typedef enum AttackType
 	HEAVY,
 	NOATTACK
 }AttackType;
+
+typedef struct ShooterType
+{
+	float weaponPos;
+	sfVector2f shootPosition;
+	AttackType bulletType;
+	sfBool isAlly;
+	sfBool isRighted;
+}ShooterType;
 
 typedef enum State
 {

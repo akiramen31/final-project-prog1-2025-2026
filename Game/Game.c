@@ -8,18 +8,22 @@
 #include "Camera.h"
 #include "Boss.h"
 #include "Missile.h"
+#include "Parallax.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
 
 Game game;
 float timer;
+float timerRoomPause = PAUSE_ROOM_DURATION;
+float timerstartLevel = 0;
 
 void LoadGame(void)
 {
+	LoadParallax();
 	game = (Game){ 0 };
+	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	sfSprite* background = LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
@@ -30,13 +34,15 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
-	LoadMap(background);
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
 	LoadAim();
 
+	timerstartLevel = 0;
+
+	SetMap(LEVEL1);
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
 	case 0:
@@ -143,30 +149,54 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-	if (GetPlayerLife() <= 0)
+	if (sfTrue /*PauseGame*/)
 	{
-		SetMap(GetActualyMap());
-		AddPlayerLife(PLAYER_MAX_HEALTH);
+		if (!PauseGameCameraMoveRoom() || timerstartLevel <= START_GAME_CAM_DURATION)
+		{
+			if (timerRoomPause >= PAUSE_ROOM_DURATION)
+			{
+				if (GetPlayerLife() <= 0)
+				{
+					SetMap(GetActualyMap());
+					AddPlayerLife(PLAYER_MAX_HEALTH);
+				}
+
+				UpdatePlayer(_dt);
+				UpdateEnemy(_dt);
+
+				//UpdateGUI(_dt);
+				UpdateCollider();
+				if (GetActualyMap() == LEVEL1)
+				{
+					UpdateBoss(_dt);
+				}
+
+				UpdateBullet(_dt);
+				UpdateMisteal(_dt);
+				UpdateMissile(GetAimPosition(), _dt);
+			}
+		}
+		else
+		{
+			timerRoomPause = 0;
+		}
+
+		if (timerRoomPause <= PAUSE_ROOM_DURATION)
+		{
+			timerRoomPause += _dt;
+		}
+
+		if (timerstartLevel <= START_GAME_CAM_DURATION)
+		{
+			timerstartLevel += _dt;
+		}
+
+		UpdateHUD(_dt);
+		UpdateAim(_dt);
+
+		UpdateCamera(_dt);
+		UpdateParallax(_dt);
 	}
-
-	UpdatePlayer(_dt);
-	UpdateEnemy(_dt);
-
-	UpdateHUD(_dt);
-	//UpdateGUI(_dt);
-	UpdateCollider();
-	UpdateAim(_dt);
-	if (GetActualyMap() == LEVEL1)
-	{
-		UpdateBoss(_dt);
-	}
-
-	UpdateBullet(_dt);
-	UpdateMisteal(_dt);
-	UpdateMissile(GetAimPosition(), _dt);
-	UpdateCamera(_dt);
-
-
 }
 
 void UpdateCollider(void)

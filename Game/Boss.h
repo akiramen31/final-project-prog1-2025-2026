@@ -9,9 +9,9 @@
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
 #define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2
 
-#define RUNAWAY_TIMER 2.5f
+#define RUNAWAY_TIMER 4.f
 
-#define BOSS_FIRERATE 4.f
+#define BOSS_FIRERATE 2.f
 
 #define RELOAD_TIME_TURRET 2.f
 #define TURRET_ROTATION_SPEED 75.f
@@ -49,6 +49,7 @@ typedef enum BossReactionToPlayer
 	PUSH_LEFT,
 	PUSH_RIGHT
 }BossReactionToPlayer;
+
 typedef struct Boss1
 {
 	sfSprite* track;
@@ -97,5 +98,7 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 
 sfBool HitBoss(float _degat, sfFloatRect _hitbox);
 void BossShoot(float _dt);
+
+void DestroyBoss1(void);
 
 #endif //BOSS_H

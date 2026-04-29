@@ -9,22 +9,15 @@
 
 #define BULLET_ENEMY_MAX 20
 
-#define BULLET_SPEED_ALLY 500
-#define MISTEAL_SPEED BULLET_SPEED_ALLY * 0.9f
+#define BULLET_SPEED_ALLY 300
+#define MISTEAL_SPEED BULLET_SPEED_ALLY * 1.2f
+
 #define MISTEAL_ROTATION 5.f
-#define BULLET_SPEED_ENEMY 500
+#define BULLET_SPEED_ENEMY 250
 #define BULLET_LIFETIME 2.5f
 
-#define MISTEAL_TIMER_OUTMAP 2.f
-
-typedef struct ShooterType
-{
-	float weaponPos;
-	sfVector2f shootPosition;
-	AttackType bulletType;
-	sfBool isAlly;
-	sfBool isRighted;
-}ShooterType;
+#define MISTEAL_TIMER_OUTMAP_NOTSTICKED 2.f
+#define MISTEAL_TIMER_STICKED MISTEAL_TIMER_OUTMAP_NOTSTICKED * 10.f
 
 typedef struct Bullet
 {
@@ -43,7 +36,7 @@ typedef struct Misteal
 	sfBool isSticked;
 	sfBool isAlreadyHit;
 
-	float timerOutMap;
+	float timer;
 }Misteal;
 
 void LoadBullet(void);

@@ -51,11 +51,12 @@ typedef struct HitboxMap
 typedef struct Map
 {
 	MapData data;
+	sfSprite* foreground;
 	sfSprite* background;
 	MapState state;
 }Map;
 
-void LoadMap(sfSprite* _background);
+void LoadMap(void);
 void SetMap(MapState _map);
 MapState GetActualyMap(void);
 

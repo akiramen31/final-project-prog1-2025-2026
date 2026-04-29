@@ -12,21 +12,11 @@ void LoadBoss(void)
 
 void SwitchBoss(char _index, sfVector2f _position)
 {
-	if (boss.boss1)
+	if (boss.boss1 != NULL)
 	{
-		DestroyVisualEntity(boss.boss1->track);
-		DestroyVisualEntity(boss.boss1->gunCariage);
-		DestroyVisualEntity(boss.boss1->steamTank);
-		//DestroyVisualEntity(boss.boss1->spriteCanon);
-		DestroyVisualEntity(boss.boss1->spriteTurretLCase);
-		DestroyVisualEntity(boss.boss1->spriteTurretLBase);
-		DestroyVisualEntity(boss.boss1->spriteTurretLCanon);
-		DestroyVisualEntity(boss.boss1->spriteTurretRCase);
-		DestroyVisualEntity(boss.boss1->spriteTurretRBase);
-		DestroyVisualEntity(boss.boss1->spriteTurretRCanon);
-		Free(boss.boss1);
-		boss.boss1 = NULL;
+		//DestroyBoss1();
 	}
+
 	sfFloatRect hitbox = { 0 };
 
 	if (_index == 0)
@@ -58,11 +48,11 @@ void SwitchBoss(char _index, sfVector2f _position)
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretRBase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretRBase, (sfVector2f) { hitbox.width, hitbox.height / 2.f });
 
-		boss.boss1->spriteTurretLCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamber_Placeholder.png"), positionTurret1, 1.f, 1.f);
+		boss.boss1->spriteTurretLCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamberTEST_Placeholder-export.png"), positionTurret1, 1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretLCase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretLCase, (sfVector2f) { 0, hitbox.height / 2.f });
 
-		boss.boss1->spriteTurretRCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamber_Placeholder.png"), positionTurret2, -1.f, 1.f);
+		boss.boss1->spriteTurretRCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamberTEST_Placeholder-export.png"), positionTurret2, -1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretRCase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretRCase, (sfVector2f) { 0, hitbox.height / 2.f });
 
@@ -84,7 +74,6 @@ void SwitchBoss(char _index, sfVector2f _position)
 		boss.boss1->state = sfTrue;
 	}
 }
-
 
 void UpdateBoss(float _dt)
 {
@@ -143,7 +132,6 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 		{
 			if (sfFloatRect_intersects(&_hitbox, &bossSolids[i], NULL))
 			{
-				printf("Bim il est touché\n");
 				if (i == 0)
 				{
 					boss.boss1->bossLife -= _degat;
@@ -159,16 +147,7 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 					}
 					if (boss.boss1->bossLife <= 0)
 					{
-						DestroyVisualEntity(boss.boss1->track);
-						DestroyVisualEntity(boss.boss1->gunCariage);
-						DestroyVisualEntity(boss.boss1->steamTank);
-						DestroyVisualEntity(boss.boss1->spriteTurretLCase);
-						DestroyVisualEntity(boss.boss1->spriteTurretLBase);
-						DestroyVisualEntity(boss.boss1->spriteTurretLCanon);
-						DestroyVisualEntity(boss.boss1->spriteTurretRCase);
-						DestroyVisualEntity(boss.boss1->spriteTurretRBase);
-						DestroyVisualEntity(boss.boss1->spriteTurretRCanon);
-						boss.boss1->state = sfFalse;
+						DestroyBoss1();
 					}
 					return sfTrue;
 				}
@@ -268,7 +247,7 @@ void CheckBossPlayerState(float _dt)
 			if (distance.x < 46 && distance.y < 32)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_UNDER;
-				boss.boss1->runAwayTiming += _dt * DT_SLOW;
+				boss.boss1->runAwayTiming += _dt;
 				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 				{
 					if (trackPosition.x > ARENA_CENTER)
@@ -287,7 +266,7 @@ void CheckBossPlayerState(float _dt)
 			if (distance.x < TARGET_DISTANCE_MAX && distance.y > 80)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_ON_TOP;
-				boss.boss1->runAwayTiming += _dt * DT_SLOW;
+				boss.boss1->runAwayTiming += _dt;
 				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 				{
 					if (trackPosition.x > ARENA_CENTER)
@@ -308,7 +287,7 @@ void CheckBossPlayerState(float _dt)
 				if (playerPos.x < trackPosition.x)
 				{
 					boss.boss1->playerPositionToBoss = PLAYER_TURRET_LEFT;
-					boss.boss1->runAwayTiming += _dt * DT_SLOW;
+					boss.boss1->runAwayTiming += _dt;
 					if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
 					{
 						if (trackPosition.x > ARENA_CENTER)
@@ -461,4 +440,20 @@ void BossShoot(float _dt)
 	{
 		boss.boss1->cooldownShoot -= _dt;
 	}
+}
+
+void DestroyBoss1(void)
+{
+	DestroyVisualEntity(boss.boss1->track);
+	DestroyVisualEntity(boss.boss1->gunCariage);
+	DestroyVisualEntity(boss.boss1->steamTank);
+	DestroyVisualEntity(boss.boss1->spriteTurretLCase);
+	DestroyVisualEntity(boss.boss1->spriteTurretLBase);
+	DestroyVisualEntity(boss.boss1->spriteTurretLCanon);
+	DestroyVisualEntity(boss.boss1->spriteTurretRCase);
+	DestroyVisualEntity(boss.boss1->spriteTurretRBase);
+	DestroyVisualEntity(boss.boss1->spriteTurretRCanon);
+	boss.boss1->state = sfFalse;
+	Free(boss.boss1);
+	boss.boss1 = NULL;
 }

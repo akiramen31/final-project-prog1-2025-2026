@@ -112,7 +112,7 @@ void UpdateEnemy(float _dt)
 void UpdateEnemyI(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	ennemy->ennemyEntity.timer += _dt * DT_SLOW;
+	ennemy->ennemyEntity.timer += _dt;
 	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{

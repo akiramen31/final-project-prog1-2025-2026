@@ -12,13 +12,13 @@ void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjso
 void SetPositionEntity(InfoZone* _point, int _count);
 void CreateRectVisible(InfoZone* _infoZone, int _count);
 
-void LoadMap(sfSprite* _background)
+void LoadMap()
 {
-	LoadBox();
 	map = (Map){ 0 };
-	map.background = _background;
 	map.state = -1;
-	SetMap(LEVEL1);
+	map.foreground = CreateSprite(GetAsset("Assets/Maps/Level1.png"), (sfVector2f) {0}, 1.f, 70.f);
+	map.background = CreateSprite(GetAsset("Assets/Maps/Level1.png"), (sfVector2f) {0}, 1.f, 100.f);
+	LoadBox();
 }
 
 void SetMap(MapState _map)
@@ -41,22 +41,22 @@ void SetMap(MapState _map)
 	{
 	case LEVEL1:
 		cjson = LoadCjsonB("Assets/Maps/Level1.json");
-		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 		break;
 	case LEVEL2:
 		cjson = LoadCjsonB("Assets/Maps/Level2.json");
-		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level2.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
 		break;
 	case LEVEL3:
 		cjson = LoadCjsonB("Assets/Maps/Level3.json");
-		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level3.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
 		break;
 	case LEVEL_TEST:
 		cjson = LoadCjsonB("Assets/Maps/LevelTest.json");
-		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/MapTesteReduite.png");
 		break;
 	default:
