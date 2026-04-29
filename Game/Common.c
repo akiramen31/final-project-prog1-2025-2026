@@ -2,11 +2,7 @@
 
 sfBool CompareColor(sfColor _color1, sfColor _color2)
 {
-	if (_color1.r == _color2.r && _color1.g == _color2.g && _color1.b == _color2.b)
-	{
-		return sfTrue;
-	}
-	return sfFalse;
+	return (_color1.r == _color2.r && _color1.g == _color2.g && _color1.b == _color2.b);
 }
 
 void UpdateText(sfText* _text, char* _format, char* _string, int _value)
@@ -18,11 +14,7 @@ void UpdateText(sfText* _text, char* _format, char* _string, int _value)
 
 sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position)
 {
-	if (_hitbox->left < _position.x && _hitbox->top < _position.y && _hitbox->left + _hitbox->width > _position.x && _hitbox->top + _hitbox->height > _position.y)
-	{
-		return sfTrue;
-	}
-	return sfFalse;
+	return (_hitbox->left < _position.x && _hitbox->top < _position.y && _hitbox->left + _hitbox->width > _position.x && _hitbox->top + _hitbox->height > _position.y);
 }
 
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _animation, const float _dt)
@@ -37,10 +29,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 		if (_animation->rectActualy.left > (_animation->rectActualy.width * (_animation->frameCount - 1)))
 		{
 			_animation->rectActualy.left = 0;
-			if (!_animation->isLooping)
-			{
-				return sfTrue;
-			}
+			return !_animation->isLooping;
 		}
 	}
 	return sfFalse;
@@ -117,7 +106,6 @@ void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsi
 			grid[i][j] = previousGrid[i][j];
 		}
 	}
-
 	return grid;
 }
 
@@ -125,7 +113,7 @@ void FreeGrid(void** grid)
 {
 	if (grid)
 	{
-		Free(grid[0]);
+		Free(*grid);
 		Free(grid);
 	}
 }
@@ -140,27 +128,20 @@ sfBool StringCompare(char* _string1, char* _string2)
 		{
 			return sfTrue;
 		}
-		else if (_string1[i] == 0 || _string2[i] == 0)
-		{
-			return sfFalse;
-		}
 	}
 	return sfFalse;
 }
 
-//for the boss and maybe enemy's so they turn their gun slower
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 {
 	float diff = _target - _current;
-
-	while (diff < -180.0f) 
+	if (diff < -180.0f)
 	{
-		diff += 360.0f;
+		diff += (int)(diff / 180.f) * 360.f;
 	}
-
-	while (diff > 180.0f) 
+	else if (diff > 180.0f)
 	{
-		diff -= 360.0f;
+		diff -= (int)(diff / 180.f) * 360.f;
 	}
 
 	float step = _speed * _dt;
@@ -168,42 +149,36 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 	if (fabsf(diff) <= step) 
 	{
 		return _target;
+	} 
+	else if (diff > 0)
+	{
+		return _current + step;
 	}
-
-	return _current + (diff > 0 ? step : -step);
+	else
+	{
+		return _current - step;
+	}
+	return 0;
 }
 
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
 {
 	MapData data = *GetMapData();
-	if ((_rect.left <= 0) || (_rect.left + _rect.width >= data.size.x * TILE_SIZE) || (_rect.top <= 0) || (_rect.top + _rect.height >= data.size.y * TILE_SIZE))
-	{
-		return sfTrue;
-	}
-	else
-	{
-		return sfFalse;
-	}
+	return ((_rect.left <= 0) || (_rect.left + _rect.width >= data.size.x * TILE_SIZE) || (_rect.top <= 0) || (_rect.top + _rect.height >= data.size.y * TILE_SIZE));
 }
 
 void ScaleImage(sfImage** _image, int _scale)
 {
 	sfImage* image = *_image;
 	sfVector2u imageSize = sfImage_getSize(image);
-	unsigned int newW = imageSize.x * _scale;
-	unsigned int newH = imageSize.y * _scale;
+	sfVector2u newSize = { imageSize.x * _scale, imageSize.y * _scale };
+	*_image = sfImage_create(newSize.x, newSize.y);
 
-	*_image = sfImage_create(newW, newH);
-
-	for (unsigned int y = 0; y < newH; y++)
+	for (unsigned int y = 0; y < newSize.y; y++)
 	{
-		for (unsigned int x = 0; x < newW; x++)
+		for (unsigned int x = 0; x < newSize.x; x++)
 		{
-			// Pixel correspondant dans l'image source
-			unsigned int imageX = x / _scale;
-			unsigned int imageY = y / _scale;
-
-			sfColor color = sfImage_getPixel(image, imageX, imageY);
+			sfColor color = sfImage_getPixel(image, (int)(x / _scale), (int)(y / _scale));
 			sfImage_setPixel(*_image, x, y, color);
 		}
 	}

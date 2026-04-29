@@ -34,7 +34,7 @@ void LoadMissile(void)
 
 		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
 
-		secondary = COLDBREATH;
+		secondary = DRONE;
 	}
 }
 
