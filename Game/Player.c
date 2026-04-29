@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Missile.h"
-#include "Aim.h"
 #include "Box.h"
 #include "Ennemy.h"
 
@@ -116,7 +115,7 @@ void UpdatePlayer(float _dt)
 
 	UpdateAnimation(_dt);
 
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
+	MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
@@ -476,8 +475,33 @@ void UpdateFireControl(float _dt)
 	{
 		if (player.canShoot)
 		{
-			AddMissile(GetPlayerPosition(), player.weapon.isRight);
-			player.canShoot = sfFalse;
+			if (player.weapon.secondary == DRONE)
+			{
+				if (player.ener.energy > 50.f)
+				{
+					AddMissile(GetPlayerPosition(), player.weapon.isRight);
+					player.ener.energy -= 50.f;
+					player.canShoot = sfFalse;
+
+				}
+			}
+			if (player.weapon.secondary == COLDBREATH)
+			{
+				if (player.ener.energy > 40.f)
+				{
+					printf("glaglagla");
+					ShooterType shooterType = { 0 };
+					shooterType.weaponPos = WEAPON_ORIGIN;
+					shooterType.shootPosition.x = 5.f;
+					shooterType.shootPosition.y = 0.f;
+					shooterType.bulletType = LIGHT;
+					shooterType.isRighted = player.weapon.isRight;
+					shooterType.isAlly = sfTrue;
+					AddColdBreath(GetPlayerPosition(), GetMousePositionToOrigin(), shooterType);
+					player.ener.energy -= 40.f;
+					player.canShoot = sfFalse;
+				}
+			}
 		}
 	}
 	if (DEV_WEAPON)
@@ -504,7 +528,7 @@ void UpdateFireControlRailgun(void)
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
 		sfSound_play(player.shootSound);
-		UseWeaponRailgun(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		UseWeaponRailgun(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
 
@@ -513,7 +537,7 @@ void UpdateFireControlMisteal(void)
 	if (GetBulletCount() < MISTEAL_ALLY_MAX)
 	{
 		sfSound_play(player.shootSound);
-		UseWeaponMisteal(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		UseWeaponMisteal(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
 

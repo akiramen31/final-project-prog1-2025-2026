@@ -39,6 +39,8 @@
 #define TILE_SIZE 16
 
 #define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
+#define FREEZE_TIMER 4.f
+#define FREEZE_DMG -1.f
 
 #define G 5.81f
 //#define G 9.81f
@@ -56,6 +58,12 @@ typedef enum AttackType
 	HEAVY,
 	NOATTACK
 }AttackType;
+
+typedef enum Secondary
+{
+	DRONE,
+	COLDBREATH
+}Secondary;
 
 typedef struct ShooterType
 {
@@ -77,6 +85,7 @@ enum EnergyEnum
 	ENERGY,
 	ENERGY_MAX,
 	ENERGY_REGEN,
+	ENERGY_REGEN_COLDBREATH,
 	ENERGY_REGEN_COOLDOWN,
 };
 
@@ -127,4 +136,5 @@ void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
+void ScaleImage(sfImage** _image, int _scale);
 #endif // !COMMON_H

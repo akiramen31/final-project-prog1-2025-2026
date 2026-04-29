@@ -49,7 +49,6 @@ void UpdateParallax(float _dt)
 	sfVector2f cameraCenterPos = { cameraPos.x + (cameraSize.x / 2) ,cameraPos.y + (cameraSize.y / 2) };
 	float ratioX = cameraCenterPos.x / ((mapSize.x*16) - (cameraSize.x / 2));
 	float ratioY = cameraCenterPos.y / ((mapSize.y*16) - (cameraSize.y / 2));
-	printf("All vars:\nCameraCenterPos    x: %f    y: %f\nmapSize    x: %u    y: %u\ncameraSize    x: %f    y: %f\nRatio    x: %f    y: %f\n", cameraCenterPos.x, cameraCenterPos.y, mapSize.x, mapSize.y, cameraSize.y, cameraSize.y, ratioX, ratioY);
 
 	for (int i = 0; i < LAYER_COUNT; i++)
 	{

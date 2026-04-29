@@ -17,7 +17,8 @@ void LoadMenu(void)
 	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfTrue);
 
 	//Sprites
-	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
+	menu.background = LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
+	sfSprite_setColor(menu.background, sfColor_fromRGB(200,200,200));
 	menu.overlay = CreateSprite(GetAsset("Assets/Sprites/starting_menu_overlay.png"), (sfVector2f) { 0 }, 8.f, 60.f);
 	//mainMenu
 	menu.mainMenu.textBox[0] = GetAsset("Assets/Sprites/starting_menu_text1.png");
@@ -55,8 +56,9 @@ void LoadMenu(void)
 	sfMusic_play(menu.musics[GetIntFromSave(MUSIC_ACTUALY)]);
 
 	//Texts
-	menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255 };
-	menu.textColor = sfWhite;
+	//menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255 };
+	menu.textColor = (sfColor){ 255, 165, 0 , 255 };
+	menu.highlightTextColor = sfWhite;
 	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{

@@ -2,7 +2,6 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
-#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
@@ -34,11 +33,11 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
+
+	LoadMap();
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
-	LoadAim();
 
 	timerstartLevel = 0;
 
@@ -173,30 +172,35 @@ void UpdateGame(float _dt)
 
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
-				UpdateMissile(GetAimPosition(), _dt);
+				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 			}
 		}
 		else
 		{
 			timerRoomPause = 0;
 		}
-
-		if (timerRoomPause <= PAUSE_ROOM_DURATION)
-		{
-			timerRoomPause += _dt;
-		}
-
-		if (timerstartLevel <= START_GAME_CAM_DURATION)
-		{
-			timerstartLevel += _dt;
-		}
-
-		UpdateHUD(_dt);
-		UpdateAim(_dt);
-
-		UpdateCamera(_dt);
-		UpdateParallax(_dt);
+		UpdateBullet(_dt);
+		UpdateMisteal(_dt);
+		UpdateMissile(GetMousePositionToOrigin(), _dt);
 	}
+	else
+	{
+		//timerRoomPause = 0;
+	}
+	if (timerRoomPause <= PAUSE_ROOM_DURATION)
+	{
+		timerRoomPause += _dt;
+	}
+
+	if (timerstartLevel <= START_GAME_CAM_DURATION)
+	{
+		timerstartLevel += _dt;
+	}
+
+	UpdateHUD(_dt);
+	UpdateCamera(_dt);
+	UpdateCamera(_dt);
+	UpdateParallax(_dt);
 }
 
 void UpdateCollider(void)

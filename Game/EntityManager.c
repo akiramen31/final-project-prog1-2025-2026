@@ -2,6 +2,7 @@
 #include "Menu.h"
 #include "Game.h"
 #include "GameOver.h"
+#include "Camera.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -11,7 +12,7 @@ void CleanupLocal(void);
 
 char* GetFormatAsset(char* _file);
 sfBool CompareString(char* _string1, char* _string2);
-void* InitPointer(void* _ptr);
+void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan);
 
 EntityManager entityManager;
 
@@ -43,14 +44,32 @@ void Draw(void)
 	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
 	//sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
 
-	//background non draw entityManager.visual->next  -> entityManager.visual
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
 	sfColor temp = { 0 };
 	sfRenderWindow_setVerticalSyncEnabled(GetRenderWindow(), sfTrue);
 
+	sfBool viewChange = sfTrue;
 	while (elementActual)
 	{
+		if (viewChange)
+		{
+			VisualEntity* elementActualBis = elementActual;
+			while (elementActualBis)
+			{
+				if (elementActualBis->type == VIEW)
+				{
+					sfRenderWindow_setView(entityManager.renderWindow, elementActualBis->ptr);
+					elementActualBis = NULL;
+				}
+				else
+				{
+					elementActualBis = elementActualBis->next;
+				}
+			}
+			viewChange = sfFalse;
+		}
+
 		if (elementActual->type == SPRITE)
 		{
 			temp = sfSprite_getColor(elementActual->ptr);
@@ -65,18 +84,19 @@ void Draw(void)
 			sfRenderWindow_drawText(entityManager.renderWindow, elementActual->ptr, NULL);
 			sfText_setColor(elementActual->ptr, temp);
 		}
+		else if (elementActual->type == VIEW)
+		{
+			viewChange = sfTrue;
+			sfRenderWindow_setView(entityManager.renderWindow, sfRenderWindow_getDefaultView(entityManager.renderWindow));
+		}
 		elementActual = elementActual->next;
 	}
 
-	if (entityManager.gameState == GAME)
+	if (entityManager.gameState == GAME && DEV_MODE)
 	{
-		if (DEV_MODE)
-		{
-			DrawDev(entityManager.renderWindow);
-		}
+		DrawDev(entityManager.renderWindow);
 	}
 
-	sfRenderWindow_setView(entityManager.renderWindow, entityManager.view);
 	sfRenderWindow_display(entityManager.renderWindow);
 }
 
@@ -108,6 +128,8 @@ void CleanupGlobal(void)
 	sfRenderWindow_destroy(entityManager.renderWindow);
 	sfClock_destroy(entityManager.clock);
 	sfView_destroy(entityManager.view);
+	sfImage_destroy(entityManager.cursorImage);
+	sfCursor_destroy(entityManager.cursor);
 }
 
 void CleanupLocal(void)
@@ -141,9 +163,17 @@ void CleanupLocal(void)
 		{
 			sfText_destroy(entityManager.visual->ptr);
 		}
+		else if (entityManager.visual->type == VIEW && entityManager.visual->ptr != entityManager.view)
+		{
+			sfView_destroy(entityManager.visual->ptr);
+		}
 		VisualEntity* temp = entityManager.visual;
 		entityManager.visual = (VisualEntity*)entityManager.visual->next;
 		free(temp);
+	}
+	if (entityManager.view)
+	{
+		AddVisual(VIEW, entityManager.view, 0.f);
 	}
 
 	for (int i = 0; i < entityManager.soundCount; i++)
@@ -248,50 +278,32 @@ sfSprite* LoadBackground(sfTexture* _texture, float _scale)
 
 sfSprite* CreateSprite(sfTexture* _texture, sfVector2f _position, float _scale, float _drawPlan)
 {
-	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
-	if (!newElement)
-	{
-		return NULL;
-	}
-	newElement->type = SPRITE;
-	newElement->drawPlan = _drawPlan;
-	newElement->ptr = sfSprite_create();
-	sfSprite_setTexture(newElement->ptr, _texture, sfTrue);
-	sfSprite_setPosition(newElement->ptr, _position);
-	sfSprite_setScale(newElement->ptr, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
-
-	VisualEntity* elementPrevious = entityManager.visual;
-	while (elementPrevious->next && elementPrevious->next->drawPlan >= _drawPlan)
-	{
-		elementPrevious = elementPrevious->next;
-	}
-	newElement->next = elementPrevious->next;
-	elementPrevious->next = newElement;
-	return newElement->ptr;
+	sfSprite* sprite = sfSprite_create();
+	sfSprite_setTexture(sprite, _texture, sfTrue);
+	sfSprite_setPosition(sprite, _position);
+	sfSprite_setScale(sprite, (sfVector2f) { _scale* GAME_SCALE, _scale* GAME_SCALE });
+	AddVisual(SPRITE, sprite, _drawPlan);
+	return sprite;
 }
 
 sfText* CreateText(sfFont* _font, sfVector2f _position, unsigned _scale, float _drawPlan)
 {
-	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
-	if (!newElement)
-	{
-		return NULL;
-	}
-	newElement->type = TEXT;
-	newElement->drawPlan = _drawPlan;
-	newElement->ptr = sfText_create();
-	sfText_setFont(newElement->ptr, _font);
-	sfText_setPosition(newElement->ptr, _position);
-	sfText_setCharacterSize(newElement->ptr, _scale * GAME_SCALE);
+	sfText* text = sfText_create();
+	sfText_setFont(text, _font);
+	sfText_setPosition(text, _position);
+	sfText_setCharacterSize(text, _scale * GAME_SCALE);
+	AddVisual(TEXT, text, _drawPlan);
+	return text;
+}
 
-	VisualEntity* elementPrevious = entityManager.visual;
-	while (elementPrevious->next && elementPrevious->drawPlan >= _drawPlan)
-	{
-		elementPrevious = elementPrevious->next;
-	}
-	newElement->next = elementPrevious->next;
-	elementPrevious->next = newElement;
-	return newElement->ptr;
+sfView* CreateView(sfVector2f _centre, float _zoom, float _drawPlan)
+{
+	sfView* view = sfView_create();
+	sfVector2u windowSize = sfRenderWindow_getSize(entityManager.renderWindow);
+	sfView_setCenter(view, _centre);
+	sfView_setSize(view, (sfVector2f) { windowSize.x* _zoom, windowSize.y* _zoom });
+	AddVisual(VIEW, view, _drawPlan);
+	return view;
 }
 
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
@@ -327,7 +339,7 @@ sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play)
 	entityManager.sound = temp;
 
 	entityManager.sound[entityManager.soundCount].ptr = sfMusic_createFromFile(_fileMusic);
-	if(entityManager.sound[entityManager.soundCount].ptr)
+	if (entityManager.sound[entityManager.soundCount].ptr)
 	{
 		sfMusic_setVolume(entityManager.sound[entityManager.soundCount].ptr, _volume);
 		if (_play)
@@ -358,6 +370,10 @@ void DestroyVisualEntity(void* _entity)
 				else if (elementNext->type == TEXT)
 				{
 					sfText_destroy(elementNext->ptr);
+				}
+				else if (elementActual->type == VIEW)
+				{
+					sfView_destroy(elementNext->ptr);
 				}
 				elementActual->next = elementNext->next;
 				free(elementNext);
@@ -458,11 +474,22 @@ sfBool CompareString(char* _string1, char* _string2)
 	return sfFalse;
 }
 
-void* InitPointer(void* _ptr)
+void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 {
-	return _ptr;
+	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
+	if (!newElement)
+	{
+		return;
+	}
+	VisualEntity data = { 0, 0, 0, entityManager.visual };
+	VisualEntity* previous = &data;
+	while (previous->next && previous->next->drawPlan >= _drawPlan)
+	{
+		previous = previous->next;
+	}
+	*newElement = (VisualEntity){ _type, _ptr ,_drawPlan, previous->next };
+	previous->next = newElement;
 }
-
 
 
 void* Calloc(size_t _count, size_t _size)
@@ -499,21 +526,24 @@ void* Realloc(void* _block, size_t _size)
 
 void Free(void* _ptr)
 {
-	for (int i = 0; i < entityManager.callocListCount; i++)
+	if (_ptr)
 	{
-		if (_ptr == entityManager.callocList[i])
+		for (int i = 0; i < entityManager.callocListCount; i++)
 		{
-			free(_ptr);
-
-			entityManager.callocListCount--;
-			entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
-			void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
-			if (!temp)
+			if (_ptr == entityManager.callocList[i])
 			{
+				free(_ptr);
+
+				entityManager.callocListCount--;
+				entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
+				void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
+				if (!temp)
+				{
+					return;
+				}
+				entityManager.callocList = temp;
 				return;
 			}
-			entityManager.callocList = temp;
-			return;
 		}
 	}
 }
@@ -742,9 +772,12 @@ void LoadMainData(void)
 
 	entityManager.clock = sfClock_create();
 
-	entityManager.view = sfView_create();
-	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
-	SetViewZoom(1.f);
+	entityManager.cursorImage = sfImage_createFromFile("Assets/Sprites/crosshair.png");
+	ScaleImage(&entityManager.cursorImage, 5);
+
+	sfVector2u cursorSize = sfImage_getSize(entityManager.cursorImage);
+	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2});
+	sfRenderWindow_setMouseCursor(entityManager.renderWindow, entityManager.cursor);
 }
 
 void SetViewCenter(sfVector2f _centre)
@@ -782,6 +815,9 @@ void MoveView(sfVector2f _move)
 void SetGameState(GameState _gameState)
 {
 	CleanupLocal();
+	LoadBackground(NULL, 1.f);
+	entityManager.viewZoom = 1.f;
+	entityManager.view = CreateView((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 }, entityManager.viewZoom, 0.f);
 	entityManager.gameState = _gameState;
 
 	switch (entityManager.gameState)
@@ -821,4 +857,13 @@ void ChangeFullSceen(void)
 		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
 		SetIntToSave(FULL_SCREEN, 1);
 	}
+}
+
+sfVector2f GetMousePositionToOrigin(void)
+{
+	float cameraCoef = GetCameraZoom();
+	sfVector2i position = sfMouse_getPositionRenderWindow(GetRenderWindow());
+	sfVector2f center = sfView_getCenter(entityManager.view);
+	sfVector2f size = sfView_getSize(entityManager.view);
+	return (sfVector2f) { center.x - size.x / 2 + position.x * cameraCoef, center.y - size.y / 2 + position.y * cameraCoef};
 }
