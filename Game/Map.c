@@ -16,8 +16,8 @@ void LoadMap()
 {
 	map = (Map){ 0 };
 	map.state = -1;
-	map.foreground = CreateSprite(GetAsset("Assets/Maps/Level1.png"), (sfVector2f) {0}, 1.f, 70.f);
-	map.background = CreateSprite(GetAsset("Assets/Maps/Level1.png"), (sfVector2f) {0}, 1.f, 100.f);
+	map.foreground = CreateSprite(GetAsset("Assets/Maps/Level1Front.png"), (sfVector2f) {0}, 1.f, 70.f);
+	map.background = CreateSprite(GetAsset("Assets/Maps/Level1Back.png"), (sfVector2f) {0}, 1.f, 100.f);
 	LoadBox();
 }
 
@@ -41,12 +41,14 @@ void SetMap(MapState _map)
 	{
 	case LEVEL1:
 		cjson = LoadCjsonB("Assets/Maps/Level1.json");
-		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1Front.png"), sfTrue);
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1Back.png"), sfTrue);
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
 		break;
 	case LEVEL2:
 		cjson = LoadCjsonB("Assets/Maps/Level2.json");
-		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level2.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level2Front.png"), sfTrue);
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2Back.png"), sfTrue);		
 		map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
 		break;
 	case LEVEL3:

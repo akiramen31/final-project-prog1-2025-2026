@@ -16,6 +16,7 @@ void UpdateCollider(void);
 Game game;
 float timer;
 float timerRoomPause = PAUSE_ROOM_DURATION;
+float timerstartLevel = 0;
 
 void LoadGame(void)
 {
@@ -33,11 +34,14 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
 	LoadAim();
+
+	timerstartLevel = 0;
+
 	SetMap(LEVEL1);
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
@@ -145,43 +149,54 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-	if (!PauseGameCameraMoveRoom() && timerRoomPause >= PAUSE_ROOM_DURATION)
+	if (sfTrue /*PauseGame*/)
 	{
-		if (GetPlayerLife() <= 0)
+		if (!PauseGameCameraMoveRoom() || timerstartLevel <= START_GAME_CAM_DURATION)
 		{
-			SetMap(GetActualyMap());
-			AddPlayerLife(PLAYER_MAX_HEALTH);
+			if (timerRoomPause >= PAUSE_ROOM_DURATION)
+			{
+				if (GetPlayerLife() <= 0)
+				{
+					SetMap(GetActualyMap());
+					AddPlayerLife(PLAYER_MAX_HEALTH);
+				}
+
+				UpdatePlayer(_dt);
+				UpdateEnemy(_dt);
+
+				//UpdateGUI(_dt);
+				UpdateCollider();
+				if (GetActualyMap() == LEVEL1)
+				{
+					UpdateBoss(_dt);
+				}
+
+				UpdateBullet(_dt);
+				UpdateMisteal(_dt);
+				UpdateMissile(GetAimPosition(), _dt);
+			}
+		}
+		else
+		{
+			timerRoomPause = 0;
 		}
 
-		UpdatePlayer(_dt);
-		UpdateEnemy(_dt);
-
-		//UpdateGUI(_dt);
-		UpdateCollider();
-		if (GetActualyMap() == LEVEL1)
+		if (timerRoomPause <= PAUSE_ROOM_DURATION)
 		{
-			UpdateBoss(_dt);
+			timerRoomPause += _dt;
 		}
 
-		UpdateBullet(_dt);
-		UpdateMisteal(_dt);
-		UpdateMissile(GetAimPosition(), _dt);
-	}
-	else
-	{
-		//timerRoomPause = 0;
-	}
+		if (timerstartLevel <= START_GAME_CAM_DURATION)
+		{
+			timerstartLevel += _dt;
+		}
 
-	if (timerRoomPause <= PAUSE_ROOM_DURATION)
-	{
-		timerRoomPause += _dt;
+		UpdateHUD(_dt);
+		UpdateAim(_dt);
+
+		UpdateCamera(_dt);
+		UpdateParallax(_dt);
 	}
-
-	UpdateHUD(_dt);
-	UpdateAim(_dt);
-
-	UpdateCamera(_dt);
-	UpdateParallax(_dt);
 }
 
 void UpdateCollider(void)
