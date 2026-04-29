@@ -97,7 +97,7 @@ void UpdateEnemy(float _dt)
 	for (int i = GetEnemyCount() - 1; i >= 0; i--)
 	{
 		Ennemy* enemy = GetElement(listEnnemy, i)->value;
-		if (enemy->ennemyEntity.region.left + TILE_SIZE <= playerPos.x && enemy->ennemyEntity.region.left + TILE_SIZE + enemy->ennemyEntity.region.width - TILE_SIZE*2 >= playerPos.x && enemy->ennemyEntity.region.top + TILE_SIZE <= playerPos.y && enemy->ennemyEntity.region.top + TILE_SIZE + enemy->ennemyEntity.region.height - TILE_SIZE*2 >= playerPos.y)
+		if (enemy->ennemyEntity.region.left + TILE_SIZE <= playerPos.x && enemy->ennemyEntity.region.left + TILE_SIZE + enemy->ennemyEntity.region.width - TILE_SIZE * 2 >= playerPos.x && enemy->ennemyEntity.region.top + TILE_SIZE <= playerPos.y && enemy->ennemyEntity.region.top + TILE_SIZE + enemy->ennemyEntity.region.height - TILE_SIZE * 2 >= playerPos.y)
 		{
 			UpdateEnemyI(_dt, i);
 			enemyZone++;
@@ -380,7 +380,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
 		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
-		
+
 
 		for (int y = 0; y < gridSize.y; y++)
 		{
@@ -392,7 +392,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 				else
 				{
-					sfVector2f reaction = Colision((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y  * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+					sfVector2f reaction = Colision((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
 					if (reaction.x || reaction.y)
 					{
 						grid[y][x] = 2;
@@ -405,17 +405,20 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 			}
 		}
 		tableau.collision = grid;
-		for (int y = 0; y < gridSize.y; y++)
+		if (DEBUG_MODE_A_STAR)
 		{
-			for (int x = 0; x < gridSize.x; x++)
+			for (int y = 0; y < gridSize.y; y++)
 			{
-				printf("%d", tableau.collision[y][x]);
+				for (int x = 0; x < gridSize.x; x++)
+				{
+					printf("%d", tableau.collision[y][x]);
+				}
+				printf("\n");
 			}
 			printf("\n");
+			printf("\n");
+			printf("\n");
 		}
-		printf("\n");
-		printf("\n");
-		printf("\n");
 	};
 
 	sfFloatRect bouns = GetBounsEnemy(_index);
@@ -438,6 +441,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		}
 
 		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].compteur = 0;
+		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
 
 		sfVector2u caseGet = { bounsCible.left, bounsCible.top };
 		sfIntRect caseRecherche = { 0 };
@@ -445,31 +449,41 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		tableau.new[ennemy->ennemyEntity.type] = sfFalse;
 
 		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
-		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
 
 		while (GetListSize(listeWait) > 0)
 		{
-			//si sur sol
+			// test sol
 			sfVector2u* temp = GetElement(listeWait, MinResultCase(ennemy->ennemyEntity.type))->value;
 			caseGet = *temp;
-			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y+1,bounsCible.width,bounsCible.height };
-			if (sfTrue || TestColision(caseRecherche))
+			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsCible.width,bounsCible.height };
+			if (TestColision(caseRecherche))//si sur sol
 			{
-				RetirerListWait(0);
+				//test gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsCible.width,bounsCible.height };
+				if (TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == NO_DIRECTION)
+				{
+					tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].compteur++;
+					tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].direction = RIGHT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
 			}
+			RetirerListWait(0);
 		}
-
-		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		if (DEBUG_MODE_A_STAR)
 		{
-			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
 			{
-				printf("%d", tableau.grid[ennemy->ennemyEntity.type][y][x].direction);
+				for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+				{
+					printf("%d", tableau.grid[ennemy->ennemyEntity.type][y][x].direction);
+				}
+				printf("\n");
 			}
 			printf("\n");
+			printf("\n");
+			printf("\n");
 		}
-		printf("\n");
-		printf("\n");
-		printf("\n");
 	}
 
 	return (ActionDemander) { 0 };
@@ -645,8 +659,8 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
 	_region.left -= TILE_SIZE;
 	_region.top -= TILE_SIZE;
-	_region.width += TILE_SIZE*2;
-	_region.height += TILE_SIZE*2;
+	_region.width += TILE_SIZE * 2;
+	_region.height += TILE_SIZE * 2;
 
 
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
