@@ -12,10 +12,11 @@ void LoadBoss(void)
 
 void SwitchBoss(char _index, sfVector2f _position)
 {
-	if (boss.boss1)
+	if (boss.boss1 != NULL)
 	{
-		DestroyBoss();
+		//DestroyBoss1();
 	}
+
 	sfFloatRect hitbox = { 0 };
 
 	if (_index == 0)
@@ -146,7 +147,7 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 					}
 					if (boss.boss1->bossLife <= 0)
 					{
-						DestroyBoss();
+						DestroyBoss1();
 					}
 					return sfTrue;
 				}
@@ -441,7 +442,7 @@ void BossShoot(float _dt)
 	}
 }
 
-void DestroyBoss(void)
+void DestroyBoss1(void)
 {
 	DestroyVisualEntity(boss.boss1->track);
 	DestroyVisualEntity(boss.boss1->gunCariage);
