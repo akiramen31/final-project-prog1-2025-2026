@@ -591,7 +591,7 @@ void ResetEnemy(void)
 		DestroyVisualEntity(ennemy->sprite);
 	}
 	RemoveList(listEnnemy);
-	if (mapData)
+	if (mapData && aStarMap)
 	{
 		for (unsigned i = 0; i < mapData->size.y; i++)
 		{

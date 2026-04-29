@@ -526,21 +526,24 @@ void* Realloc(void* _block, size_t _size)
 
 void Free(void* _ptr)
 {
-	for (int i = 0; i < entityManager.callocListCount; i++)
+	if (_ptr)
 	{
-		if (_ptr == entityManager.callocList[i])
+		for (int i = 0; i < entityManager.callocListCount; i++)
 		{
-			free(_ptr);
-
-			entityManager.callocListCount--;
-			entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
-			void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
-			if (!temp)
+			if (_ptr == entityManager.callocList[i])
 			{
+				free(_ptr);
+
+				entityManager.callocListCount--;
+				entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
+				void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
+				if (!temp)
+				{
+					return;
+				}
+				entityManager.callocList = temp;
 				return;
 			}
-			entityManager.callocList = temp;
-			return;
 		}
 	}
 }

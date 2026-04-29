@@ -35,7 +35,6 @@ void LoadGame(void)
 	}
 
 	LoadMap();
-	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
@@ -173,7 +172,7 @@ void UpdateGame(float _dt)
 
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
-				UpdateSecondary(GetAimPosition(), _dt);
+				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 			}
 		}
 		else
@@ -188,21 +187,20 @@ void UpdateGame(float _dt)
 	{
 		//timerRoomPause = 0;
 	}
-		if (timerRoomPause <= PAUSE_ROOM_DURATION)
-		{
-			timerRoomPause += _dt;
-		}
+	if (timerRoomPause <= PAUSE_ROOM_DURATION)
+	{
+		timerRoomPause += _dt;
+	}
 
-		if (timerstartLevel <= START_GAME_CAM_DURATION)
-		{
-			timerstartLevel += _dt;
-		}
+	if (timerstartLevel <= START_GAME_CAM_DURATION)
+	{
+		timerstartLevel += _dt;
+	}
 
 	UpdateHUD(_dt);
 	UpdateCamera(_dt);
-		UpdateCamera(_dt);
-		UpdateParallax(_dt);
-	}
+	UpdateCamera(_dt);
+	UpdateParallax(_dt);
 }
 
 void UpdateCollider(void)

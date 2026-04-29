@@ -497,7 +497,7 @@ void UpdateFireControl(float _dt)
 					shooterType.bulletType = LIGHT;
 					shooterType.isRighted = player.weapon.isRight;
 					shooterType.isAlly = sfTrue;
-					AddColdBreath(GetPlayerPosition(), GetAimPosition(), shooterType);
+					AddColdBreath(GetPlayerPosition(), GetMousePositionToOrigin(), shooterType);
 					player.ener.energy -= 40.f;
 					player.canShoot = sfFalse;
 				}
