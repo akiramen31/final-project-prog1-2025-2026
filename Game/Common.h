@@ -68,15 +68,16 @@ enum EnergyEnum
 
 typedef enum Direction
 {
-	NO_DIRECTION,
-	UP,
+	EMPTY_DIRECTION,
+	DOWN_LEFT,
 	DOWN,
+	DOWN_RIGHT,
 	LEFT,
+	NO_DIRECTION,
 	RIGHT,
 	UP_LEFT,
+	UP,
 	UP_RIGHT,
-	DOWN_LEFT,
-	DOWN_RIGHT
 }Direction;
 
 typedef struct Animation
