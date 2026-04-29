@@ -5,9 +5,9 @@
 
 Missile missileList[MISSILE_MAX] = { 0 };
 ColdBreath coldBreath = { 0 };
+Secondary secondary;
 sfTexture* missileTexture;
 void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt);
-void CheckCollisionMissileScreen(unsigned _index);
 
 void LoadMissile(void)
 {
@@ -33,6 +33,8 @@ void LoadMissile(void)
 		missileList[i].isAlive = sfFalse;
 
 		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
+
+		secondary = COLDBREATH;
 	}
 }
 
@@ -96,6 +98,18 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 	coldBreath.isAlive = sfTrue;
 }
 
+void UpdateSecondary(sfVector2f _posAim, float _dt)
+{
+	if (secondary == DRONE)
+	{
+	UpdateMissile(_posAim, _dt);
+	}
+	else if (secondary == COLDBREATH)
+	{
+	UpdateColdBreath(_dt);
+	}
+}
+
 void UpdateMissile(sfVector2f _posAim, float _dt)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
@@ -106,7 +120,6 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			if (missileList[i].lifetime <= SECONDARY_PROJECTILE_DURATION)
 			{
 				CheckCollisionMissilesList();
-				//CheckCollisionMissileScreen(i);
 				MoveMissile(i, _posAim, _dt);
 			}
 			else
@@ -145,7 +158,7 @@ void UpdateColdBreath(float _dt)
 		sfFloatRect hitboxColdBreath = { 0 };
 		sfVector2f reactionWall = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
-		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(-1.f, hitboxColdBreath) || HitBoss(-1.f, hitboxColdBreath))
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath))
 		{
 			coldBreath.isAlive = sfFalse;
 			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
@@ -201,29 +214,6 @@ void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt)
 	sfSprite_move(missileList[_index].sprite, movement);
 }
 
-void CheckCollisionMissileScreen(unsigned _index)
-{
-	sfFloatRect missileHitbox = sfSprite_getGlobalBounds(missileList[_index].sprite);
-
-	if (missileHitbox.left < 0)
-	{
-		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0 - missileHitbox.left, 0 });
-	}
-	else if (missileHitbox.left + missileHitbox.width > SCREEN_WIDTH)
-	{
-		sfSprite_move(missileList[_index].sprite, (sfVector2f) { SCREEN_WIDTH - (missileHitbox.left + missileHitbox.width), 0 });
-	}
-
-	if (missileHitbox.top < 0)
-	{
-		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0, 0 - missileHitbox.top });
-	}
-	else if (missileHitbox.top + missileHitbox.height > SCREEN_HEIGHT)
-	{
-		sfSprite_move(missileList[_index].sprite, (sfVector2f) { 0, SCREEN_HEIGHT - (missileHitbox.top + missileHitbox.height) });
-	}
-}
-
 void CheckCollisionMissilesList(void)
 {
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
@@ -264,4 +254,9 @@ void CheckCollisionMissilesList(void)
 			}
 		}
 	}
+}
+
+Secondary GetSecondary(void)
+{
+	return secondary;
 }

@@ -9,6 +9,8 @@
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
 #define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2
 
+#define BOSS_PART_NUMBER 9
+
 #define RUNAWAY_TIMER 4.f
 
 #define BOSS_FIRERATE 2.f
@@ -54,7 +56,6 @@ typedef struct Boss1
 	sfSprite* track;
 	sfSprite* steamTank;
 	sfSprite* gunCariage;
-	sfSprite* spriteCanon;
 	float timerCanon;
 	sfSprite* spriteTurretLCase;
 	sfSprite* spriteTurretLBase;
@@ -66,7 +67,9 @@ typedef struct Boss1
 	float cooldownShoot;
 
 	sfBool bossReacting;
-	sfBool state;
+	sfBool isAlive;
+	sfBool isFreezed;
+	float timerFreezed;
 
 	float bossLife;
 

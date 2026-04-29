@@ -2,7 +2,8 @@
 
 void MoveBoss1(sfVector2f _move);
 void UpdateBossReaction(float _dt);
-
+void FreezeBoss(void);
+sfSprite* bossSpriteList[BOSS_PART_NUMBER];
 Boss boss;
 
 void LoadBoss(void)
@@ -34,43 +35,54 @@ void SwitchBoss(char _index, sfVector2f _position)
 		boss.boss1->spriteTurretLCanon = CreateSprite(GetAsset("Assets/Boss/1/TurretCanon_Placeholder.png"), positionTurret1, 1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretLCanon);
 		sfSprite_setOrigin(boss.boss1->spriteTurretLCanon, (sfVector2f) { hitbox.width, hitbox.height / 2.f });
+		bossSpriteList[0] = boss.boss1->spriteTurretLCanon;
 
 		boss.boss1->spriteTurretRCanon = CreateSprite(GetAsset("Assets/Boss/1/TurretCanon_Placeholder.png"), positionTurret2, -1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretRCanon);
 		sfSprite_setOrigin(boss.boss1->spriteTurretRCanon, (sfVector2f) { hitbox.width, hitbox.height / 2.f });
+		bossSpriteList[1] = boss.boss1->spriteTurretRCanon;
 
 		boss.boss1->spriteTurretLBase = CreateSprite(GetAsset("Assets/Boss/1/TurretBase_Placeholder.png"), positionTurret1, 1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretLBase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretLBase, (sfVector2f) { hitbox.width, hitbox.height / 2.f });
+		bossSpriteList[2] = boss.boss1->spriteTurretLBase;
 
 		boss.boss1->spriteTurretRBase = CreateSprite(GetAsset("Assets/Boss/1/TurretBase_Placeholder.png"), positionTurret2, -1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretRBase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretRBase, (sfVector2f) { hitbox.width, hitbox.height / 2.f });
+		bossSpriteList[3] = boss.boss1->spriteTurretRBase;
 
 		boss.boss1->spriteTurretLCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamberTEST_Placeholder-export.png"), positionTurret1, 1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretLCase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretLCase, (sfVector2f) { 0, hitbox.height / 2.f });
+		bossSpriteList[4] = boss.boss1->spriteTurretLCase;
 
 		boss.boss1->spriteTurretRCase = CreateSprite(GetAsset("Assets/Boss/1/TurretChamberTEST_Placeholder-export.png"), positionTurret2, -1.f, 1.f);
 		hitbox = sfSprite_getLocalBounds(boss.boss1->spriteTurretRCase);
 		sfSprite_setOrigin(boss.boss1->spriteTurretRCase, (sfVector2f) { 0, hitbox.height / 2.f });
+		bossSpriteList[5] = boss.boss1->spriteTurretRCase;
 
 		Offset = (sfVector2f){ 0, Offset.y + hitbox.height / 2.f };
 		sfVector2f positionTopBoss = ADD_VECTOR(_position, Offset);
 
 		boss.boss1->steamTank = CreateSprite(GetAsset("Assets/Boss/1/SteamTank_Placeholder.png"), positionTopBoss, 1.f, 1.f);
 		SetSpriteOriginFoot(boss.boss1->steamTank);
+		bossSpriteList[6] = boss.boss1->steamTank;
 
 		boss.boss1->gunCariage = CreateSprite(GetAsset("Assets/Boss/1/GunCariage_Placeholder.png"), positionTopBoss, 1.f, 1.f);
 		SetSpriteOriginFoot(boss.boss1->gunCariage);
+		bossSpriteList[7] = boss.boss1->gunCariage;
 
 		boss.boss1->track = CreateSprite(GetAsset("Assets/Boss/1/Track_Placeholder.png"), positionTrack, 1.f, 1.f);
 		SetSpriteOriginFoot(boss.boss1->track);
+		bossSpriteList[8] = boss.boss1->track;
 
 		boss.boss1->playerPositionToBoss = PLAYER_NOT_IN_ARENA;
 		boss.boss1->bossLife = 72.f;
 		boss.boss1->cooldownShoot = 2;
-		boss.boss1->state = sfTrue;
+		boss.boss1->isAlive = sfTrue;
+		boss.boss1->isFreezed = sfFalse;
+		boss.boss1->timerFreezed = 0;
 	}
 }
 
@@ -88,6 +100,24 @@ void UpdateBoss(float _dt)
 		}
 
 	}
+	if (boss.boss1->isFreezed)
+	{
+		boss.boss1->timerFreezed += _dt;
+		if (boss.boss1->timerFreezed > FREEZE_TIMER)
+		{
+			boss.boss1->isFreezed = sfFalse;
+			for (int i = (int)BOSS_PART_NUMBER - 1; i >= 0; i--)
+			{
+				sfSprite_setColor(bossSpriteList[i], (sfColor) { 255, 255, 255, 255 });
+			}
+			boss.boss1->timerFreezed = 0.f;
+		}
+		else
+		{
+			_dt = _dt / 2.f;
+		}
+	}
+
 	sfFloatRect pRect = GetPlayerRect();
 
 	sfFloatRect bossSolids[3] = { 0 };
@@ -96,7 +126,7 @@ void UpdateBoss(float _dt)
 	bossSolids[2] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretRCase);
 
 	sfVector2f push = TestCollisionBossPlayer(pRect, bossSolids, 3, AXIS_BOTH);
-	if (boss.boss1->state)
+	if (boss.boss1->isAlive)
 	{
 		HandlePlayerBossCollision(push);
 		CheckBossPlayerState(_dt);
@@ -121,7 +151,7 @@ void MoveBoss1(sfVector2f _move)
 
 sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 {
-	if (boss.boss1->state)
+	if (boss.boss1->isAlive)
 	{
 		sfFloatRect bossSolids[3] = { 0 };
 		bossSolids[0] = sfSprite_getGlobalBounds(boss.boss1->steamTank);
@@ -133,6 +163,18 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 			{
 				if (i == 0)
 				{
+					if (_degat == FREEZE_DMG)
+					{
+						if (boss.boss1->isFreezed)
+						{
+							boss.boss1->timerFreezed = 0.f;
+						}
+						else
+						{
+							FreezeBoss();
+							return sfTrue;
+						}
+					}
 					boss.boss1->bossLife -= _degat;
 					if (sfSprite_getPosition(boss.boss1->track).x > ARENA_CENTER)
 					{
@@ -452,7 +494,18 @@ void DestroyBoss(void)
 	DestroyVisualEntity(boss.boss1->spriteTurretRCase);
 	DestroyVisualEntity(boss.boss1->spriteTurretRBase);
 	DestroyVisualEntity(boss.boss1->spriteTurretRCanon);
-	boss.boss1->state = sfFalse;
+	boss.boss1->isAlive = sfFalse;
+	boss.boss1->isFreezed = sfFalse;
+	boss.boss1->timerFreezed = 0.f;
 	Free(boss.boss1);
 	boss.boss1 = NULL;
+}
+
+void FreezeBoss(void)
+{
+	for (int i = (int)BOSS_PART_NUMBER - 1; i >= 0; i--)
+	{
+		sfSprite_setColor(bossSpriteList[i], (sfColor) { 180, 180, 255, 255 });
+		boss.boss1->isFreezed = sfTrue;
+	}
 }
