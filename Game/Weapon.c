@@ -1,4 +1,5 @@
 #include "Weapon.h"
+#include "Missile.h"
 
 Weapon weapon;
 
@@ -111,6 +112,7 @@ void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 
 Weapon GetWeapon()
 {
+	weapon.secondary = GetSecondary();
 	return weapon;
 }
 

@@ -50,6 +50,7 @@ typedef struct Weapon
 	RailGun railGun;
 	MiSteal miSteal;
 	WeaponType weaponType;
+	Secondary secondary;
 	sfBool isRight;
 
 }Weapon;

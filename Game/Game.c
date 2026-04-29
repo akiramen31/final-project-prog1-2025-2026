@@ -173,7 +173,7 @@ void UpdateGame(float _dt)
 
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
-				UpdateMissile(GetAimPosition(), _dt);
+				UpdateSecondary(GetAimPosition(), _dt);
 			}
 		}
 		else

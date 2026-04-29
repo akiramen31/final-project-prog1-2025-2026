@@ -1,6 +1,6 @@
 #include "Player.h"
-#include "Missile.h"
 #include "Aim.h"
+#include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
 
@@ -476,8 +476,33 @@ void UpdateFireControl(float _dt)
 	{
 		if (player.canShoot)
 		{
-			AddMissile(GetPlayerPosition(), player.weapon.isRight);
-			player.canShoot = sfFalse;
+			if (player.weapon.secondary == DRONE)
+			{
+				if (player.ener.energy > 50.f)
+				{
+					AddMissile(GetPlayerPosition(), player.weapon.isRight);
+					player.ener.energy -= 50.f;
+					player.canShoot = sfFalse;
+
+				}
+			}
+			if (player.weapon.secondary == COLDBREATH)
+			{
+				if (player.ener.energy > 40.f)
+				{
+					printf("glaglagla");
+					ShooterType shooterType = { 0 };
+					shooterType.weaponPos = WEAPON_ORIGIN;
+					shooterType.shootPosition.x = 5.f;
+					shooterType.shootPosition.y = 0.f;
+					shooterType.bulletType = LIGHT;
+					shooterType.isRighted = player.weapon.isRight;
+					shooterType.isAlly = sfTrue;
+					AddColdBreath(GetPlayerPosition(), GetAimPosition(), shooterType);
+					player.ener.energy -= 40.f;
+					player.canShoot = sfFalse;
+				}
+			}
 		}
 	}
 	if (DEV_WEAPON)
