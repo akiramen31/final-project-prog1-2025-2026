@@ -378,6 +378,8 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		// liberer lancienne GRID
 		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
 		sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
+		FreeGrid(tableau.grid[ennemy->ennemyEntity.type]);
+		FreeGrid(tableau.collision);
 		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
 
