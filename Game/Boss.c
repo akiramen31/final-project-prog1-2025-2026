@@ -89,17 +89,20 @@ void SwitchBoss(char _index, sfVector2f _position)
 
 void UpdateBoss(float _dt)
 {
-	if (DEV_BOSS)
+	if (boss.boss1->isAlive)
 	{
-		if (sfKeyboard_isKeyPressed(sfKeyM))
+		if (DEV_BOSS)
 		{
-			MoveBoss1((sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX * 2 * _dt, 0.f });
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyL))
-		{
-			MoveBoss1((sfVector2f) { -PLAYER_HORIZONTAL_SPEED_MAX * 2 * _dt, 0.f });
-		}
+			if (sfKeyboard_isKeyPressed(sfKeyM))
+			{
+				MoveBoss1((sfVector2f) { PLAYER_HORIZONTAL_SPEED_MAX * 2 * _dt, 0.f });
+			}
+			if (sfKeyboard_isKeyPressed(sfKeyL))
+			{
+				MoveBoss1((sfVector2f) { -PLAYER_HORIZONTAL_SPEED_MAX * 2 * _dt, 0.f });
+			}
 
+		}
 	}
 	if (boss.boss1->isFreezed)
 	{
@@ -498,8 +501,6 @@ void DestroyBoss1(void)
 	boss.boss1->isAlive = sfFalse;
 	boss.boss1->isFreezed = sfFalse;
 	boss.boss1->timerFreezed = 0.f;
-	Free(boss.boss1);
-	boss.boss1 = NULL;
 }
 
 void FreezeBoss(void)
