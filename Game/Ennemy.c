@@ -44,7 +44,7 @@ void LoadEnemy(void)
 		ennemyEntity[DRONE_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
 		ennemyEntity[DRONE_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[DRONE_SMALL].ennemydata.energyRegen = 15.f;
-		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 3.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 700.f;
 
@@ -58,7 +58,7 @@ void LoadEnemy(void)
 		ennemyEntity[CROWLER_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
 		ennemyEntity[CROWLER_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[CROWLER_SMALL].ennemydata.energyRegen = 15.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 3.f;
+		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 700.f;
 
@@ -73,7 +73,7 @@ void LoadEnemy(void)
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energyRegen = 15.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 3.f;
+		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.accelerationMax = 10.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 700.f;
 
@@ -378,6 +378,8 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		// liberer lancienne GRID
 		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
 		sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
+		FreeGrid(tableau.grid[ennemy->ennemyEntity.type]);
+		FreeGrid(tableau.collision);
 		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
 
@@ -423,10 +425,10 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 	sfFloatRect bouns = GetBounsEnemy(_index);
 	bouns.left -= ennemy->ennemyEntity.region.left;
-	bouns.top -= ennemy->ennemyEntity.region.top;
+	bouns.top -= ennemy->ennemyEntity.region.top + 1;
 	sfIntRect bounsEnnemy = FloatRectIntoIntRect(bouns);
 	_cible.left -= ennemy->ennemyEntity.region.left;
-	_cible.top -= ennemy->ennemyEntity.region.top;
+	_cible.top -= ennemy->ennemyEntity.region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
 
 
@@ -448,12 +450,13 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 		tableau.new[ennemy->ennemyEntity.type] = sfFalse;
 
-		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
+ 		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
 
 		while (GetListSize(listeWait) > 0)
 		{
 			// test sol
-			sfVector2u* temp = GetElement(listeWait, MinResultCase(ennemy->ennemyEntity.type))->value;
+			int min = MinResultCase(ennemy->ennemyEntity.type);
+			sfVector2u* temp = GetElement(listeWait, min)->value;
 			caseGet = *temp;
 			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsCible.width,bounsCible.height };
 			if (TestColision(caseRecherche))//si sur sol
@@ -472,12 +475,13 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				if (!TestColision(caseRecherche) &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur++;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur = 
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 			}
-			RetirerListWait(0);
+			RetirerListWait(min);
 		}
 		if (DEBUG_MODE_A_STAR)
 		{
@@ -511,7 +515,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
-	switch (tableau.grid[ennemy->ennemyEntity.type][bounsEnnemy.left][bounsEnnemy.top].direction)
+	switch (tableau.grid[ennemy->ennemyEntity.type][bounsEnnemy.top][bounsEnnemy.left].direction)
 	{
 	case EMPTY_DIRECTION:
 		break;
