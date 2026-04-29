@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Boss.h"
 #include "Missile.h"
+#include "Parallax.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -14,12 +15,14 @@ void UpdateCollider(void);
 Game game;
 float timer;
 float timerRoomPause = PAUSE_ROOM_DURATION;
+float timerstartLevel = 0;
 
 void LoadGame(void)
 {
+	LoadParallax();
 	game = (Game){ 0 };
+	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	LoadBackground(GetAsset("Assets/Maps/Level1.png"), 1.f);
 	LoadBullet();
 	LoadWeapon();
 	LoadPlayer();
@@ -30,11 +33,16 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
+
 	LoadMap();
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
 
+	timerstartLevel = 0;
+
+	SetMap(LEVEL1);
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
 	case 0:
@@ -141,24 +149,37 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-	if (!PauseGameCameraMoveRoom() && timerRoomPause >= PAUSE_ROOM_DURATION)
+	if (sfTrue /*PauseGame*/)
 	{
-		if (GetPlayerLife() <= 0)
+		if (!PauseGameCameraMoveRoom() || timerstartLevel <= START_GAME_CAM_DURATION)
 		{
-			SetMap(GetActualyMap());
-			AddPlayerLife(PLAYER_MAX_HEALTH);
+			if (timerRoomPause >= PAUSE_ROOM_DURATION)
+			{
+				if (GetPlayerLife() <= 0)
+				{
+					SetMap(GetActualyMap());
+					AddPlayerLife(PLAYER_MAX_HEALTH);
+				}
+
+				UpdatePlayer(_dt);
+				UpdateEnemy(_dt);
+
+				//UpdateGUI(_dt);
+				UpdateCollider();
+				if (GetActualyMap() == LEVEL1)
+				{
+					UpdateBoss(_dt);
+				}
+
+				UpdateBullet(_dt);
+				UpdateMisteal(_dt);
+				UpdateSecondary(GetAimPosition(), _dt);
+			}
 		}
-
-		UpdatePlayer(_dt);
-		UpdateEnemy(_dt);
-
-		//UpdateGUI(_dt);
-		UpdateCollider();
-		if (GetActualyMap() == LEVEL1)
+		else
 		{
-			UpdateBoss(_dt);
+			timerRoomPause = 0;
 		}
-
 		UpdateBullet(_dt);
 		UpdateMisteal(_dt);
 		UpdateMissile(GetMousePositionToOrigin(), _dt);
@@ -167,14 +188,21 @@ void UpdateGame(float _dt)
 	{
 		//timerRoomPause = 0;
 	}
+		if (timerRoomPause <= PAUSE_ROOM_DURATION)
+		{
+			timerRoomPause += _dt;
+		}
 
-	if (timerRoomPause <= PAUSE_ROOM_DURATION)
-	{
-		timerRoomPause += _dt;
-	}
+		if (timerstartLevel <= START_GAME_CAM_DURATION)
+		{
+			timerstartLevel += _dt;
+		}
 
 	UpdateHUD(_dt);
 	UpdateCamera(_dt);
+		UpdateCamera(_dt);
+		UpdateParallax(_dt);
+	}
 }
 
 void UpdateCollider(void)

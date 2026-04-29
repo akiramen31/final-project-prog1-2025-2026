@@ -14,7 +14,6 @@
 #define DEGRE_ROTATION 300.0f
 #define PI 3.1415
 
-
 typedef struct Missile
 {
 	sfSprite* sprite;
@@ -36,10 +35,13 @@ typedef struct ColdBreath
 
 void LoadMissile(void);
 void UpdateMissile(sfVector2f _pos,float _dt);
+void UpdateSecondary(sfVector2f _posAim, float _dt);
 void AddMissile(sfVector2f _pos, sfBool _isRighted);
 void CheckCollisionMissilesList(void);
 
 void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
+void UpdateColdBreath(float _dt);
 
+Secondary GetSecondary(void);
 
 #endif // !ENEMY_H

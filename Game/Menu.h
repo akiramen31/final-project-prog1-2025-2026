@@ -46,6 +46,7 @@ typedef struct SelectionMenu
 
 typedef struct Menu
 {
+	sfSprite* background;
 	sfSprite* overlay;
 	sfColor highlightTextColor;
 	sfColor textColor;

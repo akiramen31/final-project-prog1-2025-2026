@@ -1,4 +1,5 @@
 #include "HUD.h"
+#include "Camera.h"
 
 HUD hud;
 
@@ -27,6 +28,7 @@ void UpdateHUD(float _dt)
 	for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
 	{
 		sfSprite_setOrigin(hud.life[i], (sfVector2f) { 16, 16 });
+
 		if (life <= i)
 		{
 			sfSprite_setScale(hud.life[i], (sfVector2f) { 0 });

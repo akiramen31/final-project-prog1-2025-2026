@@ -35,6 +35,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Missile.h" />
+    <ClInclude Include="Parallax.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
@@ -56,6 +57,7 @@
     <ClCompile Include="Map.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Missile.c" />
+    <ClCompile Include="Parallax.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Weapon.c" />
   </ItemGroup>
