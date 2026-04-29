@@ -185,3 +185,26 @@ sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
 		return sfFalse;
 	}
 }
+
+void ScaleImage(sfImage** _image, int _scale)
+{
+	sfImage* image = *_image;
+	sfVector2u imageSize = sfImage_getSize(image);
+	unsigned int newW = imageSize.x * _scale;
+	unsigned int newH = imageSize.y * _scale;
+
+	*_image = sfImage_create(newW, newH);
+
+	for (unsigned int y = 0; y < newH; y++)
+	{
+		for (unsigned int x = 0; x < newW; x++)
+		{
+			// Pixel correspondant dans l'image source
+			unsigned int imageX = x / _scale;
+			unsigned int imageY = y / _scale;
+
+			sfColor color = sfImage_getPixel(image, imageX, imageY);
+			sfImage_setPixel(*_image, x, y, color);
+		}
+	}
+}

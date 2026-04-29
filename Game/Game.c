@@ -2,7 +2,6 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
-#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
@@ -34,11 +33,12 @@ void LoadGame(void)
 	{
 		LoadBoss();
 	}
+
+	LoadMap();
 	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
-	LoadAim();
 
 	timerstartLevel = 0;
 
@@ -180,7 +180,14 @@ void UpdateGame(float _dt)
 		{
 			timerRoomPause = 0;
 		}
-
+		UpdateBullet(_dt);
+		UpdateMisteal(_dt);
+		UpdateMissile(GetMousePositionToOrigin(), _dt);
+	}
+	else
+	{
+		//timerRoomPause = 0;
+	}
 		if (timerRoomPause <= PAUSE_ROOM_DURATION)
 		{
 			timerRoomPause += _dt;
@@ -191,9 +198,8 @@ void UpdateGame(float _dt)
 			timerstartLevel += _dt;
 		}
 
-		UpdateHUD(_dt);
-		UpdateAim(_dt);
-
+	UpdateHUD(_dt);
+	UpdateCamera(_dt);
 		UpdateCamera(_dt);
 		UpdateParallax(_dt);
 	}

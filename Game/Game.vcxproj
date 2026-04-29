@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Aim.h" />
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Box.h" />
@@ -41,7 +40,6 @@
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Aim.c" />
     <ClCompile Include="Backup.c" />
     <ClCompile Include="Boss.c" />
     <ClCompile Include="Box.c" />

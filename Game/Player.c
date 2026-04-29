@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "Aim.h"
 #include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
@@ -116,7 +115,7 @@ void UpdatePlayer(float _dt)
 
 	UpdateAnimation(_dt);
 
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
+	MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
@@ -529,7 +528,7 @@ void UpdateFireControlRailgun(void)
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
 		sfSound_play(player.shootSound);
-		UseWeaponRailgun(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		UseWeaponRailgun(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
 
@@ -538,7 +537,7 @@ void UpdateFireControlMisteal(void)
 	if (GetBulletCount() < MISTEAL_ALLY_MAX)
 	{
 		sfSound_play(player.shootSound);
-		UseWeaponMisteal(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		UseWeaponMisteal(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
 
