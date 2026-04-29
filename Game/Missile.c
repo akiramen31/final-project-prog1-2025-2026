@@ -1,4 +1,7 @@
 #include "Missile.h"
+#include "Ennemy.h"
+#include "Boss.h"
+#include "Player.h"
 
 Missile missileList[MISSILE_MAX] = { 0 };
 sfTexture* missileTexture;
@@ -11,7 +14,7 @@ void LoadMissile(void)
 	for (unsigned i = 0; i < MISSILE_MAX; i++)
 	{
 		missileList[i].sprite = CreateSprite(missileTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
-		SetSpriteOriginMiddel(missileList[i].sprite);
+		SetSpriteOriginMiddle(missileList[i].sprite);
 
 		sfVector2f missilePosition = { 0 };
 
@@ -22,6 +25,8 @@ void LoadMissile(void)
 		missileList[i].isAlive = sfFalse;
 
 		missileList[i].speed = 30.f;
+
+		missileList[i].music = CreateMusic("Assets/Musics/drone_sound.ogg", 5.f, sfFalse);
 	}
 }
 
@@ -31,6 +36,7 @@ void AddMissile(sfVector2f _pos, sfBool _isRighted)
 	{
 		if (missileList[i].isAlive == sfFalse)
 		{
+			sfMusic_play(missileList[i].music);
 			missileList[i].isAlive = sfTrue;
 			missileList[i].lifetime = 0; 
 			missileList[i].rotation = -90; 
@@ -57,21 +63,23 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			if (missileList[i].lifetime <= MISSILE_DURATION)
 			{
 				CheckCollisionMissilesList();
-				CheckCollisionMissileScreen(i);
+				//CheckCollisionMissileScreen(i);
 				MoveMissile(i, _posAim, _dt);
 			}
 			else
 			{
 				missileList[i].isAlive = sfFalse;
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
+				sfMusic_stop(missileList[i].music);
 				continue;
 			}
 			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(missileList[i].sprite), AXIS_BOTH);
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0)
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)))
 			{
+				sfMusic_stop(missileList[i].music);
 				missileList[i].isAlive = sfFalse;
 				sfSprite_setPosition(missileList[i].sprite, (sfVector2f) { 0, 0 });
 				continue;

@@ -27,7 +27,7 @@ sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position)
 
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _animation, const float _dt)
 {
-	_animation->timeActualy += _dt;
+	_animation->timeActualy += _dt * DT_SLOW;
 
 	sfSprite_setTextureRect(_sprite, _animation->rectActualy);
 	if (_animation->timeActualy > _animation->frameDuration)
@@ -52,7 +52,7 @@ void SetSpriteOriginFoot(sfSprite* _sprite)
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height });
 }
 
-void SetSpriteOriginMiddel(sfSprite* _sprite)
+void SetSpriteOriginMiddle(sfSprite* _sprite)
 {
 	sfFloatRect box = sfSprite_getLocalBounds(_sprite);
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });
@@ -83,9 +83,39 @@ void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _t
 		return NULL;
 	}
 
-	for (int i = 0; i < _rowCount; i++)
+	for (unsigned i = 0; i < _rowCount; i++)
 	{
 		grid[i] = &temp[i * _typeSize * _columnCount];
+	}
+
+	return grid;
+}
+
+void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
+{
+	char** grid = (char**)CreateGrid(_columnCount, _rowCount, _typeSize);
+	char** previousGrid = (char**)_previousGrid;
+	if (!grid)
+	{
+		return NULL;
+	}
+	unsigned columnToCopy = _previousColumnCount;
+	if (_previousColumnCount > _columnCount)
+	{
+		columnToCopy = _columnCount;
+	}
+	unsigned rowToCopy = (unsigned)(_previousRowCount * _typeSize);
+	if (_previousRowCount > _rowCount)
+	{
+		rowToCopy = (int)(_rowCount * _typeSize);
+	}
+
+	for (unsigned i = 0; i < columnToCopy; i++)
+	{
+		for (unsigned j = 0; j < rowToCopy; j++)
+		{
+			grid[i][j] = previousGrid[i][j];
+		}
 	}
 
 	return grid;
@@ -123,12 +153,22 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 {
 	float diff = _target - _current;
 
-	while (diff < -180.0f) diff += 360.0f;
-	while (diff > 180.0f) diff -= 360.0f;
+	while (diff < -180.0f) 
+	{
+		diff += 360.0f;
+	}
+
+	while (diff > 180.0f) 
+	{
+		diff -= 360.0f;
+	}
 
 	float step = _speed * _dt;
 
-	if (fabsf(diff) <= step) return _target;
+	if (fabsf(diff) <= step) 
+	{
+		return _target;
+	}
 
 	return _current + (diff > 0 ? step : -step);
 }

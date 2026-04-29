@@ -32,6 +32,7 @@ typedef enum IntSave
 	FULL_SCREEN,
 	TROPHY,
 	DEV_MODE_FLY,
+	MUSIC_ACTUALY,
 	INT_COUNT
 
 }IntSave;

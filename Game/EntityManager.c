@@ -327,13 +327,16 @@ sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play)
 	entityManager.sound = temp;
 
 	entityManager.sound[entityManager.soundCount].ptr = sfMusic_createFromFile(_fileMusic);
-	sfSound_setVolume(entityManager.sound[entityManager.soundCount].ptr, _volume);
-	if (_play)
+	if(entityManager.sound[entityManager.soundCount].ptr)
 	{
-		sfMusic_play(entityManager.sound[entityManager.soundCount].ptr);
+		sfMusic_setVolume(entityManager.sound[entityManager.soundCount].ptr, _volume);
+		if (_play)
+		{
+			sfMusic_play(entityManager.sound[entityManager.soundCount].ptr);
+		}
+		entityManager.sound[entityManager.soundCount].type = MUSIC;
+		entityManager.soundCount++;
 	}
-	entityManager.sound[entityManager.soundCount].type = MUSIC;
-	entityManager.soundCount++;
 	return entityManager.sound[entityManager.soundCount - 1].ptr;
 }
 
@@ -691,7 +694,7 @@ void PollEvent(void)
 
 void Update(void)
 {
-	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock));
+	float dt = sfTime_asSeconds(sfClock_restart(entityManager.clock)) / DT_SLOW;
 
 	if (dt > 0.05f)
 	{

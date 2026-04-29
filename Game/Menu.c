@@ -14,50 +14,63 @@ void LoadMenu(void)
 {
 	//General
 	menu = (Menu){ 0 };
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(), sfTrue);
+
+	//Sprites
+	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
+	menu.overlay = CreateSprite(GetAsset("Assets/Sprites/starting_menu_overlay.png"), (sfVector2f) { 0 }, 8.f, 60.f);
+	//mainMenu
+	menu.mainMenu.textBox[0] = GetAsset("Assets/Sprites/starting_menu_text1.png");
+	menu.mainMenu.textBox[1] = GetAsset("Assets/Sprites/starting_menu_text2.png");
+	menu.mainMenu.infoBox = CreateSprite(menu.mainMenu.textBox[0], (sfVector2f) { 0 }, 8.f, 40.f);
+	menu.mainMenu.logo[0] = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
+	menu.mainMenu.logo[1] = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
+
+	//selectionMenu
+	sfTexture* tempButtons = GetAsset("Assets/Sprites/selection_menu_buttons.png");
+	sfTexture* tempIcons = GetAsset("Assets/Sprites/selection_menu_icons.png");
+	sfTexture* tempMap = GetAsset("Assets/Sprites/selection_menu_map.png");
+	for (int i = 0; i < 3; i++)
+	{
+		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72.f, 376.f + 256.f * i }, 0.f, 60.f);
+		menu.selectionMenu.sideIcon[i] = CreateSprite(tempIcons, (sfVector2f) { 72.f, 376.f + 256.f * i }, 0.f, 50.f);
+		menu.selectionMenu.mapIcon[i] = CreateSprite(tempMap, (sfVector2f) { 288.f, 112.f + (i * 232.f) }, 0.f, 60.f);
+		menu.selectionMenu.mapOverlay[i] = CreateSprite(tempMap, (sfVector2f) { 288.f, 112.f + (i * 232.f) }, 0.f, 50.f);
+		sfSprite_setTextureRect(menu.selectionMenu.sideButton[i], (sfIntRect) { 0, 0, 18, 18 });
+		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], (sfIntRect) { 16 * i, 0, 16, 16 });
+		sfSprite_setTextureRect(menu.selectionMenu.mapIcon[i], (sfIntRect) { 0, 24 * i, 56, 24 });
+		sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 48, 56, 24 });
+		sfSprite_setOrigin(menu.selectionMenu.sideButton[i], (sfVector2f) { 9.f, 9.f });
+		sfSprite_setOrigin(menu.selectionMenu.sideIcon[i], (sfVector2f) { 8.f, 8.f });
+	}
+
+	//Musics
+	float volume = 2.f;
+	menu.musics[0] = CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", volume, sfFalse);
+	menu.musics[1] = CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", volume, sfFalse);
+	menu.musics[2] = CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", volume, sfFalse);
+	menu.musics[3] = CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", volume, sfFalse);
+	menu.musics[4] = CreateMusic("Assets/Musics/1917_Over_There.ogg", volume, sfFalse);
+
+	sfMusic_play(menu.musics[GetIntFromSave(MUSIC_ACTUALY)]);
 
 	//Texts
 	menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255 };
 	menu.textColor = sfWhite;
 	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
-
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
 	}
-	//Sprites
-	LoadBackground(GetAsset("Assets/Sprites/menu_background.png"), 8.f);
-	menu.overlay = CreateSprite(GetAsset("Assets/Sprites/starting_menu_overlay.png"), (sfVector2f) { 0 }, 8.f, 60.f);
-	//Musics
-	menu.musics[0] = CreateMusic("Assets/Musics/1914-Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfFalse);
-	menu.musics[1] = CreateMusic("Assets/Musics/1914-United_Forces_March.ogg", 10.f, sfFalse);
-	menu.musics[2] = CreateMusic("Assets/Musics/1915-Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfFalse);
-	menu.musics[3] = CreateMusic("Assets/Musics/1917-Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfFalse);
-	menu.musics[4] = CreateMusic("Assets/Musics/1917-Over_There.ogg", 10.f, sfFalse);
-
-	sfMusic_play(menu.musics[rand() % NB_MUSICS]);
-
-	SetViewZoom(1.f);
-	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
-
-	//Main
-	//Logo
-	menu.mainMenu.logo[0] = CreateSprite(GetAsset("Assets/Sprites/vinyl.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
-	menu.mainMenu.logo[1] = CreateSprite(GetAsset("Assets/Sprites/cog.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
-	menu.mainMenu.logo[2] = CreateSprite(GetAsset("Assets/Sprites/title.png"), (sfVector2f) { 1504, 552 }, 8.f, 50.f);
-	sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), sfFalse);
-
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		SetSpriteOriginMiddel(menu.mainMenu.logo[i]);
+		SetSpriteOriginMiddle(menu.mainMenu.logo[i]);
 	}
-
-	//Top buttons
 	sfVector2f positionTopButton[5] = { { 32, 23 }, { 332, 23 }, { 850, 23 },{ 1308, 23 }, { 1600, 23 } };
 	for (int i = 0; i < 5; i++)
 	{
 		menu.mainMenu.topButtons[i] = CreateText(font, positionTopButton[i], 50, 5.f);
 	}
-	//Keybinds
 	char* bufferKeyType[NB_KEY] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < NB_KEY; i++)
 	{
@@ -65,34 +78,20 @@ void LoadMenu(void)
 		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
 		sfText_setString(menu.mainMenu.keyType[i], bufferKeyType[i]);
 	}
-
 	for (int i = 0; i < NB_KEY; i++)
 	{
 		UpdateTextKey(i, GetKeyFromSave(i));
 	}
-	//credits
-	menu.mainMenu.name[0] = "Akira";
-	menu.mainMenu.name[1] = "Benjamin";
-	menu.mainMenu.name[2] = "Alice";
-	menu.mainMenu.name[3] = "Ylix";
-	menu.mainMenu.name[4] = "Pierre";
-	menu.mainMenu.name[5] = "AILLET";
-	menu.mainMenu.name[6] = "MEURISSE PEREZ";
-	menu.mainMenu.name[7] = "VOLLAIRE";
-	menu.mainMenu.name[8] = "MASSON";
-	menu.mainMenu.name[9] = "PAGLIAZZO";
-
-	//infoDisplay
+	menu.mainMenu.name[0] = "AILLET A.";
+	menu.mainMenu.name[1] = "MASSON Y.";
+	menu.mainMenu.name[2] = "MEURISSE PEREZ B.";
+	menu.mainMenu.name[3] = "PAGLIAZZO P.";
+	menu.mainMenu.name[4] = "VOLLAIRE A.";
 	for (int i = 0; i < MAX_INFO; i++)
 	{
 		menu.mainMenu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * (float)i }, 50, 5.f);
 	}
-
-	//Selection
-	sfTexture* tempButtons = GetAsset("Assets/Sprites/selection_menu_buttons.png");
-	sfTexture* tempIcons = GetAsset("Assets/Sprites/selection_menu_icons.png");
-	sfTexture* tempMap = GetAsset("Assets/Sprites/selection_menu_map.png");
-	sfVector2f temp[2] = { {830, 840}, {1410, 840}};
+	sfVector2f temp[2] = { {830, 840}, {1410, 840} };
 	for (int i = 0; i < 2; i++)
 	{
 		menu.selectionMenu.bottomText[i] = CreateText(font, temp[i], 60, 5.f);
@@ -101,20 +100,9 @@ void LoadMenu(void)
 	}
 	sfText_setString(menu.selectionMenu.bottomText[0], "next");
 	sfText_setString(menu.selectionMenu.bottomText[1], "back");
-	for (int i = 0; i < 3; i++)
-	{
-		menu.selectionMenu.sideButton[i] = CreateSprite(tempButtons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 60.f);
-		menu.selectionMenu.sideIcon[i] = CreateSprite(tempIcons, (sfVector2f) { 72, 376 + 256 * i }, 0.f, 50.f);
-		menu.selectionMenu.mapIcon[i] = CreateSprite(tempMap, (sfVector2f){ 288, 112 + (i * 232) }, 0.f, 60.f);
-		menu.selectionMenu.mapOverlay[i] = CreateSprite(tempMap, (sfVector2f) { 288, 112 + (i*232) }, 0.f, 50.f);
-		sfSprite_setTextureRect(menu.selectionMenu.sideButton[i], (sfIntRect) { 0, 0, 18, 18 });
-		sfSprite_setTextureRect(menu.selectionMenu.sideIcon[i], (sfIntRect){16*i, 0, 16, 16});
-		sfSprite_setTextureRect(menu.selectionMenu.mapIcon[i], (sfIntRect) { 0, 24 * i, 56, 24 });
-		sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 48 , 56, 24 });
-		sfSprite_setOrigin(menu.selectionMenu.sideButton[i], (sfVector2f) { 9, 9 });
-		sfSprite_setOrigin(menu.selectionMenu.sideIcon[i], (sfVector2f) { 8, 8 });
-	}
 
+	SetViewZoom(1.f);
+	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 	SetMenuState(STARTING_MENU);
 }
 
@@ -248,7 +236,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					SetMenuState(menu.state + 1);
 				}
 			}
-			if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
+			else if (CompareColor(sfText_getColor(menu.selectionMenu.bottomText[1]), menu.highlightTextColor))
 			{
 				if (menu.state == 5)
 				{
@@ -431,18 +419,10 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
 			{
 				sfText_setColor(menu.mainMenu.infoDisplay[i], highlightColor);
-				if (i < 5)
-				{
-					sfText_setString(menu.mainMenu.infoDisplay[i], menu.mainMenu.name[i + 5]);
-				}
 			}
 			else
 			{
 				sfText_setColor(menu.mainMenu.infoDisplay[i], baseColor);
-				if (i < 5)
-				{
-					sfText_setString(menu.mainMenu.infoDisplay[i], menu.mainMenu.name[i]);
-				}
 			}
 		}
 		break;
@@ -471,8 +451,8 @@ void SetMenuState(MenuState _state)
 				sfText_setScale(menu.selectionMenu.bottomText[i], invisible);
 			}
 			//Loading the main menu
-			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), NULL);
-			for (int i = 0; i < 3; i++)
+			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), sfFalse);
+			for (int i = 0; i < 0; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], visibleSprite);
 			}
@@ -495,6 +475,7 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.mainMenu.topButtons[2], "Credits");
 		sfText_setString(menu.mainMenu.topButtons[3], "Quit");
 		sfText_setString(menu.mainMenu.topButtons[4], "");
+		sfSprite_setScale(menu.mainMenu.infoBox, visibleSprite);
 
 		menu.state = _state;
 		switch (menu.state)
@@ -543,6 +524,9 @@ void SetMenuState(MenuState _state)
 				sfText_setScale(menu.mainMenu.keyType[i], visibleText);
 			}
 			break;
+		case STARTING_MENU:
+			sfSprite_setScale(menu.mainMenu.infoBox, invisible);
+			break;
 		default:
 			break;
 		}
@@ -552,7 +536,7 @@ void SetMenuState(MenuState _state)
 		if (menu.state < 5)
 		{
 			//Unloading the main menu
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], invisible);
 			}
@@ -569,8 +553,9 @@ void SetMenuState(MenuState _state)
 			{
 				sfText_setScale(menu.mainMenu.topButtons[i], invisible);
 			}
+			sfSprite_setScale(menu.mainMenu.infoBox, invisible);
 			//Loading the selection menu
-			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/selection_menu_overlay.png"), NULL);
+			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/selection_menu_overlay.png"), sfFalse);
 			for (int i = 0; i < 3; i++)
 			{
 				sfSprite_setScale(menu.selectionMenu.sideButton[i], visibleSprite);
@@ -617,7 +602,7 @@ void SetMenuState(MenuState _state)
 				sfSprite_setScale(menu.selectionMenu.mapOverlay[i], visibleSprite);
 				if (GetIntFromSave(UNLOCKED_LEVEL) >= i)
 				{
-					sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) {56,24,56,24});
+					sfSprite_setTextureRect(menu.selectionMenu.mapOverlay[i], (sfIntRect) { 56, 24, 56, 24 });
 				}
 			}
 			break;
@@ -868,18 +853,12 @@ int WhichMusicPlaying()
 
 void NextMusic()
 {
-	int musicPlaying = WhichMusicPlaying();
-	sfMusic_stop(menu.musics[musicPlaying]);
-	if (musicPlaying == NB_MUSICS - 1)
-	{
-		sfMusic_play(menu.musics[0]);
-	}
-	else
-	{
-		sfMusic_play(menu.musics[musicPlaying + 1]);
-	}
 	if (menu.state < 5)
 	{
+		int musicPlaying = WhichMusicPlaying();
+		sfMusic_stop(menu.musics[musicPlaying]);
+		sfMusic_play(menu.musics[(musicPlaying + 1) % NB_MUSICS]);
+		SetIntToSave(MUSIC_ACTUALY, (musicPlaying + 1) % NB_MUSICS);
 		sfSprite_setRotation(menu.mainMenu.logo[0], 0);
 	}
 }

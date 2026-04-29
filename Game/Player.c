@@ -9,6 +9,9 @@ Player player;
 float timerDash = 0;
 float timerFaling = 0;
 float timerLastEnergyConso = 0;
+float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
+
+sfBool playerInvicible = sfFalse;
 
 void UpdateMovePlayer(float _dt);
 
@@ -21,6 +24,7 @@ void UpdateCooldown(float _dt);
 void UpdateFireControl(float _dt);
 void UpdateFireControlRailgun(void);
 void UpdateFireControlSteamAxe(float _dt);
+void UpdateFireControlMisteal(void);
 
 void UpdateSteamAxe(float _dt);
 void UpdateEnergy(float _dt);
@@ -47,8 +51,8 @@ void LoadPlayer(void)
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.walking.frameCount = 8;
-	player.walking.frameDuration = 0.1f;
+	player.walking.frameCount = 2;
+	player.walking.frameDuration = 0.2f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
 
@@ -59,7 +63,7 @@ void LoadPlayer(void)
 	pos.x = 100;
 	pos.y = 32;
 
-	player.lifeMax = 3;
+	player.lifeMax = PLAYER_MAX_HEALTH;
 	player.life = player.lifeMax;
 
 	player.ener.energyMax = 100;
@@ -67,35 +71,40 @@ void LoadPlayer(void)
 	player.ener.energyRegen = 10;
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
+
+	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 5.f, sfFalse);
+	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 5.f, sfFalse);
+	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 5.f, sfFalse);
+	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 5.f, sfFalse);
+	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 5.f, sfFalse);
 }
 
 void UpdatePlayer(float _dt)
 {
-	if (!player.isAttacking)
-	{
-		player.weapon = GetWeapon();
-	}
+	player.weapon = GetWeapon();
 	UpdateWeaponPlayer(_dt);
 	UpdateEnergy(_dt);
 
 	if (GetIntFromSave(DEV_MODE_FLY))
 	{
-		int val = 500;
+		pos = GetPlayerPosition();
+
+		int flySpeed = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += val * _dt;
+			pos.x += flySpeed * _dt * DT_SLOW;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			pos.x -= val * _dt;
+			pos.x -= flySpeed * _dt * DT_SLOW;
 		}
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
 		{
-			pos.y += val * _dt;
+			pos.y += flySpeed * _dt * DT_SLOW;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 		{
-			pos.y -= val * _dt;
+			pos.y -= flySpeed * _dt * DT_SLOW;
 		}
 		sfRectangleShape_setPosition(player.collision, pos);
 	}
@@ -106,10 +115,17 @@ void UpdatePlayer(float _dt)
 	}
 
 	UpdateAnimation(_dt);
+	// Weapons logic remains unchanged
+	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
 		SetPlayerPosition(player.spawn);
+	}
+
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
+	{
+		timerlastDamageReceive += _dt * DT_SLOW;
 	}
 }
 
@@ -127,7 +143,7 @@ void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
-		timerDash += _dt;
+		timerDash += _dt * DT_SLOW;
 	}
 
 	if (timerDash >= PLAYER_DASH_DURATION)
@@ -144,6 +160,7 @@ void UpdateMovePlayer(float _dt)
 			{
 				player.velocity.x = 1;
 			}
+
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
@@ -174,9 +191,10 @@ void UpdateMovePlayer(float _dt)
 			{
 				if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 				{
+					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
-					timerFaling += PLAYER_JUMP_FORGIVE;
+					timerFaling += PLAYER_JUMP_FORGIVE * DT_SLOW;
 					player.isGrounded = sfFalse;
 				}
 				else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
@@ -213,7 +231,6 @@ void UpdateMovePlayer(float _dt)
 			player.velocity.x = -PLAYER_DASH_POWER;
 		}
 	}
-
 
 	ColisionMapPlayer(_dt);
 }
@@ -303,9 +320,6 @@ void ColisionMapPlayer(float _dt)
 			player.velocity.x = 0;
 		}
 	}
-
-	// Weapons logic remains unchanged
-	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 }
 
 void MoveZonePlayer(float _dt)
@@ -345,6 +359,10 @@ void UpdateAnimation(float _dt)
 {
 	if (player.velocity.x != 0 && player.velocity.y == 0)
 	{
+		if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+		{
+			sfSound_play(player.walkSound);
+		}
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
 	}
 	else /*if (player.velocity.x == 0)*/
@@ -352,24 +370,52 @@ void UpdateAnimation(float _dt)
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
 	}
 
-	if (player.direction)
+	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		printf("%d", (int)timerlastDamageReceive);
+
+		if (((int)(timerlastDamageReceive * 100) % 2) == 0)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 0, 0 });
+		}
+		else
+		{
+			if (player.direction)
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+			}
+			else
+			{
+				sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+			}
+		}
 	}
 	else
 	{
-		sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		if (player.direction)
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+		}
+		else
+		{
+			sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+		}
 	}
 	SetSpriteOriginFoot(player.sprite);
 
-	sfSprite_setPosition(player.sprite, sfRectangleShape_getPosition(player.collision));
+	sfSprite_setPosition(player.sprite, GetPlayerPosition());
 }
 
 void DamagePlayer(int _damage)
 {
-	if (timerDash >= PLAYER_DASH_COOLDOWN)
+	if (!playerInvicible)
 	{
-		player.life -= _damage;
+		if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+		{
+			sfSound_play(player.hitSound);
+			player.life -= _damage;
+			timerlastDamageReceive = 0;
+		}
 	}
 }
 
@@ -399,6 +445,9 @@ void UpdateCooldown(float _dt)
 				player.weapon.steamAxe.attackType = NOATTACK;
 				player.cooldown += 1.f / FIRE_RATE_STEAMAXE;
 				break;
+			case MISTEAL:
+				player.cooldown += 1.f / FIRE_RATE_MISTEAL;
+				break;
 			default:
 				break;
 			}
@@ -425,6 +474,18 @@ void UpdateFireControl(float _dt)
 	else if (player.weapon.weaponType == STEAMAXE)
 	{
 		UpdateFireControlSteamAxe(_dt);
+	}
+	if (player.weapon.weaponType == MISTEAL)
+	{
+		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		{
+			if (player.canShoot)
+			{
+				UpdateFireControlMisteal();
+				player.isAttacking = sfTrue;
+				player.canShoot = sfFalse;
+			}
+		}
 	}
 	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
 	{
@@ -457,7 +518,17 @@ void UpdateFireControlRailgun(void)
 {
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
-		UseWeapon(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+		sfSound_play(player.shootSound);
+		UseWeaponRailgun(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
+	}
+}
+
+void UpdateFireControlMisteal(void)
+{
+	if (GetBulletCount() < MISTEAL_ALLY_MAX)
+	{
+		sfSound_play(player.shootSound);
+		UseWeaponMisteal(GetPlayerPosition(), GetAimPosition(), player.weapon.isRight);
 	}
 }
 
@@ -467,6 +538,7 @@ void UpdateFireControlSteamAxe(float _dt)
 	{
 		if (player.canShoot)
 		{
+			sfSound_play(player.cutSound);
 			player.pressTime += _dt;
 		}
 	}
@@ -476,24 +548,24 @@ void UpdateFireControlSteamAxe(float _dt)
 		{
 			if (player.ener.energy >= 25.f)
 			{
-				player.weapon.steamAxe.attackType = MEDIUM;
+				ChangeAttackType(MEDIUM);
 				player.ener.energy -= 25.f;
 			}
 			else
 			{
-				player.weapon.steamAxe.attackType = LIGHT;
+				ChangeAttackType(LIGHT);
 			}
 		}
 		else
 		{
 			if (player.ener.energy >= 50.0f)
 			{
-				player.weapon.steamAxe.attackType = HEAVY;
+				ChangeAttackType(HEAVY);
 				player.ener.energy -= 50.0f;
 			}
 			else
 			{
-				player.weapon.steamAxe.attackType = MEDIUM;
+				ChangeAttackType(MEDIUM);
 				player.ener.energy -= 25.f;
 			}
 		}
@@ -579,7 +651,7 @@ void UpdateEnergy(float _dt)
 {
 	if (timerLastEnergyConso < player.ener.energyRegenCooldown)
 	{
-		timerLastEnergyConso += _dt;
+		timerLastEnergyConso += _dt * DT_SLOW;
 	}
 	else
 	{
@@ -676,6 +748,7 @@ void SetPlayerLifeMax(int _lifeMax)
 void AddPlayerLife(int _life)
 {
 	player.life += _life;
+
 	if (player.life > player.lifeMax)
 	{
 		player.life = player.lifeMax;
@@ -735,4 +808,27 @@ void HandlePlayerBossCollision(sfVector2f _push)
 			player.velocity.x = 0.f;
 		}
 	}
+}
+
+void ChangePlayerInvicibility(void)
+{
+	if (playerInvicible)
+	{
+		playerInvicible = sfFalse;
+	}
+	else
+	{
+		playerInvicible = sfTrue;
+	}
+}
+
+sfBool ColisionWithPlayer(sfFloatRect _rect)
+{
+	sfFloatRect playerRect = GetPlayerRect();
+
+	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
+	{
+		return sfTrue;
+	}
+	return sfFalse;
 }

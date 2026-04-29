@@ -18,10 +18,12 @@
 #define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
+#define DT_SLOW 2
+
 
 // NEEDED FOR BULLET AND WEAPON
 #define PLAYER_COLLISION_WIDTH 12
-#define PLAYER_COLLISION_HEIGHT 32
+#define PLAYER_COLLISION_HEIGHT 30
 #define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
 #define BPP 32
@@ -31,12 +33,14 @@
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
-#define DEBUG_MODE_A_STAR sfTrue
-#define DEV_PIERRE_ENEMY sfTrue
+#define DEBUG_MODE_A_STAR sfFalse
+#define DEV_PIERRE_ENEMY sfFalse
+#define DEV_ENEMY_BASIC sfTrue
 
 #define TILE_SIZE 16
 
-#define G 5.81f
+//#define G 5.81f
+#define G 9.81f
 
 typedef enum {
 	AXIS_X,
@@ -105,9 +109,10 @@ void UpdateText(sfText* _text, char* _format, char* _string, int _value);
 sfBool IsColidingPointHitbox(sfFloatRect* _hitbox, sfVector2f _position);
 sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animation, float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
-void SetSpriteOriginMiddel(sfSprite* _sprite);
+void SetSpriteOriginMiddle(sfSprite* _sprite);
 void CopyStingToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
+void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);

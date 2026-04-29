@@ -3,6 +3,7 @@
 int lastCamPositonName;
 int val;
 float cameraZoom;
+float cameraNewZoom;
 
 void UpdatePositionCameraLevel1(float _dt);
 void UpdatePositionCameraLevel2(float _dt);
@@ -27,7 +28,26 @@ void UpdateCamera(float _dt)
 		SetDefaultView(_dt);
 		break;
 	}
+
+	if (cameraZoom != cameraNewZoom)
+	{
+		if (cameraZoom > cameraNewZoom)
+		{
+			cameraZoom -= CAMERA_ZOOM_SPEED;
+		}
+		else
+		{
+			cameraZoom += CAMERA_ZOOM_SPEED;
+		}
+
+		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_SPEED && cameraZoom > cameraNewZoom - CAMERA_ZOOM_SPEED)
+		{
+			cameraZoom = cameraNewZoom;
+		}
+	}
+	SetViewZoom(cameraZoom);
 }
+
 
 void MoveViewSlow(sfVector2f _pos, float _dt)
 {
@@ -37,21 +57,56 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	tempPos.x += size.x / 2;
 	tempPos.y += size.y / 2;
 
-	sfVector2f newPos = (sfVector2f){ VECTOR(tempPos, _pos) };
+	sfVector2f vectorLength = (sfVector2f){ VECTOR(tempPos, _pos) };
 
-	newPos.x *= _dt;
-	newPos.y *= _dt;
+	double angle = atan2f(vectorLength.y, vectorLength.x);
 
-	newPos.x *= CAMERA_SPEED;
-	newPos.y *= CAMERA_SPEED;
+	sfVector2f move;
 
-	if (POW2(newPos.x) < CAMERA_LOCK && POW2(newPos.y) < CAMERA_LOCK)
+	move.x = _dt * cos(angle) * CAMERA_SPEED;
+	move.y = _dt * sin(angle) * CAMERA_SPEED;
+
+
+	if (POW2(vectorLength.x) > POW2(1000))
+	{
+		if (vectorLength.x < 0)
+		{
+			move.x = -1000;
+		}
+		else
+		{
+			move.x = 1000;
+		}
+	}
+	if (POW2(vectorLength.y) > POW2(1000))
+	{
+		if (vectorLength.y < 0)
+		{
+			move.y = -1000;
+		}
+		else
+		{
+			move.y = 1000;
+		}
+	}
+
+
+	if (POW2(move.x) > POW2(vectorLength.x))
+	{
+		move.x = vectorLength.x;
+	}
+	if (POW2(move.y) > POW2(vectorLength.y))
+	{
+		move.y = vectorLength.y;
+	}
+
+	if (POW2(move.x) < CAMERA_LOCK && POW2(move.y) < CAMERA_LOCK)
 	{
 		SetViewCenter(_pos);
 	}
 	else
 	{
-		MoveView(newPos);
+		MoveView(move);
 	}
 }
 
@@ -69,23 +124,23 @@ void UpdatePositionCameraLevel1(float _dt)
 			switch (lastCamPositonName)
 			{
 			case 1:
-				cameraZoom = 0.2f;
+				cameraNewZoom = 0.2f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
 			case 2:
-				cameraZoom = 0.35f;
+				cameraNewZoom = 0.35f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
 			case 3:
-				cameraZoom = 0.25f;
+				cameraNewZoom = 0.25f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
 				//for biggest room
 			case 4:
-				cameraZoom = 0.3f;
+				cameraNewZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
 					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
@@ -114,7 +169,7 @@ void UpdatePositionCameraLevel1(float _dt)
 				break;
 				//for boss room
 			case 5:
-				cameraZoom = 0.42f;
+				cameraNewZoom = 0.42f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -123,7 +178,6 @@ void UpdatePositionCameraLevel1(float _dt)
 				break;
 			}
 			MoveViewSlow(pos, _dt);
-			SetViewZoom(cameraZoom);
 		}
 		else
 		{
@@ -181,7 +235,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 16:
 			case 19:
 			case 26:
-				cameraZoom = 0.2f;
+				cameraNewZoom = 0.2f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -193,7 +247,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 22:
 			case 23:
 			case 25:
-				cameraZoom = 0.3f;
+				cameraNewZoom = 0.3f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -207,7 +261,7 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 24:
 			case 31:
 			case 32:
-				cameraZoom = 0.3f;
+				cameraNewZoom = 0.3f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				if (zone[val].hitbox.top + zone[val].hitbox.height - zone[val].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
 				{
@@ -225,7 +279,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				//for wide room
 			case 27:
 			case 29:
-				cameraZoom = 0.3f;
+				cameraNewZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
 					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
@@ -242,7 +296,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 				//for biggest room
 			case 28:
-				cameraZoom = 0.3f;
+				cameraNewZoom = 0.3f;
 				if (zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
 					pos.x = zone[val].hitbox.left + zone[val].hitbox.width - zone[val].hitbox.width / 3;
@@ -271,7 +325,7 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 				//for boss room
 			case 30:
-				cameraZoom = 0.42f;
+				cameraNewZoom = 0.42f;
 				pos.x = zone[val].hitbox.left + zone[val].hitbox.width / 2;
 				pos.y = zone[val].hitbox.top + zone[val].hitbox.height / 2;
 				break;
@@ -280,7 +334,6 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 			}
 			MoveViewSlow(pos, _dt);
-			SetViewZoom(cameraZoom);
 		}
 		else
 		{
@@ -323,12 +376,17 @@ void SetDefaultView(float _dt)
 {
 	sfVector2f pos = GetPlayerPosition();
 	MoveViewSlow((sfVector2f) { pos.x, pos.y - TILE_SIZE * 3 }, _dt);
-	cameraZoom = 0.2f;
-	SetViewZoom(cameraZoom);
+	cameraNewZoom = 0.2f;
 	ChangeLastPos(0, 0);
 }
 
 float GetCameraZoom(void)
 {
 	return cameraZoom;
+}
+
+float SetCameraZoom(float zoom)
+{
+	cameraZoom = zoom;
+	cameraNewZoom = zoom;
 }

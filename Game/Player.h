@@ -7,14 +7,18 @@
 #define PLAYER_HORIZONTAL_SPEED_MAX 250
 #define PLAYER_VERTICAL_SPEED_MAX 400
 
-#define PLAYER_FALL_SPEED_MAX 1
-#define PLAYER_JUMP_POWER 1.5f
+#define PLAYER_FALL_SPEED_MAX 1.1f
+#define PLAYER_JUMP_POWER 2.f
 
-#define PLAYER_DASH_POWER 2.0f
+#define PLAYER_DASH_POWER 3.7f
 #define PLAYER_DASH_COOLDOWN 0.5f
-#define PLAYER_DASH_DURATION 0.08f
+#define PLAYER_DASH_DURATION 0.13f
 
 #define PLAYER_JUMP_FORGIVE 0.1f
+
+#define PLAYER_DAMAGE_IMUNITY_DURATION 2.f
+
+#define PLAYER_MAX_HEALTH 10
 
 typedef struct EnergyPlayerStruct
 {
@@ -57,6 +61,12 @@ typedef struct Player
 
 	Animation running;
 	Animation walking;
+
+	sfSound* walkSound;
+	sfSound* jumpSound;
+	sfSound* hitSound;
+	sfSound* cutSound;
+	sfSound* shootSound;
 }Player;
 
 void LoadPlayer(void);
@@ -88,4 +98,8 @@ void TpPlayerBoss(void);
 void SetTpPlayerBoss(sfVector2f _pos);
 
 void HandlePlayerBossCollision(sfVector2f _push);
+
+void ChangePlayerInvicibility(void);
+
+sfBool ColisionWithPlayer(sfFloatRect _rect);
 #endif

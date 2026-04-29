@@ -146,6 +146,7 @@ typedef struct EnemyEntity
 	float life;
 	float energy;
 	sfFloatRect region;
+	char* gridColider;
 	sfVector2f velocity;
 }EnemyEntity;
 

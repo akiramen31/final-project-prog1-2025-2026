@@ -2,10 +2,12 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
+#include "Aim.h"
 #include "Ennemy.h"
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
+#include "Missile.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -29,11 +31,32 @@ void LoadGame(void)
 		LoadBoss();
 	}
 	LoadMap(background);
-
+	sfRenderWindow_setMouseCursorVisible(GetRenderWindow(),sfFalse);
 	LoadHUD();
 	//LoadGUI();
 	LoadMissile();
 	LoadAim();
+
+	switch (GetIntFromSave(MUSIC_ACTUALY))
+	{
+	case 0:
+		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfTrue);
+		break;
+	case 1:
+		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 10.f, sfTrue);
+		break;
+	case 2:
+		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfTrue);
+		break;
+	case 3:
+		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfTrue);
+		break;
+	case 4:
+		CreateMusic("Assets/Musics/1917_Over_There.ogg", 10.f, sfTrue);
+		break;
+	default:
+		break;
+	}
 }
 
 void PollEventGame(sfEvent* _event)
@@ -43,24 +66,26 @@ void PollEventGame(sfEvent* _event)
 	case sfEvtKeyPressed:
 		KeyPressedGame(&_event->key);
 		break;
+	case sfEvtKeyReleased:
+		switch (_event->key.code)
+		{
+		case sfKeyO:
+			ChangePlayerInvicibility();
+			break;
+		default:
+			break;
+		}
+		break;
 	case sfEvtMouseMoved:
 		break;
 	case sfEvtMouseButtonPressed:
 		if (DEV_ENNEMY)
 		{
-			MapData* mapData = GetMapData();
-			sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
-			sfVector2f viewPos = GetViewPosition();
-			sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y };
- 			printf("x = %d y = %d a= %d\n",
-				(int) {mousePos.x / mapData->caseSize.x},
-				(int){mousePos.y / mapData->caseSize.y},
-                sfImage_getPixel(
-                    mapData->image,
-                    (unsigned int)(mousePos.x / mapData->caseSize.x),
-                    (unsigned int)(mousePos.y / mapData->caseSize.y)
-                ).a
-            );
+			//MapData* mapData = GetMapData();
+			//sfVector2i mousePosI = sfMouse_getPositionRenderWindow(GetRenderWindow());
+			//sfVector2f viewPos = GetViewPosition();
+			//sfVector2f mousePos = { (float)mousePosI.x * GetCameraZoom() + viewPos.x, (float)mousePosI.y * GetCameraZoom() + viewPos.y };
+			//printf("x = %d y = %d a= %d\n", (int) { mousePos.x / mapData->caseSize.x }, (int) { mousePos.y / mapData->caseSize.y }, sfImage_getPixel(mapData->image, (unsigned int)(mousePos.x / mapData->caseSize.x), (unsigned int)(mousePos.y / mapData->caseSize.y)).a);
 		}
 	default:
 		break;
@@ -107,6 +132,9 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF7:
 			TpPlayerBoss();
 			break;
+		case sfKeyF12:
+			KillPlayer();
+			break;
 		default:
 			break;
 		}
@@ -115,6 +143,12 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
+	if (GetPlayerLife() <= 0)
+	{
+		SetMap(GetActualyMap());
+		AddPlayerLife(PLAYER_MAX_HEALTH);
+	}
+
 	UpdatePlayer(_dt);
 	UpdateEnemy(_dt);
 
@@ -126,9 +160,13 @@ void UpdateGame(float _dt)
 	{
 		UpdateBoss(_dt);
 	}
+
 	UpdateBullet(_dt);
+	UpdateMisteal(_dt);
 	UpdateMissile(GetAimPosition(), _dt);
 	UpdateCamera(_dt);
+
+
 }
 
 void UpdateCollider(void)

@@ -11,7 +11,7 @@ void LoadAim(void)
 
 	sfTexture* texture = GetAsset("Assets/Sprites/crosshair.png");
 	aim.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 41);
-	SetSpriteOriginMiddel(aim.sprite);
+	SetSpriteOriginMiddle(aim.sprite);
 
 	aim.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(aim.collision, (sfVector2f) { AIM_SIZE, AIM_SIZE });
