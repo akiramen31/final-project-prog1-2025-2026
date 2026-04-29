@@ -7,8 +7,8 @@
 
 #if DEV_PIERRE_ENEMY == 1
 
-#define TIMER_ASTAR 0.1f
-#define JUMP_FORCE 5
+#define TIMER_ASTAR 0.5f
+#define JUMP_FORCE 4
 #define MAX_ENRGIE 300
 
 typedef enum EnemyType
@@ -22,7 +22,6 @@ typedef enum EnemyType
 	SOLDIER_SMALL,
 	SOLDIER_MEDIUM,
 	SOLDIER_HEAVY,
-	ENEMY_TYPE_COUNT,
 	ALEATORY,
 }EnemyType;
 
@@ -84,6 +83,21 @@ typedef struct Case
 	enum Direction direction;
 	sfBool jetPackActive;
 }Case;
+
+typedef struct Case2
+{
+	int jumpForce;
+	enum Direction direction;
+	sfBool jetPackActive;
+}Case2;
+
+typedef struct Tableau
+{
+	Case2** grid;
+	sfFloatRect region;
+	char** collision;
+	sfBool new;
+}Tableau;
 
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);

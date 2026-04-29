@@ -4,10 +4,11 @@
 #if DEV_PIERRE_ENEMY
 
 void UpdateEnemyI(float _dt, int _index);
-void CreateEnemyRandom(EnnemyEntity* _ennemy);
-void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type);
+void CreateEnemyRandom(Ennemy* _ennemy);
+void CreateEnemy(Ennemy* _ennemy, EnemyType _type);
 void CalculMoveEnemy(float _dt, int _index);
 ActionDemander AStar(int _index, sfVector2f _positionCible);
+ActionDemander AStar2(int _index, sfFloatRect _cible);
 float CalculResultAStar(Case _case);
 int MinResultCase(void);
 void AjoutListWait(sfVector2u _caseAjout);
@@ -16,6 +17,7 @@ sfBool TestColision(unsigned x, unsigned y);
 void DebugTab(Case _case);
 sfColor GetColorsPixelMap(sfVector2f _position);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
+sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -25,6 +27,8 @@ List* listeWait;
 
 sfSprite* sprite;
 sfTexture* texture;
+
+Tableau tableau[ALEATORY];
 
 void LoadEnemy(void)
 {
@@ -37,7 +41,7 @@ void LoadEnemy(void)
 	else // charger les diférent type d'ennemy
 	{
 		ennemyEntity[3].type = 0;
-		ennemyEntity[3].ennemydata.life = 20.f;
+		ennemyEntity[3].ennemydata.life = 3.f;
 		ennemyEntity[3].ennemydata.energyMax = (float)MAX_ENRGIE;
 		ennemyEntity[3].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[3].ennemydata.energyRegen = 15.f;
@@ -52,7 +56,7 @@ void LoadEnemy(void)
 
 
 		ennemyEntity[6].type = 1;
-		ennemyEntity[6].ennemydata.life = 10.f;
+		ennemyEntity[6].ennemydata.life = 2.f;
 		ennemyEntity[6].ennemydata.energyMax = (float)MAX_ENRGIE;
 		ennemyEntity[6].ennemydata.energy = (float)MAX_ENRGIE;
 		ennemyEntity[6].ennemydata.energyRegen = 15.f;
@@ -89,6 +93,10 @@ void UpdateEnemy(float _dt)
 			UpdateEnemyI(_dt, i);
 		}
 	}
+	for (int i = 0; i < ALEATORY; i++)
+	{
+		tableau[i].new = sfTrue;
+	}
 }
 
 void UpdateEnemyI(float _dt, int _index)
@@ -98,7 +106,7 @@ void UpdateEnemyI(float _dt, int _index)
 	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
-		ennemy->actiondemander = AStar(_index, GetPlayerPosition());
+		ennemy->actiondemander = AStar2(_index, GetPlayerRect());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
@@ -129,7 +137,7 @@ void UpdateEnemyI(float _dt, int _index)
 	}
 }
 
-void CreateEnemyRandom(EnnemyEntity* _ennemy)
+void CreateEnemyRandom(Ennemy* _ennemy)
 {
 	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
@@ -146,25 +154,71 @@ void CreateEnemyRandom(EnnemyEntity* _ennemy)
 	}
 }
 
-void CreateEnemy(EnnemyEntity* _ennemy, EnemyType _type)
+void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 {
 	if (DEV_MODE)
 	{
 		printf("creation d'un ennemy de type %d\n", _type);
 	}
 	//création et aplication des donné de l'ennemy
-	_ennemy->type = _type;
-	_ennemy->ennemydata = ennemyEntity[_type].ennemydata;
-	_ennemy->acceleration = (sfVector2f){ 0,0 };
-	_ennemy->move = (sfVector2f){ 0,0 };
-	_ennemy->state = IDLE;
-	_ennemy->timer = 0.f;
+	_ennemy->ennemyEntity.type = _type;
+	_ennemy->ennemyEntity.ennemydata = ennemyEntity[_type].ennemydata;
+	_ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
+	_ennemy->ennemyEntity.move = (sfVector2f){ 0,0 };
+	_ennemy->ennemyEntity.state = IDLE;
+	_ennemy->ennemyEntity.timer = 0.f;
 
-	_ennemy->isJetpack = ennemyEntity[_type].isJetpack;
-	if (_ennemy->isJetpack)
+	_ennemy->ennemyEntity.isJetpack = ennemyEntity[_type].isJetpack;
+	if (_ennemy->ennemyEntity.isJetpack)
 	{
-		_ennemy->jetpack = ennemyEntity[_type].jetpack;
+		_ennemy->ennemyEntity.jetpack = ennemyEntity[_type].jetpack;
 	}
+
+	switch (_type)
+	{
+	case DRONE_SMALL:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case DRONE_MEDIUM:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case DRONE_HEAVY:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case CROWLER_SMALL:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case CROWLER_MEDIUM:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case CROWLER_HEAVY:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case SOLDIER_SMALL:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case SOLDIER_MEDIUM:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	case SOLDIER_HEAVY:
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
+		break;
+	default:
+		break;
+	}
+	
+	_ennemy->actiondemander = (ActionDemander){ 0 };
+	sfFloatRect floatRect = sfSprite_getGlobalBounds(_ennemy->sprite);
+	sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
 }
 
 void CalculMoveEnemy(float _dt, int _index)
@@ -939,6 +993,86 @@ ActionDemander AStar(int _index, sfVector2f _positionCible)
 	return (ActionDemander) { 0 };
 }
 
+ActionDemander AStar2(int _index, sfFloatRect _cible)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+
+	if (ennemy->ennemyEntity.region.top != tableau[ennemy->ennemyEntity.type].region.top
+		|| ennemy->ennemyEntity.region.left != tableau[ennemy->ennemyEntity.type].region.left)
+	{
+
+		// liberer lancienne GRID
+		tableau[ennemy->ennemyEntity.type].region = ennemy->ennemyEntity.region;
+		tableau[ennemy->ennemyEntity.type].grid = CreateGrid((int)ennemy->ennemyEntity.region.width / TILE_SIZE, (int)ennemy->ennemyEntity.region.width / TILE_SIZE, sizeof(Case2));
+		char** grid = CreateGrid((int)ennemy->ennemyEntity.region.width / TILE_SIZE, (int)ennemy->ennemyEntity.region.height / TILE_SIZE, sizeof(char));
+
+		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			{
+				sfVector2f reaction = Colision((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+				if (reaction.x || reaction.y)
+				{
+					grid[y][x] = 2;
+				}
+				else if (CollisionPassThrough((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+				{
+					grid[y][x] = 1;
+				}
+			}
+		}
+		tableau[ennemy->ennemyEntity.type].collision = grid;
+		tableau[ennemy->ennemyEntity.type].new = sfTrue;
+		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			{
+				printf("%d", tableau[ennemy->ennemyEntity.type].collision[y][x]);
+			}
+			printf("\n");
+		}
+		printf("\n");
+		printf("\n");
+		printf("\n");
+	};
+
+	sfFloatRect bouns = GetBounsEnemy(_index);
+	bouns.left -= ennemy->ennemyEntity.region.left;
+	bouns.top -= ennemy->ennemyEntity.region.top;
+	sfIntRect bounsEnnemy = FloatRectIntoIntRect(bouns);
+	_cible.left -= ennemy->ennemyEntity.region.left;
+	_cible.top -= ennemy->ennemyEntity.region.top;
+	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
+
+	if (tableau[ennemy->ennemyEntity.type].new)
+	{
+		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top});
+		tableau[ennemy->ennemyEntity.type].grid[bounsCible.top][bounsCible.left].direction = 8;
+		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			{
+				printf("%d", tableau[ennemy->ennemyEntity.type].grid[y][x].direction);
+			}
+			printf("\n");
+		}
+		printf("\n");
+		printf("\n");
+		printf("\n");
+
+		tableau[ennemy->ennemyEntity.type].new = sfFalse;
+		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			{
+				tableau[ennemy->ennemyEntity.type].grid[y][x].direction = NO_DIRECTION;
+			}
+		}
+	}
+	
+	return (ActionDemander) { 0 };
+}
+
 float CalculResultAStar(Case _case)
 {
 	return (float) { _case.rangeToDestination + _case.action + MAX_ENRGIE - _case.energie };
@@ -1099,34 +1233,56 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 	return index;
 }
 
+sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect)
+{
+	sfIntRect intRect = { 0 };
+	intRect.left = (int)(_floatRect.left / TILE_SIZE);
+	intRect.top = (int)(_floatRect.top / TILE_SIZE);
+	intRect.height = (int)(_floatRect.height / TILE_SIZE) + 1;
+	intRect.width = (int)(_floatRect.width / TILE_SIZE) + 1;
+
+	return intRect;
+}
+
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 
 	Element* element = CreateElement(ennemy);
 	element->value = ennemy;
-
-	switch (_type)
+	enum EnemyType temp = 0;
+	switch (temp
+)
 	{
+	case DRONE_SMALL:
+		CreateEnemy(ennemy, DRONE_SMALL);
+		break;
+	case DRONE_MEDIUM:
+		break;
+	case DRONE_HEAVY:
+		break;
 	case CROWLER_SMALL:
-		CreateEnemy(&ennemy->ennemyEntity, CROWLER_SMALL);
+		CreateEnemy(ennemy, CROWLER_SMALL);
+		break;
+	case CROWLER_MEDIUM:
+		break;
+	case CROWLER_HEAVY:
 		break;
 	case SOLDIER_SMALL:
-		CreateEnemy(&ennemy->ennemyEntity, SOLDIER_SMALL);
+		CreateEnemy(ennemy, SOLDIER_SMALL);
+		break;
+	case SOLDIER_MEDIUM:
+		break;
+	case SOLDIER_HEAVY:
 		break;
 	case ALEATORY:
-		CreateEnemyRandom(&ennemy->ennemyEntity);
+		CreateEnemyRandom(ennemy);
 		break;
 	default:
 		break;
 	}
 
-	ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), _position, 1, 1);
-	ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-	ennemy->actiondemander = (ActionDemander){ 0 };
 	ennemy->ennemyEntity.region = _region;
-	sfFloatRect floatRect = sfSprite_getGlobalBounds(ennemy->sprite);
-	sfSprite_setOrigin(ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
 
 	InsertElement(listEnnemy, element, 0);
 	SetPositionEnemy(_position, 0);
@@ -1159,13 +1315,17 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 {
 	sfFloatRect hitboxEnemy = { 0 };
+	sfFloatRect hitboxTir = { 0 };
+	sfVector2f touch = { 0 };
 	for (int i = 0; i < GetEnemyCount(); i++)
 	{
 		hitboxEnemy = GetBounsEnemy(i);
-		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			HitEnemyI(i, (sfVector2f) { 1, 1 }, _degat);
-			return sfTrue;
+			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2, hitboxTir.top + hitboxTir.height / 2 };
+			touch.x -= hitboxEnemy.left;
+			touch.y -= hitboxEnemy.top;
+			return HitEnemyI(i, touch, _degat);
 		}
 	}
 	return sfFalse;
