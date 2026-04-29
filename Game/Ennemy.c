@@ -40,6 +40,20 @@ void LoadEnemy(void)
 	}
 	else // charger les diférent type d'ennemy
 	{
+		ennemyEntity[DRONE_SMALL].type = 0;
+		ennemyEntity[DRONE_SMALL].ennemydata.life = 3.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
+		ennemyEntity[DRONE_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
+		ennemyEntity[DRONE_SMALL].ennemydata.energyRegen = 15.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 3.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.accelerationMax = 10.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 700.f;
+
+		ennemyEntity[DRONE_SMALL].isJetpack = sfTrue;
+		ennemyEntity[DRONE_SMALL].jetpack.consomation = 50.f;
+		ennemyEntity[DRONE_SMALL].jetpack.life = 5.f;
+		ennemyEntity[DRONE_SMALL].jetpack.trust = 10.f;
+
 		ennemyEntity[3].type = 0;
 		ennemyEntity[3].ennemydata.life = 3.f;
 		ennemyEntity[3].ennemydata.energyMax = (float)MAX_ENRGIE;
@@ -177,7 +191,7 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 	switch (_type)
 	{
 	case DRONE_SMALL:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case DRONE_MEDIUM:
@@ -189,7 +203,7 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case CROWLER_SMALL:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case CROWLER_MEDIUM:
