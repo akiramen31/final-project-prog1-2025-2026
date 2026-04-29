@@ -15,7 +15,7 @@ void SwitchBoss(char _index, sfVector2f _position)
 {
 	if (boss.boss1 != NULL)
 	{
-		//DestroyBoss1();
+		DestroyBoss1();
 	}
 
 	sfFloatRect hitbox = { 0 };
