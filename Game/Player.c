@@ -92,19 +92,19 @@ void UpdatePlayer(float _dt)
 		int flySpeed = 500;
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
 		{
-			pos.x += flySpeed * _dt * DT_SLOW;
+			pos.x += flySpeed * _dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
 		{
-			pos.x -= flySpeed * _dt * DT_SLOW;
+			pos.x -= flySpeed * _dt;
 		}
 		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
 		{
-			pos.y += flySpeed * _dt * DT_SLOW;
+			pos.y += flySpeed * _dt;
 		}
 		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
 		{
-			pos.y -= flySpeed * _dt * DT_SLOW;
+			pos.y -= flySpeed * _dt;
 		}
 		sfRectangleShape_setPosition(player.collision, pos);
 	}
@@ -115,7 +115,7 @@ void UpdatePlayer(float _dt)
 	}
 
 	UpdateAnimation(_dt);
-	// Weapons logic remains unchanged
+
 	MoveWeapon(GetPlayerPosition(), GetAimPosition(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
@@ -125,7 +125,7 @@ void UpdatePlayer(float _dt)
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		timerlastDamageReceive += _dt * DT_SLOW;
+		timerlastDamageReceive += _dt;
 	}
 }
 
@@ -143,7 +143,7 @@ void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
-		timerDash += _dt * DT_SLOW;
+		timerDash += _dt;
 	}
 
 	if (timerDash >= PLAYER_DASH_DURATION)
@@ -194,7 +194,7 @@ void UpdateMovePlayer(float _dt)
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
-					timerFaling += PLAYER_JUMP_FORGIVE * DT_SLOW;
+					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
 				}
 				else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
@@ -238,16 +238,11 @@ void UpdateMovePlayer(float _dt)
 void ColisionMapPlayer(float _dt)
 {
 	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
-	// ==========================================
-	// 1. RESOLVE Y-AXIS FIRST (Gravity / Falling)
-	// ==========================================
 	sfVector2f reactionY = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y);
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
 
-	// Assuming ColisionBox also takes an axis parameter now:
 	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_Y).y;
 
-	// Handle Pass-Through Platforms
 	if (reactionPassThrough.y < 0)
 	{
 		if (player.velocity.y >= 0 && !(sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN))))
@@ -260,7 +255,6 @@ void ColisionMapPlayer(float _dt)
 	}
 	else
 	{
-		// Handle Normal Grounding
 		if (reactionY.y < 0)
 		{
 			player.isGrounded = sfTrue;
@@ -282,12 +276,6 @@ void ColisionMapPlayer(float _dt)
 		sfRectangleShape_move(player.collision, (sfVector2f) { 0, reactionY.y });
 	}
 
-	// Apply the Y pushback before starting X checks
-
-
-	// ==========================================
-	// 2. RESOLVE X-AXIS SECOND (Running / Dashing)
-	// ==========================================
 	if (timerDash <= PLAYER_DASH_DURATION)
 	{
 		for (int i = 0; i < 10; i++)
@@ -315,7 +303,6 @@ void ColisionMapPlayer(float _dt)
 
 		if (reactionX.x != 0)
 		{
-			// Push out of wall and halt X velocity
 			sfRectangleShape_move(player.collision, (sfVector2f) { reactionX.x, 0 });
 			player.velocity.x = 0;
 		}
@@ -372,8 +359,6 @@ void UpdateAnimation(float _dt)
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
 	{
-		printf("%d", (int)timerlastDamageReceive);
-
 		if (((int)(timerlastDamageReceive * 100) % 2) == 0)
 		{
 			sfSprite_setScale(player.sprite, (sfVector2f) { 0, 0 });
@@ -651,7 +636,7 @@ void UpdateEnergy(float _dt)
 {
 	if (timerLastEnergyConso < player.ener.energyRegenCooldown)
 	{
-		timerLastEnergyConso += _dt * DT_SLOW;
+		timerLastEnergyConso += _dt;
 	}
 	else
 	{
