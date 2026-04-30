@@ -61,6 +61,7 @@ typedef struct Player
 
 	Animation running;
 	Animation walking;
+	Animation dashing;
 
 	sfSound* walkSound;
 	sfSound* jumpSound;

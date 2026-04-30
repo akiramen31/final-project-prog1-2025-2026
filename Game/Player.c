@@ -50,10 +50,15 @@ void LoadPlayer(void)
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.walking.frameCount = 2;
+	player.walking.frameCount = 4;
 	player.walking.frameDuration = 0.2f;
 	player.walking.isLooping = sfTrue;
 	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
+
+	player.dashing.frameCount = 1;
+	player.dashing.frameDuration = 1.f;
+	player.dashing.isLooping = sfFalse;
+	player.dashing.rectActualy = (sfIntRect){ 0,96,32,32 };
 
 	player.canShoot = sfTrue;
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
