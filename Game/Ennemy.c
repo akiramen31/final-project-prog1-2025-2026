@@ -399,7 +399,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					{
 						grid[y][x] = 2;
 					}
-					else if (CollisionPassThrough((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y  * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+					else if (CollisionPassThrough((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
 					{
 						grid[y][x] = 1;
 					}
@@ -450,7 +450,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 		tableau.new[ennemy->ennemyEntity.type] = sfFalse;
 
- 		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
+		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
 
 		while (GetListSize(listeWait) > 0)
 		{
@@ -458,26 +458,78 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 			int min = MinResultCase(ennemy->ennemyEntity.type);
 			sfVector2u* temp = GetElement(listeWait, min)->value;
 			caseGet = *temp;
-			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsCible.width,bounsCible.height };
+			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsEnnemy.width,bounsEnnemy.height };
 			if (TestColision(caseRecherche))//si sur sol
 			{
 				//test gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsCible.width,bounsCible.height };
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur++;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 				//test Droite
-				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsCible.width,bounsCible.height };
+				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				if (!TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				//test haut
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur = 
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+			}
+			else // si pas su sol
+			{
+
+				//test gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				if (!TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
+					)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				//test Droite
+				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				if (!TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
+					)
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				//test haut
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				if (!TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION )
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 			}
@@ -503,6 +555,31 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					else
 					{
 						printf("%d", tableau.grid[ennemy->ennemyEntity.type][y][x].direction);
+					}
+				}
+				printf("\n");
+			}
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+			{
+				for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+				{
+					if (!tableau.grid[ennemy->ennemyEntity.type][y][x].direction)
+					{
+						if (tableau.collision[y][x])
+						{
+							printf("X/");
+						}
+						else
+						{
+							printf("M/");
+						}
+					}
+					else
+					{
+						printf("%d/", tableau.grid[ennemy->ennemyEntity.type][y][x].compteur);
 					}
 				}
 				printf("\n");

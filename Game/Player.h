@@ -60,7 +60,8 @@ typedef struct Player
 	sfVector2f tpBoss;
 
 	Animation running;
-	Animation walking;
+	Animation jumping;
+	Animation idling;
 	Animation dashing;
 
 	sfSound* walkSound;
