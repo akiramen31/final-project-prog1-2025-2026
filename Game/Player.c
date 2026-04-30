@@ -45,15 +45,19 @@ void LoadPlayer(void)
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
 
 	player.running.frameCount = 8;
-
 	player.running.frameDuration = 0.1f;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.walking.frameCount = 4;
-	player.walking.frameDuration = 0.2f;
-	player.walking.isLooping = sfTrue;
-	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
+	player.jumping.frameCount = 4;
+	player.jumping.frameDuration = 0.1f;
+	player.jumping.isLooping = sfTrue;
+	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
+
+	player.idling.frameCount = 4;
+	player.idling.frameDuration = 0.2f;
+	player.idling.isLooping = sfTrue;
+	player.idling.rectActualy = (sfIntRect){ 0,64,16,32 };
 
 	player.dashing.frameCount = 1;
 	player.dashing.frameDuration = 1.f;
@@ -348,17 +352,32 @@ void MoveZonePlayer(float _dt)
 
 void UpdateAnimation(float _dt)
 {
-	if (player.velocity.x != 0 && player.velocity.y == 0)
+	if (timerDash >= PLAYER_DASH_DURATION)
 	{
-		if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+		if (player.velocity.y == 0)
 		{
-			sfSound_play(player.walkSound);
+			if (player.velocity.x != 0)
+			{
+				if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+				{
+					sfSound_play(player.walkSound);
+				}
+				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+			}
+			else if (player.velocity.x == 0)
+			{
+				UpdateAnimationAndGiveIfStop(player.sprite, &player.idling, _dt);
+			}
 		}
-		UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+		else if (player.velocity.y != 0)
+		{
+			UpdateAnimationAndGiveIfStop(player.sprite, &player.jumping, _dt);
+		}
+
 	}
-	else /*if (player.velocity.x == 0)*/
+	if (timerDash < PLAYER_DASH_DURATION)
 	{
-		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
+		UpdateAnimationAndGiveIfStop(player.sprite, &player.dashing, _dt);
 	}
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
