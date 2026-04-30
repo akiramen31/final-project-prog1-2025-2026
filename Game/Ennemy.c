@@ -46,7 +46,7 @@ void LoadEnemy(void)
 		ennemyEntity[DRONE_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 300.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 500.f;
 
 		ennemyEntity[DRONE_SMALL].isJetpack = sfTrue;
 		ennemyEntity[DRONE_SMALL].jetpack.consomation = 50.f;
@@ -60,7 +60,7 @@ void LoadEnemy(void)
 		ennemyEntity[CROWLER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 300.f;
+		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 500.f;
 
 		ennemyEntity[CROWLER_SMALL].isJetpack = sfTrue;
 		ennemyEntity[CROWLER_SMALL].jetpack.consomation = 50.f;
@@ -75,7 +75,7 @@ void LoadEnemy(void)
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 300.f;
+		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 500.f;
 
 		ennemyEntity[SOLDIER_SMALL].isJetpack = sfTrue;
 		ennemyEntity[SOLDIER_SMALL].jetpack.consomation = 20.f;
