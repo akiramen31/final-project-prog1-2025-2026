@@ -89,6 +89,25 @@ void Draw(void)
 			viewChange = sfTrue;
 			sfRenderWindow_setView(entityManager.renderWindow, sfRenderWindow_getDefaultView(entityManager.renderWindow));
 		}
+		else if (elementActual->type == RECTANGLE_SHAPE || elementActual->type == CIRCLE_SHAPE || elementActual->type == CONVEX_SHAPE )
+		{
+			temp = sfShape_getFillColor(elementActual->ptr);
+			sfColor temp2 = sfShape_getOutlineColor(elementActual->ptr);
+			sfShape_setFillColor(elementActual->ptr, (sfColor) { (sfUint8)(temp.r * lightlevel), (sfUint8)(temp.g * lightlevel), (sfUint8)(temp.b * lightlevel), (sfUint8)(temp.a) });
+			sfShape_setOutlineColor(elementActual->ptr, (sfColor) { (sfUint8)(temp2.r * lightlevel), (sfUint8)(temp2.g * lightlevel), (sfUint8)(temp2.b * lightlevel), (sfUint8)(temp2.a) });
+			sfRenderWindow_drawSprite(entityManager.renderWindow, elementActual->ptr, NULL);
+			sfShape_setFillColor(elementActual->ptr, temp);
+			sfShape_setOutlineColor(elementActual->ptr, temp2);
+		}
+		else if (elementActual->type == VERTEX_ARRAY)
+		{
+			sfRenderWindow_drawVertexArray(entityManager.renderWindow, elementActual->ptr, NULL);
+		}
+		else if (elementActual->type == VERTEX_BUFFER)
+		{
+			sfRenderWindow_drawVertexBuffer(entityManager.renderWindow, elementActual->ptr, NULL);
+		}
+
 		elementActual = elementActual->next;
 	}
 
@@ -166,6 +185,18 @@ void CleanupLocal(void)
 		else if (entityManager.visual->type == VIEW && entityManager.visual->ptr != entityManager.view)
 		{
 			sfView_destroy(entityManager.visual->ptr);
+		}
+		else if (entityManager.visual->type == RECTANGLE_SHAPE || entityManager.visual->type == CIRCLE_SHAPE || entityManager.visual->type == CONVEX_SHAPE)
+		{
+			sfShape_destroy(entityManager.visual->ptr);
+		}
+		else if (entityManager.visual->type == VERTEX_ARRAY)
+		{
+			sfVertexArray_destroy(entityManager.visual->ptr);
+		}
+		else if (entityManager.visual->type == VERTEX_BUFFER)
+		{
+			sfVertexBuffer_destroy(entityManager.visual->ptr);
 		}
 		VisualEntity* temp = entityManager.visual;
 		entityManager.visual = (VisualEntity*)entityManager.visual->next;
@@ -306,6 +337,69 @@ sfView* CreateView(sfVector2f _centre, float _zoom, float _drawPlan)
 	return view;
 }
 
+sfRectangleShape* CreateRectangleShape(sfFloatRect _rect, sfColor _fillColor, sfColor _outlineColor, float _drawPlan)
+{
+	sfRectangleShape* rect = sfRectangleShape_create();
+	sfRectangleShape_setSize(rect, (sfVector2f){ _rect.width, _rect.height});
+	sfRectangleShape_setPosition(rect, (sfVector2f) { _rect.left, _rect.top });
+	sfRectangleShape_setFillColor(rect, _fillColor);
+	sfRectangleShape_setOutlineColor(rect, _outlineColor);
+	sfRectangleShape_setOutlineThickness(rect, 1.f);
+	AddVisual(RECTANGLE_SHAPE, rect, _drawPlan);
+	return rect;
+}
+
+sfCircleShape* CreateCircleShape(sfFloatRect _circle, sfColor _fillColor, sfColor _outlineColor, float _drawPlan)
+{
+	sfCircleShape* circle = sfCircleShape_create();
+	sfCircleShape_setRadius(circle, (_circle.width + _circle.height) / 4);
+	sfCircleShape_setPosition(circle, (sfVector2f) { _circle.left, _circle.top });
+	sfCircleShape_setFillColor(circle, _fillColor);
+	sfCircleShape_setOutlineColor(circle, _outlineColor);
+	sfCircleShape_setOutlineThickness(circle, 1.f);
+	AddVisual(CIRCLE_SHAPE, circle, _drawPlan);
+	return circle;
+}
+
+sfConvexShape* CreateConvexShape(sfVector2f* _points, size_t _pointCount, sfVector2f _position, sfColor _fillColor, sfColor _outlineColor, float _drawPlan)
+{
+	sfConvexShape* convex = sfConvexShape_create();
+	sfConvexShape_setPointCount(convex, _pointCount);
+	for (size_t i = 0; i < _pointCount; i++)
+	{
+		sfConvexShape_setPoint(convex, i, _points[i]);
+	}
+	sfConvexShape_setPosition(convex, _position);
+	sfConvexShape_setFillColor(convex, _fillColor);
+	sfConvexShape_setOutlineColor(convex, _outlineColor);
+	sfConvexShape_setOutlineThickness(convex, 1.f);
+	AddVisual(CONVEX_SHAPE, convex, _drawPlan);
+	return convex;
+}
+
+sfVertexArray* CreateVertexArray(sfPrimitiveType _primitiveType, sfVertex* _vertices, size_t _vertexCount, float _drawPlan)
+{
+	sfVertexArray* va = sfVertexArray_create();
+	sfVertexArray_setPrimitiveType(va, _primitiveType);
+	for (size_t i = 0; i < _vertexCount; i++)
+	{
+		sfVertexArray_append(va, _vertices[i]);
+	}
+	AddVisual(VERTEX_ARRAY, va, _drawPlan);
+	return va;
+}
+
+sfVertexBuffer* CreateVertexBuffer(sfPrimitiveType _primitiveType, sfVertexBufferUsage _usage, sfVertex* _vertices, unsigned _vertexCount, float _drawPlan)
+{
+	sfVertexBuffer* vb = sfVertexBuffer_create(_vertexCount, _primitiveType, _usage);
+	if (vb && _vertices)
+	{
+		sfVertexBuffer_update(vb, _vertices, _vertexCount, 0);
+	}
+	AddVisual(VERTEX_BUFFER, vb, _drawPlan);
+	return vb;
+}
+
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
 {
 	int bufferCalcule = entityManager.soundCount + 1;
@@ -374,6 +468,18 @@ void DestroyVisualEntity(void* _entity)
 				else if (elementActual->type == VIEW)
 				{
 					sfView_destroy(elementNext->ptr);
+				}
+				else if (entityManager.visual->type == RECTANGLE_SHAPE || entityManager.visual->type == CIRCLE_SHAPE || entityManager.visual->type == CONVEX_SHAPE)
+				{
+					sfShape_destroy(entityManager.visual->ptr);
+				}
+				else if (entityManager.visual->type == VERTEX_ARRAY)
+				{
+					sfVertexArray_destroy(entityManager.visual->ptr);
+				}
+				else if (entityManager.visual->type == VERTEX_BUFFER)
+				{
+					sfVertexBuffer_destroy(entityManager.visual->ptr);
 				}
 				elementActual->next = elementNext->next;
 				free(elementNext);
@@ -489,6 +595,35 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 	}
 	*newElement = (VisualEntity){ _type, _ptr ,_drawPlan, previous->next };
 	previous->next = newElement;
+}
+
+void ChangeDrawPlan(void* _ptr, float _drawPlan)
+{
+	VisualEntity* element = NULL; 
+	if (_ptr)
+	{
+		VisualEntity* elementActual = entityManager.visual;
+		VisualEntity* elementNext = (VisualEntity*)elementActual->next;
+		while (elementNext)
+		{
+			if (elementNext->ptr == _ptr)
+			{
+				VisualEntity data = { 0, 0, 0, entityManager.visual };
+				VisualEntity* previous = &data;
+				while (previous->next && previous->next->drawPlan >= _drawPlan)
+				{
+					previous = previous->next;
+				}
+				*elementNext = (VisualEntity){ elementNext->type, elementNext->ptr ,_drawPlan, previous->next };
+				previous->next = elementNext;
+				elementActual->next = elementNext->next;
+				return;
+			}
+			elementActual = elementNext;
+			elementNext = (VisualEntity*)elementActual->next;
+		}
+	}
+
 }
 
 

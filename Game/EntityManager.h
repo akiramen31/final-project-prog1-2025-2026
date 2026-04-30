@@ -7,7 +7,12 @@ typedef enum VisualEntityType
 {
 	SPRITE,
 	TEXT,
-	VIEW
+	VIEW,
+	RECTANGLE_SHAPE,
+	CIRCLE_SHAPE,
+	CONVEX_SHAPE,
+	VERTEX_ARRAY,
+	VERTEX_BUFFER,
 }VisualEntityType;
 
 typedef enum SoundEntityType
@@ -88,10 +93,16 @@ sfText* CreateText(sfFont* _font, sfVector2f _position, unsigned _scale, float _
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play);
 sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play);
 sfView* CreateView(sfVector2f _centre, float _zoom, float _drawPlan);
+sfRectangleShape* CreateRectangleShape(sfFloatRect _rect, sfColor _fillColor, sfColor _outlineColor, float _drawPlan);
+sfCircleShape* CreateCircleShape(sfFloatRect _circle, sfColor _fillColor, sfColor _outlineColor, float _drawPlan);
+sfConvexShape* CreateConvexShape(sfVector2f* _points, size_t _pointCount, sfVector2f _position, sfColor _fillColor, sfColor _outlineColor, float _drawPlan);
+sfVertexArray* CreateVertexArray(sfPrimitiveType _primitiveType, sfVertex* _vertices, size_t _vertexCount, float _drawPlan);
+sfVertexBuffer* CreateVertexBuffer(sfPrimitiveType _primitiveType, sfVertexBufferUsage _usage, sfVertex* _vertices, unsigned _vertexCount, float _drawPlan);
 
 void DestroyVisualEntity(void* _entity);
 void DestroySoundEntity(void* _entity);
 void DestroyAssetEntity(void* _entity);
+void ChangeDrawPlan(void* _ptr, float _drawPlan);
 
 void* Calloc(size_t _count, size_t _size);
 void* Realloc(void* _block, size_t _size);

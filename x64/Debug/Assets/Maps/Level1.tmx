@@ -848,7 +848,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="39" name="Trigger" visible="0">
+ <objectgroup id="39" name="Trigger">
   <object id="515" name="1" type="Camera" x="1952" y="560" width="320" height="192"/>
   <object id="517" name="2" type="Camera" x="2784" y="560" width="544" height="304"/>
   <object id="519" name="3" type="Camera" x="3920" y="192" width="432" height="224"/>
