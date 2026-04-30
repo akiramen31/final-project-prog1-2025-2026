@@ -84,7 +84,7 @@ void LoadEnemy(void)
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
-	if (DEV_ENNEMY)
+	if (DEBUG_MODE_A_STAR)
 	{
 		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
 	}
@@ -166,7 +166,7 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 
 void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 {
-	if (DEV_MODE)
+	if (DEBUG_MODE_A_STAR)
 	{
 		printf("creation d'un ennemy de type %d\n", _type);
 	}
@@ -756,7 +756,10 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
 	sfBool isTouch = sfFalse;
-	printf("Color a= %d ", pixelColor.a);
+	if(DEBUG_MODE_A_STAR)
+	{
+		printf("Color a= %d ", pixelColor.a);
+	}
 	if (pixelColor.a == 255)
 	{
 		isTouch = sfTrue;
@@ -768,9 +771,15 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
 		{
 			ennemy->ennemyEntity.ennemydata.life = 0;
-			printf("Enemy toucher avec degat");
+			if(DEBUG_MODE_A_STAR)
+			{
+				printf("Enemy toucher avec degat");
+			}
 		}
-		printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
+		if(DEBUG_MODE_A_STAR)
+		{
+			printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
+		}
 	}
 	return isTouch;
 }
