@@ -16,4 +16,5 @@ void LoadParallax();
 void SetParallaxLayerTexture(int _layer, sfTexture* _texture);
 void SetParallaxLayerBaseOffset(int _layer, int _baseOffset, int _baseOffsetY);
 void UpdateParallax(float _dt);
+void SizeParallaxToCamera (void);
 #endif // !PARALLAX_H
