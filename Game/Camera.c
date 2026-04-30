@@ -34,14 +34,14 @@ void UpdateCamera(float _dt)
 	{
 		if (cameraZoom > cameraNewZoom)
 		{
-			cameraZoom -= CAMERA_ZOOM_SPEED;
+			cameraZoom -= CAMERA_ZOOM_SPEED * _dt;
 		}
 		else
 		{
-			cameraZoom += CAMERA_ZOOM_SPEED;
+			cameraZoom += CAMERA_ZOOM_SPEED * _dt;
 		}
 
-		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_SPEED && cameraZoom > cameraNewZoom - CAMERA_ZOOM_SPEED)
+		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_LOCK && cameraZoom > cameraNewZoom - CAMERA_ZOOM_LOCK)
 		{
 			cameraZoom = cameraNewZoom;
 		}
@@ -109,7 +109,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 		move.y = vectorLength.y;
 	}
 
-	if (POW2(move.x) < CAMERA_LOCK && POW2(move.y) < CAMERA_LOCK)
+	if (POW2(move.x) < CAMERA_SPEED_LOCK && POW2(move.y) < CAMERA_SPEED_LOCK)
 	{
 		SetViewCenter(_pos);
 		LastCamPositonName = CamPositonName;
