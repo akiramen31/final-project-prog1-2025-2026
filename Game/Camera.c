@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Parallax.h"
 
 int CamPositonName;
 int LastCamPositonName;
@@ -47,6 +48,7 @@ void UpdateCamera(float _dt)
 		}
 	}
 	SetViewZoom(cameraZoom);
+	SizeParallaxToCamera();
 }
 
 void MoveViewSlow(sfVector2f _pos, float _dt)
