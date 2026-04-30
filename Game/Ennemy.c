@@ -46,7 +46,7 @@ void LoadEnemy(void)
 		ennemyEntity[DRONE_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 700.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 300.f;
 
 		ennemyEntity[DRONE_SMALL].isJetpack = sfTrue;
 		ennemyEntity[DRONE_SMALL].jetpack.consomation = 50.f;
@@ -60,7 +60,7 @@ void LoadEnemy(void)
 		ennemyEntity[CROWLER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 700.f;
+		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 300.f;
 
 		ennemyEntity[CROWLER_SMALL].isJetpack = sfTrue;
 		ennemyEntity[CROWLER_SMALL].jetpack.consomation = 50.f;
@@ -75,7 +75,7 @@ void LoadEnemy(void)
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 700.f;
+		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 300.f;
 
 		ennemyEntity[SOLDIER_SMALL].isJetpack = sfTrue;
 		ennemyEntity[SOLDIER_SMALL].jetpack.consomation = 20.f;
@@ -122,6 +122,24 @@ void UpdateEnemyI(float _dt, int _index)
 	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
 	CalculMoveEnemy(_dt, _index); // calcul du mouvement
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
+	sfFloatRect bouns = GetBounsEnemy(_index);
+	sfVector2f pos = sfSprite_getPosition(ennemy->sprite);
+	if (ennemy->ennemyEntity.region.left + TILE_SIZE > bouns.left)
+	{
+		sfSprite_move(ennemy->sprite, (sfVector2f) { (ennemy->ennemyEntity.region.left + TILE_SIZE) - bouns.left, 0 });
+	}
+	if (ennemy->ennemyEntity.region.top + TILE_SIZE > bouns.top)
+	{
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (ennemy->ennemyEntity.region.top + TILE_SIZE) - bouns.top });
+	}
+	if (ennemy->ennemyEntity.region.left + ennemy->ennemyEntity.region.width - TILE_SIZE < (bouns.left + bouns.width))
+	{
+		sfSprite_move(ennemy->sprite, (sfVector2f) { (ennemy->ennemyEntity.region.left + ennemy->ennemyEntity.region.width - TILE_SIZE) - (bouns.left + bouns.width), 0 });
+	}
+	if (ennemy->ennemyEntity.region.top + ennemy->ennemyEntity.region.height - TILE_SIZE < bouns.top + bouns.height)
+	{
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (ennemy->ennemyEntity.region.top + ennemy->ennemyEntity.region.height - TILE_SIZE) - (bouns.top + bouns.height) });
+	}
 	// sécuriter pour le max d'énergie en stock
 	if (ennemy->ennemyEntity.ennemydata.energy > ennemy->ennemyEntity.ennemydata.energyMax)
 	{
@@ -370,14 +388,13 @@ void CalculMoveEnemy(float _dt, int _index)
 ActionDemander AStar2(int _index, sfFloatRect _cible)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-
+	sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
 	if (ennemy->ennemyEntity.region.top != tableau.region[ennemy->ennemyEntity.type].top
 		|| ennemy->ennemyEntity.region.left != tableau.region[ennemy->ennemyEntity.type].left)
 	{
-
 		// liberer lancienne GRID
 		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
-		sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
+		
 		FreeGrid(tableau.grid[ennemy->ennemyEntity.type]);
 		FreeGrid(tableau.collision);
 		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
@@ -430,6 +447,16 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	_cible.left -= ennemy->ennemyEntity.region.left;
 	_cible.top -= ennemy->ennemyEntity.region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
+	// problème colision plafon
+	while(bounsCible.top + bounsEnnemy.height < 1)
+	{
+		bounsCible.top += 1;
+	}
+	//problème collision mur de droite
+	while (bounsCible.left + bounsEnnemy.width > gridSize.x -1)
+	{
+		bounsCible.left -= 1;
+	}
 
 
 	if (tableau.new[ennemy->ennemyEntity.type])
@@ -525,12 +552,32 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION )
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				//test Bas
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				if (!TestColision(caseRecherche) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					sfBool temp = sfTrue;
+					char compt = 1;
+					while (temp && compt <= JUMP_FORCE)
+					{
+						if (TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+						{
+							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
+							AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+							temp = sfFalse;
+						}
+						compt++;
+					}
 				}
 			}
 			RetirerListWait(min);
@@ -613,6 +660,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	case UP_LEFT:
 		break;
 	case UP:
+		actionDemander.Saut = sfTrue;
 		break;
 	case UP_RIGHT:
 		break;
@@ -833,7 +881,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
 	sfBool isTouch = sfFalse;
-	if(DEBUG_MODE_A_STAR)
+	if (DEBUG_MODE_A_STAR)
 	{
 		printf("Color a= %d ", pixelColor.a);
 	}
@@ -848,12 +896,12 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
 		{
 			ennemy->ennemyEntity.ennemydata.life = 0;
-			if(DEBUG_MODE_A_STAR)
+			if (DEBUG_MODE_A_STAR)
 			{
 				printf("Enemy toucher avec degat");
 			}
 		}
-		if(DEBUG_MODE_A_STAR)
+		if (DEBUG_MODE_A_STAR)
 		{
 			printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
 		}
