@@ -33,6 +33,7 @@ typedef struct SoundEntity
 {
 	SoundEntityType type;
 	void* ptr;
+	float volume;
 }SoundEntity;
 
 typedef struct AssetEntity
@@ -102,7 +103,9 @@ sfVertexBuffer* CreateVertexBuffer(sfPrimitiveType _primitiveType, sfVertexBuffe
 void DestroyVisualEntity(void* _entity);
 void DestroySoundEntity(void* _entity);
 void DestroyAssetEntity(void* _entity);
+void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan);
 void ChangeDrawPlan(void* _ptr, float _drawPlan);
+void ChangeVolume(float _volume);
 
 void* Calloc(size_t _count, size_t _size);
 void* Realloc(void* _block, size_t _size);

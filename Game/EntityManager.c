@@ -402,48 +402,48 @@ sfVertexBuffer* CreateVertexBuffer(sfPrimitiveType _primitiveType, sfVertexBuffe
 
 sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
 {
-	int bufferCalcule = entityManager.soundCount + 1;
-	SoundEntity* temp = realloc(entityManager.sound, bufferCalcule * sizeof(SoundEntity));
-	if (!temp)
+	SoundEntity sound = { SOUND, sfSound_create(), _volume };
+	if (sound.ptr)
 	{
-		return NULL;
-	}
-	entityManager.sound = temp;
+		sfSound_setBuffer(sound.ptr, _buffer);
+		sfSound_setVolume(sound.ptr, sound.volume * GetFloatFromSave(SOUND_VOLUME));
+		if (_play)
+		{
+			sfSound_play(sound.ptr);
+		}
 
-	entityManager.sound[entityManager.soundCount].ptr = sfSound_create();
-	sfSound_setBuffer(entityManager.sound[entityManager.soundCount].ptr, _buffer);
-	sfSound_setVolume(entityManager.sound[entityManager.soundCount].ptr, _volume);
-	if (_play)
-	{
-		sfSound_play(entityManager.sound[entityManager.soundCount].ptr);
+		SoundEntity* temp = realloc(entityManager.sound, (size_t)(entityManager.soundCount + 1) * sizeof(SoundEntity));
+		if (!temp)
+		{
+			return NULL;
+		}
+		entityManager.sound = temp;
+		entityManager.sound[entityManager.soundCount] = sound;
+		entityManager.soundCount++;
 	}
-	entityManager.sound[entityManager.soundCount].type = SOUND;
-	entityManager.soundCount++;
-	return entityManager.sound[entityManager.soundCount - 1].ptr;
+	return sound.ptr;
 }
 
 sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play)
 {
-	int bufferCalcule = entityManager.soundCount + 1;
-	SoundEntity* temp = realloc(entityManager.sound, bufferCalcule * sizeof(SoundEntity));
-	if (!temp)
+	SoundEntity sound = { MUSIC, sfMusic_createFromFile(_fileMusic), _volume};
+	if (sound.ptr)
 	{
-		return NULL;
-	}
-	entityManager.sound = temp;
-
-	entityManager.sound[entityManager.soundCount].ptr = sfMusic_createFromFile(_fileMusic);
-	if (entityManager.sound[entityManager.soundCount].ptr)
-	{
-		sfMusic_setVolume(entityManager.sound[entityManager.soundCount].ptr, _volume);
+		sfMusic_setVolume(sound.ptr, sound.volume * GetFloatFromSave(SOUND_VOLUME));
 		if (_play)
 		{
-			sfMusic_play(entityManager.sound[entityManager.soundCount].ptr);
+			sfMusic_play(sound.ptr);
 		}
-		entityManager.sound[entityManager.soundCount].type = MUSIC;
+		SoundEntity* temp = realloc(entityManager.sound, (size_t)(entityManager.soundCount + 1) * sizeof(SoundEntity));
+		if (!temp)
+		{
+			return NULL;
+		}
+		entityManager.sound = temp;
+		entityManager.sound[entityManager.soundCount] = sound;
 		entityManager.soundCount++;
 	}
-	return entityManager.sound[entityManager.soundCount - 1].ptr;
+	return sound.ptr;
 }
 
 void DestroyVisualEntity(void* _entity)
@@ -625,6 +625,23 @@ void ChangeDrawPlan(void* _ptr, float _drawPlan)
 	}
 
 }
+
+void ChangeVolume(float _volume)
+{
+	SetFloatToSave(SOUND_VOLUME, _volume);
+	for (int i = 0; i < entityManager.soundCount; i++)
+	{
+		if (entityManager.sound[i].type == SOUND)
+		{
+			sfSound_setVolume(entityManager.sound[i].ptr, entityManager.sound[i].volume * _volume);
+		}
+		else if (entityManager.sound[i].type == MUSIC)
+		{
+			sfMusic_setVolume(entityManager.sound[i].ptr, entityManager.sound[i].volume * _volume);
+		}
+	}
+}
+
 
 
 void* Calloc(size_t _count, size_t _size)
