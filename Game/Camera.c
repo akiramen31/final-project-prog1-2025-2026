@@ -63,8 +63,19 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f move = { 0 };
 
-	move.x = _dt * (float)cos(angle) * CAMERA_SPEED;
-	move.y = _dt * (float)sin(angle) * CAMERA_SPEED;
+
+	float speed;
+	if (CamPositonName == 0)
+	{
+		speed = CAMERA_SPEED_ON_PLAYER;
+	}
+	else
+	{
+		speed = CAMERA_SPEED;
+	}
+
+	move.x = _dt * (float)cos(angle) * speed;
+	move.y = _dt * (float)sin(angle) * speed;
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{
