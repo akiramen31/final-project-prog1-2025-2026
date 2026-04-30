@@ -30,6 +30,8 @@ void UpdateEnergy(float _dt);
 
 void UpdateWeaponPlayer(float _dt);
 
+void UpdateLockPlayerInRoomIfEnemyAlive(void);
+
 sfVector2f pos;
 
 void LoadPlayer(void)
@@ -120,6 +122,7 @@ void UpdatePlayer(float _dt)
 	{
 		MoveZonePlayer(_dt);
 		UpdateMovePlayer(_dt);
+		UpdateLockPlayerInRoomIfEnemyAlive();
 	}
 
 	UpdateAnimation(_dt);
@@ -145,6 +148,29 @@ void UpdateWeaponPlayer(float _dt)
 	}
 	UpdateCooldown(_dt);
 	UpdateFireControl(_dt);
+}
+
+void UpdateLockPlayerInRoomIfEnemyAlive(void)
+{
+	sfFloatRect hitbox = GetPlayerRect();
+	int num = GetTrigerCount();
+	InfoZone* area = GetInfoZoneTriger(hitbox);
+
+	sfFloatRect *areaReaction = { 0 };
+
+	for (int i = 0; i < num; i++)
+	{
+		//if (sfFloatRect_intersects(&hitbox, &area[i].hitbox, areaReaction))
+		//{
+		//	if (StringCompare(area[i].type, "Camera"))
+		//	{
+		//		printf("%d\n", GetEnemyZone());
+		//	}
+		//	else
+		//	{
+		//	}
+		//}
+	}
 }
 
 void UpdateMovePlayer(float _dt)
