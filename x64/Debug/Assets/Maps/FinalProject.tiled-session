@@ -1,6 +1,6 @@
 {
     "activeFile": "Level2.tmx",
-    "automapping.whileDrawing": false,
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
     ],
@@ -40,10 +40,10 @@
                 39
             ],
             "scale": 0.33,
-            "selectedLayer": 10,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 8319.69696969697,
-                "y": 875.7575757575758
+                "x": 4150,
+                "y": 648.4848484848485
             }
         },
         "Level1_2.tmx": {
@@ -77,11 +77,11 @@
                 5,
                 6
             ],
-            "scale": 0.125,
+            "scale": 0.33,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 2788,
-                "y": 1576
+                "x": 3698.484848484848,
+                "y": 1433.3333333333333
             }
         },
         "LevelTest.tmx": {
@@ -96,11 +96,11 @@
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 3,
-            "selectedLayer": 2,
+            "scale": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 248,
-                "y": 296.16666666666663
+                "x": 216.75,
+                "y": 303
             }
         },
         "Tilesets/FullTiles.tsx": {
