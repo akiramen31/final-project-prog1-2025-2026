@@ -285,7 +285,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 						SetFloatToSave(LIGHT_LEVEL, (((float)_mouseButtonEvent->x - hitbox.left) / hitbox.width) * 0.75f + 0.25f);
 						break;
 					case 1:
-						SetFloatToSave(SOUND_VOLUME, (float)_mouseButtonEvent->x - hitbox.left);
+						ChangeVolume((float)_mouseButtonEvent->x - hitbox.left);
 						break;
 					case 2:
 						ChangeFullSceen();
