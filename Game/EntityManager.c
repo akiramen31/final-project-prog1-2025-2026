@@ -847,7 +847,6 @@ void Load(void)
 void PollEvent(void)
 {
 	sfEvent event;
-
 	while (sfRenderWindow_pollEvent(entityManager.renderWindow, &event))
 	{
 		if (event.type == sfEvtClosed)
@@ -872,6 +871,7 @@ void PollEvent(void)
 			}
 		}
 	}
+
 }
 
 void Update(void)

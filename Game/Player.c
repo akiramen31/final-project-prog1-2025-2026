@@ -100,19 +100,19 @@ void UpdatePlayer(float _dt)
 		pos = GetPlayerPosition();
 
 		int flySpeed = 500;
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		if (IfControlKeyPressed(KEY_RIGHT))
 		{
 			pos.x += flySpeed * _dt;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		else if (IfControlKeyPressed(KEY_LEFT))
 		{
 			pos.x -= flySpeed * _dt;
 		}
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+		if (IfControlKeyPressed(KEY_DOWN))
 		{
 			pos.y += flySpeed * _dt;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+		else if (IfControlKeyPressed(KEY_JUMP))
 		{
 			pos.y -= flySpeed * _dt;
 		}
@@ -184,11 +184,11 @@ void UpdateMovePlayer(float _dt)
 	{
 		player.velocity.x /= 1.5f;
 
-		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT))))
+		if (IfControlKeyPressed(KEY_RIGHT) && IfControlKeyPressed(KEY_LEFT))
 		{
 			player.velocity.x = 0;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		else if (IfControlKeyPressed(KEY_RIGHT))
 		{
 			if (player.velocity.x <= 1)
 			{
@@ -196,7 +196,7 @@ void UpdateMovePlayer(float _dt)
 			}
 
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		else if (IfControlKeyPressed(KEY_LEFT))
 		{
 			if (player.velocity.x >= -1)
 			{
@@ -221,9 +221,9 @@ void UpdateMovePlayer(float _dt)
 		if (player.isGrounded == sfTrue || timerFaling < PLAYER_JUMP_FORGIVE)
 		{
 			player.velocity.y = 0;
-			if (!((sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))))
+			if (!(IfControlKeyPressed(KEY_JUMP) && (IfControlKeyPressed(KEY_DOWN))))
 			{
-				if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+				if (IfControlKeyPressed(KEY_JUMP))
 				{
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
@@ -231,7 +231,7 @@ void UpdateMovePlayer(float _dt)
 					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
 				}
-				else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+				else if (IfControlKeyPressed(KEY_DOWN))
 				{
 					player.velocity.y++;
 				}
@@ -247,7 +247,7 @@ void UpdateMovePlayer(float _dt)
 		}
 	}
 
-	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
+	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH))
 	{
 		timerDash = 0;
 
@@ -279,7 +279,7 @@ void ColisionMapPlayer(float _dt)
 
 	if (reactionPassThrough.y < 0)
 	{
-		if (player.velocity.y >= 0 && !(sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN))))
+		if (player.velocity.y >= 0 && !IfControlKeyPressed(KEY_DOWN))
 		{
 			player.isGrounded = sfTrue;
 			timerFaling = 0;
@@ -495,7 +495,7 @@ void UpdateFireControl(float _dt)
 {
 	if (player.weapon.weaponType == RAILGUN)
 	{
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		if (IfControlKeyPressed(KEY_GUN))
 		{
 			if (player.canShoot)
 			{
@@ -511,7 +511,7 @@ void UpdateFireControl(float _dt)
 	}
 	if (player.weapon.weaponType == MISTEAL)
 	{
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		if (IfControlKeyPressed(KEY_GUN))
 		{
 			if (player.canShoot)
 			{
@@ -521,7 +521,7 @@ void UpdateFireControl(float _dt)
 			}
 		}
 	}
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
+	if (IfControlKeyPressed(KEY_SECOND))
 	{
 		if (player.canShoot)
 		{
@@ -593,7 +593,7 @@ void UpdateFireControlMisteal(void)
 
 void UpdateFireControlSteamAxe(float _dt)
 {
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+	if (IfControlKeyPressed(KEY_GUN))
 	{
 		if (player.canShoot)
 		{

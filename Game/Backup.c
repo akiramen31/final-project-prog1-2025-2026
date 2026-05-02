@@ -14,7 +14,7 @@ void LoadBackup(void)
 	if (backup.valueFloat[LIGHT_LEVEL] < 0.25f || backup.valueFloat[LIGHT_LEVEL] > 1.f)
 	{
 		backup.valueFloat[LIGHT_LEVEL] = 1.f;
-	} 
+	}
 	fclose(file);
 }
 
@@ -59,6 +59,10 @@ void SetMouseKeyToSave(KeySave _index, char _value)
 {
 	backup.valueKey[_index] = _value + sfKeyCount;
 }
+sfBool IfControlKeyPressed(KeySave _index)
+{
+	return sfKeyboard_isKeyPressed(backup.valueKey[_index]) || sfMouse_isButtonPressed((backup.valueKey[_index] - sfKeyCount));
+}
 
 int GetIntFromSave(IntSave _index)
 {
@@ -85,7 +89,6 @@ void SetSaveTemp(const void* _buffer, size_t _size, size_t _count)
 
 	fclose(file);
 }
-
 
 void GetSaveTemp(void* _buffer, size_t _size, size_t _count)
 {
