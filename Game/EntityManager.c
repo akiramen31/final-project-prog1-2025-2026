@@ -600,7 +600,7 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 void ChangeDrawPlan(void* _ptr, float _drawPlan)
 {
 	VisualEntity* element = NULL; 
-	if (_ptr)
+	if (_ptr && entityManager.visual)
 	{
 		VisualEntity* elementActual = entityManager.visual;
 		VisualEntity* elementNext = (VisualEntity*)elementActual->next;
@@ -623,7 +623,6 @@ void ChangeDrawPlan(void* _ptr, float _drawPlan)
 			elementNext = (VisualEntity*)elementActual->next;
 		}
 	}
-
 }
 
 void ChangeVolume(float _volume)
