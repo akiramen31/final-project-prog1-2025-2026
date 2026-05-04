@@ -83,7 +83,7 @@ sfFloatRect GetPlayerRect(void);
 sfVector2f GetPlayerVelocity(void);
 void SetPlayerVelocity(sfVector2f _velocity);
 
-float GetPlayerEnergyInfo(int _index);
+float GetPlayerEnergyInfo(EnergyEnum _index);
 void SetPlayerEnergyInfo(float _val, int _index);
 
 int GetPlayerLife(void);

@@ -3,6 +3,10 @@
 #include "CjsonB.h"
 #include "Boss.h"
 #include "Parallax.h"
+#include "Box.h"
+#include "Elevator.h"
+#include "Camera.h"
+
 Map map;
 
 int rectShapeCount;
@@ -89,6 +93,7 @@ void SetMap(MapState _map)
 	ResetEnemy();
 #endif
 
+	LoadElevator();
 	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 	map.state = _map;
@@ -96,6 +101,7 @@ void SetMap(MapState _map)
 
 MapState GetActualyMap(void)
 {
+	return map.state;
 	return map.state;
 }
 

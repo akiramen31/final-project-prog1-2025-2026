@@ -773,7 +773,7 @@ void SetPlayerVelocity(sfVector2f _velocity)
 	player.velocity = _velocity;
 }
 
-float GetPlayerEnergyInfo(int _index)
+float GetPlayerEnergyInfo(EnergyEnum _index)
 {
 	switch (_index)
 	{

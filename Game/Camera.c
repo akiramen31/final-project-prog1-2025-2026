@@ -352,7 +352,6 @@ void ChangePosCamera(int _lastCamPos, int _val)
 	index = _val;
 }
 
-
 void SetDefaultView(float _dt)
 {
 	sfVector2f pos = GetPlayerPosition();

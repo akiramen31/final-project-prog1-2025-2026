@@ -8,6 +8,7 @@
 #include "Boss.h"
 #include "Missile.h"
 #include "Parallax.h"
+#include "Elevator.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -173,15 +174,13 @@ void UpdateGame(float _dt)
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
+				UpdateElevator(_dt);
 			}
 		}
 		else
 		{
 			timerRoomPause = 0;
 		}
-		UpdateBullet(_dt);
-		UpdateMisteal(_dt);
-		UpdateMissile(GetMousePositionToOrigin(), _dt);
 	}
 
 	if (timerRoomPause <= PAUSE_ROOM_DURATION)

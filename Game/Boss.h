@@ -4,7 +4,6 @@
 #include "Common.h"
 #include "Map.h"
 #include "Player.h"
-#include "Box.h"
 
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
 #define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2

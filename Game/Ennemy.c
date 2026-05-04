@@ -193,7 +193,6 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 	_ennemy->ennemyEntity.ennemydata = ennemyEntity[_type].ennemydata;
 	_ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
 	_ennemy->ennemyEntity.move = (sfVector2f){ 0,0 };
-	_ennemy->ennemyEntity.state = IDLE;
 	_ennemy->ennemyEntity.timer = 0.f;
 
 	_ennemy->ennemyEntity.isJetpack = ennemyEntity[_type].isJetpack;
