@@ -19,8 +19,8 @@ void LoadMap()
 {
 	map = (Map){ 0 };
 	map.state = -1;
-	map.foreground = CreateSprite(GetAsset("Assets/Maps/Level1Front.png"), (sfVector2f) { 0 }, 1.f, 70.f);
-	map.background = CreateSprite(GetAsset("Assets/Maps/Level1Back.png"), (sfVector2f) { 0 }, 1.f, 100.f);
+	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
+	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
 
 	int val = 169;
 	colorBackground = sfColor_fromRGB(val, val, val);
@@ -46,6 +46,7 @@ void SetMap(MapState _map)
 		ResetEnemy();
 	}
 #endif
+
 	switch (_map)
 	{
 	case LEVEL1:
@@ -53,7 +54,7 @@ void SetMap(MapState _map)
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1Back.png"), sfTrue);
 		//map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
-		SetParallaxLayerTexture(1,GetAsset("Assets/Maps/parallax_lv1_la1.png"));
+		SetParallaxLayerTexture(1, GetAsset("Assets/Maps/parallax_lv1_la1.png"));
 		break;
 	case LEVEL2:
 		cjson = LoadCjsonB("Assets/Maps/Level2.json");
