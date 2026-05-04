@@ -34,10 +34,10 @@
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Missile.h" />
+    <ClInclude Include="Secondaries.h" />
     <ClInclude Include="Parallax.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Weapon.h" />
+    <ClInclude Include="Weapons.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Backup.c" />
@@ -56,10 +56,10 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="Map.c" />
     <ClCompile Include="Menu.c" />
-    <ClCompile Include="Missile.c" />
+    <ClCompile Include="Secondaries.c" />
     <ClCompile Include="Parallax.c" />
     <ClCompile Include="Player.c" />
-    <ClCompile Include="Weapon.c" />
+    <ClCompile Include="Weapons.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

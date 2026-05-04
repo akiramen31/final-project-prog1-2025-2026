@@ -1,5 +1,5 @@
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef WEAPONS_H
+#define WEAPONS_H
 
 #include "Common.h"
 #include "Bullet.h"
@@ -15,6 +15,13 @@
 #define STEAMAXE_ANGLE_MEDIUM 180.f
 #define STEAMAXE_ANGLE_HEAVY 360.f
 
+typedef enum AttackType
+{
+	LIGHT,
+	MEDIUM,
+	HEAVY,
+	NOATTACK
+}AttackType;
 
 typedef enum WeaponType 
 {
@@ -55,7 +62,8 @@ typedef struct Weapon
 
 }Weapon;
 
-void LoadWeapon(void);
+void SetWeapon(WeaponType _type);
+void LoadWeapons(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
@@ -65,4 +73,4 @@ void ChangeAttackType(AttackType _attackType);
 
 Weapon GetWeapon(void);
 
-#endif // !WEAPON_H
+#endif // !WEAPONS_H

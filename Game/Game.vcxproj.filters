@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Missile.h">
+    <ClInclude Include="Secondaries.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
@@ -30,7 +30,7 @@
     <ClInclude Include="Common.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
+    <ClInclude Include="Weapons.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -116,13 +116,13 @@
     <ClCompile Include="Game.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Missile.c">
+    <ClCompile Include="Secondaries.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Weapon.c">
+    <ClCompile Include="Weapons.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Box.c">

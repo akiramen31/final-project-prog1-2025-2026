@@ -28,10 +28,6 @@ void LoadMap()
 	sfSprite_setColor(map.background, colorBackground);
 
 	LoadBox();
-}
-
-void SetMap(MapState _map)
-{
 	SetCameraZoom(0.f);
 
 	CjsonB* cjson = NULL;
@@ -46,36 +42,31 @@ void SetMap(MapState _map)
 		ResetEnemy();
 	}
 #endif
-	switch (_map)
+	switch (map.state)
 	{
 	case LEVEL1:
 		cjson = LoadCjsonB("Assets/Maps/Level1.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level1Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level1Back.png"), sfTrue);
-		//map.data.image = sfImage_createFromFile("Assets/Maps/Level1Reduite.png");
-		SetParallaxLayerTexture(1,GetAsset("Assets/Maps/parallax_lv1_la1.png"));
+		SetParallaxLayerTexture(1, GetAsset("Assets/Maps/parallax_lv1_la1.png"));
 		break;
 	case LEVEL2:
 		cjson = LoadCjsonB("Assets/Maps/Level2.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level2Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level2Back.png"), sfTrue);
-		//map.data.image = sfImage_createFromFile("Assets/Maps/Level2Reduite.png");
 		SetParallaxLayerTexture(1, GetAsset("Assets/Maps/parallax_lv2_la1.png"));
 		break;
 	case LEVEL3:
 		cjson = LoadCjsonB("Assets/Maps/Level3.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level3.png"), sfTrue);
-		//map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
 		break;
 	case LEVEL_TEST:
 		cjson = LoadCjsonB("Assets/Maps/LevelTest.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
-		//map.data.image = sfImage_createFromFile("Assets/Maps/MapTesteReduite.png");
 		break;
 	default:
 		break;
 	}
-	map.state = _map;
 	if (cjson)
 	{
 		LoadMapData(cjson);
@@ -90,10 +81,14 @@ void SetMap(MapState _map)
 
 	ReloadBox();
 	SetPositionEntity(map.data.point, map.data.pointCount);
+}
+
+void SetCurrentMap(MapState _map)
+{
 	map.state = _map;
 }
 
-MapState GetActualyMap(void)
+MapState GetCurrentMap(void)
 {
 	return map.state;
 }

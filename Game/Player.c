@@ -1,7 +1,8 @@
 #include "Player.h"
-#include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
+#include "Weapons.h"
+//#include "Secondaries.h"
 
 Player player;
 
@@ -529,7 +530,7 @@ void UpdateFireControl(float _dt)
 			{
 				if (player.ener.energy > 50.f)
 				{
-					AddMissile(GetPlayerPosition(), player.weapon.isRight);
+					AddDrone(GetPlayerPosition(), player.weapon.isRight);
 					player.ener.energy -= 50.f;
 					player.canShoot = sfFalse;
 

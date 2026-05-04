@@ -51,20 +51,6 @@ typedef enum {
 	AXIS_BOTH
 } CollisionAxis;
 
-typedef enum AttackType
-{
-	LIGHT,
-	MEDIUM,
-	HEAVY,
-	NOATTACK
-}AttackType;
-
-typedef enum Secondary
-{
-	DRONE,
-	COLDBREATH
-}Secondary;
-
 typedef struct ShooterType
 {
 	float weaponPos;

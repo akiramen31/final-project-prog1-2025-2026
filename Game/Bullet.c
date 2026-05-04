@@ -18,7 +18,7 @@ void SortMistealList(unsigned _index);
 
 void LoadBullet(void)
 {
-	bulletTexture = GetAsset("Assets/Sprites/Bullet_Placeholder.png");
+	bulletTexture = GetAsset("Assets/Sprites/bullet.png");
 	mistealTexture = GetAsset("Assets/Sprites/Misteal_Ammo_Placeholder.png");
 	mistealCount = 0;
 	bulletCountAlly = 0;

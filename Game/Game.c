@@ -6,7 +6,7 @@
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
-#include "Missile.h"
+#include "Secondaries.h"
 #include "Parallax.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
@@ -24,12 +24,12 @@ void LoadGame(void)
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadBullet();
-	LoadWeapon();
+	LoadWeapons();
 	LoadPlayer();
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
-	if (GetActualyMap() == LEVEL1)
+	if (GetCurrentMap() == LEVEL1)
 	{
 		LoadBoss();
 	}
@@ -37,12 +37,11 @@ void LoadGame(void)
 	LoadMap();
 	LoadHUD();
 	//LoadGUI();
-	LoadMissile();
+	LoadSecondary();
 
 	timerstartLevel = 0;
 
-	SetMap(LEVEL1);
-	switch (GetIntFromSave(MUSIC_ACTUALY))
+	switch (GetIntFromSave(CURRENT_MUSIC))
 	{
 	case 0:
 		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfTrue);
@@ -156,7 +155,7 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					SetMap(GetActualyMap());
+					SetMap(GetCurrentMap());
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
@@ -165,7 +164,7 @@ void UpdateGame(float _dt)
 
 				//UpdateGUI(_dt);
 				UpdateCollider();
-				if (GetActualyMap() == LEVEL1)
+				if (GetCurrentMap() == LEVEL1)
 				{
 					UpdateBoss(_dt);
 				}
@@ -181,7 +180,7 @@ void UpdateGame(float _dt)
 		}
 		UpdateBullet(_dt);
 		UpdateMisteal(_dt);
-		UpdateMissile(GetMousePositionToOrigin(), _dt);
+		UpdateSecondary(GetMousePositionToOrigin(), _dt);
 	}
 	else
 	{

@@ -7,6 +7,8 @@
 #define NB_KEY 8
 #define MAX_INFO 6
 #define NB_MUSICS 5
+#define WEAPON_COUNT 4
+#define SECONDAY_COUNT 2
 
 typedef enum MenuState
 {
@@ -35,11 +37,14 @@ typedef struct MainMenu
 
 typedef struct SelectionMenu
 {
-	sfSprite* sideButton[3];
-	sfSprite* sideIcon[3];
-	sfSprite* mapIcon[3];
+	sfSprite* categoryButton[3];
+	sfSprite* categoryIcon[3];
+	sfSprite* mapButton[3];
 	sfSprite* mapOverlay[3];
+	sfSprite* generalButton[5];
+	sfSprite* generalIcon[5];
 	int selectedOption;
+
 	sfText* bottomText[2];
 
 }SelectionMenu;
@@ -56,11 +61,8 @@ typedef struct Menu
 	SelectionMenu selectionMenu;
 }Menu;
 
-
-
 void LoadMenu(void);
 void PollEventMenu(sfEvent* _event);
 void UpdateMenu(float _dt);
-
 
 #endif // !MENU_H
