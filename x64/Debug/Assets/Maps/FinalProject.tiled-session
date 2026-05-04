@@ -33,17 +33,17 @@
             }
         },
         "Level1.tmx": {
-            "expandedObjectLayers": [
-                38,
-                39,
-                31,
-                37
+            "expandedGroupLayers": [
+                44
             ],
-            "scale": 0.33,
+            "expandedObjectLayers": [
+                31
+            ],
+            "scale": 5.5,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 8271.21212121212,
-                "y": 490.9090909090909
+                "x": 1709.3636363636365,
+                "y": 246
             }
         },
         "Level1_2.tmx": {
@@ -72,16 +72,31 @@
         "Level2.tmx": {
             "expandedObjectLayers": [
                 6,
-                8,
-                5,
                 7,
-                9
+                5,
+                9,
+                8
             ],
-            "scale": 1,
-            "selectedLayer": 7,
+            "scale": 0.25,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 4883.5,
-                "y": 1669
+                "x": 2654,
+                "y": 1576
+            }
+        },
+        "Level3.tmx": {
+            "expandedObjectLayers": [
+                6,
+                7,
+                5,
+                9,
+                8
+            ],
+            "scale": 0.75,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 544,
+                "y": 640.6666666666665
             }
         },
         "LevelTest.tmx": {
@@ -151,6 +166,7 @@
     "openFiles": [
         "Level1.tmx",
         "Level2.tmx",
+        "Level3.tmx",
         "Tilesets/AutoTileRules.tmx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/SpritesList.tsx"
@@ -161,14 +177,14 @@
         "Tilesets/SpritesList.tsx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
+        "Level3.tmx",
         "Level2.tmx",
         "LevelTest.tmx",
         "Level1_Demo.tmx",
         "Level1_2.tmx",
         ":/automap-tiles.tsx",
         "Tilesets/TileForAutomaping.tsx",
-        "Tilesets/Pipes.tsx",
-        "Tilesets/Metal_plate.tsx"
+        "Tilesets/Pipes.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
