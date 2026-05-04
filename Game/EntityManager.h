@@ -103,6 +103,7 @@ sfVertexBuffer* CreateVertexBuffer(sfPrimitiveType _primitiveType, sfVertexBuffe
 void DestroyVisualEntity(void* _entity);
 void DestroySoundEntity(void* _entity);
 void DestroyAssetEntity(void* _entity);
+
 void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan);
 void ChangeDrawPlan(void* _ptr, float _drawPlan);
 void ChangeVolume(float _volume);
@@ -110,9 +111,11 @@ void ChangeVolume(float _volume);
 void* Calloc(size_t _count, size_t _size);
 void* Realloc(void* _block, size_t _size);
 void Free(void* _ptr);
+
 List* CreateList(void);
 void RemoveList(List* _list);
 unsigned GetListSize(List* _list);
+
 Element* CreateElement(void* _value);
 Element* GetElement(List* _list, unsigned _index);
 void InsertElement(List* _list, Element* _element, unsigned _index);

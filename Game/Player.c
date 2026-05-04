@@ -156,20 +156,42 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 	int num = GetTrigerCount();
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
-	sfFloatRect *areaReaction = { 0 };
-
-	for (int i = 0; i < num; i++)
+	sfFloatRect areaReaction = { 0 };
+	if (area != NULL)
 	{
-		//if (sfFloatRect_intersects(&hitbox, &area[i].hitbox, areaReaction))
-		//{
-		//	if (StringCompare(area[i].type, "Camera"))
-		//	{
-		//		printf("%d\n", GetEnemyZone());
-		//	}
-		//	else
-		//	{
-		//	}
-		//}
+		for (int i = 0; i < num; i++)
+		{
+			if (sfFloatRect_intersects(&hitbox, &area[i].hitbox, &areaReaction))
+			{
+				if (StringCompare(area[i].type, "Camera"))
+				{
+					if (GetEnemyZone() > 0)
+					{
+						sfFloatRect move = GetPlayerRect();
+						move.width -= areaReaction.width;
+						move.height -= areaReaction.height;
+
+						if (move.left < area[i].hitbox.left + area[i].hitbox.width / 2)
+						{
+							MovePlayer((sfVector2f) { move.width, 0 });
+						}
+						else
+						{
+							MovePlayer((sfVector2f) { -move.width, 0 });
+						}
+
+						if (move.top < area[i].hitbox.top + area[i].hitbox.height / 2)
+						{
+							MovePlayer((sfVector2f) { 0, move.height });
+						}
+						else
+						{
+							MovePlayer((sfVector2f) { 0, -move.height });
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

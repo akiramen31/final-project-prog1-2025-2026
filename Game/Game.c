@@ -183,10 +183,7 @@ void UpdateGame(float _dt)
 		UpdateMisteal(_dt);
 		UpdateMissile(GetMousePositionToOrigin(), _dt);
 	}
-	else
-	{
-		//timerRoomPause = 0;
-	}
+
 	if (timerRoomPause <= PAUSE_ROOM_DURATION)
 	{
 		timerRoomPause += _dt;
