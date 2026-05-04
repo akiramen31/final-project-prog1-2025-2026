@@ -82,11 +82,11 @@ void LoadPlayer(void)
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
 
-	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 5.f, sfFalse);
-	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 5.f, sfFalse);
-	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 5.f, sfFalse);
-	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 5.f, sfFalse);
-	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 5.f, sfFalse);
+	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 0.5f, sfFalse);
+	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 0.25f, sfFalse);
+	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 0.5f, sfFalse);
+	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 0.2f, sfFalse);
+	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 0.5f, sfFalse);
 }
 
 void UpdatePlayer(float _dt)

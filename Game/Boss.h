@@ -9,14 +9,14 @@
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
 #define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2
 
-#define BOSS_PART_NUMBER 9
+#define BOSS_PART_NUMBER 10
 
 #define RUNAWAY_TIMER 4.f
 
-#define BOSS_FIRERATE 2.f
+#define BOSS_FIRERATE 1.f
 
 #define RELOAD_TIME_TURRET 2.f
-#define TURRET_ROTATION_SPEED 75.f
+#define TURRET_ROTATION_SPEED 150.f
 
 #define SHOOT_DISTANCE_MAX 242.f
 #define SHOOT_DISTANCE_MIN 80.f
@@ -64,6 +64,7 @@ typedef struct Boss1
 	sfSprite* spriteTurretRCase;
 	sfSprite* spriteTurretRBase;
 	sfSprite* spriteTurretRCanon;
+	sfSprite* droneFactory;
 
 	float cooldownShoot;
 

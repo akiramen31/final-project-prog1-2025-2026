@@ -24,7 +24,7 @@ void SwitchBoss(char _index, sfVector2f _position)
 	{
 		boss.boss1 = Calloc(1, sizeof(Boss1));
 
-		sfVector2f Offset = { 58 ,-46 };
+		sfVector2f Offset = { 56 ,-46 };
 		sfVector2f positionTurret2 = ADD_VECTOR(_position, Offset);
 		Offset.x *= -1;
 		sfVector2f positionTurret1 = ADD_VECTOR(_position, Offset);
@@ -74,14 +74,21 @@ void SwitchBoss(char _index, sfVector2f _position)
 		SetSpriteOriginFoot(boss.boss1->gunCariage);
 		bossSpriteList[7] = boss.boss1->gunCariage;
 
+		sfVector2f positionDroneFactory = ADD_VECTOR(_position, Offset);
+		positionDroneFactory.y -= sfSprite_getGlobalBounds(boss.boss1->steamTank).height;
+
+		boss.boss1->droneFactory = CreateSprite(GetAsset("Assets/Boss/1/drone_factory_Placeholder.png"), positionDroneFactory, 1.f, 1.f);
+		SetSpriteOriginFoot(boss.boss1->droneFactory);
+		bossSpriteList[8] = boss.boss1->droneFactory;
+
 		boss.boss1->track = CreateSprite(GetAsset("Assets/Boss/1/Track_Placeholder.png"), positionTrack, 1.f, 1.f);
 		SetSpriteOriginFoot(boss.boss1->track);
-		bossSpriteList[8] = boss.boss1->track;
+		bossSpriteList[9] = boss.boss1->track;
 
 		boss.boss1->playerPositionToBoss = PLAYER_NOT_IN_ARENA;
 		boss.boss1->bossLife = 72.f;
 		boss.boss1->cooldownShoot = 2;
-		boss.boss1->isAlive = sfTrue;
+		boss.boss1->isAlive = sfFalse;
 		boss.boss1->isFreezed = sfFalse;
 		boss.boss1->timerFreezed = 0;
 	}
@@ -130,10 +137,11 @@ void UpdateBoss(float _dt)
 	bossSolids[2] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretRCase);
 
 	sfVector2f push = TestCollisionBossPlayer(pRect, bossSolids, 3, AXIS_BOTH);
+	CheckBossPlayerState(_dt);
+
 	if (boss.boss1->isAlive)
 	{
 		HandlePlayerBossCollision(push);
-		CheckBossPlayerState(_dt);
 		UpdateBossReaction(_dt);
 		UpdateTurret(_dt);
 		BossShoot(_dt);
@@ -145,6 +153,7 @@ void MoveBoss1(sfVector2f _move)
 	sfSprite_move(boss.boss1->track, _move);
 	sfSprite_move(boss.boss1->gunCariage, _move);
 	sfSprite_move(boss.boss1->steamTank, _move);
+	sfSprite_move(boss.boss1->droneFactory, _move);
 	sfSprite_move(boss.boss1->spriteTurretLCase, _move);
 	sfSprite_move(boss.boss1->spriteTurretLBase, _move);
 	sfSprite_move(boss.boss1->spriteTurretLCanon, _move);
@@ -157,15 +166,16 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 {
 	if (boss.boss1->isAlive)
 	{
-		sfFloatRect bossSolids[3] = { 0 };
+		sfFloatRect bossSolids[4] = { 0 };
 		bossSolids[0] = sfSprite_getGlobalBounds(boss.boss1->steamTank);
-		bossSolids[1] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretLCase);
-		bossSolids[2] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretRCase);
-		for (unsigned i = 0; i < 3; i++)
+		bossSolids[1] = sfSprite_getGlobalBounds(boss.boss1->droneFactory);
+		bossSolids[2] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretLCase);
+		bossSolids[3] = sfSprite_getGlobalBounds(boss.boss1->spriteTurretRCase);
+		for (unsigned i = 0; i < 4; i++)
 		{
 			if (sfFloatRect_intersects(&_hitbox, &bossSolids[i], NULL))
 			{
-				if (i == 0)
+				if (i <= 1)
 				{
 					if (_degat == FREEZE_DMG)
 					{
@@ -260,6 +270,7 @@ void CheckBossPlayerState(float _dt)
 	if (boss.boss1->playerPositionToBoss == PLAYER_NOT_IN_ARENA && GetPlayerPosition().x > ARENA_ENTRY)
 	{
 		boss.boss1->playerPositionToBoss = PLAYER_AWAY_LEFT;
+		boss.boss1->isAlive = sfTrue;
 	}
 	if (!boss.boss1->bossReacting)
 	{
@@ -327,7 +338,7 @@ void CheckBossPlayerState(float _dt)
 					boss.boss1->runAwayTiming = 0;
 				}
 			}
-			else if (distance.x < TARGET_DISTANCE_MAX && distance.y > 30)
+			else if (distance.x < SHOOT_DISTANCE_MIN && distance.y > 30)
 			{
 				if (playerPos.x < trackPosition.x)
 				{
@@ -375,27 +386,68 @@ void CheckBossPlayerState(float _dt)
 
 void UpdateTurret(float _dt)
 {
-	sfVector2f playerPos = GetPlayerPosition();
+	/*sfVector2f playerPos = GetPlayerPosition();
 
 	sfVector2f posL = sfSprite_getPosition(boss.boss1->spriteTurretLCanon);
 	float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
 
+	float currentAngleL = sfSprite_getRotation(boss.boss1->spriteTurretLCanon);
+	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
+
 	if (angleTargetL < -90.0f) angleTargetL = -90.0f;
 	if (angleTargetL > 90.0f) angleTargetL = 90.0f;
 
-	float currentAngleL = sfSprite_getRotation(boss.boss1->spriteTurretLCanon);
-	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
 	sfSprite_setRotation(boss.boss1->spriteTurretLCanon, newAngleL);
 
 	sfVector2f posR = sfSprite_getPosition(boss.boss1->spriteTurretRCanon);
 	float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
 
+	float currentAngleR = sfSprite_getRotation(boss.boss1->spriteTurretRCanon);
+	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
+
 	if (angleTargetR > 90.0f) angleTargetR = 90.0f;
 	if (angleTargetR < -90.0f) angleTargetR = -90.0f;
 
-	float currentAngleR = sfSprite_getRotation(boss.boss1->spriteTurretRCanon);
-	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
-	sfSprite_setRotation(boss.boss1->spriteTurretRCanon, newAngleR);
+	sfSprite_setRotation(boss.boss1->spriteTurretRCanon, newAngleR);*/
+
+	if (boss.boss1->playerPositionToBoss != PLAYER_RANGE_SHOOT_LEFT && boss.boss1->playerPositionToBoss != PLAYER_RANGE_SHOOT_RIGHT)
+	{
+		return;
+	}
+
+		sfVector2f playerPos = GetPlayerPosition();
+		sfVector2f posL = sfSprite_getPosition(boss.boss1->spriteTurretLCanon);
+
+		// Sécurité : Si le joueur est trop proche, on ne change pas l'angle
+		float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
+		if (dist < 10.0f) return;
+
+		// --- TOURELLE GAUCHE ---
+		// 1. Calcul de la cible
+		float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
+
+		// 2. CLAMP de la cible d'abord !
+		if (angleTargetL < -90.0f) angleTargetL = -90.0f;
+		if (angleTargetL > 90.0f) angleTargetL = 90.0f;
+
+		// 3. Interpolation avec l'angle actuel
+		float currentAngleL = sfSprite_getRotation(boss.boss1->spriteTurretLCanon);
+		float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
+
+		sfSprite_setRotation(boss.boss1->spriteTurretLCanon, newAngleL);
+
+		// --- TOURELLE DROITE ---
+		sfVector2f posR = sfSprite_getPosition(boss.boss1->spriteTurretRCanon);
+		float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
+
+		// CLAMP de la cible
+		if (angleTargetR > 90.0f) angleTargetR = 90.0f;
+		if (angleTargetR < -90.0f) angleTargetR = -90.0f;
+
+		float currentAngleR = sfSprite_getRotation(boss.boss1->spriteTurretRCanon);
+		float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
+
+		sfSprite_setRotation(boss.boss1->spriteTurretRCanon, newAngleR);
 }
 
 void UpdateBossReaction(float _dt)
@@ -492,6 +544,7 @@ void DestroyBoss1(void)
 	DestroyVisualEntity(boss.boss1->track);
 	DestroyVisualEntity(boss.boss1->gunCariage);
 	DestroyVisualEntity(boss.boss1->steamTank);
+	DestroyVisualEntity(boss.boss1->droneFactory);
 	DestroyVisualEntity(boss.boss1->spriteTurretLCase);
 	DestroyVisualEntity(boss.boss1->spriteTurretLBase);
 	DestroyVisualEntity(boss.boss1->spriteTurretLCanon);

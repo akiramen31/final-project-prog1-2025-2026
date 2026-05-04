@@ -14,7 +14,7 @@ void AddBox(sfVector2f _position)
 	box.entity = Realloc(box.entity, (size_t)(box.count + 1) * sizeof(BoxEntity));
 	box.entity[box.count].hitbox = (sfFloatRect){ _position.x, _position.y, 16.f, 16.f };
 	box.entity[box.count].sprite = CreateSprite(box.texture, _position, 1.f, 50.f);
-	box.entity[box.count].breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 2.f, sfFalse);
+	box.entity[box.count].breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
 	box.count++;
 }
 

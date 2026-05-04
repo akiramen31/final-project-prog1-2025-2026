@@ -100,14 +100,8 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 
 void UpdateSecondary(sfVector2f _posAim, float _dt)
 {
-	if (secondary == DRONE)
-	{
 	UpdateMissile(_posAim, _dt);
-	}
-	else if (secondary == COLDBREATH)
-	{
 	UpdateColdBreath(_dt);
-	}
 }
 
 void UpdateMissile(sfVector2f _posAim, float _dt)
