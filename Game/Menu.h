@@ -4,11 +4,11 @@
 #include "Common.h"
 
 #define NB_INFO_BUTTONS 6
-#define NB_KEY 8
+#define KEY_COUNT 8
 #define MAX_INFO 6
-#define NB_MUSICS 5
+#define MUSIC_COUNT 5
 #define WEAPON_COUNT 4
-#define SECONDAY_COUNT 2
+#define SECONDARY_COUNT 2
 
 typedef enum MenuState
 {
@@ -30,8 +30,8 @@ typedef struct MainMenu
 	sfSprite* logo[2];
 	sfText* topButtons[5];
 	sfText* infoDisplay[6];
-	sfText* keyType[NB_KEY];
-	sfText* key[NB_KEY];
+	sfText* keyType[KEY_COUNT];
+	sfText* key[KEY_COUNT];
 	char* name[5];
 }MainMenu;
 
@@ -41,8 +41,8 @@ typedef struct SelectionMenu
 	sfSprite* categoryIcon[3];
 	sfSprite* mapButton[3];
 	sfSprite* mapOverlay[3];
-	sfSprite* generalButton[5];
-	sfSprite* generalIcon[5];
+	sfSprite* generalButton[WEAPON_COUNT];
+	sfSprite* generalIcon[WEAPON_COUNT];
 	int selectedOption;
 
 	sfText* bottomText[2];
@@ -55,7 +55,7 @@ typedef struct Menu
 	sfSprite* overlay;
 	sfColor highlightTextColor;
 	sfColor textColor;
-	sfMusic* musics[NB_MUSICS];
+	sfMusic* musics[MUSIC_COUNT];
 	MenuState state;
 	MainMenu mainMenu;
 	SelectionMenu selectionMenu;

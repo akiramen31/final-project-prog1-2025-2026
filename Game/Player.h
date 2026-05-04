@@ -33,7 +33,6 @@ typedef struct EnergyPlayerStruct
 
 typedef struct Player
 {
-	enum State state;
 	sfSprite* sprite;
 	sfRectangleShape* collision;
 

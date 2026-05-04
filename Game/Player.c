@@ -1,8 +1,6 @@
 #include "Player.h"
 #include "Box.h"
 #include "Ennemy.h"
-#include "Weapons.h"
-//#include "Secondaries.h"
 
 Player player;
 

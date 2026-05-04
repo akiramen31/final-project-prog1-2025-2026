@@ -35,7 +35,6 @@ typedef struct Misteal
 	sfVector2f velocity;
 	sfBool isSticked;
 	sfBool isAlreadyHit;
-
 	float timer;
 }Misteal;
 

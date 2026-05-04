@@ -20,14 +20,6 @@ typedef enum SecondaryType
 	COLDBREATH
 }SecondaryType;
 
-typedef struct SecondaryData
-{
-	Missile missileList[MISSILE_MAX];
-	ColdBreath coldBreath;
-	SecondaryType secondaryType;
-	sfTexture* missileTexture;
-}SecondaryData;
-
 typedef struct Drone
 {
 	sfSprite* sprite;
@@ -36,7 +28,7 @@ typedef struct Drone
 	float turnSpeed;
 	float lifetime;
 	sfBool isAlive;
-}Missile;
+}Drone;
 
 typedef struct ColdBreath
 {
@@ -46,6 +38,14 @@ typedef struct ColdBreath
 	float lifetime;
 	sfBool isAlive;
 }ColdBreath;
+
+typedef struct SecondaryData
+{
+	Drone droneList[MISSILE_MAX];
+	ColdBreath coldBreath;
+	SecondaryType secondaryType;
+	sfTexture* droneTexture;
+}SecondaryData;
 
 void LoadSecondary(void);
 void AddDrone(sfVector2f _pos, sfBool _isRighted);

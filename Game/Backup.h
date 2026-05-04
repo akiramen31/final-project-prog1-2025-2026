@@ -27,8 +27,9 @@ typedef enum KeySave
 
 typedef enum IntSave
 {
-	SCORE,
 	UNLOCKED_LEVEL,
+	UNLOCKED_WEAPON,
+	UNLOCKED_SECONDARY,
 	FULL_SCREEN,
 	TROPHY,
 	DEV_MODE_FLY,

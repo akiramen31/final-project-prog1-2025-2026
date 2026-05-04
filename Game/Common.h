@@ -10,9 +10,6 @@
 #include "SFML/Audio.h"
 
 #include "Backup.h"
-#include "EntityManager.h"
-
-#include "Map.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
@@ -51,6 +48,14 @@ typedef enum {
 	AXIS_BOTH
 } CollisionAxis;
 
+typedef enum AttackType
+{
+	LIGHT,
+	MEDIUM,
+	HEAVY,
+	NOATTACK
+}AttackType;
+
 typedef struct ShooterType
 {
 	float weaponPos;
@@ -59,12 +64,6 @@ typedef struct ShooterType
 	sfBool isAlly;
 	sfBool isRighted;
 }ShooterType;
-
-typedef enum State
-{
-	IDLE = 0,
-	WALK = 4
-}State;
 
 enum EnergyEnum
 {
@@ -123,4 +122,8 @@ sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
+
+#include "EntityManager.h"
+#include "Map.h"
+
 #endif // !COMMON_H

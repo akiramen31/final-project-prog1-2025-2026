@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include "Bullet.h"
+#include "Secondaries.h"
 
 #define WEAPON_ANGLE_RAILGUN_OFFSET 11.5f
 #define WEAPON_ANGLE_STEAMAXE_OFFSET -70.f
@@ -15,13 +16,6 @@
 #define STEAMAXE_ANGLE_MEDIUM 180.f
 #define STEAMAXE_ANGLE_HEAVY 360.f
 
-typedef enum AttackType
-{
-	LIGHT,
-	MEDIUM,
-	HEAVY,
-	NOATTACK
-}AttackType;
 
 typedef enum WeaponType 
 {
@@ -57,9 +51,8 @@ typedef struct Weapon
 	RailGun railGun;
 	MiSteal miSteal;
 	WeaponType weaponType;
-	Secondary secondary;
+	SecondaryType secondary;
 	sfBool isRight;
-
 }Weapon;
 
 void SetWeapon(WeaponType _type);

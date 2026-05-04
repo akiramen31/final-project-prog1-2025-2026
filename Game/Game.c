@@ -111,16 +111,16 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		switch (_keyEvent->code)
 		{
 		case sfKeyF1:
-			SetMap(LEVEL1);
+			SetCurrentMap(LEVEL1);
 			break;
 		case sfKeyF2:
-			SetMap(LEVEL2);
+			SetCurrentMap(LEVEL2);
 			break;
 		case sfKeyF3:
-			SetMap(LEVEL3);
+			SetCurrentMap(LEVEL3);
 			break;
 		case sfKeyF4:
-			SetMap(LEVEL_TEST);
+			SetCurrentMap(LEVEL_TEST);
 			break;
 #if DEV_PIERRE_ENEMY
 		case sfKeyP:
@@ -155,7 +155,7 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					SetMap(GetCurrentMap());
+					SetCurrentMap(GetCurrentMap());
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
