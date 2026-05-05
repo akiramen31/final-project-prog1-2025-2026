@@ -270,7 +270,6 @@
   <object id="1077" x="224" y="1104" width="640" height="176"/>
   <object id="1078" x="0" y="0" width="1088" height="96"/>
  </objectgroup>
- <objectgroup id="9" name="Move"/>
  <objectgroup id="6" name="PassThrough">
   <object id="1026" x="224" y="848" width="640" height="16"/>
   <object id="1027" x="752" y="800" width="48" height="16"/>
@@ -325,5 +324,4 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="8" name="Trigger"/>
 </map>
