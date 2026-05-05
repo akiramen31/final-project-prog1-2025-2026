@@ -114,39 +114,41 @@ void UpdateEnemyI(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.timer += _dt;
-	ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt; //regen de l'energie passive
+	//regen de l'energie passive
+	if (ennemy->ennemyEntity.ennemydata.energy < ennemy->ennemyEntity.ennemydata.energyMax)
+	{
+		ennemy->ennemyEntity.ennemydata.energy += ennemy->ennemyEntity.ennemydata.energyRegen * _dt;
+	}
+	else
+	{
+		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
+	}
+
 	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
 	{
 		ennemy->actiondemander = AStar2(_index, GetPlayerRect());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
 	}
-	//printf("Action demander Droite%d Gauche%d Saut%d\n", ennemy->actiondemander.droite, ennemy->actiondemander.gauche, ennemy->actiondemander.Saut);
-	CalculMoveEnemy(_dt, _index); // calcul du mouvement
+	CalculMoveEnemy(_dt, _index);
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
-	sfFloatRect bouns = GetBounsEnemy(_index);
-	sfVector2f pos = sfSprite_getPosition(ennemy->sprite);
-	if (ennemy->ennemyEntity.region.left + TILE_SIZE > bouns.left)
+	sfFloatRect enemyRect = sfSprite_getGlobalBounds(ennemy->sprite);
+	sfFloatRect realRegion = { ennemy->ennemyEntity.region.left + TILE_SIZE ,ennemy->ennemyEntity.region.top + TILE_SIZE , ennemy->ennemyEntity.region.width - TILE_SIZE * 2, ennemy->ennemyEntity.region.height - TILE_SIZE * 2 };
+	if (realRegion.left > enemyRect.left)
 	{
-		sfSprite_move(ennemy->sprite, (sfVector2f) { (ennemy->ennemyEntity.region.left + TILE_SIZE) - bouns.left, 0 });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
 	}
-	if (ennemy->ennemyEntity.region.top + TILE_SIZE > bouns.top)
+	else if (realRegion.left + realRegion.width < (enemyRect.left + enemyRect.width))
 	{
-		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (ennemy->ennemyEntity.region.top + TILE_SIZE) - bouns.top });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
 	}
-	if (ennemy->ennemyEntity.region.left + ennemy->ennemyEntity.region.width - TILE_SIZE < (bouns.left + bouns.width))
+	if (realRegion.top > enemyRect.top)
 	{
-		sfSprite_move(ennemy->sprite, (sfVector2f) { (ennemy->ennemyEntity.region.left + ennemy->ennemyEntity.region.width - TILE_SIZE) - (bouns.left + bouns.width), 0 });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
 	}
-	if (ennemy->ennemyEntity.region.top + ennemy->ennemyEntity.region.height - TILE_SIZE < bouns.top + bouns.height)
+	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
 	{
-		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (ennemy->ennemyEntity.region.top + ennemy->ennemyEntity.region.height - TILE_SIZE) - (bouns.top + bouns.height) });
+		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
 	}
-	// sécuriter pour le max d'énergie en stock
-	if (ennemy->ennemyEntity.ennemydata.energy > ennemy->ennemyEntity.ennemydata.energyMax)
-	{
-		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
-	}
-
 	sfVector2f collision = Colision(GetBounsEnemy(_index), AXIS_BOTH);
 	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
 	sfSprite_move(ennemy->sprite, collision);
@@ -157,12 +159,6 @@ void UpdateEnemyI(float _dt, int _index)
 	if (collision.y != 0)
 	{
 		ennemy->ennemyEntity.move.y = 0;
-	}
-	//printf("position x:%f y:%f\n", sfSprite_getPosition(ennemy->sprite).x, sfSprite_getPosition(ennemy->sprite).y);
-	if (ennemy->ennemyEntity.ennemydata.life <= 0)
-	{
-		DestroyVisualEntity(ennemy->sprite);
-		RemoveElement(listEnnemy, _index);
 	}
 }
 
@@ -185,6 +181,7 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 
 void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 {
+	*_ennemy = (Ennemy){ 0 };
 	if (DEBUG_MODE_A_STAR)
 	{
 		printf("creation d'un ennemy de type %d\n", _type);
@@ -244,135 +241,42 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 		break;
 	}
 
-	_ennemy->actiondemander = (ActionDemander){ 0 };
-	sfFloatRect floatRect = sfSprite_getGlobalBounds(_ennemy->sprite);
-	sfSprite_setOrigin(_ennemy->sprite, (sfVector2f) { floatRect.width / 2, floatRect.height });
+	SetSpriteOriginFoot(_ennemy->sprite);
 }
 
 void CalculMoveEnemy(float _dt, int _index)
 {
-	sfBool test = 0;
-	sfBool test2 = 0;
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-	if (sfKeyboard_isKeyPressed(sfKeyNumpad0) && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
+
+	// 1 = droite / -1 = gauche
+	char droitOuGauche = ennemy->actiondemander.droite - ennemy->actiondemander.gauche;
+	if (droitOuGauche)
 	{
-		ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
-
-		ennemy->ennemyEntity.acceleration.y -= G * 4;
-		if (sfKeyboard_isKeyPressed(sfKeyM) || ennemy->actiondemander.droite)
+		ennemy->ennemyEntity.move.x += droitOuGauche * ennemy->ennemyEntity.ennemydata.accelerationMax * _dt;
+	
+		if (droitOuGauche * ennemy->ennemyEntity.move.x > droitOuGauche * ennemy->ennemyEntity.ennemydata.speedMax)
 		{
-			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.jetpack.trust;
-			test = 1;
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyK) || ennemy->actiondemander.gauche)
-		{
-			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.jetpack.trust;
-			test = 1;
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyO) || ennemy->actiondemander.Saut)
-		{
-			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.jetpack.trust;
-			test2 = 1;
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyL))
-		{
-			ennemy->ennemyEntity.acceleration.y += ennemy->ennemyEntity.jetpack.trust;
-			test2 = 1;
-		}
-		if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.jetpack.trust / 3)
-		{
-			ennemy->ennemyEntity.move.y = ennemy->ennemyEntity.ennemydata.speedMax;
-		}
-		else if (ennemy->ennemyEntity.move.y < -ennemy->ennemyEntity.jetpack.trust / 3)
-		{
-			ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.speedMax;
-		}
-		if (!test)
-		{
-			if (ennemy->ennemyEntity.move.x > 0)
-			{
-				ennemy->ennemyEntity.move.x -= ennemy->ennemyEntity.jetpack.trust * _dt;
-			}
-			else if (ennemy->ennemyEntity.move.x < 0)
-			{
-				ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.jetpack.trust * _dt;;
-			}
-
-			if (ennemy->ennemyEntity.move.x > (float)-0.5 && ennemy->ennemyEntity.move.x < (float)0.5)
-			{
-				ennemy->ennemyEntity.move.x = 0;
-			}
-		}
-		if (!test2)
-		{
-			if (ennemy->ennemyEntity.move.y > 0)
-			{
-				ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.jetpack.trust * _dt;
-			}
-			else if (ennemy->ennemyEntity.move.y < 0)
-			{
-				ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.jetpack.trust * _dt;;
-			}
-
-			if (ennemy->ennemyEntity.move.y > (float)-0.5 && ennemy->ennemyEntity.move.y < (float)0.5)
-			{
-				ennemy->ennemyEntity.move.y = 0;
-			}
+			ennemy->ennemyEntity.move.x = droitOuGauche * ennemy->ennemyEntity.ennemydata.speedMax;
 		}
 	}
-	else
+	
+	if (ennemy->actiondemander.Saut)
 	{
-		if (sfKeyboard_isKeyPressed(sfKeyM) || ennemy->actiondemander.droite)
+		sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
+		collisionEnnemy.top += 1;
+		sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
+		if (collision.y)
 		{
-			ennemy->ennemyEntity.acceleration.x += ennemy->ennemyEntity.ennemydata.accelerationMax;
-			test = 1;
+			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyK) || ennemy->actiondemander.gauche)
+		else if (ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 		{
-			ennemy->ennemyEntity.acceleration.x += -ennemy->ennemyEntity.ennemydata.accelerationMax;
-			test = 1;
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyO) || ennemy->actiondemander.Saut)
-		{
-			sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
-			collisionEnnemy.top += 1;
-			sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
-			//printf("collision %f", collision.y);
-			if (collision.y)
-			{
-				ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
-			}
-			test = 1;
-		}
-		if (test == 0)
-		{
-			sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
-			collisionEnnemy.top += 1;
-			sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
-			//printf("collision %f", collision.y);
-			if (collision.y)
-			{
-				if (ennemy->ennemyEntity.move.x > 0)
-				{
-					ennemy->ennemyEntity.move.x -= 1;
-				}
-				else if (ennemy->ennemyEntity.move.x < 0)
-				{
-					ennemy->ennemyEntity.move.x += 1;
-				}
-
-				if (ennemy->ennemyEntity.move.x > (float)-1.5 && ennemy->ennemyEntity.move.x < (float)1.5)
-				{
-					ennemy->ennemyEntity.move.x = 0;
-				}
-
-			}
+			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
 		}
 	}
-	ennemy->ennemyEntity.acceleration.y += G * 4;
-	ennemy->ennemyEntity.move.x += ennemy->ennemyEntity.acceleration.x * _dt;
-	ennemy->ennemyEntity.move.y += ennemy->ennemyEntity.acceleration.y * _dt;
+	ennemy->ennemyEntity.move.y += G * 4;
 
 	if (ennemy->ennemyEntity.move.x > ennemy->ennemyEntity.ennemydata.speedMax)
 	{
@@ -1016,29 +920,16 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
 	sfBool isTouch = sfFalse;
-	if (DEBUG_MODE_A_STAR)
-	{
-		printf("Color a= %d ", pixelColor.a);
-	}
 	if (pixelColor.a == 255)
 	{
 		isTouch = sfTrue;
-		if (DEV_MODE)
-		{
-			//printf("Ennemie %d Toucher fait %f degat\n", _index, _degat);
-		}
 		ennemy->ennemyEntity.ennemydata.life -= _degat;
 		if (ennemy->ennemyEntity.ennemydata.life < 0)
 		{
-			ennemy->ennemyEntity.ennemydata.life = 0;
-			if (DEBUG_MODE_A_STAR)
-			{
-				printf("Enemy toucher avec degat");
-			}
-		}
-		if (DEBUG_MODE_A_STAR)
-		{
-			printf("Vie %f\n", ennemy->ennemyEntity.ennemydata.life);
+			sfImage_destroy(ennemy->imageColideur);
+			DestroyVisualEntity(ennemy->sprite);
+			Free(ennemy);
+			RemoveElement(listEnnemy, _index);
 		}
 	}
 	return isTouch;
