@@ -268,8 +268,16 @@ char StringCompareCjsonB(char* _string)
 
 unsigned GetStructCountCjsonB(void)
 {
-	int count = 0;
 	unsigned i = 0;
+	while (buffer[i] != '[')
+	{
+		i++;
+	}
+	i++;
+	buffer = &buffer[i];
+
+	int count = 0;
+	i = 0;
 	unsigned countC1 = 1;
 	unsigned countC2 = 1;
 	while (countC2 > 0)
@@ -281,7 +289,7 @@ unsigned GetStructCountCjsonB(void)
 		else if (buffer[i] == '}')
 		{
 			countC1--;
-			if (countC1 == 0)
+			if (countC1 == 1)
 			{
 				count++;
 			}
@@ -301,8 +309,6 @@ unsigned GetStructCountCjsonB(void)
 
 int GetObjectStructLayerCjsonB(LayersCjsonB** _layers)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer-= 2;
 	LayersCjsonB* temp = *_layers = (LayersCjsonB*)ALLOC(sizeof(LayersCjsonB) * count);
@@ -374,6 +380,10 @@ int GetObjectStructLayerCjsonB(LayersCjsonB** _layers)
 			{
 				GetValueInBufferCjsonB(CHAR_PTR, &temp[i].image);
 			}
+			else if (StringCompareCjsonB("tintcolor"))
+			{
+				GetValueInBufferCjsonB(CHAR_PTR, &temp[i].tintcolor);
+			}
 			else if (StringCompareCjsonB("data"))
 			{
 				GetValueInBufferCjsonB(INT_PTR, &temp[i].data);
@@ -397,8 +407,6 @@ int GetObjectStructLayerCjsonB(LayersCjsonB** _layers)
 
 int GetObjectStructObjectCjsonB(ObjectCjsonB** _object)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	ObjectCjsonB* temp = *_object = (ObjectCjsonB*)ALLOC(sizeof(ObjectCjsonB) * count);
@@ -473,8 +481,6 @@ int GetObjectStructObjectCjsonB(ObjectCjsonB** _object)
 
 int GetObjectStructPolylineCjsonB(PolylineCjsonB** _polynile)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	PolylineCjsonB* temp = *_polynile = (PolylineCjsonB*)ALLOC(sizeof(PolylineCjsonB) * count);
@@ -513,8 +519,6 @@ void GetObjectStructTextCjsonB(TextCjsonB* _text)
 
 int GetObjectStructTilesetCjsonB(TilesetsCjsonB** _tilesets)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	TilesetsCjsonB* temp = *_tilesets = (TilesetsCjsonB*)ALLOC(sizeof(TilesetsCjsonB) * count);
@@ -585,8 +589,6 @@ int GetObjectStructTilesetCjsonB(TilesetsCjsonB** _tilesets)
 
 int GetObjectStructTilesCjsonB(TilesCjsonB** _tiles)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	TilesCjsonB* temp = *_tiles = (TilesCjsonB*)ALLOC(sizeof(TilesCjsonB) * count);
@@ -609,8 +611,6 @@ int GetObjectStructTilesCjsonB(TilesCjsonB** _tiles)
 
 int GetObjectStructAnimationCjson(AnimationCjsonB** _animation)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	AnimationCjsonB* temp = *_animation = (AnimationCjsonB*)ALLOC(sizeof(AnimationCjsonB) * count);
@@ -633,8 +633,6 @@ int GetObjectStructAnimationCjson(AnimationCjsonB** _animation)
 
 int GetObjectStructWangsetsCjsonB(WangsetsCjsonB** _wangsets)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	WangsetsCjsonB* temp = *_wangsets = (WangsetsCjsonB*)ALLOC(sizeof(WangsetsCjsonB) * count);
@@ -669,8 +667,6 @@ int GetObjectStructWangsetsCjsonB(WangsetsCjsonB** _wangsets)
 
 int GetObjectStructColorsCjsonB(ColorsCjsonB** _colors)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	ColorsCjsonB* temp = *_colors = (ColorsCjsonB*)ALLOC(sizeof(ColorsCjsonB) * count);
@@ -701,8 +697,6 @@ int GetObjectStructColorsCjsonB(ColorsCjsonB** _colors)
 
 int GetObjectStructWangtilesCjsonB(WangtilesCjsonB** _wangtiles)
 {
-	GoNextDataInStructCjsonB();
-	GoNextDataInStructCjsonB();
 	unsigned count = GetStructCountCjsonB();
 	buffer -= 2;
 	WangtilesCjsonB* temp = *_wangtiles = (WangtilesCjsonB*)ALLOC(sizeof(WangtilesCjsonB) * count);

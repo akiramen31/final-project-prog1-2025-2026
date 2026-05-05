@@ -63,7 +63,8 @@ typedef struct LayersCjsonB
 	char* type;
 	char* draworder;
 	char* image;
-	char* classe;
+	char* tintcolor;
+	unsigned* classe;
 	unsigned* data;
 
 	ObjectCjsonB* objects;

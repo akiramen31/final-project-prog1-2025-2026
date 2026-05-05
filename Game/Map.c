@@ -107,7 +107,7 @@ MapState GetActualyMap(void)
 
 void LoadMapData(CjsonB* _cjson)
 {
-	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
+	map.data.size = (sfVector2u){ 0 };
 
 	printf("map %d size x : %d, y : %d\n", GetActualyMap(), _cjson->width, _cjson->height);
 
@@ -132,6 +132,10 @@ void LoadMapData(CjsonB* _cjson)
 		else if (StringCompare(_cjson->layers[i].name, "PassThrough"))
 		{
 			LoadObjectMap(&map.data.passThrough, &map.data.PassThroughCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
+		else if (_cjson->layers[i].data && !(map.data.size.x + map.data.size.y))
+		{
+			map.data.size = (sfVector2u){ _cjson->layers[i].width, _cjson->layers[i].height };
 		}
 	}
 

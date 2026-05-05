@@ -113,13 +113,16 @@ void FreeGrid(void** grid)
 
 sfBool StringCompare(char* _string1, char* _string2)
 {
-	int i = 0;
-	while (_string1[i] == _string2[i])
+	if(_string1 && _string2)
 	{
-		i++;
-		if (_string1[i] == 0 && _string2[i] == 0)
+		int i = 0;
+		while (_string1[i] == _string2[i])
 		{
-			return sfTrue;
+			i++;
+			if (_string1[i] == 0 && _string2[i] == 0)
+			{
+				return sfTrue;
+			}
 		}
 	}
 	return sfFalse;
