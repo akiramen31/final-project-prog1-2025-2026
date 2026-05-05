@@ -25,6 +25,7 @@
 
 #define DEV_MODE sfTrue
 #define DEV_ENNEMY sfTrue
+#define DEV_ELEVATOR sfFalse
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
