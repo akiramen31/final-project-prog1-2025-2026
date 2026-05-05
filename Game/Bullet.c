@@ -69,9 +69,8 @@ void UpdateBullet(float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet, 1))
 			{
-				DamagePlayer(1);
 				DeleteBulletEnemy(i);
 			}
 			else
@@ -155,7 +154,7 @@ void UpdateMisteal(float _dt)
 		else if (mistealList[i].isSticked)
 		{
 			hitboxMisteal = sfSprite_getGlobalBounds(mistealList[i].sprite);
-			if (ColisionWithPlayer(hitboxMisteal))
+			if (ColisionWithPlayer(hitboxMisteal, 0))
 			{
 				DeleteMisteal(i);
 				continue;

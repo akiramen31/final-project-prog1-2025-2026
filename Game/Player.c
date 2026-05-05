@@ -918,12 +918,13 @@ void ChangePlayerInvicibility(void)
 	}
 }
 
-sfBool ColisionWithPlayer(sfFloatRect _rect)
+sfBool ColisionWithPlayer(sfFloatRect _rect, int _damage)
 {
 	sfFloatRect playerRect = GetPlayerRect();
 
 	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
 	{
+		DamagePlayer(_damage);
 		return sfTrue;
 	}
 	return sfFalse;

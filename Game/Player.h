@@ -103,5 +103,5 @@ void HandlePlayerBossCollision(sfVector2f _push);
 
 void ChangePlayerInvicibility(void);
 
-sfBool ColisionWithPlayer(sfFloatRect _rect);
+sfBool ColisionWithPlayer(sfFloatRect _rect, int _damage);
 #endif
