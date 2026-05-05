@@ -60,6 +60,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void SwitchGunDevMode(void);
+void CanHitBoss(sfBool _bool);
 
 void ChangeAttackType(AttackType _attackType);
 

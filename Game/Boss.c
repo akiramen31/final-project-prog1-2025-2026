@@ -9,6 +9,8 @@ Boss boss;
 void LoadBoss(void)
 {
 	boss = (Boss){ 0 };
+	boss.boss1 = Calloc(1, sizeof(Boss1));
+	boss.boss1->bossLife = MAX_BOSS_LIFE;
 }
 
 void SwitchBoss(char _index, sfVector2f _position)
@@ -22,7 +24,6 @@ void SwitchBoss(char _index, sfVector2f _position)
 
 	if (_index == 0)
 	{
-		boss.boss1 = Calloc(1, sizeof(Boss1));
 
 		sfVector2f Offset = { 56 ,-46 };
 		sfVector2f positionTurret2 = ADD_VECTOR(_position, Offset);
@@ -86,11 +87,11 @@ void SwitchBoss(char _index, sfVector2f _position)
 		bossSpriteList[9] = boss.boss1->track;
 
 		boss.boss1->playerPositionToBoss = PLAYER_NOT_IN_ARENA;
-		boss.boss1->bossLife = 72.f;
-		boss.boss1->cooldownShoot = 2;
+		boss.boss1->bossLife = MAX_BOSS_LIFE;
+		boss.boss1->cooldownShoot = 1.f / BOSS_FIRERATE;
 		boss.boss1->isAlive = sfFalse;
 		boss.boss1->isFreezed = sfFalse;
-		boss.boss1->timerFreezed = 0;
+		boss.boss1->timerFreezed = 0.f;
 	}
 }
 
@@ -192,13 +193,19 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 					boss.boss1->bossLife -= _degat;
 					if (sfSprite_getPosition(boss.boss1->track).x > ARENA_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = GO_LEFT;
-						boss.boss1->bossReacting = sfTrue;
+						if (boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_LEFT || boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_RIGHT)
+						{
+							boss.boss1->bossReactionToPlayer = GO_LEFT;
+							boss.boss1->bossReacting = sfTrue;
+						}
 					}
 					else if (sfSprite_getPosition(boss.boss1->track).x < ARENA_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = GO_RIGHT;
-						boss.boss1->bossReacting = sfTrue;
+						if (boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_LEFT || boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_RIGHT)
+						{
+							boss.boss1->bossReactionToPlayer = GO_RIGHT;
+							boss.boss1->bossReacting = sfTrue;
+						}
 					}
 					if (boss.boss1->bossLife <= 0)
 					{
@@ -276,17 +283,17 @@ void CheckBossPlayerState(float _dt)
 	{
 		if (boss.boss1->playerPositionToBoss != PLAYER_NOT_IN_ARENA)
 		{
-			if (distance.x > TARGET_DISTANCE_MAX && playerPos.x < trackPosition.x)
+			if (distance.x > SHOOT_DISTANCE_MAX && playerPos.x < trackPosition.x)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_AWAY_LEFT;
 				boss.boss1->bossReactionToPlayer = GO_LEFT;
 			}
-			else if (distance.x > TARGET_DISTANCE_MAX && playerPos.x > trackPosition.x)
+			else if (distance.x > SHOOT_DISTANCE_MAX && playerPos.x > trackPosition.x)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_AWAY_RIGHT;
 				boss.boss1->bossReactionToPlayer = GO_RIGHT;
 			}
-			if (distance.x < TARGET_DISTANCE_MAX && distance.x > SHOOT_DISTANCE_MIN)
+			if (distance.x < SHOOT_DISTANCE_MAX && distance.x > SHOOT_DISTANCE_MIN)
 			{
 				if (playerPos.x < trackPosition.x)
 				{
@@ -319,7 +326,7 @@ void CheckBossPlayerState(float _dt)
 					boss.boss1->runAwayTiming = 0;
 				}
 			}
-			if (distance.x < TARGET_DISTANCE_MAX && distance.y > 80)
+			if (distance.x < SHOOT_DISTANCE_MAX && distance.y > 80)
 			{
 				boss.boss1->playerPositionToBoss = PLAYER_ON_TOP;
 				boss.boss1->runAwayTiming += _dt;
@@ -415,39 +422,39 @@ void UpdateTurret(float _dt)
 		return;
 	}
 
-		sfVector2f playerPos = GetPlayerPosition();
-		sfVector2f posL = sfSprite_getPosition(boss.boss1->spriteTurretLCanon);
+	sfVector2f playerPos = GetPlayerPosition();
+	sfVector2f posL = sfSprite_getPosition(boss.boss1->spriteTurretLCanon);
 
-		// Sécurité : Si le joueur est trop proche, on ne change pas l'angle
-		float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
-		if (dist < 10.0f) return;
+	// Sécurité : Si le joueur est trop proche, on ne change pas l'angle
+	float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
+	if (dist < 10.0f) return;
 
-		// --- TOURELLE GAUCHE ---
-		// 1. Calcul de la cible
-		float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
+	// --- TOURELLE GAUCHE ---
+	// 1. Calcul de la cible
+	float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
 
-		// 2. CLAMP de la cible d'abord !
-		if (angleTargetL < -90.0f) angleTargetL = -90.0f;
-		if (angleTargetL > 90.0f) angleTargetL = 90.0f;
+	// 2. CLAMP de la cible d'abord !
+	if (angleTargetL < -90.0f) angleTargetL = -90.0f;
+	if (angleTargetL > 90.0f) angleTargetL = 90.0f;
 
-		// 3. Interpolation avec l'angle actuel
-		float currentAngleL = sfSprite_getRotation(boss.boss1->spriteTurretLCanon);
-		float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
+	// 3. Interpolation avec l'angle actuel
+	float currentAngleL = sfSprite_getRotation(boss.boss1->spriteTurretLCanon);
+	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
 
-		sfSprite_setRotation(boss.boss1->spriteTurretLCanon, newAngleL);
+	sfSprite_setRotation(boss.boss1->spriteTurretLCanon, newAngleL);
 
-		// --- TOURELLE DROITE ---
-		sfVector2f posR = sfSprite_getPosition(boss.boss1->spriteTurretRCanon);
-		float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
+	// --- TOURELLE DROITE ---
+	sfVector2f posR = sfSprite_getPosition(boss.boss1->spriteTurretRCanon);
+	float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
 
-		// CLAMP de la cible
-		if (angleTargetR > 90.0f) angleTargetR = 90.0f;
-		if (angleTargetR < -90.0f) angleTargetR = -90.0f;
+	// CLAMP de la cible
+	if (angleTargetR > 90.0f) angleTargetR = 90.0f;
+	if (angleTargetR < -90.0f) angleTargetR = -90.0f;
 
-		float currentAngleR = sfSprite_getRotation(boss.boss1->spriteTurretRCanon);
-		float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
+	float currentAngleR = sfSprite_getRotation(boss.boss1->spriteTurretRCanon);
+	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
 
-		sfSprite_setRotation(boss.boss1->spriteTurretRCanon, newAngleR);
+	sfSprite_setRotation(boss.boss1->spriteTurretRCanon, newAngleR);
 }
 
 void UpdateBossReaction(float _dt)
@@ -563,4 +570,9 @@ void FreezeBoss(void)
 		sfSprite_setColor(bossSpriteList[i], (sfColor) { 180, 180, 255, 255 });
 		boss.boss1->isFreezed = sfTrue;
 	}
+}
+
+float* GetBossHpAdr(void)
+{
+	return &boss.boss1->bossLife;
 }

@@ -29,13 +29,10 @@ void LoadGame(void)
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
-	if (GetActualyMap() == LEVEL1)
-	{
-		LoadBoss();
-	}
-
-	LoadMap();
 	LoadHUD();
+	LoadBoss();
+	SetHpFocus(GetBossHpAdr());
+	LoadMap();
 	//LoadGUI();
 	LoadMissile();
 

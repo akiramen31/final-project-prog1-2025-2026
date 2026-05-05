@@ -7,21 +7,19 @@
 #include "Box.h"
 
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
-#define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2
+#define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2.5f
 
 #define BOSS_PART_NUMBER 10
 
 #define RUNAWAY_TIMER 4.f
 
 #define BOSS_FIRERATE 1.f
+#define MAX_BOSS_LIFE 250.f
 
-#define RELOAD_TIME_TURRET 2.f
 #define TURRET_ROTATION_SPEED 150.f
 
-#define SHOOT_DISTANCE_MAX 242.f
+#define SHOOT_DISTANCE_MAX 300.f
 #define SHOOT_DISTANCE_MIN 80.f
-
-#define TARGET_DISTANCE_MAX 200.f
 
 #define ARENA_CENTER 8671.f
 #define ARENA_ENTRY 8290.f
@@ -105,4 +103,6 @@ void BossShoot(float _dt);
 
 void DestroyBoss1(void);
 
-#endif //BOSS_H
+float* GetBossHpAdr(void);
+
+#endif // !BOSS_H

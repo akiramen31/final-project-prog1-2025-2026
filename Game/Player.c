@@ -2,6 +2,7 @@
 #include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
+#include "Boss.h"
 
 Player player;
 
@@ -561,7 +562,6 @@ void UpdateFireControl(float _dt)
 			{
 				if (player.ener.energy > 40.f)
 				{
-					printf("glaglagla");
 					ShooterType shooterType = { 0 };
 					shooterType.weaponPos = WEAPON_ORIGIN;
 					shooterType.shootPosition.x = 5.f;
@@ -673,7 +673,7 @@ void UpdateFireControlSteamAxe(float _dt)
 		}
 		player.isAttacking = sfTrue;
 		player.canShoot = sfFalse;
-		player.weapon.steamAxe.canHit = sfTrue;
+		CanHitBoss(sfTrue);
 		player.cooldown = 1.0f / FIRE_RATE_STEAMAXE;
 		player.pressTime = 0.0f;
 	}
@@ -681,6 +681,8 @@ void UpdateFireControlSteamAxe(float _dt)
 
 void UpdateSteamAxe(float _dt)
 {
+	sfBool testBoss = 0;
+
 	if (player.isAttacking)
 	{
 		float range = 0;
@@ -710,23 +712,34 @@ void UpdateSteamAxe(float _dt)
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
 			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
 
-			switch (player.weapon.steamAxe.attackType)
+			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
-			case LIGHT:
 				HitEnemy(1.f, axeHitbox);
-				break;
-			case MEDIUM:
+				if (HitBoss(5.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
+			}
+			else if (player.weapon.steamAxe.attackType == MEDIUM)
+			{
 				HitEnemy(2.f, axeHitbox);
-				break;
-			case HEAVY:
+				if (HitBoss(8.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
+			}
+			else if (player.weapon.steamAxe.attackType == HEAVY)
+			{
 				HitEnemy(3.f, axeHitbox);
-				break;
-			default:
-				break;
+				if (HitBoss(14.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
 			}
 		}
 	}
 }
+
 
 void UpdateEnergy(float _dt)
 {
