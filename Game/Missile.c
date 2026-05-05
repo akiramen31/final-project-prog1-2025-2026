@@ -6,12 +6,11 @@
 Missile missileList[MISSILE_MAX] = { 0 };
 ColdBreath coldBreath = { 0 };
 Secondary secondary;
-sfTexture* missileTexture;
 void MoveMissile(unsigned _index, sfVector2f _playerPos, float _dt);
 
 void LoadMissile(void)
 {
-	missileTexture = GetAsset("Assets/Sprites/Drone_Placeholder.png");
+	sfTexture* missileTexture = GetAsset("Assets/Sprites/Drone_Placeholder.png");
 
 	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/ColdBreath_Placeholder.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
 	SetSpriteOriginMiddle(coldBreath.sprite);
@@ -37,6 +36,8 @@ void LoadMissile(void)
 		secondary = DRONE;
 	}
 }
+
+
 
 void AddMissile(sfVector2f _pos, sfBool _isRighted)
 {
