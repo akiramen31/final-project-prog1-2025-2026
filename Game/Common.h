@@ -31,7 +31,7 @@
 #define DEV_BOSS sfTrue
 #define DEBUG_MODE_A_STAR sfFalse
 #define DEV_PIERRE_ENEMY sfTrue
-#define DEV_ENEMY_BASIC sfTrue
+#define DEV_ENEMY_BASIC sfFalse
 
 #define TILE_SIZE 16
 
