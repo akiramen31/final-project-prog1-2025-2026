@@ -173,6 +173,7 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
 {
 	MapData data = *GetMapData();
+	//return sfFalse;
 	return ((_rect.left <= 0) || (_rect.left + _rect.width >= data.size.x * TILE_SIZE) || (_rect.top <= 0) || (_rect.top + _rect.height >= data.size.y * TILE_SIZE));
 }
 

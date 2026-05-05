@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="68" height="80" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="1079">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="68" height="80" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="1081">
  <editorsettings>
   <export target="Level3.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="Tilesets/FullTiles.tsx"/>
  <tileset firstgid="1025" source="Tilesets/SpritesList.tsx"/>
- <imagelayer id="2" name="Calque d'Images 1" visible="0">
+ <imagelayer id="2" name="Calque d'Images 1">
   <image source="colorMaplevel3.png" width="1088" height="1280"/>
  </imagelayer>
  <layer id="10" name="BackGroundFirst" width="68" height="80" tintcolor="#ababab">
@@ -92,7 +92,7 @@
 203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203,203
 </data>
  </layer>
- <layer id="1" name="LevelIn" width="68" height="80" opacity="0.8">
+ <layer id="1" name="LevelIn" width="68" height="80" visible="0" opacity="0.8">
   <data encoding="csv">
 33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,
 33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,
@@ -260,7 +260,7 @@
 203,203,203,203,203,203,203,203,203,203,203,203,203,204,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,202,203,203,203,203,203,203,203,203,203,203,203,203,203
 </data>
  </layer>
- <objectgroup id="5" name="Collider" visible="0">
+ <objectgroup id="5" name="Collider" locked="1">
   <object id="1019" x="864" y="0" width="224" height="560"/>
   <object id="1020" x="0" y="0" width="224" height="560"/>
   <object id="1021" x="0" y="624" width="224" height="320"/>
@@ -270,8 +270,8 @@
   <object id="1077" x="224" y="1104" width="640" height="176"/>
   <object id="1078" x="0" y="0" width="1088" height="96"/>
  </objectgroup>
- <objectgroup id="9" name="Move" visible="0"/>
- <objectgroup id="6" name="PassThrough" visible="0">
+ <objectgroup id="9" name="Move"/>
+ <objectgroup id="6" name="PassThrough">
   <object id="1026" x="224" y="848" width="640" height="16"/>
   <object id="1027" x="752" y="800" width="48" height="16"/>
   <object id="1028" x="816" y="752" width="48" height="16"/>
@@ -320,6 +320,10 @@
   <object id="1075" x="720" y="912" width="32" height="16"/>
   <object id="1076" x="752" y="1056" width="32" height="16"/>
  </objectgroup>
- <objectgroup id="7" name="Point" visible="0"/>
- <objectgroup id="8" name="Trigger" visible="0"/>
+ <objectgroup id="7" name="Point">
+  <object id="1080" type="SpawnPlayer" x="160" y="1008">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="8" name="Trigger"/>
 </map>

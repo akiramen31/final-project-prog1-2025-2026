@@ -69,7 +69,8 @@ void SetMap(MapState _map)
 		break;
 	case LEVEL3:
 		cjson = LoadCjsonB("Assets/Maps/Level3.json");
-		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level3.png"), sfTrue);
+		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level3Front.png"), sfTrue);
+		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3Back.png"), sfTrue);
 		//map.data.image = sfImage_createFromFile("Assets/Maps/Level3Reduite.png");
 		break;
 	case LEVEL_TEST:
@@ -102,12 +103,13 @@ void SetMap(MapState _map)
 MapState GetActualyMap(void)
 {
 	return map.state;
-	return map.state;
 }
 
 void LoadMapData(CjsonB* _cjson)
 {
 	map.data.size = (sfVector2u){ _cjson->width, _cjson->height };
+
+	printf("map %d size x : %d, y : %d\n", GetActualyMap(), _cjson->width, _cjson->height);
 
 	for (unsigned i = 0; i < _cjson->layersCount; i++)
 	{

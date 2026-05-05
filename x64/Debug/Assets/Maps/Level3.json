@@ -10,7 +10,7 @@
          "name":"Calque d'Images 1",
          "opacity":1,
          "type":"imagelayer",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -192,7 +192,7 @@
          "name":"LevelIn",
          "opacity":0.8,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":68,
          "x":0,
          "y":0
@@ -291,6 +291,7 @@
         {
          "draworder":"topdown",
          "id":5,
+         "locked":true,
          "name":"Collider",
          "objects":[
                 {
@@ -391,7 +392,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -402,7 +403,7 @@
          "objects":[],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -977,7 +978,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -985,10 +986,23 @@
          "draworder":"topdown",
          "id":7,
          "name":"Point",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":1080,
+                 "name":"",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"SpawnPlayer",
+                 "visible":true,
+                 "width":0,
+                 "x":160,
+                 "y":1008
+                }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -999,12 +1013,12 @@
          "objects":[],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":1079,
+ "nextobjectid":1081,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
