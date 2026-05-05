@@ -166,7 +166,7 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 			{
 				if (StringCompare(area[i].type, "Camera"))
 				{
-					if (GetEnemyZone() > 0)
+					if (GetEnemyZone() > 0 || IsBossActive())
 					{
 						sfFloatRect move = GetPlayerRect();
 						move.width -= areaReaction.width;
@@ -467,13 +467,16 @@ void UpdateAnimation(float _dt)
 
 void DamagePlayer(int _damage)
 {
-	if (!playerInvicible)
+	if (_damage > 0)
 	{
-		if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+		if (!playerInvicible)
 		{
-			sfSound_play(player.hitSound);
-			player.life -= _damage;
-			timerlastDamageReceive = 0;
+			if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
+			{
+				sfSound_play(player.hitSound);
+				player.life -= _damage;
+				timerlastDamageReceive = 0;
+			}
 		}
 	}
 }

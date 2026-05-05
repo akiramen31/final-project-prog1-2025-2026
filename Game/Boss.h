@@ -8,11 +8,14 @@
 #define BOSS_SPEED PLAYER_HORIZONTAL_SPEED_MAX * 0.8f
 #define BOSS_SPEED_RUNAWAY BOSS_SPEED * 2.5f
 
+#define OFFSET_BOSS (sfVector2f){56, -46}
+
 #define BOSS_PART_NUMBER 10
 
 #define RUNAWAY_TIMER 4.f
 
-#define BOSS_FIRERATE 1.f
+#define BOSS_FIRERATE_BULLET 1.f
+#define BOSS_FIRERATE_DRONE 1.f
 #define MAX_BOSS_LIFE 250.f
 
 #define TURRET_ROTATION_SPEED 150.f
@@ -63,7 +66,8 @@ typedef struct Boss1
 	sfSprite* spriteTurretRCanon;
 	sfSprite* droneFactory;
 
-	float cooldownShoot;
+	float cooldownShootBullet;
+	float cooldownShootDrone;
 
 	sfBool bossReacting;
 	sfBool isAlive;
@@ -90,18 +94,19 @@ void LoadBoss(void);
 
 void SwitchBoss(char _index, sfVector2f _position);
 
-void CheckBossPlayerState(float _dt);
+void CheckBossPlayerState(sfVector2f _posPlayer, float _dt);
 
-void UpdateBoss(float _dt);
-void UpdateTurret(float _dt);
+void UpdateBoss(sfVector2f _posPlayer, float _dt);
+void UpdateTurret(sfVector2f _posPlayer, float _dt);
 
 sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
 
 sfBool HitBoss(float _degat, sfFloatRect _hitbox);
-void BossShoot(float _dt);
+void BossShoot(sfVector2f _posPlayer, float _dt);
 
 void DestroyBoss1(void);
 
 float* GetBossHpAdr(void);
 
+sfBool IsBossActive(void);
 #endif // !BOSS_H

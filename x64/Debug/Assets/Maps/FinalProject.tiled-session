@@ -92,11 +92,11 @@
                 7,
                 6
             ],
-            "scale": 2,
-            "selectedLayer": 7,
+            "scale": 0.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 339.25,
-                "y": 903.5
+                "x": 563,
+                "y": 594
             }
         },
         "LevelTest.tmx": {
