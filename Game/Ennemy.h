@@ -149,16 +149,24 @@ typedef struct EnemyEntity
 	float life;
 	float energy;
 	sfFloatRect region;
-	char* gridColider;
 	sfVector2f velocity;
+	char actif;
 }EnemyEntity;
+
+typedef struct IAData
+{
+	sfVector2u mapSize;
+	char** moveMap[ALEATORY];
+	char** coliderMap;
+	sfFloatRect region;
+}IAData;
 
 typedef struct Enemy
 {
-	EnemyEntity* entity;
 	EnemyData data[ALEATORY];
+	IAData IAData;
+	EnemyEntity* entity;
 	int count;
-
 }Enemy;
 
 void LoadEnemy(void);
