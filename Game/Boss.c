@@ -564,3 +564,16 @@ float* GetBossHpAdr(void)
 {
 	return &boss.boss1->bossLife;
 }
+
+sfBool IsBossActive(void)
+{
+	if (boss.boss1->playerPositionToBoss == PLAYER_NOT_IN_ARENA)
+	{
+		return sfFalse;
+	}
+	else
+	{
+		return sfTrue;
+	}
+}
+

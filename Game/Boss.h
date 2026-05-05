@@ -108,4 +108,5 @@ void DestroyBoss1(void);
 
 float* GetBossHpAdr(void);
 
+sfBool IsBossActive(void);
 #endif // !BOSS_H
