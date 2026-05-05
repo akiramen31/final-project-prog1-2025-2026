@@ -155,3 +155,8 @@ void ChangeAttackType(AttackType _attackType)
 		}
 	}
 }
+
+void CanHitBoss(sfBool _bool)
+{
+	weapon.steamAxe.canHit = _bool;
+}
