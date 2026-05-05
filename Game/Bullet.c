@@ -8,6 +8,8 @@ sfTexture* mistealTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
 Bullet bulletListEnemy[BULLET_ENEMY_MAX];
 Misteal mistealList[MISTEAL_ALLY_MAX];
+BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
+DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
 unsigned mistealCount;
 unsigned bulletCountAlly;
 unsigned bulletCountEnemy;
@@ -16,16 +18,46 @@ void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
 void SortMistealList(unsigned _index);
 
-void LoadBullet(void)
+void LoadProjectiles(void)
 {
 	bulletTexture = GetAsset("Assets/Sprites/Bullet_Placeholder.png");
 	mistealTexture = GetAsset("Assets/Sprites/Misteal_Ammo_Placeholder.png");
 	mistealCount = 0;
 	bulletCountAlly = 0;
 	bulletCountEnemy = 0;
+	LoadBossDrone();
 }
 
-void UpdateBullet(float _dt)
+void LoadBossDrone(void)
+{
+	sfTexture* bossDroneTexture = GetAsset("Assets/Boss/1/Boss_Drone_Placeholder.png");
+	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	{
+		bossDroneList[i].sprite = CreateSprite(bossDroneTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
+		SetSpriteOriginMiddle(bossDroneList[i].sprite);
+
+		sfVector2f missilePosition = { 0 };
+		bossDroneList[i].velocity = (sfVector2f){ 0 };
+		bossDroneList[i].bossDroneState = BDRONE_IS_OUT;
+		bossDroneList[i].bossDroneTimer = 0;
+		//bossDroneList[i].music = CreateMusic("Assets/Musics/BOSSDRONESOUNDAPLACER.ogg", 0.5f, sfFalse);
+	}
+	LoadDangerZone();
+}
+
+void LoadDangerZone(void)
+{
+	sfTexture* dangerZone = GetAsset("Assets/Boss/1/Danger_Zone_Placeholder.png");
+	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	{
+		dangerZoneList[i].sprite = CreateSprite(dangerZone, (sfVector2f) { 0, 0 }, 1.f, 39);
+		SetSpriteOriginMiddle(dangerZoneList[i].sprite);
+
+		sfVector2f missilePosition = { 0 };
+	}
+}
+
+void UpdateProjectiles(float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
 	sfVector2f reactionWall = { 0 };
@@ -70,7 +102,6 @@ void UpdateBullet(float _dt)
 
 			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet))
 			{
-				DamagePlayer(1);
 				DeleteBulletEnemy(i);
 			}
 			else
@@ -82,6 +113,8 @@ void UpdateBullet(float _dt)
 		}
 
 	}
+	UpdateMisteal(_dt);
+	UpdateBossDrone(_dt);
 }
 
 void UpdateMisteal(float _dt)
@@ -103,7 +136,7 @@ void UpdateMisteal(float _dt)
 				DeleteMisteal(i);
 				continue;
 			}
-			
+
 
 			if (reactionWall.x || reactionWall.y)
 			{
@@ -165,6 +198,35 @@ void UpdateMisteal(float _dt)
 				continue;
 			}
 		}
+	}
+}
+
+void UpdateBossDrone(float _dt)
+{
+	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	{
+		if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING)
+		{
+			if (sfSprite_getPosition(bossDroneList[i].sprite).y <= 620)
+			{
+				bossDroneList[i].bossDroneState = BDRONE_IS_STASIC_IN_SKY;
+				bossDroneList[i].bossDroneTimer = BOSS_DRONE_IN_SKY_TIME;
+				bossDroneList[i].velocity.y = 0;
+				sfSprite_rotate(bossDroneList[i].sprite, 180.f);
+				sfSprite_setPosition(bossDroneList[i].sprite, (sfVector2f) { bossDroneList[i].destination, sfSprite_getPosition(bossDroneList[i].sprite).y });
+			}
+		}
+		if (bossDroneList[i].bossDroneState == BDRONE_IS_STASIC_IN_SKY)
+		{
+			bossDroneList[i].bossDroneTimer -= _dt;
+			if (bossDroneList[i].bossDroneTimer < 0)
+			{
+				bossDroneList[i].velocity.y = BOSS_DRONE_SPEED;
+				bossDroneList[i].bossDroneState = BDRONE_IS_FALLING;
+			}
+		}
+		sfSprite_move(bossDroneList[i].sprite, (sfVector2f) { 0, bossDroneList[i].velocity.y* _dt });
+		printf("je suis %d et ma valeur est : %d mon temp est de : %f\n", (i + 1), bossDroneList[i].bossDroneState, bossDroneList[i].bossDroneTimer);
 	}
 }
 
@@ -287,6 +349,24 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 	newMisteal.timer = 0.f;
 	mistealList[mistealCount] = newMisteal;
 	mistealCount++;
+}
+
+void AddBossDrone(sfVector2f _posShooter, float _destination)
+{
+	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	{
+		if (bossDroneList[i].bossDroneState == BDRONE_IS_OUT)
+		{
+			//sfMusic_play(bossDroneList[i].music);
+			// CHANGER QUAND LE CODE POUR IS SPAWNING SERA GOOD
+			bossDroneList[i].bossDroneState = BDRONE_IS_ASCENDING;
+			bossDroneList[i].bossDroneTimer = BOSS_DRONE_SPAWN_TIME;
+			bossDroneList[i].destination = _destination;
+			sfSprite_setPosition(bossDroneList[i].sprite, _posShooter);
+			bossDroneList[i].velocity.y = -(BOSS_DRONE_SPEED);
+			return;
+		}
+	}
 }
 
 void DeleteBulletAlly(unsigned _index)

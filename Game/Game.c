@@ -24,7 +24,7 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	LoadBullet();
+	LoadProjectiles();
 	LoadWeapon();
 	LoadPlayer();
 #if !DEV_PIERRE_ENEMY
@@ -43,19 +43,19 @@ void LoadGame(void)
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
 	case 0:
-		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 1.f, sfTrue);
+		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.1f, sfTrue);
 		break;
 	case 1:
-		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 1.f, sfTrue);
+		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 0.1f, sfTrue);
 		break;
 	case 2:
-		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 1.f, sfTrue);
+		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 0.1f, sfTrue);
 		break;
 	case 3:
-		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 1.f, sfTrue);
+		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 0.1f, sfTrue);
 		break;
 	case 4:
-		CreateMusic("Assets/Musics/1917_Over_There.ogg", 1.f, sfTrue);
+		CreateMusic("Assets/Musics/1917_Over_There.ogg", 0.1f, sfTrue);
 		break;
 	default:
 		break;
@@ -160,7 +160,7 @@ void UpdateGame(float _dt)
 
 				if (GetActualyMap() == LEVEL1)
 				{
-					UpdateBoss(_dt);
+					UpdateBoss(GetPlayerPosition(), _dt);
 				}
 
 				UpdatePlayer(_dt);
@@ -168,8 +168,7 @@ void UpdateGame(float _dt)
 
 				//UpdateGUI(_dt);
 				UpdateCollider();
-				UpdateBullet(_dt);
-				UpdateMisteal(_dt);
+				UpdateProjectiles(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(_dt);
 			}

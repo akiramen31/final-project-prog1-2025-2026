@@ -34,6 +34,7 @@ typedef struct ColdBreath
 }ColdBreath;
 
 void LoadMissile(void);
+
 void UpdateMissile(sfVector2f _pos,float _dt);
 void UpdateSecondary(sfVector2f _posAim, float _dt);
 void AddMissile(sfVector2f _pos, sfBool _isRighted);
