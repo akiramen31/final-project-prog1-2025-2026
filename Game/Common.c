@@ -59,28 +59,22 @@ void CopyStingToBuffer(char* _buffer, char* _string)
 
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
 {
-	char** grid = Calloc(_columnCount, sizeof(char*));
+	char** grid = Calloc(_rowCount * (sizeof(char*) + _columnCount * _typeSize), sizeof(char));
 	if (!grid)
 	{
 		return NULL;
 	}
 
-	char* temp = Calloc((size_t)_rowCount * _columnCount, _typeSize);
-	if (!temp)
-	{
-		Free(grid);
-		return NULL;
-	}
-
+	char* temp = &grid[_rowCount];
+	unsigned tempValue = _columnCount * _typeSize;
 	for (unsigned i = 0; i < _rowCount; i++)
 	{
-		grid[i] = &temp[i * _typeSize * _columnCount];
+		grid[i] = &temp[i * tempValue];
 	}
-
 	return grid;
 }
 
-void** ReallocGrid(void** _previousGrid,unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
+void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize)
 {
 	char** grid = (char**)CreateGrid(_columnCount, _rowCount, _typeSize);
 	char** previousGrid = (char**)_previousGrid;
@@ -113,7 +107,6 @@ void FreeGrid(void** grid)
 {
 	if (grid)
 	{
-		Free(*grid);
 		Free(grid);
 	}
 }
@@ -146,10 +139,10 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 
 	float step = _speed * _dt;
 
-	if (fabsf(diff) <= step) 
+	if (fabsf(diff) <= step)
 	{
 		return _target;
-	} 
+	}
 	else if (diff > 0)
 	{
 		return _current + step;

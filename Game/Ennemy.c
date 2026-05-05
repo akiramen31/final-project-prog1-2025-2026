@@ -13,6 +13,7 @@ int MinResultCase(int _type);
 void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 int TestColision(sfIntRect _intRect);
+int TestJump(sfIntRect _intRect);
 void DebugTab(Case _case);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
@@ -393,7 +394,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	{
 		// liberer lancienne GRID
 		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
-		
+
 		FreeGrid(tableau.grid[ennemy->ennemyEntity.type]);
 		FreeGrid(tableau.collision);
 		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
@@ -447,12 +448,12 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	_cible.top -= ennemy->ennemyEntity.region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
 	// problème colision plafon
-	while(bounsCible.top + bounsEnnemy.height < 1)
+	while (bounsCible.top + bounsEnnemy.height < 1)
 	{
 		bounsCible.top += 1;
 	}
 	//problème collision mur de droite
-	while (bounsCible.left + bounsEnnemy.width > gridSize.x -1)
+	while (bounsCible.left + bounsEnnemy.width > gridSize.x - 1)
 	{
 		bounsCible.left -= 1;
 	}
@@ -485,11 +486,11 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 			sfVector2u* temp = GetElement(listeWait, min)->value;
 			caseGet = *temp;
 			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsEnnemy.width,bounsEnnemy.height };
-			if (TestColision(caseRecherche))//si sur sol
+			if (TestJump(caseRecherche))//si sur sol
 			{
 				//test gauche
 				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 
 				{
@@ -499,9 +500,54 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
+				//test haut gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				if (TestColision(caseRecherche) != 2 &&
+					!TestJump((sfIntRect) { caseRecherche.left + 1, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				/*
+				//test bas gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width + 1,bounsEnnemy.height - 1 };
+				if (TestColision(caseRecherche) != 2 &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					sfBool temp = sfTrue;
+					char compt = 1;
+					char compt2 = 1;
+					sfBool flag = sfTrue;
+					while (temp && compt2 <= JUMP_FORCE && flag)
+					{
+						while (temp && compt <= JUMP_FORCE - compt2 + 1 && flag)
+						{
+							if (TestJump((sfIntRect) { caseRecherche.left - compt2, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+							{
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+									tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+								AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+								temp = sfFalse;
+							}
+							compt++;
+						}
+						compt = 1;
+						compt2++;
+						if (TestColision((sfIntRect) { caseRecherche.left - compt2 + 1, caseRecherche.top + compt2 - 1, caseRecherche.width, caseRecherche.height }) == 2)
+						{
+							flag = sfFalse;
+						}
+					}
+				}*/
+
 				//test Droite
 				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 
 				{
@@ -511,9 +557,23 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
+				//test haut droite
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				if (TestColision(caseRecherche) != 2 &&
+					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
+				}
+
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
+					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top - 1, caseRecherche.width, caseRecherche.height }) &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
@@ -521,7 +581,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
-				
+
 				//test Bas
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (TestColision(caseRecherche) == 1 &&
@@ -531,7 +591,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					char compt = 1;
 					while (temp && compt <= JUMP_FORCE)
 					{
-						if (TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 						{
 							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
@@ -548,7 +608,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 				//test gauche
 				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
 					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
@@ -559,9 +619,23 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
+
+				//test haut gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				if (TestColision(caseRecherche) != 2 &&
+					!TestJump((sfIntRect) { caseRecherche.left + 1, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+
 				//test Droite
 				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
 					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
@@ -571,9 +645,23 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
+				//test haut droite
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				if (TestColision(caseRecherche) != 2 &&
+					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
+
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
+				}
+
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
+					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
@@ -581,16 +669,17 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
+
 				//test Bas
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
-				if (!TestColision(caseRecherche) &&
+				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
 					char compt = 1;
 					while (temp && compt <= JUMP_FORCE)
 					{
-						if (TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 						{
 							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
@@ -746,8 +835,27 @@ int TestColision(sfIntRect _intRect)
 			{
 				temp = 2;
 			}
-			
+
 		}
+	}
+	return temp;
+}
+
+int TestJump(sfIntRect _intRect)
+{
+	int temp = 0;
+
+	for (int t = 0; t < _intRect.width; t++)
+	{
+		if (tableau.collision[_intRect.top][_intRect.left + t] == 1 && temp == 0)
+		{
+			temp = 1;
+		}
+		if (tableau.collision[_intRect.top][_intRect.left + t] == 2)
+		{
+			temp = 2;
+		}
+
 	}
 	return temp;
 }
@@ -959,6 +1067,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 
 sfVector2i GetMoveEnemyAI(unsigned _i, sfVector2f _playerPos);
 sfVector2i GetMoveEnemyAITemp(unsigned _i, sfVector2f _playerPos);
+void UpdateMoveMap(char** _colider, char*** _moveMap, sfVector2u _size, sfIntRect _pBox);
 
 Enemy enemy;
 
@@ -972,22 +1081,77 @@ void LoadEnemy(void)
 	enemy.data[SOLDIER_HEAVY] = (EnemyData){ GetAsset("Assets/Sprites/spider_large.png") , 100.f, 5.f, 300.f, 100.f , 10.f };
 }
 
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
+{
+	sfFloatRect hitboxEnemy = { 0 };
+	//sfVector2f playerPos = GetPlayerPosition();
+	sfVector2i enemyAction = { 0 };
+	for (int i = 0; i < enemy.count; i++)
+	{
+		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		{
+			enemy.entity[i].life -= _degat;
+			if (enemy.entity[i].life <= 0)
+			{
+				enemy.count--;
+				DestroyVisualEntity(enemy.entity[i].sprite);
+				enemy.entity[i] = enemy.entity[enemy.count];
+				if (enemy.count)
+				{
+					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+				}
+			}
+			return sfTrue;
+		}
+	}
+	return sfFalse;
+}
+
+void ResetEnemy(void)
+{
+	for (int i = 0; i < enemy.count; i++)
+	{
+		DestroyVisualEntity(enemy.entity[i].sprite);
+	}
+	enemy.count = 0;
+}
+
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
+{
+	if (_type == ALEATORY)
+	{
+		_type = rand() % (SOLDIER_HEAVY + 1);
+	}
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
+	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
+	enemy.entity[enemy.count].type = _type;
+	enemy.entity[enemy.count].region = _region;
+	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;
+	enemy.count++;
+}
+
+typedef enum BitE
+{
+	ERIGHT = 1,
+	ELEFT = 2,
+	EUP = 4,
+	ERIGHT_UP = ERIGHT + EUP,
+	ELEFT_UP = ELEFT + EUP,
+	EDOWN = 8,
+	ERIGHT_DOWN = ERIGHT + EDOWN,
+	ELEFT_DOWN = ELEFT + EDOWN,
+	EPLAYER = 16,
+	EBLOCK = 32,
+}BitE;
+
 void UpdateEnemy(float _dt)
 {
 #if DEV_ENEMY_BASIC
 	sfVector2f playerPosition = GetPlayerPosition();
-#else
-#endif
 	sfVector2i enemyMove = { 0 };
 	for (int i = 0; i < enemy.count; i++)
 	{
-#if DEV_ENEMY_BASIC
-		enemyMove = GetMoveEnemyAITemp(i, playerPosition);
-#else
-		enemyMove = GetMoveEnemyAI(i, playerPosition);
-#endif
-
-
 		if (enemyMove.x)
 		{
 			enemy.entity[i].velocity.x = enemyMove.x * enemy.data[enemy.entity[i].type].speed;
@@ -1038,58 +1202,562 @@ void UpdateEnemy(float _dt)
 			DamagePlayer(1);
 		}
 	}
-}
+#else
 
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
-{
-	sfFloatRect hitboxEnemy = { 0 };
-	//sfVector2f playerPos = GetPlayerPosition();
-	sfVector2i enemyAction = { 0 };
-	for (int i = 0; i < enemy.count; i++)
+	sfFloatRect playerRect = GetPlayerRect();
+
+	if (!(enemy.IAData.region.left <= playerRect.left + playerRect.width && enemy.IAData.region.left + enemy.IAData.region.width >= playerRect.left && enemy.IAData.region.top <= playerRect.top + playerRect.height && enemy.IAData.region.top + enemy.IAData.region.height >= playerRect.top))
 	{
-		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
-		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, NULL))
+		if (enemy.IAData.coliderMap)
 		{
-			enemy.entity[i].life -= _degat;
-			if (enemy.entity[i].life <= 0)
+			for (int i = 0; i < ALEATORY; i++)
 			{
-				enemy.count--;
-				DestroyVisualEntity(enemy.entity[i].sprite);
-				enemy.entity[i].sprite = enemy.entity[enemy.count].sprite;
-				if (enemy.count)
+				FreeGrid(enemy.IAData.moveMap[i]);
+			}
+			FreeGrid(enemy.IAData.coliderMap);
+			enemy.IAData = (IAData){ 0 };
+		}
+		short boolType = 0;
+		for (int i = 0; i < enemy.count; i++)
+		{
+			if (enemy.entity[i].region.left <= playerRect.left + playerRect.width && enemy.entity[i].region.left + enemy.entity[i].region.width >= playerRect.left && enemy.entity[i].region.top <= playerRect.top + playerRect.height && enemy.entity[i].region.top + enemy.entity[i].region.height >= playerRect.top)
+			{
+				enemy.entity[i].actif = 1;
+				boolType |= (1 << (enemy.entity[i].type + 1));
+				enemy.IAData.region = enemy.entity[i].region;
+			}
+			else
+			{
+				enemy.entity[i].actif = 0;
+			}
+		}
+		if (boolType)
+		{
+			enemy.IAData.mapSize = (sfVector2u){ (int)enemy.IAData.region.width / TILE_SIZE, (int)enemy.IAData.region.height / TILE_SIZE };
+			enemy.IAData.coliderMap = (char**)CreateGrid(enemy.IAData.mapSize.x, enemy.IAData.mapSize.y, sizeof(char));
+			for (int y = 0; y < enemy.IAData.mapSize.y; y++)
+			{
+				for (int x = 0; x < enemy.IAData.mapSize.x; x++)
 				{
-					enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count) * sizeof(EnemyEntity));
+					sfVector2f reaction = Colision((sfFloatRect) { enemy.IAData.region.left + x * TILE_SIZE, enemy.IAData.region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+					if (reaction.x || reaction.y)
+					{
+						enemy.IAData.coliderMap[y][x] = 2;
+					}
+					else if (CollisionPassThrough((sfFloatRect) { enemy.IAData.region.left + x * TILE_SIZE, enemy.IAData.region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+					{
+						enemy.IAData.coliderMap[y][x] = 1;
+					}
 				}
 			}
-			return sfTrue;
+
+			for (int i = 0; i < ALEATORY; i++)
+			{
+				if (boolType & (1 << i + 1))
+				{
+					enemy.IAData.moveMap[i] = CreateGrid(enemy.IAData.mapSize.x, enemy.IAData.mapSize.y, sizeof(char));
+				}
+			}
 		}
 	}
-	return sfFalse;
-}
 
-void ResetEnemy(void)
-{
+	sfFloatRect enemyRect = { 0 };
+	sfIntRect playerHitbox = { 0 };
+	if (enemy.IAData.coliderMap)
+	{
+		playerHitbox = (sfIntRect){ (int)(playerRect.left - enemy.IAData.region.left) / TILE_SIZE,(int)(playerRect.top - enemy.IAData.region.top) / TILE_SIZE, (int)playerRect.width / TILE_SIZE, (int)playerRect.height / TILE_SIZE };
+		UpdateMoveMap(enemy.IAData.coliderMap, enemy.IAData.moveMap, enemy.IAData.mapSize, playerHitbox);
+	}
+
 	for (int i = 0; i < enemy.count; i++)
 	{
-		DestroyVisualEntity(enemy.entity[i].sprite);
+		if (enemy.entity[i].actif)
+		{
+			enemyRect = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
+			if (sfFloatRect_intersects(&playerRect, &enemyRect, NULL))
+			{
+				DamagePlayer(1);
+			}
+			sfVector2f posE = { enemyRect.left, enemyRect.top };
+
+			if (!sfFloatRect_contains(&enemy.entity[i].region, enemyRect.left, enemyRect.top))
+			{
+				enemy.entity[i].velocity = (sfVector2f){ 0 };
+				sfSprite_setPosition(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].region.left, enemy.entity[i].region.top });
+			}
+
+			sfVector2i posEnemyCase = { ((int)(posE.x - enemy.IAData.region.left) / TILE_SIZE), ((int)(posE.y - enemy.IAData.region.top) / TILE_SIZE) };
+			char move = enemy.IAData.moveMap[enemy.entity[i].type][posEnemyCase.y][posEnemyCase.x];
+			if (move & ERIGHT)
+			{
+				enemy.entity[i].velocity.x = MAX_FALL_SPEED_ENEMY / 10;
+			}
+			else if (move & ELEFT)
+			{
+				enemy.entity[i].velocity.x = -(float)MAX_FALL_SPEED_ENEMY / 10;
+			}
+			else
+			{
+				enemy.entity[i].velocity.x = 0;
+			}
+			if (move & EUP && !enemy.entity[i].velocity.y)
+			{
+				enemy.entity[i].velocity.y = -enemy.data[enemy.entity[i].type].jumpForce;
+			}
+			else if (0 && (move & EDOWN && !enemy.entity[i].velocity.y))
+			{
+				enemy.entity[i].velocity.y = 1000;
+			}
+		}
+		else
+		{
+			enemy.entity[i].velocity.x = 0;
+		}
+
+		enemy.entity[i].velocity.y += G * enemy.data[enemy.entity[i].type].weight * _dt;
+		if (enemy.entity[i].velocity.y > MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = MAX_FALL_SPEED_ENEMY;
+		}
+		else if (enemy.entity[i].velocity.y < -MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.y = -MAX_FALL_SPEED_ENEMY;
+		}
+
+		if (enemy.entity[i].velocity.x > MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.x = MAX_FALL_SPEED_ENEMY;
+		}
+		else if (enemy.entity[i].velocity.x < -MAX_FALL_SPEED_ENEMY)
+		{
+			enemy.entity[i].velocity.x = -MAX_FALL_SPEED_ENEMY;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, (sfVector2f) { enemy.entity[i].velocity.x* _dt, enemy.entity[i].velocity.y* _dt });
+		sfVector2f colision = Colision(sfSprite_getGlobalBounds(enemy.entity[i].sprite), AXIS_BOTH);
+		colision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[i].sprite)).y;
+		if (colision.y > 0)
+		{
+			enemy.entity[i].velocity.y = -G * enemy.data[enemy.entity[i].type].weight * _dt;
+		}
+		else if (colision.y < 0)
+		{
+			enemy.entity[i].velocity.y = 0;
+		}
+		else if (colision.x)
+		{
+			colision.y -= (int)abs((int)colision.x);
+			enemy.entity[i].velocity.x = 0;
+		}
+
+		sfSprite_move(enemy.entity[i].sprite, colision);
 	}
-	enemy.count = 0;
+
+#endif
 }
 
-void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
+void AStar4(char** _colider, char** _moveMap, sfVector2u _size, sfIntRect _start, sfVector2u _enemySize, int _jump);
+void AStar5(char** _colider, char** _moveMap, sfVector2u _size, sfIntRect _start, sfVector2u _enemySize, int _jump);
+
+void UpdateMoveMap(char** _colider, char*** _moveMap, sfVector2u _size, sfIntRect _pBox)
 {
-	if (_type == ALEATORY)
+	if (_moveMap[SOLDIER_SMALL])
 	{
-		_type = rand() % (SOLDIER_HEAVY + 1);
+		AStar5(_colider, _moveMap[SOLDIER_SMALL], _size, _pBox, (sfVector2u) { 1, 1 }, 6);
 	}
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.data[_type].texture, _position, 1.f, 1.f);
-	//sfVector2f pos = sfSprite_getPosition(enemy.entity[enemy.count].sprite);
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].life = enemy.data[_type].lifeMax;
-	enemy.count++;
+	if (_moveMap[SOLDIER_MEDIUM])
+	{
+		AStar5(_colider, _moveMap[SOLDIER_MEDIUM], _size, _pBox, (sfVector2u) { 2, 1 }, 6);
+	}
+	if (_moveMap[SOLDIER_HEAVY])
+	{
+		AStar5(_colider, _moveMap[SOLDIER_HEAVY], _size, _pBox, (sfVector2u) { 2, 1 }, 6);
+	}
+	if (_moveMap[DRONE_SMALL])
+	{
+
+	}
+	if (_moveMap[DRONE_MEDIUM])
+	{
+
+	}
+	if (_moveMap[DRONE_HEAVY])
+	{
+
+	}
+	if (_moveMap[CROWLER_SMALL])
+	{
+
+	}
+	if (_moveMap[CROWLER_MEDIUM])
+	{
+
+	}
+	if (_moveMap[CROWLER_HEAVY])
+	{
+
+	}
 }
+
+void AStar4(char** _colider, char** _moveMap, sfVector2u _size, sfIntRect _start, sfVector2u _enemySize, int _jump)
+{
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			_moveMap[y][x] = 0;
+		}
+	}
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			for (int ey = 0; ey < _enemySize.y; ey++)
+			{
+				for (int ex = 0; ex < _enemySize.x; ex++)
+				{
+					if (y + ey >= _size.y || x + ex >= _size.x || _colider[y + ey][x + ex] == 2)
+					{
+						_moveMap[y][x] = EBLOCK;
+					}
+					else
+					{
+						for (int py = 0; py < _start.height + 1; py++)
+						{
+							for (int px = 0; px < _start.width + 1; px++)
+							{
+								if (y + ey == _start.top + py && x + ex == _start.left + px)
+								{
+									_moveMap[y][x] = EPLAYER;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	char** moveTemp = CreateGrid(_size.x, _size.y, sizeof(char));
+	char change = 1;
+	while (change)
+	{
+		change = 0;
+
+		// Copie de la carte
+		for (int y = 0; y < _size.y; y++)
+			for (int x = 0; x < _size.x; x++)
+				moveTemp[y][x] = _moveMap[y][x];
+
+		for (int y = 0; y < _size.y; y++)
+		{
+			for (int x = 0; x < _size.x; x++)
+			{
+				if (moveTemp[y][x] != 0)
+					continue;
+
+				// === Mouvements horizontaux et descente ===
+				if (x > 0 && moveTemp[y][x - 1] % EBLOCK)
+				{
+					_moveMap[y][x] = ELEFT;
+					change = 1;
+					continue;
+				}
+				if (x < _size.x - 1 && moveTemp[y][x + 1] % EBLOCK)
+				{
+					_moveMap[y][x] = ERIGHT;
+					change = 1;
+					continue;
+				}
+				if (y < _size.y - 1)
+				{
+					if (moveTemp[y + 1][x] % EBLOCK)
+					{
+						_moveMap[y][x] = EDOWN;
+						change = 1;
+						continue;
+					}
+					if (x > 0 && moveTemp[y + 1][x - 1] % EBLOCK)
+					{
+						_moveMap[y][x] = ELEFT_DOWN;
+						change = 1;
+						continue;
+					}
+					if (x < _size.x - 1 && moveTemp[y + 1][x + 1] % EBLOCK)
+					{
+						_moveMap[y][x] = ERIGHT_DOWN;
+						change = 1;
+						continue;
+					}
+				}
+
+				// === Sauts vers le haut ===
+				if (y <= 0)
+					continue;
+
+				// Saut vertical (au-dessus de [y][x])
+				if (moveTemp[y - 1][x] % EBLOCK)
+				{
+					// Simule la trajectoire du saut : y, y+1, y+2... jusqu'à _jump cases
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x])
+						{
+							// On remonte : assigne EUP sur tout le chemin
+							for (int j = i - 1; j >= 0; j--)
+								_moveMap[y + j][x] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x] != 0)
+							break; // Déjà assigné, inutile de continuer
+					}
+				}
+
+				// Saut diagonal gauche (au-dessus de [y][x-1])
+				if (x > 0 && moveTemp[y - 1][x - 1] % EBLOCK)
+				{
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x - 1])
+						{
+							_moveMap[y + (i - 1)][x - 1] = ELEFT_UP; // sommet = diag
+							for (int j = i - 2; j >= 0; j--)
+								_moveMap[y + j][x - 1] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x - 1] != 0)
+							break;
+					}
+				}
+
+				// Saut diagonal droit (au-dessus de [y][x+1])
+				if (x < _size.x - 1 && moveTemp[y - 1][x + 1] % EBLOCK)
+				{
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x + 1])
+						{
+							_moveMap[y + (i - 1)][x + 1] = ERIGHT_UP; // ← corrigé
+							for (int j = i - 2; j >= 0; j--)
+								_moveMap[y + j][x + 1] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x + 1] != 0)
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	FreeGrid(moveTemp);
+
+	printf("\n");
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			printf("%3d", _moveMap[y][x]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+void AStar5(char** _colider, char** _moveMap, sfVector2u _size, sfIntRect _start, sfVector2u _enemySize, int _jump)
+{
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			_moveMap[y][x] = 0;
+		}
+	}
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			for (int ey = 0; ey < _enemySize.y; ey++)
+			{
+				for (int ex = 0; ex < _enemySize.x; ex++)
+				{
+					if (y + ey >= _size.y || x + ex >= _size.x || _colider[y + ey][x + ex] == 2)
+					{
+						_moveMap[y][x] = EBLOCK;
+					}
+					else
+					{
+						for (int py = 0; py < _start.height + 1; py++)
+						{
+							for (int px = 0; px < _start.width + 1; px++)
+							{
+								if (y + ey == _start.top + py && x + ex == _start.left + px)
+								{
+									_moveMap[y][x] = EPLAYER;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	char** moveTemp = CreateGrid(_size.x, _size.y, sizeof(char));
+	char change = 1;
+	while (change)
+	{
+		change = 0;
+
+		// Copie de la carte
+		for (int y = 0; y < _size.y; y++)
+			for (int x = 0; x < _size.x; x++)
+				moveTemp[y][x] = _moveMap[y][x];
+
+		for (int y = 0; y < _size.y; y++)
+		{
+			for (int x = 0; x < _size.x; x++)
+			{
+				if (moveTemp[y][x] != 0)
+					continue;
+
+				// === Mouvements horizontaux et descente ===
+				if (x > 0 && moveTemp[y][x - 1] % EBLOCK)
+				{
+					_moveMap[y][x] = ELEFT;
+					change = 1;
+					continue;
+				}
+				if (x < _size.x - 1 && moveTemp[y][x + 1] % EBLOCK)
+				{
+					_moveMap[y][x] = ERIGHT;
+					change = 1;
+					continue;
+				}
+				if (y < _size.y - 1)
+				{
+					if (moveTemp[y + 1][x] % EBLOCK)
+					{
+						_moveMap[y][x] = EDOWN;
+						change = 1;
+						continue;
+					}
+					if (x > 0 && moveTemp[y + 1][x - 1] % EBLOCK)
+					{
+						_moveMap[y][x] = ELEFT_DOWN;
+						change = 1;
+						continue;
+					}
+					if (x < _size.x - 1 && moveTemp[y + 1][x + 1] % EBLOCK)
+					{
+						_moveMap[y][x] = ERIGHT_DOWN;
+						change = 1;
+						continue;
+					}
+				}
+
+				// === Sauts vers le haut ===
+				if (y <= 0)
+					continue;
+
+				// Saut vertical (au-dessus de [y][x])
+				if (moveTemp[y - 1][x] % EBLOCK)
+				{
+					// Simule la trajectoire du saut : y, y+1, y+2... jusqu'à _jump cases
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x])
+						{
+							// On remonte : assigne EUP sur tout le chemin
+							for (int j = i - 1; j >= 0; j--)
+								_moveMap[y + j][x] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x] != 0)
+							break; // Déjà assigné, inutile de continuer
+					}
+				}
+
+				// Saut diagonal gauche (au-dessus de [y][x-1])
+				if (x > 0 && moveTemp[y - 1][x - 1] % EBLOCK)
+				{
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x - 1])
+						{
+							_moveMap[y + (i - 1)][x - 1] = ELEFT_UP; // sommet = diag
+							for (int j = i - 2; j >= 0; j--)
+								_moveMap[y + j][x - 1] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x - 1] != 0)
+							break;
+					}
+				}
+
+				// Saut diagonal droit (au-dessus de [y][x+1])
+				if (x < _size.x - 1 && moveTemp[y - 1][x + 1] % EBLOCK)
+				{
+					for (int i = 0; i < _jump; i++)
+					{
+						int ty = y + i;
+						if (ty >= _size.y || _colider[ty][x + 1])
+						{
+							_moveMap[y + (i - 1)][x + 1] = ERIGHT_UP; // ← corrigé
+							for (int j = i - 2; j >= 0; j--)
+								_moveMap[y + j][x + 1] = EUP;
+							change = 1;
+							break;
+						}
+						if (_moveMap[y + i][x + 1] != 0)
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	FreeGrid(moveTemp);
+
+	printf("\n");
+	for (int y = 0; y < _size.y; y++)
+	{
+		for (int x = 0; x < _size.x; x++)
+		{
+			printf("%3d", _moveMap[y][x]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 sfVector2i AStar1(char** _grid, sfVector2i _gridSize, sfIntRect _startRect, sfIntRect _goalRect, int _jumpHeightTiles);
 sfVector2i AStar2(char** grid, sfVector2i gridSize, sfIntRect start, sfIntRect goal, int jumpHeightTiles);
