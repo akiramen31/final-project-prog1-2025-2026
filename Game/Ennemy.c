@@ -12,7 +12,7 @@ float CalculResultAStar(Case _case);
 int MinResultCase(int _type);
 void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
-sfBool TestColision(sfIntRect _intRect);
+int TestColision(sfIntRect _intRect);
 void DebugTab(Case _case);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
@@ -498,6 +498,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
+
 				//test Droite
 				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
@@ -509,6 +510,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
+
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
@@ -518,6 +520,27 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+				
+				//test Bas
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				if (TestColision(caseRecherche) == 1 &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					sfBool temp = sfTrue;
+					char compt = 1;
+					while (temp && compt <= JUMP_FORCE)
+					{
+						if (TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+						{
+							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
+							AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+							temp = sfFalse;
+						}
+						compt++;
+					}
 				}
 			}
 			else // si pas su sol
@@ -708,17 +731,22 @@ void RetirerListWait(int _index)
 	RemoveElement(listeWait, _index);
 }
 
-sfBool TestColision(sfIntRect _intRect)
+int TestColision(sfIntRect _intRect)
 {
-	sfBool temp = sfFalse;
+	int temp = 0;
 	for (int i = 0; i < abs(_intRect.height); i++)
 	{
 		for (int t = 0; t < _intRect.width; t++)
 		{
-			if (tableau.collision[_intRect.top - i][_intRect.left + t])
+			if (tableau.collision[_intRect.top - i][_intRect.left + t] == 1 && temp == 0)
 			{
-				temp = sfTrue;
+				temp = 1;
 			}
+			if (tableau.collision[_intRect.top - i][_intRect.left + t] == 2)
+			{
+				temp = 2;
+			}
+			
 		}
 	}
 	return temp;
