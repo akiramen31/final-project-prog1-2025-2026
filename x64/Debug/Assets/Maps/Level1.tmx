@@ -852,7 +852,7 @@
   <object id="515" name="1" type="Camera" x="1952" y="560" width="320" height="192"/>
   <object id="517" name="2" type="Camera" x="2784" y="560" width="544" height="304"/>
   <object id="519" name="3" type="Camera" x="3920" y="192" width="432" height="224"/>
-  <object id="520" name="4" type="Camera" x="4960" y="472" width="656" height="392"/>
+  <object id="520" name="4" type="Camera" x="4960" y="480" width="656" height="384"/>
   <object id="632" name="5" type="Camera" x="8288" y="464" width="768" height="400"/>
   <object id="723" type="EndLevel" x="9088" y="640" width="352" height="160"/>
  </objectgroup>
