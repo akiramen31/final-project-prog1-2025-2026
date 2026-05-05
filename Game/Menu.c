@@ -46,7 +46,7 @@ void LoadMenu(void)
 	}
 
 	//Musics
-	float volume = 2.f;
+	float volume = 0.5f;
 	menu.musics[0] = CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", volume, sfFalse);
 	menu.musics[1] = CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", volume, sfFalse);
 	menu.musics[2] = CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", volume, sfFalse);

@@ -127,7 +127,7 @@ sfBool StringCompare(char* _string1, char* _string2)
 
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 {
-	float diff = _target - _current;
+	/*float diff = _target - _current;
 	if (diff < -180.0f)
 	{
 		diff += (int)(diff / 180.f) * 360.f;
@@ -151,7 +151,23 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 	{
 		return _current - step;
 	}
-	return 0;
+	return 0;*/
+
+
+		// 1. On ramène l'angle SFML (0/360) vers le format mathématique (-180/180)
+		if (_current > 180.0f) _current -= 360.0f;
+
+		float diff = _target - _current;
+
+		// 2. On prend toujours le chemin le plus court
+		while (diff < -180.0f) diff += 360.0f;
+		while (diff > 180.0f) diff -= 360.0f;
+
+		float step = _speed * _dt;
+
+		if (fabsf(diff) <= step) return _target;
+
+		return _current + (diff > 0 ? step : -step);
 }
 
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)

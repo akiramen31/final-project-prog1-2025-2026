@@ -2,6 +2,7 @@
 #include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
+#include "Boss.h"
 
 Player player;
 
@@ -30,6 +31,8 @@ void UpdateEnergy(float _dt);
 
 void UpdateWeaponPlayer(float _dt);
 
+void UpdateLockPlayerInRoomIfEnemyAlive(void);
+
 sfVector2f pos;
 
 void LoadPlayer(void)
@@ -45,15 +48,19 @@ void LoadPlayer(void)
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
 
 	player.running.frameCount = 8;
-
 	player.running.frameDuration = 0.1f;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.walking.frameCount = 4;
-	player.walking.frameDuration = 0.2f;
-	player.walking.isLooping = sfTrue;
-	player.walking.rectActualy = (sfIntRect){ 0,64,16,32 };
+	player.jumping.frameCount = 4;
+	player.jumping.frameDuration = 0.1f;
+	player.jumping.isLooping = sfTrue;
+	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
+
+	player.idling.frameCount = 4;
+	player.idling.frameDuration = 0.2f;
+	player.idling.isLooping = sfTrue;
+	player.idling.rectActualy = (sfIntRect){ 0,64,16,32 };
 
 	player.dashing.frameCount = 1;
 	player.dashing.frameDuration = 1.f;
@@ -76,11 +83,11 @@ void LoadPlayer(void)
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
 
-	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 5.f, sfFalse);
-	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 5.f, sfFalse);
-	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 5.f, sfFalse);
-	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 5.f, sfFalse);
-	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 5.f, sfFalse);
+	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 0.5f, sfFalse);
+	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 0.25f, sfFalse);
+	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 0.5f, sfFalse);
+	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 0.2f, sfFalse);
+	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 0.5f, sfFalse);
 }
 
 void UpdatePlayer(float _dt)
@@ -94,19 +101,19 @@ void UpdatePlayer(float _dt)
 		pos = GetPlayerPosition();
 
 		int flySpeed = 500;
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		if (IfControlKeyPressed(KEY_RIGHT))
 		{
 			pos.x += flySpeed * _dt;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		else if (IfControlKeyPressed(KEY_LEFT))
 		{
 			pos.x -= flySpeed * _dt;
 		}
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+		if (IfControlKeyPressed(KEY_DOWN))
 		{
 			pos.y += flySpeed * _dt;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+		else if (IfControlKeyPressed(KEY_JUMP))
 		{
 			pos.y -= flySpeed * _dt;
 		}
@@ -116,6 +123,7 @@ void UpdatePlayer(float _dt)
 	{
 		MoveZonePlayer(_dt);
 		UpdateMovePlayer(_dt);
+		UpdateLockPlayerInRoomIfEnemyAlive();
 	}
 
 	UpdateAnimation(_dt);
@@ -143,6 +151,51 @@ void UpdateWeaponPlayer(float _dt)
 	UpdateFireControl(_dt);
 }
 
+void UpdateLockPlayerInRoomIfEnemyAlive(void)
+{
+	sfFloatRect hitbox = GetPlayerRect();
+	int num = GetTrigerCount();
+	InfoZone* area = GetInfoZoneTriger(hitbox);
+
+	sfFloatRect areaReaction = { 0 };
+	if (area != NULL)
+	{
+		for (int i = 0; i < num; i++)
+		{
+			if (sfFloatRect_intersects(&hitbox, &area[i].hitbox, &areaReaction))
+			{
+				if (StringCompare(area[i].type, "Camera"))
+				{
+					if (GetEnemyZone() > 0)
+					{
+						sfFloatRect move = GetPlayerRect();
+						move.width -= areaReaction.width;
+						move.height -= areaReaction.height;
+
+						if (move.left < area[i].hitbox.left + area[i].hitbox.width / 2)
+						{
+							MovePlayer((sfVector2f) { move.width, 0 });
+						}
+						else
+						{
+							MovePlayer((sfVector2f) { -move.width, 0 });
+						}
+
+						if (move.top < area[i].hitbox.top + area[i].hitbox.height / 2)
+						{
+							MovePlayer((sfVector2f) { 0, move.height });
+						}
+						else
+						{
+							MovePlayer((sfVector2f) { 0, -move.height });
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 void UpdateMovePlayer(float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
@@ -154,11 +207,11 @@ void UpdateMovePlayer(float _dt)
 	{
 		player.velocity.x /= 1.5f;
 
-		if ((sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT))))
+		if (IfControlKeyPressed(KEY_RIGHT) && IfControlKeyPressed(KEY_LEFT))
 		{
 			player.velocity.x = 0;
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_RIGHT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_RIGHT)))
+		else if (IfControlKeyPressed(KEY_RIGHT))
 		{
 			if (player.velocity.x <= 1)
 			{
@@ -166,7 +219,7 @@ void UpdateMovePlayer(float _dt)
 			}
 
 		}
-		else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_LEFT)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_LEFT)))
+		else if (IfControlKeyPressed(KEY_LEFT))
 		{
 			if (player.velocity.x >= -1)
 			{
@@ -191,9 +244,9 @@ void UpdateMovePlayer(float _dt)
 		if (player.isGrounded == sfTrue || timerFaling < PLAYER_JUMP_FORGIVE)
 		{
 			player.velocity.y = 0;
-			if (!((sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP))) && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))))
+			if (!(IfControlKeyPressed(KEY_JUMP) && (IfControlKeyPressed(KEY_DOWN))))
 			{
-				if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_JUMP)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_JUMP)))
+				if (IfControlKeyPressed(KEY_JUMP))
 				{
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
@@ -201,7 +254,7 @@ void UpdateMovePlayer(float _dt)
 					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
 				}
-				else if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN)))
+				else if (IfControlKeyPressed(KEY_DOWN))
 				{
 					player.velocity.y++;
 				}
@@ -217,7 +270,7 @@ void UpdateMovePlayer(float _dt)
 		}
 	}
 
-	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DASH)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DASH))))
+	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH))
 	{
 		timerDash = 0;
 
@@ -249,7 +302,7 @@ void ColisionMapPlayer(float _dt)
 
 	if (reactionPassThrough.y < 0)
 	{
-		if (player.velocity.y >= 0 && !(sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_DOWN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_DOWN))))
+		if (player.velocity.y >= 0 && !IfControlKeyPressed(KEY_DOWN))
 		{
 			player.isGrounded = sfTrue;
 			timerFaling = 0;
@@ -348,17 +401,32 @@ void MoveZonePlayer(float _dt)
 
 void UpdateAnimation(float _dt)
 {
-	if (player.velocity.x != 0 && player.velocity.y == 0)
+	if (timerDash >= PLAYER_DASH_DURATION)
 	{
-		if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+		if (player.velocity.y == 0)
 		{
-			sfSound_play(player.walkSound);
+			if (player.velocity.x != 0)
+			{
+				if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+				{
+					sfSound_play(player.walkSound);
+				}
+				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+			}
+			else if (player.velocity.x == 0)
+			{
+				UpdateAnimationAndGiveIfStop(player.sprite, &player.idling, _dt);
+			}
 		}
-		UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+		else if (player.velocity.y != 0)
+		{
+			UpdateAnimationAndGiveIfStop(player.sprite, &player.jumping, _dt);
+		}
+
 	}
-	else /*if (player.velocity.x == 0)*/
+	if (timerDash < PLAYER_DASH_DURATION)
 	{
-		UpdateAnimationAndGiveIfStop(player.sprite, &player.walking, _dt);
+		UpdateAnimationAndGiveIfStop(player.sprite, &player.dashing, _dt);
 	}
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
@@ -450,7 +518,7 @@ void UpdateFireControl(float _dt)
 {
 	if (player.weapon.weaponType == RAILGUN)
 	{
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		if (IfControlKeyPressed(KEY_GUN))
 		{
 			if (player.canShoot)
 			{
@@ -466,7 +534,7 @@ void UpdateFireControl(float _dt)
 	}
 	if (player.weapon.weaponType == MISTEAL)
 	{
-		if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+		if (IfControlKeyPressed(KEY_GUN))
 		{
 			if (player.canShoot)
 			{
@@ -476,7 +544,7 @@ void UpdateFireControl(float _dt)
 			}
 		}
 	}
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_SECOND)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_SECOND)))
+	if (IfControlKeyPressed(KEY_SECOND))
 	{
 		if (player.canShoot)
 		{
@@ -494,7 +562,6 @@ void UpdateFireControl(float _dt)
 			{
 				if (player.ener.energy > 40.f)
 				{
-					printf("glaglagla");
 					ShooterType shooterType = { 0 };
 					shooterType.weaponPos = WEAPON_ORIGIN;
 					shooterType.shootPosition.x = 5.f;
@@ -548,7 +615,7 @@ void UpdateFireControlMisteal(void)
 
 void UpdateFireControlSteamAxe(float _dt)
 {
-	if (sfKeyboard_isKeyPressed(GetKeyFromSave(KEY_GUN)) || sfMouse_isButtonPressed(GetMouseKeyFromSave(KEY_GUN)))
+	if (IfControlKeyPressed(KEY_GUN))
 	{
 		if (player.canShoot)
 		{
@@ -606,7 +673,7 @@ void UpdateFireControlSteamAxe(float _dt)
 		}
 		player.isAttacking = sfTrue;
 		player.canShoot = sfFalse;
-		player.weapon.steamAxe.canHit = sfTrue;
+		CanHitBoss(sfTrue);
 		player.cooldown = 1.0f / FIRE_RATE_STEAMAXE;
 		player.pressTime = 0.0f;
 	}
@@ -614,6 +681,8 @@ void UpdateFireControlSteamAxe(float _dt)
 
 void UpdateSteamAxe(float _dt)
 {
+	sfBool testBoss = 0;
+
 	if (player.isAttacking)
 	{
 		float range = 0;
@@ -643,23 +712,34 @@ void UpdateSteamAxe(float _dt)
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
 			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
 
-			switch (player.weapon.steamAxe.attackType)
+			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
-			case LIGHT:
 				HitEnemy(1.f, axeHitbox);
-				break;
-			case MEDIUM:
+				if (HitBoss(5.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
+			}
+			else if (player.weapon.steamAxe.attackType == MEDIUM)
+			{
 				HitEnemy(2.f, axeHitbox);
-				break;
-			case HEAVY:
+				if (HitBoss(8.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
+			}
+			else if (player.weapon.steamAxe.attackType == HEAVY)
+			{
 				HitEnemy(3.f, axeHitbox);
-				break;
-			default:
-				break;
+				if (HitBoss(14.f, axeHitbox))
+				{
+					CanHitBoss(sfFalse);
+				}
 			}
 		}
 	}
 }
+
 
 void UpdateEnergy(float _dt)
 {
@@ -706,7 +786,7 @@ void SetPlayerVelocity(sfVector2f _velocity)
 	player.velocity = _velocity;
 }
 
-float GetPlayerEnergyInfo(int _index)
+float GetPlayerEnergyInfo(EnergyEnum _index)
 {
 	switch (_index)
 	{

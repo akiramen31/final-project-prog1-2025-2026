@@ -100,14 +100,8 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 
 void UpdateSecondary(sfVector2f _posAim, float _dt)
 {
-	if (secondary == DRONE)
-	{
 	UpdateMissile(_posAim, _dt);
-	}
-	else if (secondary == COLDBREATH)
-	{
 	UpdateColdBreath(_dt);
-	}
 }
 
 void UpdateMissile(sfVector2f _posAim, float _dt)
@@ -158,6 +152,7 @@ void UpdateColdBreath(float _dt)
 		sfFloatRect hitboxColdBreath = { 0 };
 		sfVector2f reactionWall = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
+		reactionWall = Colision(hitboxColdBreath, AXIS_BOTH);
 		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath))
 		{
 			coldBreath.isAlive = sfFalse;

@@ -10,15 +10,11 @@
 #include "SFML/Audio.h"
 
 #include "Backup.h"
-#include "EntityManager.h"
-
-#include "Map.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-
 
 // NEEDED FOR BULLET AND WEAPON
 #define PLAYER_COLLISION_WIDTH 12
@@ -29,6 +25,7 @@
 
 #define DEV_MODE sfTrue
 #define DEV_ENNEMY sfTrue
+#define DEV_ELEVATOR sfFalse
 #define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
 #define DEV_BOSS sfTrue
@@ -45,11 +42,20 @@
 #define G 5.81f
 //#define G 9.81f
 
-typedef enum {
+typedef enum CollisionAxis 
+{
 	AXIS_X,
 	AXIS_Y,
 	AXIS_BOTH
 } CollisionAxis;
+
+typedef enum MapState
+{
+	LEVEL1,
+	LEVEL2,
+	LEVEL3,
+	LEVEL_TEST
+}MapState;
 
 typedef enum AttackType
 {
@@ -74,20 +80,14 @@ typedef struct ShooterType
 	sfBool isRighted;
 }ShooterType;
 
-typedef enum State
-{
-	IDLE = 0,
-	WALK = 4
-}State;
-
-enum EnergyEnum
+typedef enum EnergyEnum
 {
 	ENERGY,
 	ENERGY_MAX,
 	ENERGY_REGEN,
 	ENERGY_REGEN_COLDBREATH,
 	ENERGY_REGEN_COOLDOWN,
-};
+}EnergyEnum;
 
 typedef enum Direction
 {
@@ -137,4 +137,8 @@ sfBool StringCompare(char* _string1, char* _string2);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
+
+#include "EntityManager.h"
+
+#include "Map.h"
 #endif // !COMMON_H

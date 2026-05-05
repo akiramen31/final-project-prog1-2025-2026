@@ -55,6 +55,7 @@ char GetKeyFromSave(KeySave _index);
 void SetKeyToSave(KeySave _index, char _value);
 char GetMouseKeyFromSave(KeySave _index);
 void SetMouseKeyToSave(KeySave _index, char _value);
+sfBool IfControlKeyPressed(KeySave _index);
 
 int GetIntFromSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);

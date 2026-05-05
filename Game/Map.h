@@ -3,14 +3,6 @@
 
 #include "Common.h"
 
-typedef enum MapState
-{
-	LEVEL1,
-	LEVEL2,
-	LEVEL3,
-	LEVEL_TEST
-}MapState;
-
 typedef struct InfoZone
 {
 	sfFloatRect hitbox;

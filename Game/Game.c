@@ -8,6 +8,7 @@
 #include "Boss.h"
 #include "Missile.h"
 #include "Parallax.h"
+#include "Elevator.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -29,13 +30,10 @@ void LoadGame(void)
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
-	if (GetActualyMap() == LEVEL1)
-	{
-		LoadBoss();
-	}
-
-	LoadMap();
 	LoadHUD();
+	LoadBoss();
+	SetHpFocus(GetBossHpAdr());
+	LoadMap();
 	//LoadGUI();
 	LoadMissile();
 
@@ -45,19 +43,19 @@ void LoadGame(void)
 	switch (GetIntFromSave(MUSIC_ACTUALY))
 	{
 	case 0:
-		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 10.f, sfTrue);
+		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 1.f, sfTrue);
 		break;
 	case 1:
-		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 10.f, sfTrue);
+		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 1.f, sfTrue);
 		break;
 	case 2:
-		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 10.f, sfTrue);
+		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 1.f, sfTrue);
 		break;
 	case 3:
-		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 10.f, sfTrue);
+		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 1.f, sfTrue);
 		break;
 	case 4:
-		CreateMusic("Assets/Musics/1917_Over_There.ogg", 10.f, sfTrue);
+		CreateMusic("Assets/Musics/1917_Over_There.ogg", 1.f, sfTrue);
 		break;
 	default:
 		break;
@@ -160,33 +158,28 @@ void UpdateGame(float _dt)
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
-				UpdatePlayer(_dt);
-				UpdateEnemy(_dt);
-
-				//UpdateGUI(_dt);
-				UpdateCollider();
 				if (GetActualyMap() == LEVEL1)
 				{
 					UpdateBoss(_dt);
 				}
 
+				UpdatePlayer(_dt);
+				UpdateEnemy(_dt);
+
+				//UpdateGUI(_dt);
+				UpdateCollider();
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
+				UpdateElevator(_dt);
 			}
 		}
 		else
 		{
 			timerRoomPause = 0;
 		}
-		UpdateBullet(_dt);
-		UpdateMisteal(_dt);
-		UpdateMissile(GetMousePositionToOrigin(), _dt);
 	}
-	else
-	{
-		//timerRoomPause = 0;
-	}
+
 	if (timerRoomPause <= PAUSE_ROOM_DURATION)
 	{
 		timerRoomPause += _dt;
