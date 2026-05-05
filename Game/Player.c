@@ -2,6 +2,7 @@
 #include "Missile.h"
 #include "Box.h"
 #include "Ennemy.h"
+#include "Elevator.h"
 
 Player player;
 
@@ -298,6 +299,7 @@ void ColisionMapPlayer(float _dt)
 	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
 
 	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_Y).y;
+	reactionY.y += ColisionElevator(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y).y;
 
 	if (reactionPassThrough.y < 0)
 	{
@@ -340,6 +342,7 @@ void ColisionMapPlayer(float _dt)
 
 			sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
 			reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
+			reactionX.x += ColisionElevator(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X).x;
 
 			if (reactionX.x != 0)
 			{

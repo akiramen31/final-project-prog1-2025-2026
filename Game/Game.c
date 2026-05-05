@@ -174,7 +174,7 @@ void UpdateGame(float _dt)
 				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
-				UpdateElevator(_dt);
+				UpdateElevator(GetPlayerPosition(), _dt);
 			}
 		}
 		else

@@ -357,6 +357,7 @@ void SetDefaultView(float _dt)
 	sfVector2f pos = GetPlayerPosition();
 	MoveViewSlow((sfVector2f) { pos.x, pos.y - TILE_SIZE * 3 }, _dt);
 	cameraNewZoom = 0.2f;
+	//cameraNewZoom = 5.f;
 	ChangePosCamera(0, 0);
 }
 

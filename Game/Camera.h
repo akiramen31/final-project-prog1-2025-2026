@@ -9,6 +9,8 @@
 #define CAMERA_SPEED_LOCK 1.f
 #define CAMERA_ZOOM_SPEED 0.07f
 #define CAMERA_ZOOM_LOCK 0.005f
+//#define CAMERA_ZOOM_SPEED 3.07f
+//#define CAMERA_ZOOM_LOCK 1.005f
 
 void UpdateCamera(float _dt);
 
