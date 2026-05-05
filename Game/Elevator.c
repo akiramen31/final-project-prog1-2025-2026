@@ -45,7 +45,10 @@ void UpdateElevator(float _dt)
 
 		if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] != pos.y)
 		{
-			printf("elevator %d pos : %f\n", i, pos.y);
+			if (DEV_ELEVATOR)
+			{
+				printf("elevator %d pos : %f\n", i, pos.y);
+			}
 
 			if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] < pos.y)
 			{
