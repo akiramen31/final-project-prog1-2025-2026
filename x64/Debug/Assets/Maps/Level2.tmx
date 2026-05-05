@@ -1219,7 +1219,7 @@
   <object id="784" name="29" type="Camera" x="3680" y="32" width="640" height="256"/>
   <object id="785" name="30" type="Camera" x="4800" y="16" width="768" height="400"/>
   <object id="883" name="8" type="Camera" x="2560" y="1472" width="192" height="192"/>
-  <object id="884" name="31" type="Camera" x="4544" y="1472" width="192" height="192"/>
+  <object id="884" name="8" type="Camera" x="4544" y="1472" width="192" height="192"/>
   <object id="1012" type="EndLevel" x="5600" y="352" width="352" height="64"/>
  </objectgroup>
 </map>
