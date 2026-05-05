@@ -7,6 +7,7 @@
 #define KEY_COUNT 8
 #define MAX_INFO 6
 #define MUSIC_COUNT 5
+#define MAP_COUNT 3
 #define WEAPON_COUNT 4
 #define SECONDARY_COUNT 2
 
@@ -21,6 +22,23 @@ typedef enum MenuState
 	SELECTION_WEAPON,
 	SELECTION_BONUS
 }MenuState;
+
+typedef enum ButtonRect
+{
+	MAP_1,
+	WEAPON_1,
+	UNSELECT,
+	MAP_2,
+	WEAPON_2,
+	HIGHLIGHT,
+	MAP_3,
+	WEAPON_3,
+	SELECT,
+	SECONDARY_1,
+	SECONDARY_2,
+	LOCKED,
+	RECT_COUNT
+}ButtonRect;
 
 
 typedef struct MainMenu
@@ -39,14 +57,11 @@ typedef struct SelectionMenu
 {
 	sfSprite* categoryButton[3];
 	sfSprite* categoryIcon[3];
-	sfSprite* mapButton[3];
-	sfSprite* mapOverlay[3];
 	sfSprite* generalButton[WEAPON_COUNT];
 	sfSprite* generalIcon[WEAPON_COUNT];
+	sfIntRect textureRect[RECT_COUNT];
 	int selectedOption;
-
 	sfText* bottomText[2];
-
 }SelectionMenu;
 
 typedef struct Menu

@@ -580,6 +580,18 @@ sfBool CompareString(char* _string1, char* _string2)
 	return sfFalse;
 }
 
+sfBool CompareIntRect(sfIntRect _intRect1, sfIntRect _intRect2)
+{
+	if (_intRect1.left == _intRect2.left && _intRect1.top == _intRect2.top && _intRect1.width == _intRect2.width && _intRect1.height == _intRect2.height)
+	{
+		return sfTrue;
+	}
+	else
+	{
+		return sfFalse;
+	}
+}
+
 void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 {
 	VisualEntity* newElement = calloc(1, sizeof(VisualEntity));
