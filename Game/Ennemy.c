@@ -1,6 +1,6 @@
 #include "Ennemy.h"
 #include "Map.h"
-#include "Bullet.h"
+#include "Projectiles.h"
 
 #if DEV_PIERRE_ENEMY
 
