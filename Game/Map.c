@@ -17,8 +17,9 @@ void CreateRectVisible(InfoZone* _infoZone, int _count);
 
 void LoadMap()
 {
+	int temp = map.state;
 	map = (Map){ 0 };
-	map.state = -1;
+	map.state = temp;
 	map.foreground = CreateSprite(GetAsset("Assets/Maps/Level1Front.png"), (sfVector2f) { 0 }, 1.f, 70.f);
 	map.background = CreateSprite(GetAsset("Assets/Maps/Level1Back.png"), (sfVector2f) { 0 }, 1.f, 100.f);
 

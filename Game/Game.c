@@ -21,11 +21,11 @@ void LoadGame(void)
 {
 	LoadParallax();
 	game = (Game){ 0 };
+	LoadPlayer();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadBullet();
 	LoadWeapons();
-	LoadPlayer();
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
