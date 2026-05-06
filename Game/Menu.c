@@ -1,7 +1,6 @@
 #include "Menu.h"
 #include "Map.h"
 #include "Weapons.h"
-#include "Secondaries.h"
 
 void KeyPressedMenu(sfEvent* _event);
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent);

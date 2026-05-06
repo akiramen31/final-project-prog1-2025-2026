@@ -576,6 +576,11 @@ float* GetBossHpAdr(void)
 	return &boss.boss1->bossLife;
 }
 
+float GetBossPositionY(void)
+{
+	return sfSprite_getPosition(boss.boss1->track).y;
+}
+
 sfBool IsBossActive(void)
 {
 	if (boss.boss1->playerPositionToBoss == PLAYER_NOT_IN_ARENA)

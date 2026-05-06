@@ -2,7 +2,6 @@
 #define PLAYER_H
 
 #include "Weapons.h"
-#include "Secondaries.h"
 #include "Common.h"
 
 #define PLAYER_HORIZONTAL_SPEED_MAX 150

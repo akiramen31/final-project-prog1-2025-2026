@@ -25,6 +25,13 @@ void LoadWeapons(void)
 	weapon.steamAxe.canHit = sfTrue;
 }
 
+
+void UpdateWeapons(float _dt)
+{
+	UpdateSecondary(GetMousePositionToOrigin(), _dt);
+
+}
+
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking)
 {
 	sfSprite* weaponSprite = { 0 };
@@ -115,7 +122,7 @@ void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 
 Weapon GetWeapon()
 {
-	weapon.secondary = GetSecondaryType();
+	weapon.secondaryData.secondaryType = GetSecondaryType();
 	return weapon;
 }
 
@@ -162,4 +169,14 @@ void ChangeAttackType(AttackType _attackType)
 void CanHitBoss(sfBool _bool)
 {
 	weapon.steamAxe.canHit = _bool;
+}
+
+SecondaryType GetSecondaryType(void)
+{
+	return weapon.secondaryData.secondaryType;
+}
+
+void SetSecondaryType(SecondaryType _type)
+{
+	weapon.secondaryData.secondaryType = _type;
 }

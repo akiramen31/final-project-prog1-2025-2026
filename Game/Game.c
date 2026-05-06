@@ -6,9 +6,9 @@
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
-#include "Secondaries.h"
 #include "Parallax.h"
 #include "Elevator.h"
+#include "Projectiles.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 void UpdateCollider(void);
@@ -26,7 +26,7 @@ void LoadGame(void)
 	LoadBoss();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	LoadProjectiles();
+	LoadProjectiles(GetBossPositionY());
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
@@ -35,7 +35,6 @@ void LoadGame(void)
 	SetHpFocus(GetBossHpAdr());
 	//LoadGUI();
 	LoadWeapons();
-	LoadSecondary();
 
 	timerstartLevel = 0;
 
@@ -165,8 +164,7 @@ void UpdateGame(float _dt)
 				UpdatePlayer(_dt);
 				UpdateEnemy(_dt);
 
-				UpdateProjectiles(_dt);
-				UpdateMisteal(_dt);
+				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(GetPlayerPosition(), _dt);
 			}

@@ -15,10 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Secondaries.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
+    <ClInclude Include="Projectiles.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -110,16 +107,13 @@
     <ClCompile Include="HUD.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.c">
+    <ClCompile Include="Projectiles.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Camera.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Game.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Secondaries.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Player.c">

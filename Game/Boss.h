@@ -109,6 +109,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt);
 void DestroyBoss1(void);
 
 float* GetBossHpAdr(void);
+float GetBossPositionY(void);
 
 sfBool IsBossActive(void);
 #endif // !BOSS_H

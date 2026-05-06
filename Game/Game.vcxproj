@@ -22,7 +22,7 @@
     <ClInclude Include="Backup.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Box.h" />
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Projectiles.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CjsonB.h" />
     <ClInclude Include="Common.h" />
@@ -35,7 +35,6 @@
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Secondaries.h" />
     <ClInclude Include="Parallax.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Weapons.h" />
@@ -44,7 +43,7 @@
     <ClCompile Include="Backup.c" />
     <ClCompile Include="Boss.c" />
     <ClCompile Include="Box.c" />
-    <ClCompile Include="Bullet.c" />
+    <ClCompile Include="Projectiles.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="CjsonB.c" />
     <ClCompile Include="Common.c" />
@@ -58,7 +57,6 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="Map.c" />
     <ClCompile Include="Menu.c" />
-    <ClCompile Include="Secondaries.c" />
     <ClCompile Include="Parallax.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Weapons.c" />
