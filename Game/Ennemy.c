@@ -466,10 +466,13 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
 			{
 				tableau.grid[ennemy->ennemyEntity.type][y][x].direction = EMPTY_DIRECTION;
+				tableau.grid[ennemy->ennemyEntity.type][y][x].compteur = 0;
+				tableau.grid[ennemy->ennemyEntity.type][y][x].jumpForce = 0;
 			}
 		}
 
 		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].compteur = 0;
+		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].jumpForce = 0;
 		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
 
 		sfVector2u caseGet = { bounsCible.left, bounsCible.top };
@@ -497,6 +500,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -510,27 +514,29 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
-				/*
+
 				//test bas gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width + 1,bounsEnnemy.height - 1 };
+				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
 				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
-					char compt = 1;
-					char compt2 = 1;
+					int compt = 1;
+					int compt2 = 1;
 					sfBool flag = sfTrue;
 					while (temp && compt2 <= JUMP_FORCE && flag)
 					{
 						while (temp && compt <= JUMP_FORCE - compt2 + 1 && flag)
 						{
-							if (TestJump((sfIntRect) { caseRecherche.left - compt2, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+							if (TestJump((sfIntRect) { caseRecherche.left - compt2 + 1, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 							{
 								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 									tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
 								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
 								AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 								temp = sfFalse;
 							}
@@ -543,7 +549,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 							flag = sfFalse;
 						}
 					}
-				}*/
+				}
 
 				//test Droite
 				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
@@ -554,6 +560,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -567,7 +574,41 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left+1].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
+				}
+
+				//test bas droite
+				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				if (TestColision(caseRecherche) != 2 &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					sfBool temp = sfTrue;
+					int compt = 1;
+					int compt2 = 1;
+					sfBool flag = sfTrue;
+					while (temp && compt2 <= JUMP_FORCE && flag)
+					{
+						while (temp && compt <= JUMP_FORCE - compt2 + 1 && flag)
+						{
+							if (TestJump((sfIntRect) { caseRecherche.left + compt2 - 1, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+							{
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+									tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
+								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
+								AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+								temp = sfFalse;
+							}
+							compt++;
+						}
+						compt = 1;
+						compt2++;
+						if (TestColision((sfIntRect) { caseRecherche.left + compt2 - 1, caseRecherche.top + compt2 - 1, caseRecherche.width, caseRecherche.height }) == 2)
+						{
+							flag = sfFalse;
+						}
+					}
 				}
 
 				//test haut
@@ -579,6 +620,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -610,13 +652,14 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
-					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
+					TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
 
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -624,12 +667,29 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left + 1, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION  &&
+					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 || 
+					TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+
+				//test bas gauche
+				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				if (TestColision(caseRecherche) != 2 &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction == UP_RIGHT &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -637,36 +697,43 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
-					TestColision((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
+					TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 				//test haut droite
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION  &&
+					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
+						TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
 					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top+1][caseRecherche.left].jumpForce = 0;
 				}
 
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
+						TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
@@ -676,10 +743,10 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
-					char compt = 1;
+					char compt = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
 					while (temp && compt <= JUMP_FORCE)
 					{
-						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
+						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt - tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce, caseRecherche.width, caseRecherche.height }))
 						{
 							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
 								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
@@ -728,16 +795,16 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					{
 						if (tableau.collision[y][x])
 						{
-							printf("X/");
+							printf(" X/");
 						}
 						else
 						{
-							printf("M/");
+							printf(" M/");
 						}
 					}
 					else
 					{
-						printf("%d/", tableau.grid[ennemy->ennemyEntity.type][y][x].compteur);
+						printf("%2d/", tableau.grid[ennemy->ennemyEntity.type][y][x].compteur);
 					}
 				}
 				printf("\n");
@@ -755,10 +822,12 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	case EMPTY_DIRECTION:
 		break;
 	case DOWN_LEFT:
+		actionDemander.gauche = sfTrue;
 		break;
 	case DOWN:
 		break;
 	case DOWN_RIGHT:
+		actionDemander.droite = sfTrue;
 		break;
 	case LEFT:
 		actionDemander.gauche = sfTrue;
@@ -769,11 +838,15 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		actionDemander.droite = sfTrue;
 		break;
 	case UP_LEFT:
+		actionDemander.gauche = sfTrue;
+		actionDemander.Saut = sfTrue;
 		break;
 	case UP:
 		actionDemander.Saut = sfTrue;
 		break;
 	case UP_RIGHT:
+		actionDemander.droite = sfTrue;
+		actionDemander.Saut = sfTrue;
 		break;
 	default:
 		break;
