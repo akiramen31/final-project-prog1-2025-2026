@@ -1080,7 +1080,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			}
 			break;
 		case MEDIUM:
-			ennemy->ennemyEntity.ennemydata.life -= _degat;
+			ennemy->ennemyEntity.ennemydata.life -= _degat / 2;
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);
@@ -1090,7 +1090,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			}
 			break;
 		case HEAVY:
-			ennemy->ennemyEntity.ennemydata.life -= _degat;
+			ennemy->ennemyEntity.ennemydata.life -= _degat / 4;
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);
