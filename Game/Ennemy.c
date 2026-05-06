@@ -119,6 +119,10 @@ void UpdateEnemyI(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.timerGel -= _dt;
 		_dt = _dt / ennemy->ennemyEntity.powerGel ;
+		if (ennemy->ennemyEntity.timerGel < 0)
+		{
+			ennemy->ennemyEntity.timerGel = 0;
+		}
 	}
 	ennemy->ennemyEntity.timer += _dt;
 	ennemy->ennemyEntity.timerTir += _dt;
@@ -1050,7 +1054,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	SetPositionEnemy(_position, 0);
 }
 
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
@@ -1058,19 +1062,52 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat)
 	if (pixelColor.a == 255)
 	{
 		isTouch = sfTrue;
-		ennemy->ennemyEntity.ennemydata.life -= _degat;
-		if (ennemy->ennemyEntity.ennemydata.life < 0)
+		switch (_attaque)
 		{
-			sfImage_destroy(ennemy->imageColideur);
-			DestroyVisualEntity(ennemy->sprite);
-			Free(ennemy);
-			RemoveElement(listEnnemy, _index);
+		case NOATTACK:
+			break;
+		case FREEZE:
+			effectGelEnemy(_index, 2, 5);
+			break;
+		case LIGHT:
+			ennemy->ennemyEntity.ennemydata.life -= _degat;
+			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			{
+				sfImage_destroy(ennemy->imageColideur);
+				DestroyVisualEntity(ennemy->sprite);
+				Free(ennemy);
+				RemoveElement(listEnnemy, _index);
+			}
+			break;
+		case MEDIUM:
+			ennemy->ennemyEntity.ennemydata.life -= _degat;
+			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			{
+				sfImage_destroy(ennemy->imageColideur);
+				DestroyVisualEntity(ennemy->sprite);
+				Free(ennemy);
+				RemoveElement(listEnnemy, _index);
+			}
+			break;
+		case HEAVY:
+			ennemy->ennemyEntity.ennemydata.life -= _degat;
+			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			{
+				sfImage_destroy(ennemy->imageColideur);
+				DestroyVisualEntity(ennemy->sprite);
+				Free(ennemy);
+				RemoveElement(listEnnemy, _index);
+			}
+			break;
+		default:
+			break;
 		}
+		
 	}
 	return isTouch;
 }
 
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _attaque)
 {
 	sfFloatRect hitboxEnemy = { 0 };
 	sfFloatRect hitboxTir = { 0 };
@@ -1083,7 +1120,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox)
 			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2, hitboxTir.top + hitboxTir.height / 2 };
 			touch.x -= hitboxEnemy.left;
 			touch.y -= hitboxEnemy.top;
-			return HitEnemyI(i, touch, _degat);
+			return HitEnemyI(i, touch, _degat, _attaque);
 		}
 	}
 	return sfFalse;
