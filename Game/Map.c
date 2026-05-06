@@ -24,6 +24,7 @@ void LoadMap()
 {
 	int temp = map.state;
 	map = (Map){ 0 };
+	map.state = temp;
 
 	//map.state = -1;
 	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
@@ -49,7 +50,10 @@ void LoadMap()
 		ResetEnemy();
 	}
 #endif
-	ResetMap();
+	//ResetMap();
+
+	printf("map level %d\n", map.state + 1);
+
 	switch (map.state)
 	{
 	case LEVEL1:
@@ -222,7 +226,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Boss"))
 		{
-			SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+			SwitchBoss(map.state, (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 			//SwitchBoss(map.state, (sfVector2f) { 8671.f, 863.f });
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
