@@ -25,7 +25,6 @@ void LoadMap()
 	map = (Map){ 0 };
 	map.state = temp;
 
-	//map.state = -1;
 	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
 

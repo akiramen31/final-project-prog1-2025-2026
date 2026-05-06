@@ -32,7 +32,7 @@ void UpdateWeaponPlayer(float _dt);
 
 void UpdateLockPlayerInRoomIfEnemyAlive(void);
 
-sfVector2f pos;
+sfVector2f posFly;
 
 void LoadPlayer(void)
 {
@@ -70,8 +70,8 @@ void LoadPlayer(void)
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
-	pos.x = 100;
-	pos.y = 32;
+	posFly.x = 100;
+	posFly.y = 32;
 
 	player.lifeMax = PLAYER_MAX_HEALTH;
 	player.life = player.lifeMax;
@@ -97,26 +97,26 @@ void UpdatePlayer(float _dt)
 
 	if (GetIntFromSave(DEV_MODE_FLY))
 	{
-		pos = GetPlayerPosition();
+		posFly = GetPlayerPosition();
 
 		int flySpeed = 500;
 		if (IfControlKeyPressed(KEY_RIGHT))
 		{
-			pos.x += flySpeed * _dt;
+			posFly.x += flySpeed * _dt;
 		}
 		else if (IfControlKeyPressed(KEY_LEFT))
 		{
-			pos.x -= flySpeed * _dt;
+			posFly.x -= flySpeed * _dt;
 		}
 		if (IfControlKeyPressed(KEY_DOWN))
 		{
-			pos.y += flySpeed * _dt;
+			posFly.y += flySpeed * _dt;
 		}
 		else if (IfControlKeyPressed(KEY_JUMP))
 		{
-			pos.y -= flySpeed * _dt;
+			posFly.y -= flySpeed * _dt;
 		}
-		sfRectangleShape_setPosition(player.collision, pos);
+		sfRectangleShape_setPosition(player.collision, posFly);
 	}
 	else
 	{

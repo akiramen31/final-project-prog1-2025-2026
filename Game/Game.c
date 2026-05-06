@@ -37,6 +37,8 @@ void LoadGame(void)
 	LoadWeapons();
 	LoadSecondary();
 
+	TpPlayerToSpawn();
+
 	timerstartLevel = 0;
 
 	switch (GetIntFromSave(CURRENT_MUSIC))

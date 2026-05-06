@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-#define START_GAME_CAM_DURATION 1.5f
+#define START_GAME_CAM_DURATION 2.5f
 #define PAUSE_ROOM_DURATION 0.25f
 
 typedef struct

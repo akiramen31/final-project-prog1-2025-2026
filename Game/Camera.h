@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "Player.h"
 
-#define CAMERA_SPEED_ON_PLAYER 150
+#define CAMERA_SPEED_ON_PLAYER 200
 #define CAMERA_SPEED 300
 #define CAMERA_SPEED_LOCK 1.f
 #define CAMERA_ZOOM_SPEED 0.07f
