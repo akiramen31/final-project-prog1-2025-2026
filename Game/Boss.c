@@ -199,7 +199,7 @@ sfBool HitBoss(float _degat, sfFloatRect _hitbox)
 							boss.boss1->bossReacting = sfTrue;
 						}
 					}
-					else if (sfSprite_getPosition(boss.boss1->track).x < ARENA_CENTER)
+					else if (sfSprite_getPosition(boss.boss1->track).x <= ARENA_CENTER)
 					{
 						if (boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_LEFT || boss.boss1->playerPositionToBoss == PLAYER_RANGE_SHOOT_RIGHT)
 						{
@@ -318,12 +318,12 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						boss.boss1->bossReactionToPlayer = GO_LEFT;
 						boss.boss1->bossReacting = sfTrue;
 					}
-					else if (trackPosition.x < ARENA_CENTER)
+					else if (trackPosition.x <= ARENA_CENTER)
 					{
 						boss.boss1->bossReactionToPlayer = GO_RIGHT;
 						boss.boss1->bossReacting = sfTrue;
 					}
-					boss.boss1->runAwayTiming = 0;
+				boss.boss1->runAwayTiming = 0;
 				}
 			}
 			if (distance.x < SHOOT_DISTANCE_MAX && distance.y > 80)
@@ -337,7 +337,7 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						boss.boss1->bossReactionToPlayer = GO_LEFT;
 						boss.boss1->bossReacting = sfTrue;
 					}
-					else if (trackPosition.x < ARENA_CENTER)
+					else if (trackPosition.x <= ARENA_CENTER)
 					{
 						boss.boss1->bossReactionToPlayer = GO_RIGHT;
 						boss.boss1->bossReacting = sfTrue;
@@ -358,7 +358,7 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 							boss.boss1->bossReactionToPlayer = GO_LEFT;
 							boss.boss1->bossReacting = sfTrue;
 						}
-						else if (trackPosition.x < ARENA_CENTER)
+						else if (trackPosition.x <= ARENA_CENTER)
 						{
 							boss.boss1->bossReactionToPlayer = GO_RIGHT;
 							boss.boss1->bossReacting = sfTrue;
@@ -377,7 +377,7 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 							boss.boss1->bossReactionToPlayer = GO_LEFT;
 							boss.boss1->bossReacting = sfTrue;
 						}
-						else if (trackPosition.x < ARENA_CENTER)
+						else if (trackPosition.x <= ARENA_CENTER)
 						{
 							boss.boss1->bossReactionToPlayer = GO_RIGHT;
 							boss.boss1->bossReacting = sfTrue;
@@ -466,7 +466,7 @@ void UpdateBossReaction(float _dt)
 		}
 		else
 		{
-			boss.boss1->bossReactionToPlayer = NONE;
+		boss.boss1->bossReactionToPlayer = NONE;
 			if (boss.boss1->bossReacting)
 			{
 				boss.boss1->bossReacting = sfFalse;
