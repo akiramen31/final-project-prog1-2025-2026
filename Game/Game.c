@@ -176,14 +176,14 @@ void UpdateGame(float _dt)
 			timerRoomPause = 0;
 		}
 
-		UpdateHUD(_dt);
-		UpdateCamera(_dt);
-		UpdateParallax(_dt);
 	}
 	else
 	{
 	}
 
+	UpdateHUD(_dt);
+	UpdateCamera(_dt);
+	UpdateParallax(_dt);
 
 	if (timerRoomPause <= PAUSE_ROOM_DURATION)
 	{
