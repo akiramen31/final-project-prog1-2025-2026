@@ -61,6 +61,7 @@ typedef enum AttackType
 	LIGHT,
 	MEDIUM,
 	HEAVY,
+	FREEZE,
 	NOATTACK
 }AttackType;
 

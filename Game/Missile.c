@@ -128,7 +128,7 @@ void UpdateMissile(sfVector2f _posAim, float _dt)
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(missileList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)))
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(missileList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(missileList[i].sprite), HEAVY))
 			{
 				sfMusic_stop(missileList[i].music);
 				missileList[i].isAlive = sfFalse;
@@ -154,7 +154,7 @@ void UpdateColdBreath(float _dt)
 		sfVector2f reactionWall = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
 		reactionWall = Colision(hitboxColdBreath, AXIS_BOTH);
-		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath))
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
 		{
 			coldBreath.isAlive = sfFalse;
 			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
