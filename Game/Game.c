@@ -26,17 +26,15 @@ void LoadGame(void)
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles();
-	LoadWeapon();
-	LoadPlayer();
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
 
 	LoadHUD();
-	LoadBoss();
+	//LoadBoss();
 	SetHpFocus(GetBossHpAdr());
-	LoadMap();
 	//LoadGUI();
+	LoadWeapons();
 	LoadSecondary();
 
 	timerstartLevel = 0;
@@ -159,23 +157,14 @@ void UpdateGame(float _dt)
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
-				if (GetActualyMap() == LEVEL1)
+				if (GetCurrentMap == LEVEL1)
 				{
-					UpdateBoss(GetPlayerPosition(), _dt);
+					//UpdateBoss(GetPlayerPosition(), _dt);
 				}
 
 				UpdatePlayer(_dt);
 				UpdateEnemy(_dt);
 
-				//UpdateGUI(_dt);
-				UpdateCollider();
-
-				if (GetCurrentMap() == LEVEL1)
-				{
-					UpdateBoss(_dt);
-				}
-
-				UpdateBullet(_dt);
 				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(GetPlayerPosition(), _dt);
@@ -185,30 +174,25 @@ void UpdateGame(float _dt)
 		{
 			timerRoomPause = 0;
 		}
+		if (timerRoomPause <= PAUSE_ROOM_DURATION)
+		{
+			timerRoomPause += _dt;
+		}
 
-		UpdateBullet(_dt);
-		UpdateMisteal(_dt);
-		UpdateSecondary(GetMousePositionToOrigin(), _dt);
+		if (timerstartLevel <= START_GAME_CAM_DURATION)
+		{
+			timerstartLevel += _dt;
+		}
+
+		UpdateHUD(_dt);
+		UpdateCamera(_dt);
+		UpdateParallax(_dt);
 	}
 	else
 	{
-		//timerRoomPause = 0;
 	}
 
-	if (timerRoomPause <= PAUSE_ROOM_DURATION)
-	{
-		timerRoomPause += _dt;
-	}
 
-	if (timerstartLevel <= START_GAME_CAM_DURATION)
-	{
-		timerstartLevel += _dt;
-	}
-
-	UpdateHUD(_dt);
-	UpdateCamera(_dt);
-	UpdateCamera(_dt);
-	UpdateParallax(_dt);
 }
 
 void UpdateCollider(void)

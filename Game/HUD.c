@@ -47,12 +47,12 @@ void UpdateHUD(float _dt)
 		}
 	}
 	//Boss
-	float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
-	sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
+	//float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
+	//sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
 }
 
 void SetHpFocus(float* _bossHpAdr)
 {
-	hud.bossBar.bossLife = _bossHpAdr;
-	hud.bossBar.maxBossLife = *_bossHpAdr;
+	//hud.bossBar.bossLife = _bossHpAdr;
+	//hud.bossBar.maxBossLife = *_bossHpAdr;
 }

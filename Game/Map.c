@@ -24,7 +24,7 @@ void LoadMap()
 	int temp = map.state;
 	map = (Map){ 0 };
 
-	map.state = -1;
+	//map.state = -1;
 	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
 
@@ -107,7 +107,7 @@ void LoadMapData(CjsonB* _cjson)
 {
 	map.data.size = (sfVector2u){ 0 };
 
-	printf("map %d size x : %d, y : %d\n", GetActualyMap(), _cjson->width, _cjson->height);
+	printf("map %d size x : %d, y : %d\n", GetCurrentMap(), _cjson->width, _cjson->height);
 
 	for (unsigned i = 0; i < _cjson->layersCount; i++)
 	{
@@ -177,7 +177,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "Boss"))
 		{
 			//SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
-			SwitchBoss(map.state, (sfVector2f) { 8671.f, 863.f });
+			//SwitchBoss(map.state, (sfVector2f) { 8671.f, 863.f });
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{

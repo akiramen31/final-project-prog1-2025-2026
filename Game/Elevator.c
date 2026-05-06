@@ -15,7 +15,7 @@ int val = 0;
 
 void LoadElevator(void)
 {
-	MapState map = GetActualyMap();
+	MapState map = GetCurrentMap();
 
 	GetAsset("Assets/Sprites/Elevator.png");
 
