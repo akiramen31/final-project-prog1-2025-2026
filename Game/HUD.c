@@ -44,15 +44,16 @@ void UpdateHUD(float _dt)
 		else
 		{
 			sfSprite_setRotation(hud.life[i], 45.f * i);
+			sfSprite_setRotation(hud.life[i], 45.f * i);
 		}
 	}
 	//Boss
-	//float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
-	//sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
+	float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
+	sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
 }
 
 void SetHpFocus(float* _bossHpAdr)
 {
-	//hud.bossBar.bossLife = _bossHpAdr;
-	//hud.bossBar.maxBossLife = *_bossHpAdr;
+	hud.bossBar.bossLife = _bossHpAdr;
+	hud.bossBar.maxBossLife = *_bossHpAdr;
 }

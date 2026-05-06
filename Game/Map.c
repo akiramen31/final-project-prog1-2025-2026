@@ -176,7 +176,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Boss"))
 		{
-			//SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+			SwitchBoss(map.state,  (sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 			//SwitchBoss(map.state, (sfVector2f) { 8671.f, 863.f });
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))

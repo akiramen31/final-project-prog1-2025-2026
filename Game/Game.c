@@ -23,6 +23,7 @@ void LoadGame(void)
 	LoadParallax();
 	game = (Game){ 0 };
 	LoadPlayer();
+	LoadBoss();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles();
@@ -31,7 +32,6 @@ void LoadGame(void)
 #endif
 
 	LoadHUD();
-	//LoadBoss();
 	SetHpFocus(GetBossHpAdr());
 	//LoadGUI();
 	LoadWeapons();
@@ -157,14 +157,15 @@ void UpdateGame(float _dt)
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
-				if (GetCurrentMap == LEVEL1)
+				if (GetCurrentMap() == LEVEL1)
 				{
-					//UpdateBoss(GetPlayerPosition(), _dt);
+					UpdateBoss(GetPlayerPosition(), _dt);
 				}
 
 				UpdatePlayer(_dt);
 				UpdateEnemy(_dt);
 
+				UpdateProjectiles(_dt);
 				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(GetPlayerPosition(), _dt);
@@ -173,15 +174,6 @@ void UpdateGame(float _dt)
 		else
 		{
 			timerRoomPause = 0;
-		}
-		if (timerRoomPause <= PAUSE_ROOM_DURATION)
-		{
-			timerRoomPause += _dt;
-		}
-
-		if (timerstartLevel <= START_GAME_CAM_DURATION)
-		{
-			timerstartLevel += _dt;
 		}
 
 		UpdateHUD(_dt);
@@ -192,6 +184,16 @@ void UpdateGame(float _dt)
 	{
 	}
 
+
+	if (timerRoomPause <= PAUSE_ROOM_DURATION)
+	{
+		timerRoomPause += _dt;
+	}
+
+	if (timerstartLevel <= START_GAME_CAM_DURATION)
+	{
+		timerstartLevel += _dt;
+	}
 
 }
 
