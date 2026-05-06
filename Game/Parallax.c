@@ -52,8 +52,8 @@ void UpdateParallax(float _dt)
 	for (int i = 0; i < LAYER_COUNT; i++)
 	{
 		sfIntRect textureRect = sfSprite_getTextureRect(parallax.layer[i]);
-		textureRect.left = parallax.offsetX[i] * ratioX;
-		textureRect.top = parallax.offsetY[i] * ratioY;
+		textureRect.left = parallax.offsetX[i] * (int)ratioX;
+		textureRect.top = parallax.offsetY[i] * (int)ratioY;
 		sfSprite_setPosition(parallax.layer[i], viewCenterPos);
 		sfSprite_setTextureRect(parallax.layer[i], textureRect);
 	}

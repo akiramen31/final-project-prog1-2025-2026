@@ -1,7 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Weapon.h"
+#include "Weapons.h"
+#include "Secondaries.h"
 #include "Common.h"
 
 #define PLAYER_HORIZONTAL_SPEED_MAX 150
@@ -32,7 +33,6 @@ typedef struct EnergyPlayerStruct
 
 typedef struct Player
 {
-	enum State state;
 	sfSprite* sprite;
 	sfRectangleShape* collision;
 

@@ -17,7 +17,7 @@ void SetCamPositionName(sfFloatRect* _hitbox, InfoZone* _area, float _dt);
 
 void UpdateCamera(float _dt)
 {
-	switch (GetActualyMap())
+	switch (GetCurrentMap())
 	{
 	case LEVEL1:
 		UpdatePositionCameraLevel1(_dt);
@@ -80,6 +80,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	move.x = _dt * (float)cos(angle) * speed;
 	move.y = _dt * (float)sin(angle) * speed;
+
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{

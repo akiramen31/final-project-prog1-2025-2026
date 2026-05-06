@@ -64,12 +64,6 @@ typedef enum AttackType
 	NOATTACK
 }AttackType;
 
-typedef enum Secondary
-{
-	DRONE,
-	COLDBREATH
-}Secondary;
-
 typedef struct ShooterType
 {
 	float weaponPos;
@@ -138,6 +132,6 @@ sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
 
 #include "EntityManager.h"
-
 #include "Map.h"
+
 #endif // !COMMON_H

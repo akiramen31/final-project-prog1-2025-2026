@@ -6,7 +6,7 @@
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"
-#include "Missile.h"
+#include "Secondaries.h"
 #include "Parallax.h"
 #include "Elevator.h"
 
@@ -22,6 +22,7 @@ void LoadGame(void)
 {
 	LoadParallax();
 	game = (Game){ 0 };
+	LoadPlayer();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles();
@@ -30,17 +31,17 @@ void LoadGame(void)
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
+
 	LoadHUD();
 	LoadBoss();
 	SetHpFocus(GetBossHpAdr());
 	LoadMap();
 	//LoadGUI();
-	LoadMissile();
+	LoadSecondary();
 
 	timerstartLevel = 0;
 
-	SetMap(LEVEL1);
-	switch (GetIntFromSave(MUSIC_ACTUALY))
+	switch (GetIntFromSave(CURRENT_MUSIC))
 	{
 	case 0:
 		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.1f, sfTrue);
@@ -110,16 +111,16 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		switch (_keyEvent->code)
 		{
 		case sfKeyF1:
-			SetMap(LEVEL1);
+			SetCurrentMap(LEVEL1);
 			break;
 		case sfKeyF2:
-			SetMap(LEVEL2);
+			SetCurrentMap(LEVEL2);
 			break;
 		case sfKeyF3:
-			SetMap(LEVEL3);
+			SetCurrentMap(LEVEL3);
 			break;
 		case sfKeyF4:
-			SetMap(LEVEL_TEST);
+			SetCurrentMap(LEVEL_TEST);
 			break;
 #if DEV_PIERRE_ENEMY
 		case sfKeyP:
@@ -154,7 +155,7 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					SetMap(GetActualyMap());
+					SetCurrentMap(GetCurrentMap());
 					AddPlayerLife(PLAYER_MAX_HEALTH);
 				}
 
@@ -168,7 +169,14 @@ void UpdateGame(float _dt)
 
 				//UpdateGUI(_dt);
 				UpdateCollider();
-				UpdateProjectiles(_dt);
+
+				if (GetCurrentMap() == LEVEL1)
+				{
+					UpdateBoss(_dt);
+				}
+
+				UpdateBullet(_dt);
+				UpdateMisteal(_dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(GetPlayerPosition(), _dt);
 			}
@@ -177,6 +185,14 @@ void UpdateGame(float _dt)
 		{
 			timerRoomPause = 0;
 		}
+
+		UpdateBullet(_dt);
+		UpdateMisteal(_dt);
+		UpdateSecondary(GetMousePositionToOrigin(), _dt);
+	}
+	else
+	{
+		//timerRoomPause = 0;
 	}
 
 	if (timerRoomPause <= PAUSE_ROOM_DURATION)

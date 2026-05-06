@@ -1,9 +1,13 @@
-#include "Weapon.h"
-#include "Missile.h"
+#include "Weapons.h"
 
 Weapon weapon;
 
-void LoadWeapon(void)
+void SetWeapon(WeaponType _type)
+{
+	weapon.weaponType = _type;
+}
+
+void LoadWeapons(void)
 {
 	sfTexture* textureWeapon = GetAsset("Assets/Sprites/raygun.png");
 	weapon.railGun.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
@@ -19,7 +23,6 @@ void LoadWeapon(void)
 
 	weapon.isRight = sfTrue;
 	weapon.steamAxe.canHit = sfTrue;
-	weapon.weaponType = MISTEAL;
 }
 
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking)
@@ -112,7 +115,7 @@ void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 
 Weapon GetWeapon()
 {
-	weapon.secondary = GetSecondary();
+	weapon.secondary = GetSecondaryType();
 	return weapon;
 }
 
@@ -120,17 +123,17 @@ void SwitchGunDevMode(void)
 {
 	if (weapon.weaponType == RAILGUN)
 	{
-		sfSprite_setPosition(weapon.railGun.sprite, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(weapon.railGun.sprite, (sfVector2f) { 0, 0 });
 		weapon.weaponType = STEAMAXE;
 	}
 	else if (weapon.weaponType == STEAMAXE)
 	{
-		sfSprite_setPosition(weapon.steamAxe.sprite, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(weapon.steamAxe.sprite, (sfVector2f) { 0, 0 });
 		weapon.weaponType = MISTEAL;
 	}
 	else if (weapon.weaponType == MISTEAL)
 	{
-		sfSprite_setPosition(weapon.miSteal.sprite, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(weapon.miSteal.sprite, (sfVector2f) { 0, 0 });
 		weapon.weaponType = RAILGUN;
 	}
 }

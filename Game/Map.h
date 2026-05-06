@@ -49,8 +49,8 @@ typedef struct Map
 }Map;
 
 void LoadMap(void);
-void SetMap(MapState _map);
-MapState GetActualyMap(void);
+void SetCurrentMap(MapState _map);
+MapState GetCurrentMap(void);
 
 MapData* GetMapData(void);
 InfoZone* GetInfoZoneTriger(sfFloatRect _hitbox);
