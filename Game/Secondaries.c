@@ -125,7 +125,7 @@ void UpdateDrone(sfVector2f _posAim, float _dt)
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(secondaryData.droneList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(secondaryData.droneList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(secondaryData.droneList[i].sprite)))
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(secondaryData.droneList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(secondaryData.droneList[i].sprite), HEAVY))
 			{
 				sfMusic_stop(secondaryData.droneList[i].ambientSound);
 				secondaryData.droneList[i].isAlive = sfFalse;
@@ -150,7 +150,7 @@ void UpdateColdBreath(float _dt)
 		sfFloatRect hitboxColdBreath = { 0 };
 		sfVector2f reactionWall = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(secondaryData.coldBreath.sprite);
-		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath))
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
 		{
 			secondaryData.coldBreath.isAlive = sfFalse;
 			sfSprite_setPosition(secondaryData.coldBreath.sprite, (sfVector2f) { 0 });
