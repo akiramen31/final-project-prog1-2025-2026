@@ -27,5 +27,6 @@ void UpdateHUD(float _dt);
 
 void SetHpFocus(float* _bossHpAdr);
 
+void VisibilityBossBar(sfBool _visibility);
+
 #endif // !HUD_H
-#pragma once

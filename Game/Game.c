@@ -11,7 +11,6 @@
 #include "Projectiles.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
-void UpdateCollider(void);
 
 Game game;
 float timer;
@@ -160,13 +159,14 @@ void UpdateGame(float _dt)
 				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				UpdateElevator(GetPlayerPosition(), _dt);
+
+				VisibilityBossBar(IsBossActive());
 			}
 		}
 		else
 		{
 			timerRoomPause = 0;
 		}
-
 	}
 	else
 	{
@@ -185,10 +185,4 @@ void UpdateGame(float _dt)
 	{
 		timerstartLevel += _dt;
 	}
-
-}
-
-void UpdateCollider(void)
-{
-
 }

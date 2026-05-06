@@ -17,8 +17,8 @@ void LoadHUD()
 
 void LoadBossBar(void)
 {
-	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Boss/1/Boss_Lifebar_Placeholder.png"), (sfVector2f) { 768 , 50 }, 5.f, -10.f);
-	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Boss/1/Boss_Life_Placeholder.png"), (sfVector2f) { 768, 50 }, 5.f, -10.f);
+	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Boss/1/Boss_Lifebar_Placeholder.png"), (sfVector2f) { 768 , 50 }, 0.f, -10.f);
+	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Boss/1/Boss_Life_Placeholder.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
 }
 
 
@@ -57,3 +57,19 @@ void SetHpFocus(float* _bossHpAdr)
 	hud.bossBar.bossLife = _bossHpAdr;
 	hud.bossBar.maxBossLife = *_bossHpAdr;
 }
+
+void VisibilityBossBar(sfBool _visibility)
+{
+	if (_visibility)
+	{
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 5, 5 });
+		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 5, 5 });
+	}
+	else
+	{
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 0, 0 });
+	}
+}
+
+ 
