@@ -166,7 +166,22 @@ void KeyPressedMenu(sfEvent* _event)
 	switch (_event->key.code)
 	{
 	case sfKeyEscape:
-		sfRenderWindow_close(GetRenderWindow());
+		if (menu.state < 5)
+		{
+			SetMenuState(STARTING_MENU);
+		}
+		else
+		{
+			if (menu.state == 5)
+			{
+				SetMenuState(STARTING_MENU);
+			}
+			else
+			{
+				SetMenuState(menu.state - 1);
+			}
+
+		}
 		return;
 	default:
 		break;
