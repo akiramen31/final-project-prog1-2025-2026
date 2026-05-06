@@ -7,7 +7,7 @@
 
 #if DEV_PIERRE_ENEMY == 1
 
-#define TIMER_ASTAR 0.01f
+#define TIMER_ASTAR 0.05f
 #define JUMP_FORCE 5
 #define MAX_ENRGIE 300
 
@@ -55,6 +55,9 @@ typedef struct EnnemyEntity
 	sfVector2f move;
 	enum State state;
 	float timer;
+	float timerTir;
+	int powerGel;
+	float timerGel;
 	sfFloatRect region;
 }EnnemyEntity;
 
@@ -113,6 +116,7 @@ void SetPositionEnemy(sfVector2f _position, int _index);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 void ResetEnemy(void);
 int GetEnemyZone(void);
+void effectGelEnemy(unsigned _index, int _puissance, float _time);
 
 #else
 #define MAX_FALL_SPEED_ENEMY 1000
