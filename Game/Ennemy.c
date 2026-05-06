@@ -115,7 +115,13 @@ void UpdateEnemy(float _dt)
 void UpdateEnemyI(float _dt, int _index)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	if (ennemy->ennemyEntity.timerGel > 0)
+	{
+		ennemy->ennemyEntity.timerGel -= _dt;
+		_dt = _dt / ennemy->ennemyEntity.powerGel ;
+	}
 	ennemy->ennemyEntity.timer += _dt;
+	ennemy->ennemyEntity.timerTir += _dt;
 	//regen de l'energie passive
 	if (ennemy->ennemyEntity.ennemydata.energy < ennemy->ennemyEntity.ennemydata.energyMax)
 	{
@@ -130,6 +136,11 @@ void UpdateEnemyI(float _dt, int _index)
 	{
 		ennemy->actiondemander = AStar2(_index, GetPlayerRect());
 		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
+	}
+	if (ennemy->ennemyEntity.timerTir >= 1)
+	{
+		ennemy->ennemyEntity.timerTir = 0;
+		shootPlayer(_index);
 	}
 	CalculMoveEnemy(_dt, _index);
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
@@ -909,6 +920,13 @@ void ResetEnemy(void)
 int GetEnemyZone(void)
 {
 	return enemyZone;
+}
+
+void effectGelEnemy(unsigned _index, int _puissance, float _time)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	ennemy->ennemyEntity.powerGel = _puissance;
+	ennemy->ennemyEntity.timerGel = _time;
 }
 
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
