@@ -24,6 +24,18 @@
 #define BOSS_DRONE_SPAWN_TIME 1.f
 #define BOSS_DRONE_IN_SKY_TIME 3.f
 
+#define MISSILE_HEIGHT 6
+#define MISSILE_WEIGHT 8
+#define DRONE_MAX 3
+
+#define SECONDARY_PROJECTILE_DURATION 3
+
+#define SPEED_MISSILE 180.0f
+#define SPEED_COLDBREATH 100.f
+#define DEGRE_ROTATION 300.0f
+
+#define MAX_EXPLOSION 10
+
 typedef struct Bullet
 {
 	sfSprite* sprite;
@@ -69,28 +81,60 @@ typedef struct DangerZone
 {
 	sfSprite* sprite;
 	sfBool isShowed;
+	sfBool isBlink;
 }DangerZone;
 
-void LoadProjectiles(void);
+typedef struct Drone
+{
+	sfSprite* sprite;
+	sfMusic* ambientSound;
+	float rotation;
+	float turnSpeed;
+	float lifetime;
+	sfBool isAlive;
+}Drone;
+
+typedef struct ColdBreath
+{
+	sfSprite* sprite;
+	sfMusic* music;
+	sfVector2f velocity;
+	float lifetime;
+	sfBool isAlive;
+}ColdBreath;
+
+void LoadProjectiles(float _groundlvl);
+void LoadSecondary(void);
 void LoadBossDrone(void);
 void LoadDangerZone(void);
 
-void UpdateProjectiles(float _dt);
+void UpdateProjectiles(sfVector2f _posAim, float _dt);
 void UpdateMisteal(float _dt);
 void UpdateBossDrone(float _dt);
+void UpdateSecondary(sfVector2f _pos, float _dt);
+void UpdateDrone(sfVector2f _playerPos, float _dt);
+void UpdateColdBreath(float _dt);
 
 unsigned int GetBulletCount(void);
 unsigned GetMistealCount(void);
 
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
+void AddDrone(sfVector2f _pos, sfBool _isRighted);
+void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 
 void AddBossDrone(sfVector2f _posShooter, float _destination);
+void AddDangerZone(sfVector2f _destination, unsigned _index);
 
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
 void DeleteMisteal(unsigned _index);
 void DeleteBossDrone(unsigned _index);
+void DeleteDangerZone(unsigned _index);
+
+void MoveDrone(unsigned _index, sfVector2f _playerPos, float _dt);
+
+void CheckCollisionMissilesList(void);
 
 sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox);
 

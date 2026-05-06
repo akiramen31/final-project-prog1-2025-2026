@@ -552,7 +552,7 @@ void UpdateFireControl(float _dt)
 	{
 		if (player.canShoot)
 		{
-			if (player.weapon.secondary == DRONE)
+			if (player.weapon.secondaryData.secondaryType == DRONE)
 			{
 				if (player.ener.energy > 50.f)
 				{
@@ -562,7 +562,7 @@ void UpdateFireControl(float _dt)
 
 				}
 			}
-			if (player.weapon.secondary == COLDBREATH)
+			if (player.weapon.secondaryData.secondaryType == COLDBREATH)
 			{
 				if (player.ener.energy > 40.f)
 				{

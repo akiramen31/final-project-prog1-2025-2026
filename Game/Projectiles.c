@@ -1,4 +1,4 @@
-#include "Bullet.h"
+#include "Projectiles.h"
 #include "Ennemy.h"
 #include "Boss.h"
 #include "Player.h"
@@ -6,26 +6,62 @@
 
 sfTexture* bulletTexture;
 sfTexture* mistealTexture;
+sfTexture* droneTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
 Bullet bulletListEnemy[BULLET_ENEMY_MAX];
 Misteal mistealList[MISTEAL_ALLY_MAX];
+Drone droneList[DRONE_MAX] = { 0 };
+ColdBreath coldBreath = { 0 };
 BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
 DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
+
+
 unsigned mistealCount;
 unsigned bulletCountAlly;
 unsigned bulletCountEnemy;
+float groundLevel;
 
 void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
 void SortMistealList(unsigned _index);
 
-void LoadProjectiles(void)
+void LoadProjectiles(float _groundlvl)
 {
 	bulletTexture = GetAsset("Assets/Sprites/bullet.png");
 	mistealTexture = GetAsset("Assets/Sprites/Misteal_Ammo_Placeholder.png");
 	mistealCount = 0;
 	bulletCountAlly = 0;
 	bulletCountEnemy = 0;
+	groundLevel = _groundlvl;
+	LoadSecondary();
+	LoadBossDrone();
+}
+
+void LoadSecondary(void)
+{
+	//COLDBREATH PART
+
+	droneTexture = GetAsset("Assets/Sprites/drone.png");
+
+	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/ColdBreath_Placeholder.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
+	SetSpriteOriginMiddle(coldBreath.sprite);
+	coldBreath.lifetime = 0.f;
+	coldBreath.isAlive = sfFalse;
+	//missileList[i].music = CreateMusic("Assets/Musics/FREEZESOUNDAAJOUTER.ogg", 5.f, sfFalse);
+	//
+
+	// DRONE PART
+
+	for (unsigned i = 0; i < DRONE_MAX; i++)
+	{
+		droneList[i].sprite = CreateSprite(droneTexture, (sfVector2f) { 0 }, 0.f, 39);
+		SetSpriteOriginMiddle(droneList[i].sprite);
+		droneList[i].lifetime = 0;
+		droneList[i].rotation = 0;
+		droneList[i].isAlive = sfFalse;
+		droneList[i].ambientSound = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
+	}
+	//
 	LoadBossDrone();
 }
 
@@ -53,12 +89,12 @@ void LoadDangerZone(void)
 	{
 		dangerZoneList[i].sprite = CreateSprite(dangerZone, (sfVector2f) { 0, 0 }, 1.f, 39);
 		SetSpriteOriginMiddle(dangerZoneList[i].sprite);
-
+		dangerZoneList[i].isShowed = sfFalse;
 		sfVector2f missilePosition = { 0 };
 	}
 }
 
-void UpdateProjectiles(float _dt)
+void UpdateProjectiles(sfVector2f _posAim, float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
 	sfVector2f reactionWall = { 0 };
@@ -116,6 +152,14 @@ void UpdateProjectiles(float _dt)
 	}
 	UpdateMisteal(_dt);
 	UpdateBossDrone(_dt);
+	UpdateSecondary(_posAim, _dt);
+}
+
+void UpdateSecondary(sfVector2f _posAim, float _dt)
+{
+	UpdateColdBreath(_dt);
+	UpdateDrone(_posAim, _dt);
+
 }
 
 void UpdateMisteal(float _dt)
@@ -219,6 +263,7 @@ void UpdateBossDrone(float _dt)
 			if (sfSprite_getPosition(bossDroneList[i].sprite).y <= 620)
 			{
 				bossDroneList[i].bossDroneState = BDRONE_IS_STASIC_IN_SKY;
+				AddDangerZone((sfVector2f) { bossDroneList[i].destination, groundLevel }, i);
 				bossDroneList[i].bossDroneTimer = BOSS_DRONE_IN_SKY_TIME;
 				bossDroneList[i].velocity.y = 0;
 				sfSprite_rotate(bossDroneList[i].sprite, 180.f);
@@ -394,6 +439,14 @@ void AddBossDrone(sfVector2f _posShooter, float _destination)
 	}
 }
 
+void AddDangerZone(sfVector2f _destination, unsigned _index)
+{
+
+	sfSprite_setPosition(dangerZoneList[_index].sprite, _destination);
+	dangerZoneList[_index].isShowed = sfTrue;
+	return;
+}
+
 sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
 {
 	sfFloatRect hitboxBossDrone = { 0 };
@@ -408,6 +461,214 @@ sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
 		}
 	}
 	return sfFalse;
+}
+
+void AddDrone(sfVector2f _pos, sfBool _isRighted)
+{
+	for (unsigned i = 0; i < DRONE_MAX; i++)
+	{
+		if (droneList[i].isAlive == sfFalse)
+		{
+			sfMusic_play(droneList[i].ambientSound);
+			droneList[i].isAlive = sfTrue;
+			droneList[i].lifetime = 0;
+			droneList[i].rotation = -90;
+			sfSprite_setScale(droneList[i].sprite, (sfVector2f) { 1, 1 });
+			if (_isRighted)
+			{
+				sfSprite_setPosition(droneList[i].sprite, (sfVector2f) { _pos.x - 12.f, _pos.y - WEAPON_ORIGIN });
+			}
+			else
+			{
+				sfSprite_setPosition(droneList[i].sprite, (sfVector2f) { _pos.x + 12.f, _pos.y - WEAPON_ORIGIN });
+			}
+			return;
+		}
+	}
+}
+
+void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
+{
+	//sfMusic_play(coldBreath.music);
+	if (coldBreath.isAlive)
+	{
+		return;
+	}
+
+	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
+
+	float dxInitial = _posTarget.x - pivotPos.x;
+	float dyInitial = _posTarget.y - pivotPos.y;
+	float angleRadInitial = atan2f(dyInitial, dxInitial);
+
+
+	if (!_shooterType.isRighted)
+	{
+		_shooterType.shootPosition.y = -_shooterType.shootPosition.y;
+	}
+
+	sfVector2f spawnPos;
+	spawnPos.x = pivotPos.x + cosf(angleRadInitial) * _shooterType.shootPosition.x - sinf(angleRadInitial) * _shooterType.shootPosition.y;
+	spawnPos.y = pivotPos.y + sinf(angleRadInitial) * _shooterType.shootPosition.x + cosf(angleRadInitial) * _shooterType.shootPosition.y;
+
+	float realDx = _posTarget.x - spawnPos.x;
+	float realDy = _posTarget.y - spawnPos.y;
+	float realAngleRad = atan2f(realDy, realDx);
+	coldBreath.velocity.x = cosf(realAngleRad) * SPEED_COLDBREATH;
+	coldBreath.velocity.y = sinf(realAngleRad) * SPEED_COLDBREATH;
+
+	sfSprite_setPosition(coldBreath.sprite, spawnPos);
+	sfSprite_setRotation(coldBreath.sprite, realAngleRad * (180.0f / (float)M_PI));
+
+	coldBreath.lifetime = 0.f;
+	coldBreath.isAlive = sfTrue;
+}
+
+
+void UpdateDrone(sfVector2f _mousePos, float _dt)
+{
+	for (unsigned i = 0; i < DRONE_MAX; i++)
+	{
+		if (droneList[i].isAlive == sfTrue)
+		{
+			droneList[i].lifetime += _dt;
+			if (droneList[i].lifetime <= SECONDARY_PROJECTILE_DURATION)
+			{
+				CheckCollisionMissilesList();
+				MoveDrone(i, _mousePos, _dt);
+			}
+			else
+			{
+				droneList[i].isAlive = sfFalse;
+				sfSprite_setPosition(droneList[i].sprite, (sfVector2f) { 0, 0 });
+				sfMusic_stop(droneList[i].ambientSound);
+				continue;
+			}
+			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(droneList[i].sprite), AXIS_BOTH);
+			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(droneList[i].sprite), sfTrue, AXIS_BOTH);
+			reaction.x += reactionBox.x;
+			reaction.y += reactionBox.y;
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(droneList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY))
+			{
+				sfMusic_stop(droneList[i].ambientSound);
+				droneList[i].isAlive = sfFalse;
+				sfSprite_setPosition(droneList[i].sprite, (sfVector2f) { 0, 0 });
+				continue;
+			}
+		}
+	}
+}
+
+void UpdateColdBreath(float _dt)
+{
+	if (coldBreath.isAlive)
+	{
+		coldBreath.lifetime += _dt;
+		if (coldBreath.lifetime > SECONDARY_PROJECTILE_DURATION)
+		{
+			coldBreath.isAlive = sfFalse;
+			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
+			return;
+		}
+		sfFloatRect hitboxColdBreath = { 0 };
+		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
+		sfVector2f reactionWall = Colision(sfSprite_getGlobalBounds(coldBreath.sprite), AXIS_BOTH);
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
+		{
+			coldBreath.isAlive = sfFalse;
+			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
+			return;
+		}
+		else
+		{
+			coldBreath.velocity.y += G * _dt;
+			sfSprite_move(coldBreath.sprite, (sfVector2f) { coldBreath.velocity.x* _dt, coldBreath.velocity.y* _dt });
+			sfSprite_setRotation(coldBreath.sprite, (float)RAD_DEG(atan2f(coldBreath.velocity.y, coldBreath.velocity.x)));
+		}
+	}
+}
+
+void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
+{
+	if (!droneList[_index].isAlive) return;
+
+	sfVector2f currentPos = sfSprite_getPosition(droneList[_index].sprite);
+
+	float dx = _mousePos.x - currentPos.x;
+	float dy = _mousePos.y - currentPos.y;
+
+	float targetAngle = atan2f(dy, dx) * 180.0f / 3.14159;
+
+	float angleDiff = targetAngle - droneList[_index].rotation;
+
+	while (angleDiff > 180.0f)  angleDiff -= 360.0f;
+	while (angleDiff < -180.0f) angleDiff += 360.0f;
+
+	float maxRotationThisFrame = DEGRE_ROTATION * _dt;
+
+	if (fabsf(angleDiff) <= maxRotationThisFrame)
+	{
+		droneList[_index].rotation = targetAngle;
+	}
+	else
+	{
+		if (angleDiff > 0)
+			droneList[_index].rotation += maxRotationThisFrame;
+		else
+			droneList[_index].rotation -= maxRotationThisFrame;
+	}
+
+	float angleInRadians = droneList[_index].rotation * 3.14159 / 180.0f;
+
+	sfVector2f movement;
+	movement.x = cosf(angleInRadians) * SPEED_MISSILE * _dt;
+	movement.y = sinf(angleInRadians) * SPEED_MISSILE * _dt;
+
+	// 7. Application à la forme SFML
+	sfSprite_setRotation(droneList[_index].sprite, droneList[_index].rotation);
+	sfSprite_move(droneList[_index].sprite, movement);
+}
+
+void CheckCollisionMissilesList(void)
+{
+	for (unsigned i = 0; i < DRONE_MAX; i++)
+	{
+		if (!droneList[i].isAlive) continue;
+
+		// On commence à j = i + 1 pour ne pas tester deux fois la même paire
+		// et ne pas tester le missile contre lui-même
+		for (unsigned j = i + 1; j < DRONE_MAX; j++)
+		{
+			if (!droneList[j].isAlive) continue;
+
+			sfVector2f posA = sfSprite_getPosition(droneList[i].sprite);
+			sfVector2f posB = sfSprite_getPosition(droneList[j].sprite);
+
+			float dx = posB.x - posA.x;
+			float dy = posB.y - posA.y;
+			float distance = sqrtf(dx * dx + dy * dy);
+			float minDistance = MISSILE_WEIGHT * 2.0f; // Somme des deux rayons
+
+			if (distance < minDistance)
+			{
+				// 1. Calcul du décalage (pénétration)
+				float overlap = minDistance - distance;
+
+				// 2. Normalisation du vecteur de direction (pour savoir où pousser)
+				// On évite la division par zéro si les missiles sont exactement au même point
+				if (distance == 0) distance = 0.1f;
+				float nx = dx / distance;
+				float ny = dy / distance;
+
+				// 3. On décale chaque missile de la moitié de l'overlap dans des directions opposées
+				sfVector2f moveA = { -nx * overlap / 2.0f, -ny * overlap / 2.0f };
+				sfVector2f moveB = { nx * overlap / 2.0f,  ny * overlap / 2.0f };
+
+				sfSprite_move(droneList[i].sprite, moveA);
+				sfSprite_move(droneList[j].sprite, moveB);
+			}
+		}
+	}
 }
 
 void DeleteBulletAlly(unsigned _index)
@@ -464,4 +725,12 @@ void DeleteBossDrone(unsigned _index)
 	bossDroneList[_index].velocity = (sfVector2f){ 0 };
 	bossDroneList[_index].bossDroneState = BDRONE_IS_OUT;
 	bossDroneList[_index].bossDroneTimer = 0;
+	DeleteDangerZone(_index);
+}
+
+void DeleteDangerZone(unsigned _index)
+{
+	sfSprite_setPosition(dangerZoneList[_index].sprite, (sfVector2f) { 0 });
+	dangerZoneList[_index].isShowed = sfFalse;
+	return;
 }

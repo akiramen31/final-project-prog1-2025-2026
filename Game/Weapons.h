@@ -2,8 +2,7 @@
 #define WEAPONS_H
 
 #include "Common.h"
-#include "Bullet.h"
-#include "Secondaries.h"
+#include "Projectiles.h"
 
 #define WEAPON_ANGLE_RAILGUN_OFFSET 11.5f
 #define WEAPON_ANGLE_STEAMAXE_OFFSET -70.f
@@ -16,6 +15,11 @@
 #define STEAMAXE_ANGLE_MEDIUM 180.f
 #define STEAMAXE_ANGLE_HEAVY 360.f
 
+typedef enum SecondaryType
+{
+	DRONE,
+	COLDBREATH
+}SecondaryType;
 
 typedef enum WeaponType 
 {
@@ -45,18 +49,32 @@ typedef struct SteamAxe
 
 }SteamAxe;
 
+typedef struct SecondaryData
+{
+	Drone droneList[DRONE_MAX];
+	ColdBreath coldBreath;
+	SecondaryType secondaryType;
+	sfTexture* droneTexture;
+}SecondaryData;
+
 typedef struct Weapon 
 {
 	SteamAxe steamAxe;
 	RailGun railGun;
 	MiSteal miSteal;
 	WeaponType weaponType;
-	SecondaryType secondary;
+	SecondaryData secondaryData;
 	sfBool isRight;
 }Weapon;
 
+SecondaryType GetSecondaryType(void);
+void SetSecondaryType(SecondaryType _type);
+
 void SetWeapon(WeaponType _type);
 void LoadWeapons(void);
+void LoadSecondary(void);
+void UpdateWeapons(float _dt);
+void UpdateSecondary(sfVector2f _posAim, float _dt);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
