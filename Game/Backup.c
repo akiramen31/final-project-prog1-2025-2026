@@ -37,10 +37,12 @@ float GetFloatFromSave(FloatSave _index)
 void SetFloatToSave(FloatSave _index, float _value)
 {
 	backup.valueFloat[_index] = _value;
+	SaveBackup();
 }
 void AddFloatToSave(FloatSave _index, float _value)
 {
 	backup.valueFloat[_index] += _value;
+	SaveBackup();
 }
 
 char GetKeyFromSave(KeySave _index)
@@ -50,6 +52,7 @@ char GetKeyFromSave(KeySave _index)
 void SetKeyToSave(KeySave _index, char _value)
 {
 	backup.valueKey[_index] = _value;
+	SaveBackup();
 }
 char GetMouseKeyFromSave(KeySave _index)
 {
@@ -58,6 +61,7 @@ char GetMouseKeyFromSave(KeySave _index)
 void SetMouseKeyToSave(KeySave _index, char _value)
 {
 	backup.valueKey[_index] = _value + sfKeyCount;
+	SaveBackup();
 }
 sfBool IfControlKeyPressed(KeySave _index)
 {
@@ -71,10 +75,12 @@ int GetIntFromSave(IntSave _index)
 void SetIntToSave(IntSave _index, int _value)
 {
 	backup.valueInt[_index] = _value;
+	SaveBackup();
 }
 void AddIntToSave(IntSave _index, int _value)
 {
 	backup.valueInt[_index] += _value;
+	SaveBackup();
 }
 
 void SetSaveTemp(const void* _buffer, size_t _size, size_t _count)

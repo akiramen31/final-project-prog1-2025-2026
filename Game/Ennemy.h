@@ -42,6 +42,7 @@ typedef struct EnnemyData
 	float accelerationMax;
 	float speedMax;
 	float jumForce;
+	int nbCaseJump;
 }EnnemyData;
 
 typedef struct EnnemyEntity

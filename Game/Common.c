@@ -128,6 +128,23 @@ sfBool StringCompare(char* _string1, char* _string2)
 	return sfFalse;
 }
 
+char* StringCopy(char* _string)
+{
+	int i = 0;
+	while (_string[i])
+	{
+		i++;
+	}
+
+	char* stringCopy = Calloc(i, sizeof(char));
+	for (int j = 0; j < i; j++)
+	{
+		stringCopy[j] = _string[j];
+	}
+	return stringCopy;	
+}
+
+
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 {
 	/*float diff = _target - _current;

@@ -50,7 +50,8 @@ void LoadEnemy(void)
 		ennemyEntity[DRONE_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[DRONE_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = 500.f;
+		ennemyEntity[DRONE_SMALL].ennemydata.nbCaseJump = 5;
+		ennemyEntity[DRONE_SMALL].ennemydata.jumForce = ennemyEntity[DRONE_SMALL].ennemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
 
 		ennemyEntity[DRONE_SMALL].isJetpack = sfTrue;
 		ennemyEntity[DRONE_SMALL].jetpack.consomation = 50.f;
@@ -64,10 +65,11 @@ void LoadEnemy(void)
 		ennemyEntity[CROWLER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[CROWLER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = 500.f;
+		ennemyEntity[CROWLER_SMALL].ennemydata.nbCaseJump = 5;
+		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = ennemyEntity[CROWLER_SMALL].ennemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
 
 		ennemyEntity[CROWLER_SMALL].isJetpack = sfTrue;
-		ennemyEntity[CROWLER_SMALL].jetpack.consomation = 50.f;
+		ennemyEntity[CROWLER_SMALL].jetpack.consomation = 500.f;
 		ennemyEntity[CROWLER_SMALL].jetpack.life = 5.f;
 		ennemyEntity[CROWLER_SMALL].jetpack.trust = 10.f;
 
@@ -79,7 +81,8 @@ void LoadEnemy(void)
 		ennemyEntity[SOLDIER_SMALL].ennemydata.energyRegen = 15.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 1.f;
 		ennemyEntity[SOLDIER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = 500.f;
+		ennemyEntity[SOLDIER_SMALL].ennemydata.nbCaseJump = 5;
+		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = ennemyEntity[SOLDIER_SMALL].ennemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
 
 		ennemyEntity[SOLDIER_SMALL].isJetpack = sfTrue;
 		ennemyEntity[SOLDIER_SMALL].jetpack.consomation = 20.f;
@@ -88,10 +91,6 @@ void LoadEnemy(void)
 	}
 	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
-	if (DEBUG_MODE_A_STAR)
-	{
-		printf("size x%d y%d\n", mapData->size.x, mapData->size.y);
-	}
 }
 
 void UpdateEnemy(float _dt)
@@ -135,7 +134,21 @@ void UpdateEnemyI(float _dt, int _index)
 	CalculMoveEnemy(_dt, _index);
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	sfFloatRect enemyRect = sfSprite_getGlobalBounds(ennemy->sprite);
+	printf("%d, %f, %f, %f, %f\n", _index, enemyRect.left, enemyRect.top, ennemy->ennemyEntity.move.x, ennemy->ennemyEntity.move.y);
 	sfFloatRect realRegion = { ennemy->ennemyEntity.region.left + TILE_SIZE ,ennemy->ennemyEntity.region.top + TILE_SIZE , ennemy->ennemyEntity.region.width - TILE_SIZE * 2, ennemy->ennemyEntity.region.height - TILE_SIZE * 2 };
+	
+	sfVector2f collision = Colision(GetBounsEnemy(_index), AXIS_BOTH);
+	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
+	sfSprite_move(ennemy->sprite, collision);
+	if (collision.x)
+	{
+		ennemy->ennemyEntity.move.x = 0;
+	}
+	if (collision.y)
+	{
+		ennemy->ennemyEntity.move.y = 0;
+	}
+	
 	if (realRegion.left > enemyRect.left)
 	{
 		sfSprite_move(ennemy->sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
@@ -151,17 +164,6 @@ void UpdateEnemyI(float _dt, int _index)
 	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
 	{
 		sfSprite_move(ennemy->sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
-	}
-	sfVector2f collision = Colision(GetBounsEnemy(_index), AXIS_BOTH);
-	collision.y += CollisionPassThrough(GetBounsEnemy(_index)).y;
-	sfSprite_move(ennemy->sprite, collision);
-	if (collision.x != 0)
-	{
-		ennemy->ennemyEntity.move.x = 0;
-	}
-	if (collision.y != 0)
-	{
-		ennemy->ennemyEntity.move.y = 0;
 	}
 }
 
@@ -185,10 +187,6 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 {
 	*_ennemy = (Ennemy){ 0 };
-	if (DEBUG_MODE_A_STAR)
-	{
-		printf("creation d'un ennemy de type %d\n", _type);
-	}
 	//création et aplication des donné de l'ennemy
 	_ennemy->ennemyEntity.type = _type;
 	_ennemy->ennemyEntity.ennemydata = ennemyEntity[_type].ennemydata;
@@ -257,37 +255,37 @@ void CalculMoveEnemy(float _dt, int _index)
 	if (droitOuGauche)
 	{
 		ennemy->ennemyEntity.move.x += droitOuGauche * ennemy->ennemyEntity.ennemydata.accelerationMax * _dt;
-	
+
 		if (droitOuGauche * ennemy->ennemyEntity.move.x > droitOuGauche * ennemy->ennemyEntity.ennemydata.speedMax)
 		{
 			ennemy->ennemyEntity.move.x = droitOuGauche * ennemy->ennemyEntity.ennemydata.speedMax;
 		}
 	}
-	
+	else
+	{
+		ennemy->ennemyEntity.move.x = 0;
+	}
+
 	if (ennemy->actiondemander.Saut)
 	{
-		sfFloatRect collisionEnnemy = GetBounsEnemy(_index);
-		collisionEnnemy.top += 1;
-		sfVector2f collision = Colision(collisionEnnemy, AXIS_BOTH);
-		if (collision.y)
+		sfFloatRect enemyRect = sfSprite_getGlobalBounds(ennemy->sprite);
+		enemyRect.top += 1;
+		sfVector2f collision = Colision(enemyRect, AXIS_BOTH);
+		if (collision.y > -2 && collision.y < 0)
 		{
-			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			ennemy->ennemyEntity.move.y = -ennemy->ennemyEntity.ennemydata.jumForce;
 		}
-		else if (ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
+		else if (0 && ennemy->ennemyEntity.move.y >= 0 && ennemy->ennemyEntity.isJetpack && ennemy->ennemyEntity.jetpack.consomation * _dt < ennemy->ennemyEntity.ennemydata.energy)
 		{
-			ennemy->ennemyEntity.acceleration.y += -ennemy->ennemyEntity.ennemydata.jumForce;
+			ennemy->ennemyEntity.move.y -= ennemy->ennemyEntity.ennemydata.jumForce;
 			ennemy->ennemyEntity.ennemydata.energy -= ennemy->ennemyEntity.jetpack.consomation * _dt;
 		}
 	}
-	ennemy->ennemyEntity.move.y += G * 4;
+	ennemy->ennemyEntity.move.y += G * _dt;
 
-	if (ennemy->ennemyEntity.move.x > ennemy->ennemyEntity.ennemydata.speedMax)
+	if (ennemy->ennemyEntity.move.y > ennemy->ennemyEntity.ennemydata.jumForce)
 	{
-		ennemy->ennemyEntity.move.x = ennemy->ennemyEntity.ennemydata.speedMax;
-	}
-	else if (ennemy->ennemyEntity.move.x < -ennemy->ennemyEntity.ennemydata.speedMax)
-	{
-		ennemy->ennemyEntity.move.x = -ennemy->ennemyEntity.ennemydata.speedMax;
+		ennemy->ennemyEntity.move.y = ennemy->ennemyEntity.ennemydata.jumForce;
 	}
 
 }
@@ -864,7 +862,6 @@ void DebugTab(Case _case)
 
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 {
-	//printf("ratio %f\n", mapData->caseSize.x);
 	_positionReal.x = _positionReal.x / mapData->caseSize.x;
 	_positionReal.y = _positionReal.y / mapData->caseSize.y;
 	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };

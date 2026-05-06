@@ -128,6 +128,7 @@ void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _t
 void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void FreeGrid(void** grid);
 sfBool StringCompare(char* _string1, char* _string2);
+char* StringCopy(char* _string);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
