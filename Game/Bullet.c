@@ -145,6 +145,8 @@ void UpdateMisteal(float _dt)
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
+				ColisionElevatorButon(hitboxMisteal);
+
 				if (HitEnemy(9.f, hitboxMisteal) || HitBoss(36.f, hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)

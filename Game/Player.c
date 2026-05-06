@@ -716,6 +716,7 @@ void UpdateSteamAxe(float _dt)
 		{
 			sfFloatRect axeHitbox = sfSprite_getGlobalBounds(player.weapon.steamAxe.sprite);
 			ColisionBox(axeHitbox, sfTrue, AXIS_BOTH);
+			ColisionElevatorButon(axeHitbox);
 
 			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
