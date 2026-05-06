@@ -111,7 +111,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossDrone(sfTrue, hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet, LIGHT) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossDrone(sfTrue, hitboxBullet))
 			{
 				DeleteBulletAlly(i);
 			}
@@ -189,7 +189,7 @@ void UpdateMisteal(float _dt)
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
-				if (HitEnemy(9.f, hitboxMisteal) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossDrone(sfTrue, hitboxMisteal))
+				if (HitEnemy(9.f, hitboxMisteal, HEAVY) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossDrone(sfTrue, hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)
 					{
@@ -548,7 +548,7 @@ void UpdateDrone(sfVector2f _mousePos, float _dt)
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(droneList[i].sprite), sfTrue, AXIS_BOTH);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(droneList[i].sprite)) || HitBoss(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY))
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY) || HitBoss(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY))
 			{
 				sfMusic_stop(droneList[i].ambientSound);
 				droneList[i].isAlive = sfFalse;
@@ -573,7 +573,7 @@ void UpdateColdBreath(float _dt)
 		sfFloatRect hitboxColdBreath = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
 		sfVector2f reactionWall = Colision(sfSprite_getGlobalBounds(coldBreath.sprite), AXIS_BOTH);
-		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath, FREEZE) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
 		{
 			coldBreath.isAlive = sfFalse;
 			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
