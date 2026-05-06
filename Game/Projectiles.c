@@ -15,7 +15,6 @@ ColdBreath coldBreath = { 0 };
 BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
 DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
 
-
 unsigned mistealCount;
 unsigned bulletCountAlly;
 unsigned bulletCountEnemy;
@@ -40,7 +39,6 @@ void LoadProjectiles(float _groundlvl)
 void LoadSecondary(void)
 {
 	//COLDBREATH PART
-
 	droneTexture = GetAsset("Assets/Sprites/drone.png");
 
 	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/ColdBreath_Placeholder.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
@@ -48,7 +46,6 @@ void LoadSecondary(void)
 	coldBreath.lifetime = 0.f;
 	coldBreath.isAlive = sfFalse;
 	//missileList[i].music = CreateMusic("Assets/Musics/FREEZESOUNDAAJOUTER.ogg", 5.f, sfFalse);
-	//
 
 	// DRONE PART
 
@@ -61,7 +58,6 @@ void LoadSecondary(void)
 		droneList[i].isAlive = sfFalse;
 		droneList[i].ambientSound = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
 	}
-	//
 	LoadBossDrone();
 }
 
@@ -159,7 +155,6 @@ void UpdateSecondary(sfVector2f _posAim, float _dt)
 {
 	UpdateColdBreath(_dt);
 	UpdateDrone(_posAim, _dt);
-
 }
 
 void UpdateMisteal(float _dt)
@@ -322,11 +317,9 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 		return;
 	}
 
-
 	Bullet newBullet = { 0 };
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
 	SetSpriteOriginMiddle(newBullet.sprite);
-
 
 	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
 
