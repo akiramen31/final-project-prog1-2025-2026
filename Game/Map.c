@@ -14,7 +14,6 @@ sfRectangleShape** rectShape;
 
 sfColor colorBackground;
 
-void ResetMap(void);
 void LoadMapData(CjsonB* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount);
 void SetPositionEntity(InfoZone* _point, int _count);
@@ -50,7 +49,6 @@ void LoadMap()
 		ResetEnemy();
 	}
 #endif
-	//ResetMap();
 
 	printf("map level %d\n", map.state + 1);
 
@@ -101,55 +99,6 @@ void LoadMap()
 void SetCurrentMap(MapState _map)
 {
 	map.state = _map;
-}
-
-void ResetMap(void)
-{
-	if (map.data.colider)
-	{
-		for (int i = 0; i < map.data.coliderCount; i++)
-		{
-			Free(map.data.colider[i].name);
-			Free(map.data.colider[i].type);
-		}
-		Free(map.data.colider);
-	}
-	if (map.data.triger)
-	{
-		for (int i = 0; i < map.data.trigerCount; i++)
-		{
-			Free(map.data.triger[i].name);
-			Free(map.data.triger[i].type);
-		}
-		Free(map.data.triger);
-	}
-	if (map.data.move)
-	{
-		for (int i = 0; i < map.data.moveCount; i++)
-		{
-			Free(map.data.move[i].name);
-			Free(map.data.move[i].type);
-		}
-		Free(map.data.move);
-	}
-	if (map.data.point)
-	{
-		for (int i = 0; i < map.data.pointCount; i++)
-		{
-			Free(map.data.point[i].name);
-			Free(map.data.point[i].type);
-		}
-		Free(map.data.point);
-	}
-	if (map.data.passThrough)
-	{
-		for (int i = 0; i < map.data.PassThroughCount; i++)
-		{
-			Free(map.data.passThrough[i].name);
-			Free(map.data.passThrough[i].type);
-		}
-		Free(map.data.passThrough);
-	}
 }
 
 MapState GetCurrentMap(void)

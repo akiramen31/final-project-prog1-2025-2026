@@ -135,7 +135,7 @@ char* StringCopy(char* _string)
 	{
 		i++;
 	}
-
+	i++;
 	char* stringCopy = Calloc(i, sizeof(char));
 	for (int j = 0; j < i; j++)
 	{
