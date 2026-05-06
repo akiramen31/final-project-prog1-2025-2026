@@ -626,6 +626,20 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top+1][caseRecherche.left].jumpForce = 0;
 				}
 
+				//test bas gauche
+				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				if (TestColision(caseRecherche) != 2 &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction == UP_LEFT &&
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+				{
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
+					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+				}
+
 				//test haut
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (!TestColision(caseRecherche) &&
