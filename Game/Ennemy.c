@@ -1,5 +1,6 @@
 #include "Ennemy.h"
 #include "Map.h"
+#include "Bullet.h"
 
 #if DEV_PIERRE_ENEMY
 
@@ -17,6 +18,8 @@ int TestJump(sfIntRect _intRect);
 void DebugTab(Case _case);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
+sfBool PlayerVisibility(int _index);
+void shootPlayer(int _index);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -953,6 +956,36 @@ sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect)
 	intRect.height = -intRect.height;
 
 	return intRect;
+}
+
+sfBool PlayerVisibility(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+
+	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
+
+	sfFloatRect bounsplayer = GetPlayerRect();
+
+
+
+	return 0;
+}
+
+void shootPlayer(int _index)
+{
+	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+
+	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
+	sfVector2f posGun = (sfVector2f){ bounsEnemy.left + (bounsEnemy.width / 2),bounsEnemy.top + (bounsEnemy.height / 2) };
+
+	sfFloatRect bounsPlayer = GetPlayerRect();
+	sfVector2f posTarget = (sfVector2f){ bounsPlayer.left + (bounsPlayer.width / 2),bounsPlayer.top + (bounsPlayer.height / 2) };
+
+	ShooterType type = { 0 };
+	type.isAlly = sfFalse;
+	type.bulletType = LIGHT;
+
+	AddBullet(posGun, posTarget, type);
 }
 
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
