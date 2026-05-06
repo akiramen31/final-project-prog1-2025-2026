@@ -75,7 +75,7 @@ void UpdateProjectiles(float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet) || HitBoss(9.f, hitboxBullet) || ColisionElevatorButon(hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossDrone(sfTrue, hitboxBullet))
 			{
 				DeleteBulletAlly(i);
 			}
@@ -145,9 +145,7 @@ void UpdateMisteal(float _dt)
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
-				ColisionElevatorButon(hitboxMisteal);
-
-				if (HitEnemy(9.f, hitboxMisteal) || HitBoss(36.f, hitboxMisteal))
+				if (HitEnemy(9.f, hitboxMisteal) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossDrone(sfTrue, hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)
 					{
@@ -208,7 +206,15 @@ void UpdateBossDrone(float _dt)
 {
 	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
 	{
-		if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING)
+		if (bossDroneList[i].bossDroneState == BDRONE_IS_SPAWNING)
+		{
+			bossDroneList[i].bossDroneTimer -= _dt;
+			if (bossDroneList[i].bossDroneTimer < 0)
+			{
+				bossDroneList[i].bossDroneState = BDRONE_IS_ASCENDING;
+			}
+		}
+		else if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING)
 		{
 			if (sfSprite_getPosition(bossDroneList[i].sprite).y <= 620)
 			{
@@ -219,7 +225,7 @@ void UpdateBossDrone(float _dt)
 				sfSprite_setPosition(bossDroneList[i].sprite, (sfVector2f) { bossDroneList[i].destination, sfSprite_getPosition(bossDroneList[i].sprite).y });
 			}
 		}
-		if (bossDroneList[i].bossDroneState == BDRONE_IS_STASIC_IN_SKY)
+		else if (bossDroneList[i].bossDroneState == BDRONE_IS_STASIC_IN_SKY)
 		{
 			bossDroneList[i].bossDroneTimer -= _dt;
 			if (bossDroneList[i].bossDroneTimer < 0)
@@ -229,7 +235,24 @@ void UpdateBossDrone(float _dt)
 			}
 		}
 		sfSprite_move(bossDroneList[i].sprite, (sfVector2f) { 0, bossDroneList[i].velocity.y* _dt });
-		//printf("je suis %d et ma valeur est : %d mon temp est de : %f\n", (i + 1), bossDroneList[i].bossDroneState, bossDroneList[i].bossDroneTimer);
+		sfFloatRect hitboxBossDrone = sfSprite_getGlobalBounds(bossDroneList[i].sprite);
+		sfVector2f reactionWall = Colision(hitboxBossDrone, AXIS_BOTH);
+		if (bossDroneList[i].bossDroneState == BDRONE_IS_SPAWNING)
+		{
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, 1))
+			{
+				DeleteBossDrone(i);
+				continue;
+			}
+		}
+		else if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING || bossDroneList[i].bossDroneState == BDRONE_IS_FALLING)
+		{
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, 1) || HitBoss(50.f, hitboxBossDrone, HEAVY))
+			{
+				DeleteBossDrone(i);
+				continue;
+			}
+		}
 	}
 }
 
@@ -361,15 +384,30 @@ void AddBossDrone(sfVector2f _posShooter, float _destination)
 		if (bossDroneList[i].bossDroneState == BDRONE_IS_OUT)
 		{
 			//sfMusic_play(bossDroneList[i].music);
-			// CHANGER QUAND LE CODE POUR IS SPAWNING SERA GOOD
-			bossDroneList[i].bossDroneState = BDRONE_IS_ASCENDING;
-			bossDroneList[i].bossDroneTimer = BOSS_DRONE_SPAWN_TIME;
-			bossDroneList[i].destination = _destination;
 			sfSprite_setPosition(bossDroneList[i].sprite, _posShooter);
+			bossDroneList[i].destination = _destination;
+			bossDroneList[i].bossDroneTimer = BOSS_DRONE_SPAWN_TIME;
 			bossDroneList[i].velocity.y = -(BOSS_DRONE_SPEED);
+			bossDroneList[i].bossDroneState = BDRONE_IS_SPAWNING;
 			return;
 		}
 	}
+}
+
+sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
+{
+	sfFloatRect hitboxBossDrone = { 0 };
+	sfFloatRect hitboxColision = { 0 };
+	for (int i = 0; i < MAX_BOSS_DRONE; i++)
+	{
+		hitboxBossDrone = sfSprite_getGlobalBounds(bossDroneList[i].sprite);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxBossDrone, &hitboxColision))
+		{
+			DeleteBossDrone(i);
+			return sfTrue;
+		}
+	}
+	return sfFalse;
 }
 
 void DeleteBulletAlly(unsigned _index)
@@ -418,4 +456,12 @@ void SortMistealList(unsigned _index)
 		mistealList[i] = mistealList[i + 1];
 	}
 	mistealList[mistealCount - 1] = (Misteal){ 0 };
+}
+
+void DeleteBossDrone(unsigned _index)
+{
+	sfSprite_setPosition(bossDroneList[_index].sprite, (sfVector2f) { 0 });
+	bossDroneList[_index].velocity = (sfVector2f){ 0 };
+	bossDroneList[_index].bossDroneState = BDRONE_IS_OUT;
+	bossDroneList[_index].bossDroneTimer = 0;
 }

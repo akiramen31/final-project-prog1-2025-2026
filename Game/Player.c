@@ -720,7 +720,7 @@ void UpdateSteamAxe(float _dt)
 			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
 				HitEnemy(1.f, axeHitbox);
-				if (HitBoss(5.f, axeHitbox))
+				if (HitBoss(5.f, axeHitbox, LIGHT))
 				{
 					CanHitBoss(sfFalse);
 				}
@@ -728,7 +728,7 @@ void UpdateSteamAxe(float _dt)
 			else if (player.weapon.steamAxe.attackType == MEDIUM)
 			{
 				HitEnemy(2.f, axeHitbox);
-				if (HitBoss(8.f, axeHitbox))
+				if (HitBoss(8.f, axeHitbox, MEDIUM))
 				{
 					CanHitBoss(sfFalse);
 				}
@@ -736,7 +736,7 @@ void UpdateSteamAxe(float _dt)
 			else if (player.weapon.steamAxe.attackType == HEAVY)
 			{
 				HitEnemy(3.f, axeHitbox);
-				if (HitBoss(14.f, axeHitbox))
+				if (HitBoss(14.f, axeHitbox, HEAVY))
 				{
 					CanHitBoss(sfFalse);
 				}
