@@ -42,7 +42,7 @@ CjsonB* LoadCjsonB(char* _file)
 	read(file, buffer, fileSize);
 	close(file);
 	allocationFree = START_ALLOC(fileSize * 2);
-	CjsonB* cjson = (CjsonB*)ALLOC(sizeof(CjsonB));
+	CjsonB* cjson = ALLOC(sizeof(CjsonB));
 
 	while (GoNextDataInStructCjsonB())
 	{
