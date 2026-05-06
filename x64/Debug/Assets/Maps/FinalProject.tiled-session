@@ -1,5 +1,5 @@
 {
-    "activeFile": "Level3.tmx",
+    "activeFile": "Level1.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
@@ -36,14 +36,11 @@
             "expandedGroupLayers": [
                 44
             ],
-            "expandedObjectLayers": [
-                31
-            ],
-            "scale": 0.125,
-            "selectedLayer": 0,
+            "scale": 0.33,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 4720,
-                "y": 572
+                "x": 998.4848484848484,
+                "y": 493.939393939394
             }
         },
         "Level1_2.tmx": {
@@ -81,18 +78,12 @@
             "selectedLayer": 8,
             "viewCenter": {
                 "x": 3150.5,
-                "y": 1139
+                "y": 1277
             }
         },
         "Level3.tmx": {
-            "expandedObjectLayers": [
-                7,
-                11,
-                5,
-                6
-            ],
             "scale": 0.5,
-            "selectedLayer": 7,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 699,
                 "y": 594
@@ -172,12 +163,12 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Level1.tmx",
-        "Level2.tmx",
         "Tilesets/SpritesList.tsx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
         "Level3.tmx",
+        "Level2.tmx",
+        "Level1.tmx",
         "LevelTest.tmx",
         "Level1_Demo.tmx",
         "Level1_2.tmx",
