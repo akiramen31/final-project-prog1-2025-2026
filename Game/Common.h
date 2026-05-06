@@ -58,11 +58,11 @@ typedef enum MapState
 
 typedef enum AttackType
 {
+	NOATTACK,
+	FREEZE,
 	LIGHT,
 	MEDIUM,
-	HEAVY,
-	FREEZE,
-	NOATTACK
+	HEAVY
 }AttackType;
 
 typedef struct ShooterType

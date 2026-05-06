@@ -107,8 +107,8 @@ typedef struct Tableau
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat);
-sfBool HitEnemy(float _degat, sfFloatRect _hitbox);
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
+sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _attaque);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
 int GetEnemyCount(void);
