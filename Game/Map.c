@@ -14,6 +14,7 @@ sfRectangleShape** rectShape;
 
 sfColor colorBackground;
 
+void ResetMap(void);
 void LoadMapData(CjsonB* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount);
 void SetPositionEntity(InfoZone* _point, int _count);
@@ -50,7 +51,7 @@ void SetMap(MapState _map)
 		ResetEnemy();
 	}
 #endif
-
+	ResetMap();
 	switch (_map)
 	{
 	case LEVEL1:
@@ -100,6 +101,55 @@ void SetMap(MapState _map)
 	map.state = _map;
 }
 
+void ResetMap(void)
+{
+	if (map.data.colider)
+	{
+		for (int i = 0; i < map.data.coliderCount; i++)
+		{
+			Free(map.data.colider[i].name);
+			Free(map.data.colider[i].type);
+		}
+		Free(map.data.colider);
+	}
+	if (map.data.triger)
+	{
+		for (int i = 0; i < map.data.trigerCount; i++)
+		{
+			Free(map.data.triger[i].name);
+			Free(map.data.triger[i].type);
+		}
+		Free(map.data.triger);
+	}
+	if (map.data.move)
+	{
+		for (int i = 0; i < map.data.moveCount; i++)
+		{
+			Free(map.data.move[i].name);
+			Free(map.data.move[i].type);
+		}
+		Free(map.data.move);
+	}
+	if (map.data.point)
+	{
+		for (int i = 0; i < map.data.pointCount; i++)
+		{
+			Free(map.data.point[i].name);
+			Free(map.data.point[i].type);
+		}
+		Free(map.data.point);
+	}
+	if (map.data.passThrough)
+	{
+		for (int i = 0; i < map.data.PassThroughCount; i++)
+		{
+			Free(map.data.passThrough[i].name);
+			Free(map.data.passThrough[i].type);
+		}
+		Free(map.data.passThrough);
+	}
+}
+
 MapState GetActualyMap(void)
 {
 	return map.state;
@@ -108,8 +158,6 @@ MapState GetActualyMap(void)
 void LoadMapData(CjsonB* _cjson)
 {
 	map.data.size = (sfVector2u){ 0 };
-
-	printf("map %d size x : %d, y : %d\n", GetActualyMap(), _cjson->width, _cjson->height);
 
 	for (unsigned i = 0; i < _cjson->layersCount; i++)
 	{
@@ -144,7 +192,6 @@ void LoadMapData(CjsonB* _cjson)
 	map.data.caseSize = (sfVector2f){ (float)_cjson->tilewidth, (float)_cjson->tileheight };
 }
 
-
 MapData* GetMapData(void)
 {
 	return &map.data;
@@ -154,14 +201,14 @@ void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjso
 {
 	*_infoZoneCountExit = 0;
 	*_infoZoneExit = NULL;
-	InfoZone* temp = calloc(_objectCount, sizeof(InfoZone));
+	InfoZone* temp = Calloc(_objectCount, sizeof(InfoZone));
 	if (temp)
 	{
 		for (int i = 0; i < _objectCount; i++)
 		{
 			temp[i].hitbox = (sfFloatRect){ (float)_object[i].x,(float)_object[i].y,(float)_object[i].width, (float)_object[i].height };
-			temp[i].name = _object[i].name;
-			temp[i].type = _object[i].type;
+			temp[i].name = StringCopy(_object[i].name);
+			temp[i].type = StringCopy(_object[i].type);
 		}
 		*_infoZoneCountExit = _objectCount;
 		*_infoZoneExit = temp;

@@ -1,8 +1,8 @@
 #include "CjsonB.h"
 
+#define START_ALLOC(size) VirtualAlloc(0, size, 0x3000, 4);
+#define FREE_ALLOC(ptr) VirtualFree(ptr, 0, 0x8000);
 #define ALLOC(_size) allocationFree; allocationFree += _size; allocCount += _size;
-#define START_GET_STRUCT(type, value) GoNextDataInStructCjsonB();unsigned count = GetStructCountCjsonB();type* temp = *value = (type*)ALLOC(sizeof(type) * count)for (unsigned i = 0; i < count; i++){	while (GoNextDataInStructCjsonB()){
-#define END_GET_STRUCT }}return count;
 
 void* __stdcall VirtualAlloc(void* addr, unsigned long long size, unsigned long type, unsigned long protect);
 int   __stdcall VirtualFree(void* addr, unsigned long long size, unsigned long type);
@@ -38,10 +38,10 @@ CjsonB* LoadCjsonB(char* _file)
 	}
 	unsigned long long fileSize = lseek(file, 0, 2);
 	lseek(file, 0, 0);
-	char* fullBuffer = buffer = VirtualAlloc(0, fileSize + 1, 0x3000, 4);
+	char* fullBuffer = buffer = START_ALLOC(fileSize + 1);
 	read(file, buffer, fileSize);
 	close(file);
-	allocationFree = VirtualAlloc(0, fileSize * 2, 0x3000, 4);
+	allocationFree = START_ALLOC(fileSize * 2);
 	CjsonB* cjson = (CjsonB*)ALLOC(sizeof(CjsonB));
 
 	while (GoNextDataInStructCjsonB())
@@ -108,16 +108,7 @@ CjsonB* LoadCjsonB(char* _file)
 		}
 	}
 
-	VirtualFree(buffer, 0, 0x8000);
-
-	//realloc
-	buffer = (char*)cjson;
-	allocationFree = VirtualAlloc(0, allocCount, 0x3000, 4);
-	for (unsigned i = 0; i < allocCount; i++)
-	{
-		allocationFree[i] = buffer[i];
-	}
-	cjson = (CjsonB*)allocationFree;
+	FREE_ALLOC(buffer);
 
 	buffer = 0;
 	allocationFree = 0;
@@ -719,5 +710,5 @@ int GetObjectStructWangtilesCjsonB(WangtilesCjsonB** _wangtiles)
 
 void CleanupCjsonB(CjsonB* _cjson)
 {
-	VirtualFree(_cjson, 0, 0x8000);
+	FREE_ALLOC(_cjson);
 }

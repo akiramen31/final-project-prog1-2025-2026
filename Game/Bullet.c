@@ -227,7 +227,6 @@ void UpdateBossDrone(float _dt)
 			}
 		}
 		sfSprite_move(bossDroneList[i].sprite, (sfVector2f) { 0, bossDroneList[i].velocity.y* _dt });
-		printf("je suis %d et ma valeur est : %d mon temp est de : %f\n", (i + 1), bossDroneList[i].bossDroneState, bossDroneList[i].bossDroneTimer);
 	}
 }
 
