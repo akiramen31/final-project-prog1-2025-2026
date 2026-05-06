@@ -44,6 +44,7 @@ void UpdateHUD(float _dt)
 		else
 		{
 			sfSprite_setRotation(hud.life[i], 45.f * i);
+			sfSprite_setRotation(hud.life[i], 45.f * i);
 		}
 	}
 	//Boss

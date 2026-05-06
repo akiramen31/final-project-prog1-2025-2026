@@ -101,7 +101,9 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt);
 
 sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
 
-sfBool HitBoss(float _degat, sfFloatRect _hitbox);
+sfBool HitBoss(float _degat, sfFloatRect _hitbox, AttackType _attackType);
+sfBool DamageBoss(float _damage);
+
 void BossShoot(sfVector2f _posPlayer, float _dt);
 
 void DestroyBoss1(void);

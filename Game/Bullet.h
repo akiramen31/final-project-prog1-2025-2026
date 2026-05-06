@@ -40,7 +40,6 @@ typedef struct Misteal
 	sfVector2f velocity;
 	sfBool isSticked;
 	sfBool isAlreadyHit;
-
 	float timer;
 }Misteal;
 
@@ -91,5 +90,8 @@ void AddBossDrone(sfVector2f _posShooter, float _destination);
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
 void DeleteMisteal(unsigned _index);
+void DeleteBossDrone(unsigned _index);
+
+sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox);
 
 #endif // !BULLET_H

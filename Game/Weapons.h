@@ -1,8 +1,9 @@
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef WEAPONS_H
+#define WEAPONS_H
 
 #include "Common.h"
 #include "Bullet.h"
+#include "Secondaries.h"
 
 #define WEAPON_ANGLE_RAILGUN_OFFSET 11.5f
 #define WEAPON_ANGLE_STEAMAXE_OFFSET -70.f
@@ -50,12 +51,12 @@ typedef struct Weapon
 	RailGun railGun;
 	MiSteal miSteal;
 	WeaponType weaponType;
-	Secondary secondary;
+	SecondaryType secondary;
 	sfBool isRight;
-
 }Weapon;
 
-void LoadWeapon(void);
+void SetWeapon(WeaponType _type);
+void LoadWeapons(void);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
@@ -66,4 +67,4 @@ void ChangeAttackType(AttackType _attackType);
 
 Weapon GetWeapon(void);
 
-#endif // !WEAPON_H
+#endif // !WEAPONS_H

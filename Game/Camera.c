@@ -17,7 +17,7 @@ void SetCamPositionName(sfFloatRect* _hitbox, InfoZone* _area, float _dt);
 
 void UpdateCamera(float _dt)
 {
-	switch (GetActualyMap())
+	switch (GetCurrentMap())
 	{
 	case LEVEL1:
 		UpdatePositionCameraLevel1(_dt);
@@ -67,9 +67,9 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f move = { 0 };
 
-
 	float speed;
-	if (CamPositonName == 0)
+	//if (CamPositonName == 0)
+	if (LastCamPositonName == CamPositonName)
 	{
 		speed = CAMERA_SPEED_ON_PLAYER;
 	}
@@ -80,6 +80,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	move.x = _dt * (float)cos(angle) * speed;
 	move.y = _dt * (float)sin(angle) * speed;
+
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{
@@ -343,7 +344,49 @@ void UpdatePositionCameraLevel2(float _dt)
 
 void UpdatePositionCameraLevel3(float _dt)
 {
-	SetDefaultView(_dt);
+	sfFloatRect hitbox = GetPlayerRect();
+	InfoZone* area = GetInfoZoneTriger(hitbox);
+
+	if (area != NULL)
+	{
+		sfVector2f pos = { 0 };
+
+		if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
+		{
+			switch (CamPositonName)
+			{
+			case 1:
+				cameraNewZoom = 0.42f;
+				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
+				if (area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 5 <= hitbox.top + hitbox.height / 2)
+				{
+					pos.y = area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 5;
+				}
+				else if (area[index].hitbox.top + area[index].hitbox.height / 5 >= hitbox.top + hitbox.height / 2)
+				{
+					pos.y = area[index].hitbox.top + area[index].hitbox.height / 5;
+				}
+				else
+				{
+					pos.y = hitbox.top + hitbox.height / 2;
+				}
+				break;
+
+			default:
+				pos = GetPlayerPosition();
+				break;
+			}
+			MoveViewSlow(pos, _dt);
+		}
+		else
+		{
+			SetCamPositionName(&hitbox, area, _dt);
+		}
+	}
+	else
+	{
+		SetDefaultView(_dt);
+	}
 }
 
 void ChangePosCamera(int _lastCamPos, int _val)
