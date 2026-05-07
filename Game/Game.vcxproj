@@ -48,7 +48,7 @@
     <ClCompile Include="CjsonB.c" />
     <ClCompile Include="Common.c" />
     <ClCompile Include="Elevator.c" />
-    <ClCompile Include="Ennemy.c" />
+    <ClCompile Include="Enemy.c" />
     <ClCompile Include="EntityManager.c" />
     <ClCompile Include="Game.c" />
     <ClCompile Include="GameOver.c" />

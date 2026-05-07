@@ -4,30 +4,28 @@ Backup backup;
 
 void LoadBackup(void)
 {
-	FILE* file;
-	if (fopen_s(&file, "Game.sav", "r") != 0)
+	int file = open("Game.sav", 0, 0644);
+	if (file == -1)
 	{
 		return;
 	}
-
-	fread(&backup, sizeof(Backup), 3, file);
+	read(file, &backup, sizeof(Backup));
 	if (backup.valueFloat[LIGHT_LEVEL] < 0.25f || backup.valueFloat[LIGHT_LEVEL] > 1.f)
 	{
 		backup.valueFloat[LIGHT_LEVEL] = 1.f;
 	}
-	fclose(file);
+	close(file);
 }
 
 void SaveBackup(void)
 {
-	FILE* file;
-	if (fopen_s(&file, "Game.sav", "w") != 0)
+	int file = open("Game.sav",1, 0644);
+	if (file == -1)
 	{
 		return;
 	}
-
-	fwrite(&backup, sizeof(Backup), 3, file);
-	fclose(file);
+	write(file, &backup, sizeof(Backup));
+	close(file);
 }
 
 float GetFloatFromSave(FloatSave _index)
