@@ -38,6 +38,20 @@ int enemyZone;
 
 void LoadEnemy(void)
 {
+	listEnnemy = 0;
+	ennemyEntity[ALEATORY];
+	mapData = 0;
+	aStarMap = 0;
+	listeWait = 0;
+	sprite = 0;
+	texture = 0;
+	tableau = (Tableau){ 0 };
+	enemyZone = 0;
+	for (int i = 0; i < ALEATORY; i++)
+	{
+		ennemyEntity[i] = (EnnemyEntity){ 0 };
+	}
+
 	listEnnemy = CreateList();
 	listeWait = CreateList();
 	if (!DEV_MODE)
@@ -47,7 +61,7 @@ void LoadEnemy(void)
 	else // charger les diférent type d'ennemy
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
-		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f,6);
+		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6);
 		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 		ennemyEntity[CROWLER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
@@ -104,7 +118,7 @@ void UpbdateEnemy2(float _dt)
 		}
 		elementActualy = elementActualy->next;
 	}
-	
+
 	for (char i = 0; i < ALEATORY; i++)
 	{
 		tableau.new[i] = sfTrue;
@@ -170,7 +184,7 @@ void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy)
 	}
 	CalculMoveEnemy(_dt, _enemy);
 	UpdateColisionEnemy(_enemy);
-	
+
 }
 
 void UpdateColisionEnemy(Ennemy* _enemy)
@@ -1094,7 +1108,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			effectGelEnemy(_index, 2, 5);
 			break;
 		case LIGHT:
-			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure+1);
+			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure + 1);
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);

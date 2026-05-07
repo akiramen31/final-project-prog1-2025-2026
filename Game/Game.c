@@ -19,6 +19,7 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	game.timerRoomPause = PAUSE_ROOM_DURATION;
 
+	LoadCamera();
 	LoadParallax();
 	LoadPlayer();
 	LoadBoss();
@@ -88,7 +89,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 	{
 	case sfKeyEscape:
 		SetGameState(MENU);
-		break;
+		return;
 	default:
 		break;
 	}

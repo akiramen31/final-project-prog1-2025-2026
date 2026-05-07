@@ -4,6 +4,7 @@ PauseMenu pauseMenu;
 
 void LoadGUI()
 {
+	pauseMenu = (PauseMenu){ 0 };
 	pauseMenu.background = CreateSprite(GetAsset("Assets/Sprites/Pause_background.png"), (sfVector2f){SCREEN_WIDTH/2,  SCREEN_HEIGHT/2}, 8.f, 10);
 	sfSprite_setOrigin(pauseMenu.background, (sfVector2f){0});
 	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
