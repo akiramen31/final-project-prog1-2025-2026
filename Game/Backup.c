@@ -22,7 +22,17 @@ void SaveBackup(void)
 	int file = open("Game.sav",1, 0644);
 	if (file == -1)
 	{
-		return;
+		file = open("Game.sav", 65, 0644);
+		if (file == -1)
+		{
+			return;
+		}
+		close(file);
+		file = open("Game.sav", 1, 0644);
+		if (file == -1)
+		{
+			return;
+		}
 	}
 	write(file, &backup, sizeof(Backup));
 	close(file);
