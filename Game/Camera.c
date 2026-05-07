@@ -1,15 +1,20 @@
 #include "Camera.h"
 #include "Parallax.h"
 
-int CamPositonName;
-int LastCamPositonName;
-int index;
-float cameraZoom;
-float cameraNewZoom;
+Camera camera;
 
 void UpdatePositionCameraLevel1(float _dt);
 void UpdatePositionCameraLevel2(float _dt);
 void UpdatePositionCameraLevel3(float _dt);
+
+void LoadCamera(void)
+{
+	camera.positionName = 0;
+	camera.lastPositionName = 0;
+	camera.index = 0;
+	camera.zoom = 0;
+	camera.newZoom = 0;
+}
 
 void ChangePosCamera(int _lastCamPos, int _val);
 
@@ -33,23 +38,23 @@ void UpdateCamera(float _dt)
 		break;
 	}
 
-	if (cameraZoom != cameraNewZoom)
+	if (camera.zoom != camera.newZoom)
 	{
-		if (cameraZoom > cameraNewZoom)
+		if (camera.zoom > camera.newZoom)
 		{
-			cameraZoom -= CAMERA_ZOOM_SPEED * _dt;
+			camera.zoom -= CAMERA_ZOOM_SPEED * _dt;
 		}
 		else
 		{
-			cameraZoom += CAMERA_ZOOM_SPEED * _dt;
+			camera.zoom += CAMERA_ZOOM_SPEED * _dt;
 		}
 
-		if (cameraZoom < cameraNewZoom + CAMERA_ZOOM_LOCK && cameraZoom > cameraNewZoom - CAMERA_ZOOM_LOCK)
+		if (camera.zoom < camera.newZoom + CAMERA_ZOOM_LOCK && camera.zoom > camera.newZoom - CAMERA_ZOOM_LOCK)
 		{
-			cameraZoom = cameraNewZoom;
+			camera.zoom = camera.newZoom;
 		}
 	}
-	SetViewZoom(cameraZoom);
+	SetViewZoom(camera.zoom);
 	SizeParallaxToCamera();
 }
 
@@ -68,8 +73,8 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	sfVector2f move = { 0 };
 
 	sfVector2f speed;
-	//if (CamPositonName == 0)
-	if (LastCamPositonName == CamPositonName)
+	//if (camera.positionName == 0)
+	if (camera.lastPositionName == camera.positionName)
 	{
 		speed.x = CAMERA_SPEED_ON_PLAYER_X;
 		speed.y = CAMERA_SPEED_ON_PLAYER_Y;
@@ -118,7 +123,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	if (POW2(move.x) < CAMERA_SPEED_LOCK && POW2(move.y) < CAMERA_SPEED_LOCK)
 	{
 		SetViewCenter(_pos);
-		LastCamPositonName = CamPositonName;
+		camera.lastPositionName = camera.positionName;
 	}
 	else
 	{
@@ -132,53 +137,53 @@ void UpdatePositionCameraLevel1(float _dt)
 	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
-	if (area != NULL)
+	if (area)
 	{
 		sfVector2f pos = { 0 };
 
-		//if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
-		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
+		if (sfFloatRect_intersects(&hitbox, &area[camera.index].hitbox, NULL) && camera.positionName != 0)
+		//if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
 		{
-			switch (CamPositonName)
+			switch (camera.positionName)
 			{
 			case 1:
-				cameraNewZoom = 0.2f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.2f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 			case 2:
-				cameraNewZoom = 0.35f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.35f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 			case 3:
-				cameraNewZoom = 0.25f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.25f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 				//for biggest room
 			case 4:
-				cameraNewZoom = 0.3f;
-				if (area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				camera.newZoom = 0.3f;
+				if (area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3;
 				}
-				else if (area[index].hitbox.left + area[index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				else if (area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3;
 				}
 				else
 				{
 					pos.x = hitbox.left + hitbox.width / 2;
 				}
 
-				if (area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
+				if (area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3;
 				}
-				else if (area[index].hitbox.top + area[index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
+				else if (area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3;
 				}
 				else
 				{
@@ -187,9 +192,9 @@ void UpdatePositionCameraLevel1(float _dt)
 				break;
 				//for boss room
 			case 5:
-				cameraNewZoom = 0.42f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.42f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 			default:
 				pos = GetPlayerPosition();
@@ -218,9 +223,9 @@ void UpdatePositionCameraLevel2(float _dt)
 	{
 		sfVector2f pos = { 0 };
 
-		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
+		if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
 		{
-			switch (CamPositonName)
+			switch (camera.positionName)
 			{
 				//for litle room
 			case 1:
@@ -235,9 +240,9 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 16:
 			case 19:
 			case 26:
-				cameraNewZoom = 0.2f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.2f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 				//for bigger room
 			case 5:
@@ -247,9 +252,9 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 22:
 			case 23:
 			case 25:
-				cameraNewZoom = 0.3f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.3f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 				// for tall room
 			case 2:
@@ -261,15 +266,15 @@ void UpdatePositionCameraLevel2(float _dt)
 			case 24:
 			case 31:
 			case 32:
-				cameraNewZoom = 0.3f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				if (area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
+				camera.newZoom = 0.3f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				if (area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3;
 				}
-				else if (area[index].hitbox.top + area[index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
+				else if (area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3;
 				}
 				else
 				{
@@ -279,44 +284,44 @@ void UpdatePositionCameraLevel2(float _dt)
 				//for wide room
 			case 27:
 			case 29:
-				cameraNewZoom = 0.3f;
-				if (area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				camera.newZoom = 0.3f;
+				if (area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3;
 				}
-				else if (area[index].hitbox.left + area[index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				else if (area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3;
 				}
 				else
 				{
 					pos.x = hitbox.left + hitbox.width / 2;
 				}
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 				//for biggest room
 			case 28:
-				cameraNewZoom = 0.3f;
-				if (area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
+				camera.newZoom = 0.3f;
+				if (area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3 <= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width - area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width - area[camera.index].hitbox.width / 3;
 				}
-				else if (area[index].hitbox.left + area[index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
+				else if (area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3 >= hitbox.left + hitbox.width / 2)
 				{
-					pos.x = area[index].hitbox.left + area[index].hitbox.width / 3;
+					pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 3;
 				}
 				else
 				{
 					pos.x = hitbox.left + hitbox.width / 2;
 				}
 
-				if (area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
+				if (area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3 <= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 3;
 				}
-				else if (area[index].hitbox.top + area[index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
+				else if (area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3 >= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height / 3;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 3;
 				}
 				else
 				{
@@ -325,9 +330,9 @@ void UpdatePositionCameraLevel2(float _dt)
 				break;
 				//for boss room
 			case 30:
-				cameraNewZoom = 0.42f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				pos.y = area[index].hitbox.top + area[index].hitbox.height / 2;
+				camera.newZoom = 0.42f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
 				break;
 			default:
 				pos = GetPlayerPosition();
@@ -356,20 +361,20 @@ void UpdatePositionCameraLevel3(float _dt)
 	{
 		sfVector2f pos = { 0 };
 
-		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
+		if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
 		{
-			switch (CamPositonName)
+			switch (camera.positionName)
 			{
 			case 1:
-				cameraNewZoom = 0.42f;
-				pos.x = area[index].hitbox.left + area[index].hitbox.width / 2;
-				if (area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 5 <= hitbox.top + hitbox.height / 2)
+				camera.newZoom = 0.42f;
+				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
+				if (area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 5 <= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height - area[index].hitbox.height / 5;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height - area[camera.index].hitbox.height / 5;
 				}
-				else if (area[index].hitbox.top + area[index].hitbox.height / 5 >= hitbox.top + hitbox.height / 2)
+				else if (area[camera.index].hitbox.top + area[camera.index].hitbox.height / 5 >= hitbox.top + hitbox.height / 2)
 				{
-					pos.y = area[index].hitbox.top + area[index].hitbox.height / 5;
+					pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 5;
 				}
 				else
 				{
@@ -396,33 +401,33 @@ void UpdatePositionCameraLevel3(float _dt)
 
 void ChangePosCamera(int _lastCamPos, int _val)
 {
-	CamPositonName = _lastCamPos;
-	index = _val;
+	camera.positionName = _lastCamPos;
+	camera.index = _val;
 }
 
 void SetDefaultView(float _dt)
 {
 	sfVector2f pos = GetPlayerPosition();
 	MoveViewSlow((sfVector2f) { pos.x, pos.y - TILE_SIZE * 3 }, _dt);
-	cameraNewZoom = CAMERA_DEFAULT_ZOOM;
-	//cameraNewZoom = 5.f;
+	camera.newZoom = CAMERA_DEFAULT_ZOOM;
+	//camera.newZoom = 5.f;
 	ChangePosCamera(0, 0);
 }
 
 float GetCameraZoom(void)
 {
-	return cameraZoom;
+	return camera.zoom;
 }
 
 void SetCameraZoom(float zoom)
 {
-	cameraZoom = zoom;
-	cameraNewZoom = zoom;
+	camera.zoom = zoom;
+	camera.newZoom = zoom;
 }
 
 sfBool PauseGameCameraMoveRoom(void)
 {
-	if (cameraZoom != cameraNewZoom || LastCamPositonName != CamPositonName)
+	if (camera.zoom != camera.newZoom || camera.lastPositionName != camera.positionName)
 	{
 		return sfTrue;
 	}

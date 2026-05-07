@@ -26,8 +26,8 @@
 #define ARENA_CENTER 8671.f
 #define ARENA_ENTRY 8290.f
 
-#define ARENA_LIMITE_LEFT 8451.f
-#define ARENA_LIMITE_RIGHT 8891.f
+#define ARENA_LIMITE_LEFT 8351.f
+#define ARENA_LIMITE_RIGHT 8991.f
 
 typedef enum PlayerPositionToBoss
 {

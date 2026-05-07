@@ -51,7 +51,7 @@ typedef struct SteamAxe
 
 typedef struct SecondaryData
 {
-	Drone droneList[DRONE_MAX];
+	Drone droneList[PLAYER_DRONE_MAX];
 	ColdBreath coldBreath;
 	SecondaryType secondaryType;
 	sfTexture* droneTexture;

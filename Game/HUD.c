@@ -5,6 +5,7 @@ HUD hud;
 
 void LoadHUD()
 {
+	hud = (HUD){ 0 };
 	hud.gauge = CreateSprite(GetAsset("Assets/Sprites/gauge.png"), (sfVector2f) { 1710, -10 }, 5.f, -10.f);
 	sfSprite_setTextureRect(hud.gauge, (sfIntRect) { 0, 0, 32, 32 });
 

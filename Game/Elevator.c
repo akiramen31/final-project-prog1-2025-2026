@@ -4,6 +4,7 @@
 
 Elevator elevatorList[2] = { 0 };
 int numElevator;
+int val = 0;
 
 void LoadElevatorLevel1(void);
 void LoadElevatorLevel2(void);
@@ -11,10 +12,12 @@ void LoadElevatorLevel3(void);
 void CreateElevator(void);
 void SecurityElevator(sfVector2f _posPlayer);
 
-int val = 0;
-
 void LoadElevator(void)
 {
+	elevatorList[1] = elevatorList[0] = (Elevator){ 0 };
+	numElevator = 0;
+	val = 0;
+
 	MapState map = GetCurrentMap();
 
 	GetAsset("Assets/Sprites/Elevator.png");

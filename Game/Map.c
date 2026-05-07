@@ -22,9 +22,7 @@ void CreateRectVisible(InfoZone* _infoZone, int _count);
 
 void LoadMap()
 {
-	int temp = map.state;
 	map = (Map){ 0 };
-	map.state = temp;
 
 	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);

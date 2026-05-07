@@ -138,4 +138,4 @@ sfRenderWindow* GetRenderWindow(void);
 void ChangeFullSceen(void);
 sfVector2f GetMousePositionToOrigin(void);
 sfBool CompareIntRect(sfIntRect _intRect1, sfIntRect _intRect2);
-#endif // !ENTITY_MANAGER_H
+#endif //!ENTITY_MANAGER_H
