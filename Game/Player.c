@@ -100,6 +100,9 @@ void UpdatePlayer(float _dt)
 		posFly = GetPlayerPosition();
 
 		int flySpeed = 500;
+
+		SetViewCenter(GetPlayerPosition());
+
 		if (IfControlKeyPressed(KEY_RIGHT))
 		{
 			posFly.x += flySpeed * _dt;
