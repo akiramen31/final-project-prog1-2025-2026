@@ -87,6 +87,7 @@ void LoadDangerZone(void)
 		SetSpriteOriginMiddle(dangerZoneList[i].sprite);
 		dangerZoneList[i].isShowed = sfFalse;
 		sfVector2f missilePosition = { 0 };
+
 	}
 }
 
@@ -727,3 +728,4 @@ void DeleteDangerZone(unsigned _index)
 	dangerZoneList[_index].isShowed = sfFalse;
 	return;
 }
+

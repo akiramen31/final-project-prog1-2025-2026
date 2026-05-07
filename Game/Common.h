@@ -65,6 +65,13 @@ typedef enum AttackType
 	HEAVY
 }AttackType;
 
+typedef enum ArmorType
+{
+	LIGHT_ARMOR,
+	MEDIUM_ARMOR,
+	HEAVY_ARMOR
+}ArmorType;
+
 typedef struct ShooterType
 {
 	float weaponPos;
