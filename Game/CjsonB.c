@@ -1,6 +1,6 @@
 #include "CjsonB.h"
 
-#if 0
+#if 1
 #define START_ALLOC(size) VirtualAlloc(0, size, 0x3000, 4);
 #define FREE_ALLOC(ptr) VirtualFree(ptr, 0, 0x8000);
 #define ALLOC(_size) allocationFree; allocationFree += _size; allocCount += _size;

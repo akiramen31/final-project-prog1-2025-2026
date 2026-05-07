@@ -1,5 +1,5 @@
 #include "Projectiles.h"
-#include "Ennemy.h"
+#include "Enemy.h"
 #include "Boss.h"
 #include "Player.h"
 #include "Elevator.h"
