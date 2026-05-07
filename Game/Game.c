@@ -2,7 +2,7 @@
 #include "GUI.h"
 #include "HUD.h"
 #include "Player.h"
-#include "Ennemy.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Camera.h"
 #include "Boss.h"

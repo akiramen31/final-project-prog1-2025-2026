@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Box.h"
-#include "Ennemy.h"
+#include "Enemy.h"
 #include "Elevator.h"
 #include "Boss.h"
 Player player;

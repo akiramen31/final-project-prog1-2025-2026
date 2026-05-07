@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "Ennemy.h"
+#include "Enemy.h"
 #include "CjsonB.h"
 #include "Boss.h"
 #include "Parallax.h"
@@ -22,7 +22,9 @@ void CreateRectVisible(InfoZone* _infoZone, int _count);
 
 void LoadMap()
 {
+	int temp = map.state;
 	map = (Map){ 0 };
+	map.state = temp;
 
 	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
@@ -70,7 +72,7 @@ void LoadMap()
 		CleanupCjsonB(cjson);
 	}
 
-#if DEV_PIERRE_ENEMY && DEV_ENNEMY
+#if DEV_PIERRE_ENEMY && DEV_ENEMY
 	LoadEnemy();
 #else
 	ResetEnemy();
@@ -165,7 +167,7 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
-			if (DEV_ENNEMY)
+			if (DEV_ENEMY)
 			{
 				for (int j = 0; j < map.data.trigerCount; j++)
 				{

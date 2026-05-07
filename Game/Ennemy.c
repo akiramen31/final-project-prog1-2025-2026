@@ -1,16 +1,16 @@
-#include "Ennemy.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Projectiles.h"
 
-#define INIT_STRUCT_ENEMY_ENTITY(type,ennemydata, isJetpack, jetpack,move, state, timer, timerTir, powerGel, timerGel, region)(EnnemyEntity) {type,ennemydata, isJetpack, jetpack, move, state, timer, timerTir, powerGel, timerGel, region}
-#define INIT_STRUCT_ENEMY_DATA(life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor) (EnnemyData) {life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor}
+#define INIT_STRUCT_ENEMY_ENTITY(type,enemydata, isJetpack, jetpack,move, state, timer, timerTir, powerGel, timerGel, region)(EnemyEntity) {type,enemydata, isJetpack, jetpack, move, state, timer, timerTir, powerGel, timerGel, region}
+#define INIT_STRUCT_ENEMY_DATA(life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor) (EnemyData) {life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor}
 #define INIT_STRUCT_ENEMY_JETPACK( trust, consomation, life) (Jetpack) {trust, consomation, life}
 
-void UpdateColisionEnemy(Ennemy* _enemy);
-void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy);
-void CreateEnemyRandom(Ennemy* _ennemy);
-void CreateEnemy(Ennemy* _ennemy, EnemyType _type);
-void CalculMoveEnemy(float _dt, Ennemy* _enemy);
+void UpdateColisionEnemy(Enemy* _enemy);
+void UpdateEnemyI(float _dt, int _index, Enemy* _enemy);
+void CreateEnemyRandom(Enemy* _enemy);
+void CreateEnemy(Enemy* _enemy, EnemyType _type);
+void CalculMoveEnemy(float _dt, Enemy* _enemy);
 ActionDemander AStar2(int _index, sfFloatRect _cible);
 float CalculResultAStar(Case _case);
 int MinResultCase(int _type);
@@ -23,10 +23,10 @@ sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
 sfBool PlayerVisibility(int _index);
 void shootPlayer(int _index);
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
-void EffectGelEnemy(Ennemy* _enemy, int _puissance, float _time);
+void EffectGelEnemy(Enemy* _enemy, int _puissance, float _time);
 
-List* listEnnemy;
-EnnemyEntity ennemyEntity[ALEATORY];
+List* listEnemy;
+EnemyEntity enemyEntity[ALEATORY];
 MapData* mapData;
 Case** aStarMap;
 List* listeWait;
@@ -39,7 +39,7 @@ int enemyZone;
 
 void LoadEnemy(void)
 {
-	listEnnemy = 0;
+	listEnemy = 0;
 	mapData = 0;
 	aStarMap = 0;
 	listeWait = 0;
@@ -49,59 +49,59 @@ void LoadEnemy(void)
 	enemyZone = 0;
 	for (int i = 0; i < ALEATORY; i++)
 	{
-		ennemyEntity[i] = (EnnemyEntity){ 0 };
+		enemyEntity[i] = (EnemyEntity){ 0 };
 	}
 
-	listEnnemy = CreateList();
+	listEnemy = CreateList();
 	listeWait = CreateList();
 	if (!DEV_MODE)
 	{
-		GetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY);
+		GetSaveTemp(enemyEntity, sizeof(EnemyEntity), ALEATORY);
 	}
-	else // charger les diférent type d'ennemy
+	else // charger les diférent type d'enemy
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
-		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, MEDIUM_ARMOR);
-		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		EnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, MEDIUM_ARMOR);
+		enemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, LIGHT_ARMOR);
-		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		enemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, HEAVY_ARMOR);
-		ennemyEntity[GROUND_HEAVY] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		enemyEntity[GROUND_HEAVY] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
-		/*ennemyEntity[CROWLER_SMALL].type = 0;
-		ennemyEntity[CROWLER_SMALL].ennemydata.life = 3.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[CROWLER_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[CROWLER_SMALL].ennemydata.energyRegen = 15.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.speedMax = 1.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[CROWLER_SMALL].ennemydata.nbCaseJump = 5;
-		ennemyEntity[CROWLER_SMALL].ennemydata.jumForce = ennemyEntity[CROWLER_SMALL].ennemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
+		/*enemyEntity[CROWLER_SMALL].type = 0;
+		enemyEntity[CROWLER_SMALL].enemydata.life = 3.f;
+		enemyEntity[CROWLER_SMALL].enemydata.energyMax = (float)MAX_ENRGIE;
+		enemyEntity[CROWLER_SMALL].enemydata.energy = (float)MAX_ENRGIE;
+		enemyEntity[CROWLER_SMALL].enemydata.energyRegen = 15.f;
+		enemyEntity[CROWLER_SMALL].enemydata.speedMax = 1.f;
+		enemyEntity[CROWLER_SMALL].enemydata.accelerationMax = 10.f;
+		enemyEntity[CROWLER_SMALL].enemydata.nbCaseJump = 5;
+		enemyEntity[CROWLER_SMALL].enemydata.jumForce = enemyEntity[CROWLER_SMALL].enemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
 
-		ennemyEntity[CROWLER_SMALL].isJetpack = sfTrue;
-		ennemyEntity[CROWLER_SMALL].jetpack.consomation = 500.f;
-		ennemyEntity[CROWLER_SMALL].jetpack.life = 5.f;
-		ennemyEntity[CROWLER_SMALL].jetpack.trust = 10.f;
+		enemyEntity[CROWLER_SMALL].isJetpack = sfTrue;
+		enemyEntity[CROWLER_SMALL].jetpack.consomation = 500.f;
+		enemyEntity[CROWLER_SMALL].jetpack.life = 5.f;
+		enemyEntity[CROWLER_SMALL].jetpack.trust = 10.f;
 
 
-		ennemyEntity[SOLDIER_SMALL].type = 1;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.life = 2.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.energyMax = (float)MAX_ENRGIE;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.energy = (float)MAX_ENRGIE;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.energyRegen = 15.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.speedMax = 1.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.accelerationMax = 10.f;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.nbCaseJump = 5;
-		ennemyEntity[SOLDIER_SMALL].ennemydata.jumForce = ennemyEntity[SOLDIER_SMALL].ennemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
+		enemyEntity[SOLDIER_SMALL].type = 1;
+		enemyEntity[SOLDIER_SMALL].enemydata.life = 2.f;
+		enemyEntity[SOLDIER_SMALL].enemydata.energyMax = (float)MAX_ENRGIE;
+		enemyEntity[SOLDIER_SMALL].enemydata.energy = (float)MAX_ENRGIE;
+		enemyEntity[SOLDIER_SMALL].enemydata.energyRegen = 15.f;
+		enemyEntity[SOLDIER_SMALL].enemydata.speedMax = 1.f;
+		enemyEntity[SOLDIER_SMALL].enemydata.accelerationMax = 10.f;
+		enemyEntity[SOLDIER_SMALL].enemydata.nbCaseJump = 5;
+		enemyEntity[SOLDIER_SMALL].enemydata.jumForce = enemyEntity[SOLDIER_SMALL].enemydata.nbCaseJump * TILE_SIZE / G / 5.5f;
 
-		ennemyEntity[SOLDIER_SMALL].isJetpack = sfTrue;
-		ennemyEntity[SOLDIER_SMALL].jetpack.consomation = 20.f;
-		ennemyEntity[SOLDIER_SMALL].jetpack.life = 5.f;
-		ennemyEntity[SOLDIER_SMALL].jetpack.trust = 20.f;*/
+		enemyEntity[SOLDIER_SMALL].isJetpack = sfTrue;
+		enemyEntity[SOLDIER_SMALL].jetpack.consomation = 20.f;
+		enemyEntity[SOLDIER_SMALL].jetpack.life = 5.f;
+		enemyEntity[SOLDIER_SMALL].jetpack.trust = 20.f;*/
 	}
-	//SetSaveTemp(ennemyEntity, sizeof(EnnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de ennemyEntity
+	//SetSaveTemp(enemyEntity, sizeof(EnemyEntity), ALEATORY); // a relancer 1 fois a chaque changement de enemyEntity
 	mapData = GetMapData(); // connaitre la taille de la map
 }
 
@@ -110,12 +110,12 @@ void UpdateEnemy(float _dt)
 	enemyZone = 0;
 	sfVector2f playerPos = GetPlayerPosition();
 
-	Element* elementActualy = listEnnemy->first;
+	Element* elementActualy = listEnemy->first;
 	int i = 0;
 	while (elementActualy)
 	{
-		Ennemy* enemy = elementActualy->value;
-		if (enemy->ennemyEntity.region.left + TILE_SIZE <= playerPos.x && enemy->ennemyEntity.region.left + TILE_SIZE + enemy->ennemyEntity.region.width - TILE_SIZE * 2 >= playerPos.x && enemy->ennemyEntity.region.top + TILE_SIZE <= playerPos.y && enemy->ennemyEntity.region.top + TILE_SIZE + enemy->ennemyEntity.region.height - TILE_SIZE * 2 >= playerPos.y)
+		Enemy* enemy = elementActualy->value;
+		if (enemy->enemyEntity.region.left + TILE_SIZE <= playerPos.x && enemy->enemyEntity.region.left + TILE_SIZE + enemy->enemyEntity.region.width - TILE_SIZE * 2 >= playerPos.x && enemy->enemyEntity.region.top + TILE_SIZE <= playerPos.y && enemy->enemyEntity.region.top + TILE_SIZE + enemy->enemyEntity.region.height - TILE_SIZE * 2 >= playerPos.y)
 		{
 			UpdateEnemyI(_dt, i, enemy);
 			enemyZone++;
@@ -130,42 +130,42 @@ void UpdateEnemy(float _dt)
 	}
 }
 
-void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy)
+void UpdateEnemyI(float _dt, int _index, Enemy* _enemy)
 {
-	if (_enemy->ennemyEntity.timerGel > 0)
+	if (_enemy->enemyEntity.timerGel > 0)
 	{
-		_enemy->ennemyEntity.timerGel -= _dt;
-		_dt = _dt / _enemy->ennemyEntity.powerGel;
-		if (_enemy->ennemyEntity.timerGel < 0)
+		_enemy->enemyEntity.timerGel -= _dt;
+		_dt = _dt / _enemy->enemyEntity.powerGel;
+		if (_enemy->enemyEntity.timerGel < 0)
 		{
-			_enemy->ennemyEntity.timerGel = 0;
+			_enemy->enemyEntity.timerGel = 0;
 		}
 	}
-	_enemy->ennemyEntity.timer += _dt;
-	_enemy->ennemyEntity.timerTir += _dt;
-	if (_enemy->ennemyEntity.ennemydata.energy < _enemy->ennemyEntity.ennemydata.energyMax)
+	_enemy->enemyEntity.timer += _dt;
+	_enemy->enemyEntity.timerTir += _dt;
+	if (_enemy->enemyEntity.enemydata.energy < _enemy->enemyEntity.enemydata.energyMax)
 	{
-		_enemy->ennemyEntity.ennemydata.energy += _enemy->ennemyEntity.ennemydata.energyRegen * _dt;
+		_enemy->enemyEntity.enemydata.energy += _enemy->enemyEntity.enemydata.energyRegen * _dt;
 	}
 	else
 	{
-		_enemy->ennemyEntity.ennemydata.energy = _enemy->ennemyEntity.ennemydata.energyMax;
+		_enemy->enemyEntity.enemydata.energy = _enemy->enemyEntity.enemydata.energyMax;
 	}
 	if (PlayerVisibility(_index))
 	{
-		if (_enemy->ennemyEntity.timerTir >= 1)
+		if (_enemy->enemyEntity.timerTir >= 1)
 		{
-			_enemy->ennemyEntity.timerTir = 0;
+			_enemy->enemyEntity.timerTir = 0;
 			shootPlayer(_index);
 		}
 		_enemy->actiondemander = (ActionDemander){ 0 };
 	}
 	else
 	{
-		if (_enemy->ennemyEntity.timer >= TIMER_ASTAR)
+		if (_enemy->enemyEntity.timer >= TIMER_ASTAR)
 		{
 			_enemy->actiondemander = AStar2(_index, GetPlayerRect());
-			_enemy->ennemyEntity.timer = 0;
+			_enemy->enemyEntity.timer = 0;
 		}
 	}
 	CalculMoveEnemy(_dt, _enemy);
@@ -173,21 +173,21 @@ void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy)
 
 }
 
-void UpdateColisionEnemy(Ennemy* _enemy)
+void UpdateColisionEnemy(Enemy* _enemy)
 {
 	sfFloatRect enemyRect = sfSprite_getGlobalBounds(_enemy->sprite);
-	sfFloatRect realRegion = { _enemy->ennemyEntity.region.left + TILE_SIZE ,_enemy->ennemyEntity.region.top + TILE_SIZE , _enemy->ennemyEntity.region.width - TILE_SIZE * 2, _enemy->ennemyEntity.region.height - TILE_SIZE * 2 };
+	sfFloatRect realRegion = { _enemy->enemyEntity.region.left + TILE_SIZE ,_enemy->enemyEntity.region.top + TILE_SIZE , _enemy->enemyEntity.region.width - TILE_SIZE * 2, _enemy->enemyEntity.region.height - TILE_SIZE * 2 };
 
 	sfVector2f collision = Colision(sfSprite_getGlobalBounds(_enemy->sprite), AXIS_BOTH);
 	collision.y += CollisionPassThrough(sfSprite_getGlobalBounds(_enemy->sprite)).y;
 	sfSprite_move(_enemy->sprite, collision);
 	if (collision.x)
 	{
-		_enemy->ennemyEntity.move.x = 0;
+		_enemy->enemyEntity.move.x = 0;
 	}
 	if (collision.y)
 	{
-		_enemy->ennemyEntity.move.y = 0;
+		_enemy->enemyEntity.move.y = 0;
 	}
 
 	if (realRegion.left > enemyRect.left)
@@ -208,74 +208,74 @@ void UpdateColisionEnemy(Ennemy* _enemy)
 	}
 }
 
-void CreateEnemyRandom(Ennemy* _ennemy)
+void CreateEnemyRandom(Enemy* _enemy)
 {
 	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
 	{
 	case GROUND_HEAVY:
-		CreateEnemy(_ennemy, GROUND_HEAVY);
+		CreateEnemy(_enemy, GROUND_HEAVY);
 		break;
 	case SOLDIER_SMALL:
-		CreateEnemy(_ennemy, SOLDIER_SMALL);
+		CreateEnemy(_enemy, SOLDIER_SMALL);
 		break;
 	case DRONE_SMALL:
-		CreateEnemy(_ennemy, DRONE_SMALL);
+		CreateEnemy(_enemy, DRONE_SMALL);
 		break;
 	default:
-		CreateEnemy(_ennemy, DRONE_SMALL);
+		CreateEnemy(_enemy, DRONE_SMALL);
 		break;
 	}
 }
 
-void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
+void CreateEnemy(Enemy* _enemy, EnemyType _type)
 {
-	*_ennemy = (Ennemy){ 0 };
-	//création et aplication des donné de l'ennemy
-	_ennemy->ennemyEntity.type = _type;
-	_ennemy->ennemyEntity.ennemydata = ennemyEntity[_type].ennemydata;
-	_ennemy->ennemyEntity.move = (sfVector2f){ 0,0 };
-	_ennemy->ennemyEntity.timer = 0.f;
+	*_enemy = (Enemy){ 0 };
+	//création et aplication des donné de l'enemy
+	_enemy->enemyEntity.type = _type;
+	_enemy->enemyEntity.enemydata = enemyEntity[_type].enemydata;
+	_enemy->enemyEntity.move = (sfVector2f){ 0,0 };
+	_enemy->enemyEntity.timer = 0.f;
 
-	_ennemy->ennemyEntity.isJetpack = ennemyEntity[_type].isJetpack;
-	if (_ennemy->ennemyEntity.isJetpack)
+	_enemy->enemyEntity.isJetpack = enemyEntity[_type].isJetpack;
+	if (_enemy->enemyEntity.isJetpack)
 	{
-		_ennemy->ennemyEntity.jetpack = ennemyEntity[_type].jetpack;
+		_enemy->enemyEntity.jetpack = enemyEntity[_type].jetpack;
 	}
 
 	switch (_type)
 	{
 	case DRONE_SMALL:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_enemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		break;
 	case GROUND_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_enemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		break;
 	case SOLDIER_SMALL:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
+		_enemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		break;
 	default:
 		break;
 	}
 
-	SetSpriteOriginFoot(_ennemy->sprite);
+	SetSpriteOriginFoot(_enemy->sprite);
 }
 
-void CalculMoveEnemy(float _dt, Ennemy* _enemy)
+void CalculMoveEnemy(float _dt, Enemy* _enemy)
 {
 	// 1 = droite / -1 = gauche
 	char droitOuGauche = _enemy->actiondemander.droite - _enemy->actiondemander.gauche;
 	if (droitOuGauche)
 	{
-		_enemy->ennemyEntity.move.x += droitOuGauche * _enemy->ennemyEntity.ennemydata.accelerationMax * _dt;
-		if (droitOuGauche * _enemy->ennemyEntity.move.x > droitOuGauche * _enemy->ennemyEntity.ennemydata.speedMax)
+		_enemy->enemyEntity.move.x += droitOuGauche * _enemy->enemyEntity.enemydata.accelerationMax * _dt;
+		if (droitOuGauche * _enemy->enemyEntity.move.x > droitOuGauche * _enemy->enemyEntity.enemydata.speedMax)
 		{
-			_enemy->ennemyEntity.move.x = droitOuGauche * _enemy->ennemyEntity.ennemydata.speedMax;
+			_enemy->enemyEntity.move.x = droitOuGauche * _enemy->enemyEntity.enemydata.speedMax;
 		}
 	}
 	else
 	{
-		_enemy->ennemyEntity.move.x = 0;
+		_enemy->enemyEntity.move.x = 0;
 	}
 
 	if (_enemy->actiondemander.Saut)
@@ -286,37 +286,37 @@ void CalculMoveEnemy(float _dt, Ennemy* _enemy)
 		collision.y += CollisionPassThrough(enemyRect).y;
 		if (collision.y > -2 && collision.y < 0)
 		{
-			_enemy->ennemyEntity.move.y = -_enemy->ennemyEntity.ennemydata.jumForce;
+			_enemy->enemyEntity.move.y = -_enemy->enemyEntity.enemydata.jumForce;
 		}
-		else if (0 && _enemy->ennemyEntity.move.y >= 0 && _enemy->ennemyEntity.isJetpack && _enemy->ennemyEntity.jetpack.consomation * _dt < _enemy->ennemyEntity.ennemydata.energy)
+		else if (0 && _enemy->enemyEntity.move.y >= 0 && _enemy->enemyEntity.isJetpack && _enemy->enemyEntity.jetpack.consomation * _dt < _enemy->enemyEntity.enemydata.energy)
 		{
-			_enemy->ennemyEntity.move.y -= _enemy->ennemyEntity.ennemydata.jumForce;
-			_enemy->ennemyEntity.ennemydata.energy -= _enemy->ennemyEntity.jetpack.consomation * _dt;
+			_enemy->enemyEntity.move.y -= _enemy->enemyEntity.enemydata.jumForce;
+			_enemy->enemyEntity.enemydata.energy -= _enemy->enemyEntity.jetpack.consomation * _dt;
 		}
 	}
-	_enemy->ennemyEntity.move.y += G * _dt;
+	_enemy->enemyEntity.move.y += G * _dt;
 
-	if (_enemy->ennemyEntity.move.y > _enemy->ennemyEntity.ennemydata.jumForce)
+	if (_enemy->enemyEntity.move.y > _enemy->enemyEntity.enemydata.jumForce)
 	{
-		_enemy->ennemyEntity.move.y = _enemy->ennemyEntity.ennemydata.jumForce;
+		_enemy->enemyEntity.move.y = _enemy->enemyEntity.enemydata.jumForce;
 	}
 
-	sfSprite_move(_enemy->sprite, _enemy->ennemyEntity.move);
+	sfSprite_move(_enemy->sprite, _enemy->enemyEntity.move);
 
 }
 
 ActionDemander AStar2(int _index, sfFloatRect _cible)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
-	if (ennemy->ennemyEntity.region.top != tableau.region[ennemy->ennemyEntity.type].top || ennemy->ennemyEntity.region.left != tableau.region[ennemy->ennemyEntity.type].left)
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
+	sfVector2u gridSize = { enemy->enemyEntity.region.width / TILE_SIZE , enemy->enemyEntity.region.height / TILE_SIZE };
+	if (enemy->enemyEntity.region.top != tableau.region[enemy->enemyEntity.type].top || enemy->enemyEntity.region.left != tableau.region[enemy->enemyEntity.type].left)
 	{
 		// liberer lancienne GRID
-		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
+		tableau.region[enemy->enemyEntity.type] = enemy->enemyEntity.region;
 
-		FreeGrid(tableau.grid[ennemy->ennemyEntity.type]);
+		FreeGrid(tableau.grid[enemy->enemyEntity.type]);
 		FreeGrid(tableau.collision);
-		tableau.grid[ennemy->ennemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
+		tableau.grid[enemy->enemyEntity.type] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
 
 
@@ -330,12 +330,12 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 				else
 				{
-					sfVector2f reaction = Colision((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+					sfVector2f reaction = Colision((sfFloatRect) { enemy->enemyEntity.region.left + x * TILE_SIZE, enemy->enemyEntity.region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
 					if (reaction.x || reaction.y)
 					{
 						grid[y][x] = 2;
 					}
-					else if (CollisionPassThrough((sfFloatRect) { ennemy->ennemyEntity.region.left + x * TILE_SIZE, ennemy->ennemyEntity.region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+					else if (CollisionPassThrough((sfFloatRect) { enemy->enemyEntity.region.left + x * TILE_SIZE, enemy->enemyEntity.region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
 					{
 						grid[y][x] = 1;
 					}
@@ -358,87 +358,87 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 	};
 
 	sfFloatRect bouns = GetBounsEnemy(_index);
-	bouns.left -= ennemy->ennemyEntity.region.left;
-	bouns.top -= ennemy->ennemyEntity.region.top + 1;
-	sfIntRect bounsEnnemy = FloatRectIntoIntRect(bouns);
-	_cible.left -= ennemy->ennemyEntity.region.left;
-	_cible.top -= ennemy->ennemyEntity.region.top + 1;
+	bouns.left -= enemy->enemyEntity.region.left;
+	bouns.top -= enemy->enemyEntity.region.top + 1;
+	sfIntRect bounsEnemy = FloatRectIntoIntRect(bouns);
+	_cible.left -= enemy->enemyEntity.region.left;
+	_cible.top -= enemy->enemyEntity.region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRect(_cible);
 	// problème colision plafon
-	while (bounsCible.top + bounsEnnemy.height < 1)
+	while (bounsCible.top + bounsEnemy.height < 1)
 	{
 		bounsCible.top += 1;
 	}
 	//problème collision mur de droite
-	while (bounsCible.left + bounsEnnemy.width > gridSize.x - 1)
+	while (bounsCible.left + bounsEnemy.width > gridSize.x - 1)
 	{
 		bounsCible.left -= 1;
 	}
 
 
-	if (tableau.new[ennemy->ennemyEntity.type])
+	if (tableau.new[enemy->enemyEntity.type])
 	{
-		for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+		for (int y = 0; y < (int) { enemy->enemyEntity.region.height / TILE_SIZE }; y++)
 		{
-			for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+			for (int x = 0; x < (int) { enemy->enemyEntity.region.width / TILE_SIZE }; x++)
 			{
-				tableau.grid[ennemy->ennemyEntity.type][y][x].direction = EMPTY_DIRECTION;
-				tableau.grid[ennemy->ennemyEntity.type][y][x].compteur = 0;
-				tableau.grid[ennemy->ennemyEntity.type][y][x].jumpForce = 0;
+				tableau.grid[enemy->enemyEntity.type][y][x].direction = EMPTY_DIRECTION;
+				tableau.grid[enemy->enemyEntity.type][y][x].compteur = 0;
+				tableau.grid[enemy->enemyEntity.type][y][x].jumpForce = 0;
 			}
 		}
 
-		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].compteur = 0;
-		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].jumpForce = 0;
-		tableau.grid[ennemy->ennemyEntity.type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
+		tableau.grid[enemy->enemyEntity.type][bounsCible.top][bounsCible.left].compteur = 0;
+		tableau.grid[enemy->enemyEntity.type][bounsCible.top][bounsCible.left].jumpForce = 0;
+		tableau.grid[enemy->enemyEntity.type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
 
 		sfVector2u caseGet = { bounsCible.left, bounsCible.top };
 		sfIntRect caseRecherche = { 0 };
 
-		tableau.new[ennemy->ennemyEntity.type] = sfFalse;
+		tableau.new[enemy->enemyEntity.type] = sfFalse;
 
 		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
 
 		while (GetListSize(listeWait) > 0)
 		{
 			// test sol
-			int min = MinResultCase(ennemy->ennemyEntity.type);
+			int min = MinResultCase(enemy->enemyEntity.type);
 			sfVector2u* temp = GetElement(listeWait, min)->value;
 			caseGet = *temp;
-			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsEnnemy.width,bounsEnnemy.height };
+			caseRecherche = (sfIntRect){ caseGet.x, caseGet.y + 1,bounsEnemy.width,bounsEnemy.height };
 			if (TestJump(caseRecherche))//si sur sol
 			{
 				//test gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test haut gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left + 1, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test bas gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
 					int compt = 1;
@@ -450,10 +450,10 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 						{
 							if (TestJump((sfIntRect) { caseRecherche.left - compt2 + 1, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 							{
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-									tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+									tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
 								AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 								temp = sfFalse;
 							}
@@ -469,36 +469,36 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 
 				//test Droite
-				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test haut droite
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION) 
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
 				}
 
 				//test bas droite
-				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
 					int compt = 1;
@@ -510,10 +510,10 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 						{
 							if (TestJump((sfIntRect) { caseRecherche.left + compt2 - 1, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 							{
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-									tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
-								tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+									tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
+								tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 1;
 								AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 								temp = sfFalse;
 							}
@@ -529,22 +529,22 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 
 				//test haut
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top - 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test Bas
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) == 1 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
 					sfBool temp = sfTrue;
 					char compt = 1;
@@ -552,9 +552,9 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					{
 						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt, caseRecherche.width, caseRecherche.height }))
 						{
-							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
+							tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+								tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+							tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
 							AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 							temp = sfFalse;
 						}
@@ -566,125 +566,125 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 			{
 
 				//test gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
 					TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test haut gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left + 1, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
-					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					(tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
 						TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test bas gauche
-				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction == UP_RIGHT &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].direction == UP_RIGHT &&
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test Droite
-				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
 					TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })
 					)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 				//test haut droite
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION &&
-					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION &&
+					(tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
 						TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
 					AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top + 1][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top + 1][caseRecherche.left].jumpForce = 0;
 				}
 
 				//test bas gauche
-				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnnemy.width ,bounsEnnemy.height - 1 };
+				caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction == UP_LEFT &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce &&
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].direction == UP_LEFT &&
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 2;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test haut
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width,bounsEnemy.height };
 				if (!TestColision(caseRecherche) &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
-					(tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					(tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce == 0 ||
 						TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width, caseRecherche.height })))
 				{
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-						tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+						tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].jumpForce = 0;
 					AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 				}
 
 				//test Bas
-				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
+				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnemy.width,bounsEnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_LEFT &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_RIGHT &&
-					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN)
+					tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_LEFT &&
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_RIGHT &&
+					tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].direction != DOWN)
 				{
 					sfBool temp = sfTrue;
-					char compt = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
+					char compt = tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
 					while (temp && compt <= JUMP_FORCE)
 					{
-						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt - tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce, caseRecherche.width, caseRecherche.height }))
+						if (TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + compt - tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].jumpForce, caseRecherche.width, caseRecherche.height }))
 						{
-							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
-								tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
-							tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
+							tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].compteur =
+								tableau.grid[enemy->enemyEntity.type][caseGet.y][caseGet.x].compteur + 1;
+							tableau.grid[enemy->enemyEntity.type][caseRecherche.top][caseRecherche.left].direction = UP;
 							AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
 							temp = sfFalse;
 						}
@@ -696,11 +696,11 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 		}
 		if (DEBUG_MODE_A_STAR)
 		{
-			for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+			for (int y = 0; y < (int) { enemy->enemyEntity.region.height / TILE_SIZE }; y++)
 			{
-				for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+				for (int x = 0; x < (int) { enemy->enemyEntity.region.width / TILE_SIZE }; x++)
 				{
-					if (!tableau.grid[ennemy->ennemyEntity.type][y][x].direction)
+					if (!tableau.grid[enemy->enemyEntity.type][y][x].direction)
 					{
 						if (tableau.collision[y][x])
 						{
@@ -708,22 +708,22 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 						}
 						else
 						{
-							printf("%d", tableau.grid[ennemy->ennemyEntity.type][y][x].direction);
+							printf("%d", tableau.grid[enemy->enemyEntity.type][y][x].direction);
 						}
 					}
 					else
 					{
-						printf("%d", tableau.grid[ennemy->ennemyEntity.type][y][x].direction);
+						printf("%d", tableau.grid[enemy->enemyEntity.type][y][x].direction);
 					}
 				}
 				printf("\n");
 			}
 			printf("\n\n\n");
-			for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
+			for (int y = 0; y < (int) { enemy->enemyEntity.region.height / TILE_SIZE }; y++)
 			{
-				for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
+				for (int x = 0; x < (int) { enemy->enemyEntity.region.width / TILE_SIZE }; x++)
 				{
-					if (!tableau.grid[ennemy->ennemyEntity.type][y][x].direction)
+					if (!tableau.grid[enemy->enemyEntity.type][y][x].direction)
 					{
 						if (tableau.collision[y][x])
 						{
@@ -736,7 +736,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 					}
 					else
 					{
-						printf("%2d/", tableau.grid[ennemy->ennemyEntity.type][y][x].compteur);
+						printf("%2d/", tableau.grid[enemy->enemyEntity.type][y][x].compteur);
 					}
 				}
 				printf("\n");
@@ -747,7 +747,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
-	switch (tableau.grid[ennemy->ennemyEntity.type][bounsEnnemy.top][bounsEnnemy.left].direction)
+	switch (tableau.grid[enemy->enemyEntity.type][bounsEnemy.top][bounsEnemy.left].direction)
 	{
 	case EMPTY_DIRECTION:
 		break;
@@ -873,35 +873,35 @@ sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 
 sfVector2f GetPositionEnemy(int _index)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	return sfSprite_getPosition(ennemy->sprite);
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
+	return sfSprite_getPosition(enemy->sprite);
 }
 
 sfFloatRect GetBounsEnemy(int _index)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	return sfSprite_getGlobalBounds(ennemy->sprite);
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
+	return sfSprite_getGlobalBounds(enemy->sprite);
 }
 
 int GetEnemyCount()
 {
-	return GetListSize(listEnnemy);
+	return GetListSize(listEnemy);
 }
 
 void SetPositionEnemy(sfVector2f _position, int _index)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	sfSprite_setPosition(ennemy->sprite, _position);
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
+	sfSprite_setPosition(enemy->sprite, _position);
 }
 
 void ResetEnemy(void)
 {
-	for (unsigned i = 0; i < GetListSize(listEnnemy); i++)
+	for (unsigned i = 0; i < GetListSize(listEnemy); i++)
 	{
-		Ennemy* ennemy = GetElement(listEnnemy, i)->value;
-		DestroyVisualEntity(ennemy->sprite);
+		Enemy* enemy = GetElement(listEnemy, i)->value;
+		DestroyVisualEntity(enemy->sprite);
 	}
-	RemoveList(listEnnemy);
+	RemoveList(listEnemy);
 
 	RemoveList(listeWait);
 	sfTexture_destroy(texture);
@@ -914,17 +914,17 @@ int GetEnemyZone(void)
 	return enemyZone;
 }
 
-void EffectGelEnemy(Ennemy* _enemy, int _puissance, float _time)
+void EffectGelEnemy(Enemy* _enemy, int _puissance, float _time)
 {
-	_enemy->ennemyEntity.powerGel = _puissance;
-	_enemy->ennemyEntity.timerGel = _time;
+	_enemy->enemyEntity.powerGel = _puissance;
+	_enemy->enemyEntity.timerGel = _time;
 }
 
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 {
 	int index = -1;
 	sfBool test = 1;
-	for (unsigned i = 0; i < GetListSize(listEnnemy); i++)
+	for (unsigned i = 0; i < GetListSize(listEnemy); i++)
 	{
 		if (index >= 0)
 		{
@@ -932,7 +932,7 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 			{
 				for (unsigned r = 0; r < GetListSize(_listeIgnore); r++)
 				{
-					int* temp = GetElement(listEnnemy, r)->value;
+					int* temp = GetElement(listEnemy, r)->value;
 					if (index == *temp)
 					{
 						test = 0;
@@ -966,7 +966,7 @@ sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect)
 
 sfBool PlayerVisibility(int _index)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
 
 	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
 
@@ -986,7 +986,7 @@ sfBool PlayerVisibility(int _index)
 
 void shootPlayer(int _index)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
 
 	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
 	sfVector2f posGun = (sfVector2f){ bounsEnemy.left + (bounsEnemy.width / 2),bounsEnemy.top + (bounsEnemy.height / 2) };
@@ -1008,27 +1008,27 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	_region.width += TILE_SIZE * 2;
 	_region.height += TILE_SIZE * 2;
 
-
-	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
-	Element* element = CreateElement(ennemy);
-	element->value = ennemy;
+	Enemy* enemy = Calloc(1, sizeof(Enemy));
+	Element* element = CreateElement(enemy);
+	element->value = enemy;
 
 	if (_type == ALEATORY)
 	{
 		_type = rand() % ALEATORY;
 	}
-	CreateEnemy(ennemy, _type);
+	CreateEnemy(enemy, _type);
 
-	ennemy->ennemyEntity.region = _region;
+	enemy->enemyEntity.region = _region;
 
-	InsertElement(listEnnemy, element, 0);
+	element->next = listEnemy->first;
+	listEnemy->first = element;
 	SetPositionEnemy(_position, 0);
 }
 
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque)
 {
-	Ennemy* enemy = GetElement(listEnnemy, _index)->value;
-	
+	Enemy* enemy = GetElement(listEnemy, _index)->value;
+
 	sfImage* colideur = sfTexture_copyToImage(sfSprite_getTexture(enemy->sprite));
 	sfColor pixelColor = sfImage_getPixel(colideur, (int)_touch.x, (int)_touch.y);
 	sfImage_destroy(colideur);
@@ -1045,38 +1045,38 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			EffectGelEnemy(enemy, 2, 5);
 			break;
 		case LIGHT:
-			enemy->ennemyEntity.ennemydata.life -= _degat / (enemy->ennemyEntity.ennemydata.armure + 1);
-			if (enemy->ennemyEntity.ennemydata.life < 0)
+			enemy->enemyEntity.enemydata.life -= _degat / (enemy->enemyEntity.enemydata.armure + 1);
+			if (enemy->enemyEntity.enemydata.life < 0)
 			{
 				DestroyVisualEntity(enemy->sprite);
 				Free(enemy);
-				RemoveElement(listEnnemy, _index);
+				RemoveElement(listEnemy, _index);
 			}
 			break;
 		case MEDIUM:
-			if (enemy->ennemyEntity.ennemydata.armure == 2)
+			if (enemy->enemyEntity.enemydata.armure == 2)
 			{
-				enemy->ennemyEntity.ennemydata.life -= _degat / 2;
+				enemy->enemyEntity.enemydata.life -= _degat / 2;
 			}
 			else
 			{
-				enemy->ennemyEntity.ennemydata.life -= _degat;
+				enemy->enemyEntity.enemydata.life -= _degat;
 			}
 
-			if (enemy->ennemyEntity.ennemydata.life < 0)
+			if (enemy->enemyEntity.enemydata.life < 0)
 			{
 				DestroyVisualEntity(enemy->sprite);
 				Free(enemy);
-				RemoveElement(listEnnemy, _index);
+				RemoveElement(listEnemy, _index);
 			}
 			break;
 		case HEAVY:
-			enemy->ennemyEntity.ennemydata.life -= _degat;
-			if (enemy->ennemyEntity.ennemydata.life < 0)
+			enemy->enemyEntity.enemydata.life -= _degat;
+			if (enemy->enemyEntity.enemydata.life < 0)
 			{
 				DestroyVisualEntity(enemy->sprite);
 				Free(enemy);
-				RemoveElement(listEnnemy, _index);
+				RemoveElement(listEnemy, _index);
 			}
 			break;
 		default:

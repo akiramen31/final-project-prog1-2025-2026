@@ -1,5 +1,5 @@
-#ifndef ENNEMY_H
-#define ENNEMY_H
+#ifndef ENEMY_H
+#define ENEMY_H
 
 #include "Common.h"
 #include "Map.h"
@@ -27,7 +27,7 @@ typedef struct Jetpack
 	float life;
 } Jetpack;
 
-typedef struct EnnemyData
+typedef struct EnemyData
 {
 	float life;
 	float energyMax;
@@ -38,12 +38,12 @@ typedef struct EnnemyData
 	float jumForce;
 	int nbCaseJump;
 	ArmorType armure;
-}EnnemyData;
+}EnemyData;
 
-typedef struct EnnemyEntity
+typedef struct EnemyEntity
 {
 	EnemyType type;
-	EnnemyData ennemydata;
+	EnemyData enemydata;
 	sfBool isJetpack;
 	Jetpack jetpack;
 	sfVector2f move;
@@ -53,7 +53,7 @@ typedef struct EnnemyEntity
 	int powerGel;
 	float timerGel;
 	sfFloatRect region;
-}EnnemyEntity;
+}EnemyEntity;
 
 typedef struct ActionDemander
 {
@@ -63,13 +63,13 @@ typedef struct ActionDemander
 	sfBool jetPack;
 }ActionDemander;
 
-typedef struct Ennemy
+typedef struct Enemy
 {
-	EnnemyEntity ennemyEntity;
+	EnemyEntity enemyEntity;
 	ActionDemander actiondemander;
 	sfSprite* sprite;
 	sfImage* imageColideur;
-}Ennemy;
+}Enemy;
 
 typedef struct Case
 {
