@@ -1113,6 +1113,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 		case MEDIUM:
 			if (ennemy->ennemyEntity.ennemydata.armure == 2)
 			{
+
 				ennemy->ennemyEntity.ennemydata.life -= _degat / 2;
 			}
 			else
