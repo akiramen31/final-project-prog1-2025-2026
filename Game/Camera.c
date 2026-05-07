@@ -60,11 +60,7 @@ void UpdateCamera(float _dt)
 
 void MoveViewSlow(sfVector2f _pos, float _dt)
 {
-	sfVector2f tempPos = GetViewPosition();
-	sfVector2f size = GetViewSize();
-
-	tempPos.x += size.x / 2;
-	tempPos.y += size.y / 2;
+	sfVector2f tempPos = GetViewCenterPosition();
 
 	sfVector2f vectorLength = (sfVector2f){ VECTOR(tempPos, _pos) };
 
@@ -81,12 +77,11 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	}
 	else
 	{
-		speed = (sfVector2f){ CAMERA_SPEED };
+		speed = (sfVector2f){ CAMERA_SPEED,CAMERA_SPEED };
 	}
 
 	move.x = _dt * (float)cos(angle) * speed.x;
 	move.y = _dt * (float)sin(angle) * speed.y;
-
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{

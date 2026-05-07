@@ -43,6 +43,11 @@ void LoadGame(void)
 	sfCircleShape_setOutlineThickness(game.startIntroCircle, 500.f);
 	game.startIntroCircleHiden = sfFalse;
 
+	if (DEV_MODE_CAMERA)
+	{
+		game.cameraCenter = CreateCircleShape((sfFloatRect) { 0, 0, 2, 2 }, sfRed, sfBlue, 1.f);
+	}
+
 	switch (GetIntFromSave(CURRENT_MUSIC))
 	{
 	case 0:
@@ -149,8 +154,8 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					SetCurrentMap(GetCurrentMap());
 					AddPlayerLife(PLAYER_MAX_HEALTH);
+					LoadGame();
 				}
 
 				if (GetCurrentMap() == LEVEL1)
@@ -204,6 +209,12 @@ void UpdateGame(float _dt)
 
 		UpdateHUD(_dt);
 		UpdateCamera(_dt);
+
+		if (DEV_MODE_CAMERA)
+		{
+			sfVector2f pos = GetViewCenterPosition();
+			sfCircleShape_setPosition(game.cameraCenter, pos);
+		}
 		UpdateParallax(_dt);
 	}
 	else

@@ -82,7 +82,7 @@ void Draw(void)
 			viewChange = sfTrue;
 			sfRenderWindow_setView(entityManager.renderWindow, sfRenderWindow_getDefaultView(entityManager.renderWindow));
 		}
-		else if (elementActual->type == RECTANGLE_SHAPE || elementActual->type == CIRCLE_SHAPE || elementActual->type == CONVEX_SHAPE )
+		else if (elementActual->type == RECTANGLE_SHAPE || elementActual->type == CIRCLE_SHAPE || elementActual->type == CONVEX_SHAPE)
 		{
 			temp = sfShape_getFillColor(elementActual->ptr);
 			sfColor temp2 = sfShape_getOutlineColor(elementActual->ptr);
@@ -354,7 +354,7 @@ sfView* CreateView(sfVector2f _centre, float _zoom, float _drawPlan)
 sfRectangleShape* CreateRectangleShape(sfFloatRect _rect, sfColor _fillColor, sfColor _outlineColor, float _drawPlan)
 {
 	sfRectangleShape* rect = sfRectangleShape_create();
-	sfRectangleShape_setSize(rect, (sfVector2f){ _rect.width, _rect.height});
+	sfRectangleShape_setSize(rect, (sfVector2f) { _rect.width, _rect.height });
 	sfRectangleShape_setPosition(rect, (sfVector2f) { _rect.left, _rect.top });
 	sfRectangleShape_setFillColor(rect, _fillColor);
 	sfRectangleShape_setOutlineColor(rect, _outlineColor);
@@ -366,7 +366,9 @@ sfRectangleShape* CreateRectangleShape(sfFloatRect _rect, sfColor _fillColor, sf
 sfCircleShape* CreateCircleShape(sfFloatRect _circle, sfColor _fillColor, sfColor _outlineColor, float _drawPlan)
 {
 	sfCircleShape* circle = sfCircleShape_create();
-	sfCircleShape_setRadius(circle, (_circle.width + _circle.height) / 4);
+	float radius = (_circle.width + _circle.height) / 4;
+	sfCircleShape_setRadius(circle, radius);
+	sfCircleShape_setOrigin(circle, (sfVector2f) { radius, radius });
 	sfCircleShape_setPosition(circle, (sfVector2f) { _circle.left, _circle.top });
 	sfCircleShape_setFillColor(circle, _fillColor);
 	sfCircleShape_setOutlineColor(circle, _outlineColor);
@@ -440,7 +442,7 @@ sfSound* CreateSound(sfSoundBuffer* _buffer, float _volume, sfBool _play)
 
 sfMusic* CreateMusic(char* _fileMusic, float _volume, sfBool _play)
 {
-	SoundEntity sound = { MUSIC, sfMusic_createFromFile(_fileMusic), _volume};
+	SoundEntity sound = { MUSIC, sfMusic_createFromFile(_fileMusic), _volume };
 	if (sound.ptr)
 	{
 		sfMusic_setVolume(sound.ptr, sound.volume * GetFloatFromSave(SOUND_VOLUME));
@@ -637,7 +639,7 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 
 void ChangeDrawPlan(void* _ptr, float _drawPlan)
 {
-	VisualEntity* element = NULL; 
+	VisualEntity* element = NULL;
 	if (_ptr && entityManager.visual)
 	{
 		VisualEntity* elementActual = entityManager.visual;
@@ -965,7 +967,7 @@ void LoadMainData(void)
 	ScaleImage(&entityManager.cursorImage, 5);
 
 	sfVector2u cursorSize = sfImage_getSize(entityManager.cursorImage);
-	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2});
+	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2 });
 	sfRenderWindow_setMouseCursor(entityManager.renderWindow, entityManager.cursor);
 }
 
@@ -987,6 +989,14 @@ sfVector2f GetViewPosition(void)
 	sfVector2f size = sfView_getSize(entityManager.view);
 
 	return (sfVector2f) { center.x - size.x / 2, center.y - size.y / 2 };
+}
+
+sfVector2f GetViewCenterPosition(void)
+{
+	sfVector2f center = sfView_getCenter(entityManager.view);
+	sfVector2f size = sfView_getSize(entityManager.view);
+
+	return (sfVector2f) { center.x, center.y };
 }
 
 sfVector2f GetViewSize(void)
@@ -1054,5 +1064,5 @@ sfVector2f GetMousePositionToOrigin(void)
 	sfVector2i position = sfMouse_getPositionRenderWindow(GetRenderWindow());
 	sfVector2f center = sfView_getCenter(entityManager.view);
 	sfVector2f size = sfView_getSize(entityManager.view);
-	return (sfVector2f) { center.x - size.x / 2 + position.x * cameraCoef, center.y - size.y / 2 + position.y * cameraCoef};
+	return (sfVector2f) { center.x - size.x / 2 + position.x * cameraCoef, center.y - size.y / 2 + position.y * cameraCoef };
 }

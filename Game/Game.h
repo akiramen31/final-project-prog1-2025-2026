@@ -15,6 +15,8 @@ typedef struct
 
 	sfCircleShape* startIntroCircle;
 	sfBool startIntroCircleHiden;
+
+	sfCircleShape* cameraCenter;
 }Game;
 
 void LoadGame(void);
