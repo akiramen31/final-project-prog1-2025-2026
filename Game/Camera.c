@@ -73,7 +73,15 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	if (camera.lastPositionName == camera.positionName)
 	{
 		speed.x = CAMERA_SPEED_ON_PLAYER_X;
-		speed.y = CAMERA_SPEED_ON_PLAYER_Y;
+		
+		if (sin(angle) >= 0)
+		{
+			speed.y = CAMERA_SPEED_ON_PLAYER_Y_DOWN;
+		}
+		else
+		{
+			speed.y = CAMERA_SPEED_ON_PLAYER_Y_UP;
+		}
 	}
 	else
 	{
