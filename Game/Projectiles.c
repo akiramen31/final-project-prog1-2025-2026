@@ -7,17 +7,22 @@
 sfTexture* bulletTexture;
 sfTexture* mistealTexture;
 sfTexture* droneTexture;
+sfTexture* explosionTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
 Bullet bulletListEnemy[BULLET_ENEMY_MAX];
 Misteal mistealList[MISTEAL_ALLY_MAX];
-Drone droneList[DRONE_MAX] = { 0 };
+Drone droneList[PLAYER_DRONE_MAX] = { 0 };
 ColdBreath coldBreath = { 0 };
 BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
 DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
+Explosion* explosionList;
+
+Animation explosionAnimation = { 0 };
 
 unsigned mistealCount;
 unsigned bulletCountAlly;
 unsigned bulletCountEnemy;
+unsigned explosionCount;
 float groundLevel;
 
 void SortBulletListAlly(unsigned _index);
@@ -34,6 +39,7 @@ void LoadProjectiles(float _groundlvl)
 	groundLevel = _groundlvl;
 	LoadSecondary();
 	LoadBossDrone();
+	LoadExplosion();
 }
 
 void LoadSecondary(void)
@@ -49,7 +55,7 @@ void LoadSecondary(void)
 
 	// DRONE PART
 
-	for (unsigned i = 0; i < DRONE_MAX; i++)
+	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
 	{
 		droneList[i].sprite = CreateSprite(droneTexture, (sfVector2f) { 0 }, 0.f, 39);
 		SetSpriteOriginMiddle(droneList[i].sprite);
@@ -89,6 +95,18 @@ void LoadDangerZone(void)
 		sfVector2f missilePosition = { 0 };
 
 	}
+}
+
+void LoadExplosion(void)
+{
+	explosionTexture = GetAsset("Assets/Sprites/Explosion_Placeholder.png");
+	explosionAnimation.rectActualy = (sfIntRect){ 0,0,16,16 };
+	explosionAnimation.frameCount = 4;
+	explosionAnimation.frameDuration = EXPLOSION_FRAME_DURATION;
+	explosionAnimation.isLooping = sfFalse;
+	explosionAnimation.timeActualy = 0;
+	explosionList = Calloc(1, sizeof(Explosion));
+	explosionCount = 0;
 }
 
 void UpdateProjectiles(sfVector2f _posAim, float _dt)
@@ -134,7 +152,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet, 1))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet, sfTrue))
 			{
 				DeleteBulletEnemy(i);
 			}
@@ -150,6 +168,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 	UpdateMisteal(_dt);
 	UpdateBossDrone(_dt);
 	UpdateSecondary(_posAim, _dt);
+	UpdateExplosion(_dt);
 }
 
 void UpdateSecondary(sfVector2f _posAim, float _dt)
@@ -228,7 +247,7 @@ void UpdateMisteal(float _dt)
 		else if (mistealList[i].isSticked)
 		{
 			hitboxMisteal = sfSprite_getGlobalBounds(mistealList[i].sprite);
-			if (ColisionWithPlayer(hitboxMisteal, 0))
+			if (ColisionWithPlayer(hitboxMisteal, sfFalse))
 			{
 				DeleteMisteal(i);
 				continue;
@@ -280,31 +299,23 @@ void UpdateBossDrone(float _dt)
 		sfVector2f reactionWall = Colision(hitboxBossDrone, AXIS_BOTH);
 		if (bossDroneList[i].bossDroneState == BDRONE_IS_SPAWNING)
 		{
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, 1))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue))
 			{
+				SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
 				DeleteBossDrone(i);
 				continue;
 			}
 		}
 		else if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING || bossDroneList[i].bossDroneState == BDRONE_IS_FALLING)
 		{
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, 1) || HitBoss(50.f, hitboxBossDrone, HEAVY))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue) || HitBoss(0, hitboxBossDrone, NONE))
 			{
+				SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
 				DeleteBossDrone(i);
 				continue;
 			}
 		}
 	}
-}
-
-unsigned GetBulletCount(void)
-{
-	return bulletCountAlly;
-}
-
-unsigned GetMistealCount(void)
-{
-	return mistealCount;
 }
 
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
@@ -459,7 +470,7 @@ sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
 
 void AddDrone(sfVector2f _pos, sfBool _isRighted)
 {
-	for (unsigned i = 0; i < DRONE_MAX; i++)
+	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
 	{
 		if (droneList[i].isAlive == sfFalse)
 		{
@@ -518,10 +529,43 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 	coldBreath.isAlive = sfTrue;
 }
 
+void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
+{
+	Explosion* temp = Realloc(explosionList, (size_t)(explosionCount + 1) * sizeof(Explosion));
+	if (!temp)
+	{
+		return;
+	}
+	explosionList = temp;
+	temp = NULL;
+	Explosion newExplosion = { 0 };
+
+	newExplosion.sprite = CreateSprite(explosionTexture, _explosionZone, _range, 16.f);
+	sfSprite_setTextureRect(newExplosion.sprite, explosionAnimation.rectActualy);
+	SetSpriteOriginMiddle(newExplosion.sprite);
+	explosionAnimation.timeActualy = 0.f;
+	newExplosion.explosionAnim = explosionAnimation;
+	newExplosion.isAlly = _isAlly;
+	newExplosion.range = _range;
+	explosionList[explosionCount] = newExplosion;
+	TestCollisionExplosionList(explosionCount, _range);
+	explosionCount++;
+}
+
+void SortExplosionList(unsigned _index)
+{
+	explosionCount--;
+	explosionList[_index] = explosionList[explosionCount];
+	if (explosionCount)
+	{
+		Realloc(explosionList, explosionCount * sizeof(Explosion));
+	}
+}
+
 
 void UpdateDrone(sfVector2f _mousePos, float _dt)
 {
-	for (unsigned i = 0; i < DRONE_MAX; i++)
+	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
 	{
 		if (droneList[i].isAlive == sfTrue)
 		{
@@ -544,6 +588,7 @@ void UpdateDrone(sfVector2f _mousePos, float _dt)
 			reaction.y += reactionBox.y;
 			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY) || HitBoss(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY))
 			{
+				SpawnExplosion(sfSprite_getPosition(droneList[i].sprite), sfTrue, 3.f);
 				sfMusic_stop(droneList[i].ambientSound);
 				droneList[i].isAlive = sfFalse;
 				sfSprite_setPosition(droneList[i].sprite, (sfVector2f) { 0, 0 });
@@ -582,6 +627,18 @@ void UpdateColdBreath(float _dt)
 	}
 }
 
+void UpdateExplosion(float _dt)
+{
+	for (int i = explosionCount - 1; i >= 0; i--)
+	{
+		if (UpdateAnimationAndGiveIfStop(explosionList[i].sprite, &explosionList[i].explosionAnim, _dt))
+		{
+			DestroyVisualEntity(explosionList[i].sprite);
+			SortExplosionList(i);
+		}
+	}
+}
+
 void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 {
 	if (!droneList[_index].isAlive) return;
@@ -615,8 +672,8 @@ void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 	float angleInRadians = droneList[_index].rotation * 3.14159f / 180.0f;
 
 	sfVector2f movement;
-	movement.x = cosf(angleInRadians) * SPEED_MISSILE * _dt;
-	movement.y = sinf(angleInRadians) * SPEED_MISSILE * _dt;
+	movement.x = cosf(angleInRadians) * SPEED_PLAYER_DRONE * _dt;
+	movement.y = sinf(angleInRadians) * SPEED_PLAYER_DRONE * _dt;
 
 	// 7. Application à la forme SFML
 	sfSprite_setRotation(droneList[_index].sprite, droneList[_index].rotation);
@@ -625,13 +682,13 @@ void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 
 void CheckCollisionMissilesList(void)
 {
-	for (unsigned i = 0; i < DRONE_MAX; i++)
+	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
 	{
 		if (!droneList[i].isAlive) continue;
 
 		// On commence à j = i + 1 pour ne pas tester deux fois la même paire
 		// et ne pas tester le missile contre lui-même
-		for (unsigned j = i + 1; j < DRONE_MAX; j++)
+		for (unsigned j = i + 1; j < PLAYER_DRONE_MAX; j++)
 		{
 			if (!droneList[j].isAlive) continue;
 
@@ -641,7 +698,7 @@ void CheckCollisionMissilesList(void)
 			float dx = posB.x - posA.x;
 			float dy = posB.y - posA.y;
 			float distance = sqrtf(dx * dx + dy * dy);
-			float minDistance = MISSILE_WEIGHT * 2.0f; // Somme des deux rayons
+			float minDistance = PLAYER_DRONE_WEIGHT * 2.0f; // Somme des deux rayons
 
 			if (distance < minDistance)
 			{
@@ -662,6 +719,24 @@ void CheckCollisionMissilesList(void)
 				sfSprite_move(droneList[j].sprite, moveB);
 			}
 		}
+	}
+}
+
+void TestCollisionExplosionList(unsigned _index, float _range)
+{
+		sfFloatRect hitboxExplosion = { 0 };
+		hitboxExplosion.left = sfSprite_getPosition(explosionList[_index].sprite).x;
+		hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
+		hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
+		hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
+		sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
+		if (reaction.x != 0 || reaction.y != 0 || HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY))
+		{
+		}
+	if (!explosionList[_index].isAlly)
+	{
+		HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
+		ColisionWithPlayer(hitboxExplosion, sfTrue);
 	}
 }
 
@@ -729,3 +804,18 @@ void DeleteDangerZone(unsigned _index)
 	return;
 }
 
+
+unsigned GetBulletCount(void)
+{
+	return bulletCountAlly;
+}
+
+unsigned GetMistealCount(void)
+{
+	return mistealCount;
+}
+
+unsigned GetExplosionCount(void)
+{
+	return explosionCount;
+}
