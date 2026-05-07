@@ -38,6 +38,20 @@ int enemyZone;
 
 void LoadEnemy(void)
 {
+	listEnnemy = 0;
+	ennemyEntity[ALEATORY];
+	mapData = 0;
+	aStarMap = 0;
+	listeWait = 0;
+	sprite = 0;
+	texture = 0;
+	tableau = (Tableau){ 0 };
+	enemyZone = 0;
+	for (int i = 0; i < ALEATORY; i++)
+	{
+		ennemyEntity[i] = (EnnemyEntity){ 0 };
+	}
+
 	listEnnemy = CreateList();
 	listeWait = CreateList();
 	if (!DEV_MODE)
@@ -107,7 +121,7 @@ void UpbdateEnemy2(float _dt)
 		}
 		elementActualy = elementActualy->next;
 	}
-	
+
 	for (char i = 0; i < ALEATORY; i++)
 	{
 		tableau.new[i] = sfTrue;
@@ -173,7 +187,7 @@ void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy)
 	}
 	CalculMoveEnemy(_dt, _enemy);
 	UpdateColisionEnemy(_enemy);
-	
+
 }
 
 void UpdateColisionEnemy(Ennemy* _enemy)
@@ -1064,7 +1078,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			effectGelEnemy(_index, 2, 5);
 			break;
 		case LIGHT:
-			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure+1);
+			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure + 1);
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);
