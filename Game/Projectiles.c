@@ -590,7 +590,7 @@ void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 	float dx = _mousePos.x - currentPos.x;
 	float dy = _mousePos.y - currentPos.y;
 
-	float targetAngle = atan2f(dy, dx) * 180.0f / 3.14159;
+	float targetAngle = atan2f(dy, dx) * 180.f / 3.14159f;
 
 	float angleDiff = targetAngle - droneList[_index].rotation;
 
@@ -611,7 +611,7 @@ void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 			droneList[_index].rotation -= maxRotationThisFrame;
 	}
 
-	float angleInRadians = droneList[_index].rotation * 3.14159 / 180.0f;
+	float angleInRadians = droneList[_index].rotation * 3.14159f / 180.0f;
 
 	sfVector2f movement;
 	movement.x = cosf(angleInRadians) * SPEED_MISSILE * _dt;
