@@ -129,13 +129,15 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 void UpdatePositionCameraLevel1(float _dt)
 {
 	sfFloatRect hitbox = GetPlayerRect();
+	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
 	if (area != NULL)
 	{
 		sfVector2f pos = { 0 };
 
-		if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
+		//if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
+		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
 		{
 			switch (CamPositonName)
 			{
@@ -209,13 +211,14 @@ void UpdatePositionCameraLevel1(float _dt)
 void UpdatePositionCameraLevel2(float _dt)
 {
 	sfFloatRect hitbox = GetPlayerRect();
+	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
 	if (area != NULL)
 	{
 		sfVector2f pos = { 0 };
 
-		if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
+		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
 		{
 			switch (CamPositonName)
 			{
@@ -346,13 +349,14 @@ void UpdatePositionCameraLevel2(float _dt)
 void UpdatePositionCameraLevel3(float _dt)
 {
 	sfFloatRect hitbox = GetPlayerRect();
+	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
 	if (area != NULL)
 	{
 		sfVector2f pos = { 0 };
 
-		if (sfFloatRect_intersects(&hitbox, &area[index].hitbox, NULL) && CamPositonName != 0)
+		if (IsPointInFloatRect(posPlayer, &area[index].hitbox) && CamPositonName != 0)
 		{
 			switch (CamPositonName)
 			{
@@ -432,10 +436,11 @@ void SetCamPositionName(sfFloatRect* _hitbox, InfoZone* _area, float _dt)
 {
 	int num = GetTrigerCount();
 	sfFloatRect area = { 0 };
+	sfVector2f posPlayer = { _hitbox->left + _hitbox->width / 2,_hitbox->top + _hitbox->height / 2 };
 
 	for (int i = 0; i < num; i++)
 	{
-		if (sfFloatRect_intersects(_hitbox, &_area[i].hitbox, &area))
+		if (IsPointInFloatRect(posPlayer, &_area[i].hitbox) && sfFloatRect_intersects(_hitbox, &_area[i].hitbox, &area))
 		{
 			if (StringCompare(_area[i].type, "Camera"))
 			{
