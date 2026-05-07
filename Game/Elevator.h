@@ -16,7 +16,7 @@ typedef struct Elvator
 
 void LoadElevator(void);
 void LoadElevator(void);
-void UpdateElevator(sfVector2f _posPlayer, float _dt);
+sfVector2f UpdateElevator(sfFloatRect _rectPlayer, sfVector2f _posPlayer, float _dt);
 
 sfVector2f ColisionElevator(sfFloatRect _hitbox, int _axis);
 sfBool ColisionElevatorButon(sfFloatRect _hitbox);
