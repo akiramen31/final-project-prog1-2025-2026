@@ -37,18 +37,6 @@ void LoadMap()
 	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
 
 	CjsonB* cjson = NULL;
-#if DEV_PIERRE_ENEMY
-	if (map.data.image)
-	{
-		sfImage_destroy(map.data.image);
-	}
-
-	if (DEV_ENNEMY && map.state != -1)
-	{
-		ResetEnemy();
-	}
-#endif
-
 	printf("map level %d\n", map.state + 1);
 
 	switch (map.state)

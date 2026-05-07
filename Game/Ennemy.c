@@ -155,18 +155,19 @@ void UpdateEnemyI(float _dt, int _index, Ennemy* _enemy)
 	}
 	if (PlayerVisibility(_index))
 	{
-		if (ennemy->ennemyEntity.timerTir >= 1)
+		if (_enemy->ennemyEntity.timerTir >= 1)
 		{
-			ennemy->ennemyEntity.timerTir = 0;
+			_enemy->ennemyEntity.timerTir = 0;
 			shootPlayer(_index);
 		}
+		_enemy->actiondemander = (ActionDemander){ 0 };
 	}
 	else
 	{
-		if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
+		if (_enemy->ennemyEntity.timer >= TIMER_ASTAR)
 		{
-			ennemy->actiondemander = AStar2(_index, GetPlayerRect());
-			ennemy->ennemyEntity.timer = 0;
+			_enemy->actiondemander = AStar2(_index, GetPlayerRect());
+			_enemy->ennemyEntity.timer = 0;
 		}
 	}
 	CalculMoveEnemy(_dt, _enemy);
