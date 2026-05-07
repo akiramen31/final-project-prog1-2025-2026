@@ -10,6 +10,7 @@
 Map map;
 
 int rectShapeCount;
+int bossArenaGround = 0;
 sfRectangleShape** rectShape;
 
 sfColor colorBackground;
@@ -34,7 +35,7 @@ void LoadMap()
 	sfSprite_setColor(map.background, colorBackground);
 
 	LoadBox();
-	SetCameraZoom(0.f);
+	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
 
 	CjsonB* cjson = NULL;
 	printf("map level %d\n", map.state + 1);

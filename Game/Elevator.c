@@ -35,15 +35,15 @@ void LoadElevator(void)
 	}
 }
 
-void UpdateElevator(sfVector2f _posPlayer, float _dt)
+sfVector2f UpdateElevator(sfFloatRect _rectPlayer, sfVector2f _posPlayer, float _dt)
 {
 	for (int i = 0; i < numElevator; i++)
 	{
 		sfVector2f pos = sfRectangleShape_getPosition(elevatorList[i].hitbox[0]);
+		sfVector2f move = { 0 };
 
 		if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] != pos.y)
 		{
-			sfVector2f move = { 0 };
 			float vectorYLength = elevatorList[i].posYlevel[elevatorList[i].actualLevel] - pos.y;
 
 			if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] < pos.y)
@@ -68,9 +68,16 @@ void UpdateElevator(sfVector2f _posPlayer, float _dt)
 		sfRectangleShape_setPosition(elevatorList[i].hitbox[2], (sfVector2f) { pos.x + 48, pos.y - 24 });
 
 		sfSprite_setPosition(elevatorList[i].sprite, (sfVector2f) { pos.x, pos.y - 24 });
-	}
 
-	SecurityElevator(_posPlayer);
+		sfFloatRect rectElevator = sfSprite_getGlobalBounds(elevatorList[i].sprite);
+
+		SecurityElevator(_posPlayer);
+
+		if (sfFloatRect_intersects(&_rectPlayer, &rectElevator, NULL))
+		{
+			return move;
+		}
+	}
 }
 
 sfVector2f ColisionElevator(sfFloatRect _hitbox, int _axis)
