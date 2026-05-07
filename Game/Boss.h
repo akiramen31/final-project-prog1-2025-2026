@@ -12,7 +12,7 @@
 
 #define BOSS_PART_NUMBER 10
 
-#define RUNAWAY_TIMER 4.f
+#define RUNAWAY_TIMER 1.5f
 
 #define BOSS_FIRERATE_BULLET 1.f
 #define BOSS_FIRERATE_DRONE 1.f
