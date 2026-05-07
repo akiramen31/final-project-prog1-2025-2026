@@ -51,7 +51,6 @@ typedef struct EnnemyEntity
 	EnnemyData ennemydata;
 	sfBool isJetpack;
 	Jetpack jetpack;
-	sfVector2f acceleration;
 	sfVector2f move;
 	enum State state;
 	float timer;
