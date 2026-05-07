@@ -38,7 +38,6 @@ void LoadMap()
 	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
 
 	CjsonB* cjson = NULL;
-	printf("map level %d\n", map.state + 1);
 
 	switch (map.state)
 	{

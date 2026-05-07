@@ -74,6 +74,7 @@ typedef struct EntityManager
 	int assetCount;
 	int generalAssetCount;
 	VisualEntity* visual;
+	int visualCount;
 	SoundEntity* sound;
 	int soundCount;
 

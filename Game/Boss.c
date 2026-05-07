@@ -9,6 +9,11 @@ Boss boss;
 void LoadBoss(void)
 {
 	boss = (Boss){ 0 };
+	for (int i = 0; i < BOSS_PART_NUMBER; i++)
+	{
+		bossSpriteList[i] = (sfSprite*){0};
+	}
+
 	boss.boss1 = Calloc(1, sizeof(Boss1));
 	boss.boss1->bossLife = MAX_BOSS_LIFE;
 }

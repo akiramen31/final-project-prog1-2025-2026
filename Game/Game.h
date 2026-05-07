@@ -8,6 +8,9 @@
 
 typedef struct
 {
+	float timer;
+	float timerRoomPause;
+	float timerstartLevel;
 	sfSprite* temp;
 }Game;
 
