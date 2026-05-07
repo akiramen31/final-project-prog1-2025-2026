@@ -92,10 +92,12 @@ void LoadMenu(void)
 		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
 		sfText_setString(menu.mainMenu.keyType[i], bufferKeyType[i]);
 	}
+	menu.state = CONTROLS;
 	for (int i = 0; i < KEY_COUNT; i++)
 	{
 		UpdateTextKey(i, GetKeyFromSave(i));
 	}
+
 	menu.mainMenu.name[0] = "AILLET A.";
 	menu.mainMenu.name[1] = "MASSON Y.";
 	menu.mainMenu.name[2] = "MEURISSE PEREZ B.";
@@ -280,15 +282,15 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			{
 				if (menu.state == SELECTION_BONUS)
 				{
-					if (GetCurrentMap()==-1)
+					if (GetCurrentMap() == -1)
 					{
 						SetCurrentMap(0);
 					}
-					if (GetWeapon().weaponType==-1)
+					if (GetWeapon().weaponType == -1)
 					{
 						SetWeapon(0);
 					}
-					if (GetSecondaryType()==-1)
+					if (GetSecondaryType() == -1)
 					{
 						SetSecondaryType(0);
 					}
@@ -780,7 +782,7 @@ void SetMenuState(MenuState _state)
 				if ((unlockedLevel % ((int)pow(10, i + 1)) - unlockedLevel % (int)(pow(10, i))) / (int)pow(10, i))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
-					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[3*i]);
+					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[3 * i]);
 				}
 				else
 				{
@@ -788,7 +790,7 @@ void SetMenuState(MenuState _state)
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], invisible);
 				}
 				sfVector2f tempPos = { 512, 56 };
-				tempPos.y += (768 / (MAP_COUNT + 1) * (i+1));
+				tempPos.y += (768 / (MAP_COUNT + 1) * (i + 1));
 				sfSprite_setPosition(menu.selectionMenu.generalButton[i], tempPos);
 				sfSprite_setPosition(menu.selectionMenu.generalIcon[i], tempPos);
 			}
@@ -811,7 +813,7 @@ void SetMenuState(MenuState _state)
 				if ((unlockedWeapon % ((int)pow(10, i + 1)) - unlockedWeapon % (int)(pow(10, i))) / (int)pow(10, i))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
-					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[1+(3*i)]);
+					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[1 + (3 * i)]);
 				}
 				else
 				{
@@ -819,13 +821,13 @@ void SetMenuState(MenuState _state)
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], invisible);
 				}
 				sfVector2f tempPos = { 512, 56 };
-				tempPos.y += (768 / (WEAPON_COUNT + 1) * (i+1));
+				tempPos.y += (768 / (WEAPON_COUNT + 1) * (i + 1));
 				sfSprite_setPosition(menu.selectionMenu.generalButton[i], tempPos);
 				sfSprite_setPosition(menu.selectionMenu.generalIcon[i], tempPos);
 			}
 			break;
 		case SELECTION_BONUS:
-			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[2], (sfIntRect) {36,0,18,18});
+			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[2], (sfIntRect) { 36, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[2], (sfIntRect) { 32, 0, 16, 16 });
 			sfText_setString(menu.selectionMenu.bottomText[0], "Play");
 			sfText_setLetterSpacing(menu.selectionMenu.bottomText[0], 13.5f);
@@ -844,7 +846,7 @@ void SetMenuState(MenuState _state)
 				if ((unlockedSecondary % ((int)pow(10, i + 1)) - unlockedSecondary % (int)(pow(10, i))) / (int)pow(10, i))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
-					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[9+(i*1)]);
+					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[9 + (i * 1)]);
 				}
 				else
 				{
@@ -852,7 +854,7 @@ void SetMenuState(MenuState _state)
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], invisible);
 				}
 				sfVector2f tempPos = { 512, 56 };
-				tempPos.y += (768 / (SECONDARY_COUNT + 1) * (i+1));
+				tempPos.y += (768 / (SECONDARY_COUNT + 1) * (i + 1));
 				sfSprite_setPosition(menu.selectionMenu.generalButton[i], tempPos);
 				sfSprite_setPosition(menu.selectionMenu.generalIcon[i], tempPos);
 			}
@@ -886,198 +888,201 @@ void UpdateMenu(float _dt)
 
 void UpdateTextKey(int _index, int _key)
 {
-	char buffer[14] = { 0 };
-	if (_key >= 0 && _key < 26)
+	if (menu.state == CONTROLS)
 	{
-		buffer[0] = 'A' + _key;
-	}
-	else if (_key > 25 && _key < 36)
-	{
-		buffer[0] = '0' + _key - 26;
-	}
-	else if (_key == sfKeyLControl)
-	{
-		CopyStingToBuffer(buffer, "LControl");
-	}
-	else if (_key == sfKeyLShift)
-	{
-		CopyStingToBuffer(buffer, "LShift");
-	}
-	else if (_key == sfKeyLAlt)
-	{
-		CopyStingToBuffer(buffer, "LAlt");
-	}
-	else if (_key == sfKeyRControl)
-	{
-		CopyStingToBuffer(buffer, "RControl");
-	}
-	else if (_key == sfKeyRShift)
-	{
-		CopyStingToBuffer(buffer, "RShift");
-	}
-	else if (_key == sfKeyRAlt)
-	{
-		CopyStingToBuffer(buffer, "RAlt");
-	}
-	else if (_key == sfKeyLBracket)
-	{
-		CopyStingToBuffer(buffer, "LBracket");
-	}
-	else if (_key == sfKeyRBracket)
-	{
-		CopyStingToBuffer(buffer, "RBracket");
-	}
-	else if (_key == sfKeySemicolon)
-	{
-		CopyStingToBuffer(buffer, "Semicolon");
-	}
-	else if (_key == sfKeyComma)
-	{
-		CopyStingToBuffer(buffer, "Comma");
-	}
-	else if (_key == sfKeyPeriod)
-	{
-		CopyStingToBuffer(buffer, "Period");
-	}
-	else if (_key == sfKeyQuote)
-	{
-		CopyStingToBuffer(buffer, "Quote");
-	}
-	else if (_key == sfKeySlash)
-	{
-		CopyStingToBuffer(buffer, "Slash");
-	}
-	else if (_key == sfKeyBackslash)
-	{
-		CopyStingToBuffer(buffer, "Backslash");
-	}
-	else if (_key == sfKeyTilde)
-	{
-		CopyStingToBuffer(buffer, "Tilde");
-	}
-	else if (_key == sfKeyEqual)
-	{
-		CopyStingToBuffer(buffer, "Equal");
-	}
-	else if (_key == sfKeyHyphen)
-	{
-		CopyStingToBuffer(buffer, "Hyphen");
-	}
-	else if (_key == sfKeySpace)
-	{
-		CopyStingToBuffer(buffer, "Space");
-	}
-	else if (_key == sfKeyEnter)
-	{
-		CopyStingToBuffer(buffer, "Enter");
-	}
-	else if (_key == sfKeyBackspace)
-	{
-		CopyStingToBuffer(buffer, "Backspace");
-	}
-	else if (_key == sfKeyTab)
-	{
-		CopyStingToBuffer(buffer, "Tab");
-	}
-	else if (_key == sfKeyPageUp)
-	{
-		CopyStingToBuffer(buffer, "PageUp");
-	}
-	else if (_key == sfKeyPageDown)
-	{
-		CopyStingToBuffer(buffer, "PageDown");
-	}
-	else if (_key == sfKeyEnd)
-	{
-		CopyStingToBuffer(buffer, "End");
-	}
-	else if (_key == sfKeyHome)
-	{
-		CopyStingToBuffer(buffer, "Home");
-	}
-	else if (_key == sfKeyInsert)
-	{
-		CopyStingToBuffer(buffer, "Insert");
-	}
-	else if (_key == sfKeyDelete)
-	{
-		CopyStingToBuffer(buffer, "Delete");
-	}
-	else if (_key == sfKeyAdd)
-	{
-		CopyStingToBuffer(buffer, "Add");
-	}
-	else if (_key == sfKeySubtract)
-	{
-		CopyStingToBuffer(buffer, "Subtract");
-	}
-	else if (_key == sfKeyMultiply)
-	{
-		CopyStingToBuffer(buffer, "Multiply");
-	}
-	else if (_key == sfKeyDivide)
-	{
-		CopyStingToBuffer(buffer, "Divide");
-	}
-	else if (_key == sfKeyLeft)
-	{
-		CopyStingToBuffer(buffer, "Left");
-	}
-	else if (_key == sfKeyRight)
-	{
-		CopyStingToBuffer(buffer, "Right");
-	}
-	else if (_key == sfKeyUp)
-	{
-		CopyStingToBuffer(buffer, "Up");
-	}
-	else if (_key == sfKeyDown)
-	{
-		CopyStingToBuffer(buffer, "Down");
-	}
-	else if (_key > 74 && _key < 85)
-	{
-		CopyStingToBuffer(buffer, "Numpad");
-		buffer[6] = '0' + _key - 75;
-	}
-	else if (_key > 84 && _key < 94)
-	{
-		buffer[0] = 'F';
-		buffer[1] = '1' + _key - 85;
-	}
-	else if (_key < 100)
-	{
-		buffer[0] = 'F';
-		buffer[1] = '1';
-		buffer[2] = '0' + _key - 94;
-	}
-	else if (_key == sfMouseLeft + sfKeyCount)
-	{
-		CopyStingToBuffer(buffer, "MouseLeft");
-	}
-	else if (_key == sfMouseRight + sfKeyCount)
-	{
-		CopyStingToBuffer(buffer, "MouseRight");
-	}
-	else if (_key == sfMouseMiddle + sfKeyCount)
-	{
-		CopyStingToBuffer(buffer, "MouseMiddle");
-	}
-	else if (_key == sfMouseXButton1 + sfKeyCount)
-	{
-		CopyStingToBuffer(buffer, "MouseXButton1");
-	}
-	else if (_key == sfMouseXButton2 + sfKeyCount)
-	{
-		CopyStingToBuffer(buffer, "MouseXButton2");
-	}
-	else
-	{
-		return;
-	}
+		char buffer[14] = { 0 };
+		if (_key >= 0 && _key < 26)
+		{
+			buffer[0] = 'A' + _key;
+		}
+		else if (_key > 25 && _key < 36)
+		{
+			buffer[0] = '0' + _key - 26;
+		}
+		else if (_key == sfKeyLControl)
+		{
+			CopyStingToBuffer(buffer, "LControl");
+		}
+		else if (_key == sfKeyLShift)
+		{
+			CopyStingToBuffer(buffer, "LShift");
+		}
+		else if (_key == sfKeyLAlt)
+		{
+			CopyStingToBuffer(buffer, "LAlt");
+		}
+		else if (_key == sfKeyRControl)
+		{
+			CopyStingToBuffer(buffer, "RControl");
+		}
+		else if (_key == sfKeyRShift)
+		{
+			CopyStingToBuffer(buffer, "RShift");
+		}
+		else if (_key == sfKeyRAlt)
+		{
+			CopyStingToBuffer(buffer, "RAlt");
+		}
+		else if (_key == sfKeyLBracket)
+		{
+			CopyStingToBuffer(buffer, "LBracket");
+		}
+		else if (_key == sfKeyRBracket)
+		{
+			CopyStingToBuffer(buffer, "RBracket");
+		}
+		else if (_key == sfKeySemicolon)
+		{
+			CopyStingToBuffer(buffer, "Semicolon");
+		}
+		else if (_key == sfKeyComma)
+		{
+			CopyStingToBuffer(buffer, "Comma");
+		}
+		else if (_key == sfKeyPeriod)
+		{
+			CopyStingToBuffer(buffer, "Period");
+		}
+		else if (_key == sfKeyQuote)
+		{
+			CopyStingToBuffer(buffer, "Quote");
+		}
+		else if (_key == sfKeySlash)
+		{
+			CopyStingToBuffer(buffer, "Slash");
+		}
+		else if (_key == sfKeyBackslash)
+		{
+			CopyStingToBuffer(buffer, "Backslash");
+		}
+		else if (_key == sfKeyTilde)
+		{
+			CopyStingToBuffer(buffer, "Tilde");
+		}
+		else if (_key == sfKeyEqual)
+		{
+			CopyStingToBuffer(buffer, "Equal");
+		}
+		else if (_key == sfKeyHyphen)
+		{
+			CopyStingToBuffer(buffer, "Hyphen");
+		}
+		else if (_key == sfKeySpace)
+		{
+			CopyStingToBuffer(buffer, "Space");
+		}
+		else if (_key == sfKeyEnter)
+		{
+			CopyStingToBuffer(buffer, "Enter");
+		}
+		else if (_key == sfKeyBackspace)
+		{
+			CopyStingToBuffer(buffer, "Backspace");
+		}
+		else if (_key == sfKeyTab)
+		{
+			CopyStingToBuffer(buffer, "Tab");
+		}
+		else if (_key == sfKeyPageUp)
+		{
+			CopyStingToBuffer(buffer, "PageUp");
+		}
+		else if (_key == sfKeyPageDown)
+		{
+			CopyStingToBuffer(buffer, "PageDown");
+		}
+		else if (_key == sfKeyEnd)
+		{
+			CopyStingToBuffer(buffer, "End");
+		}
+		else if (_key == sfKeyHome)
+		{
+			CopyStingToBuffer(buffer, "Home");
+		}
+		else if (_key == sfKeyInsert)
+		{
+			CopyStingToBuffer(buffer, "Insert");
+		}
+		else if (_key == sfKeyDelete)
+		{
+			CopyStingToBuffer(buffer, "Delete");
+		}
+		else if (_key == sfKeyAdd)
+		{
+			CopyStingToBuffer(buffer, "Add");
+		}
+		else if (_key == sfKeySubtract)
+		{
+			CopyStingToBuffer(buffer, "Subtract");
+		}
+		else if (_key == sfKeyMultiply)
+		{
+			CopyStingToBuffer(buffer, "Multiply");
+		}
+		else if (_key == sfKeyDivide)
+		{
+			CopyStingToBuffer(buffer, "Divide");
+		}
+		else if (_key == sfKeyLeft)
+		{
+			CopyStingToBuffer(buffer, "Left");
+		}
+		else if (_key == sfKeyRight)
+		{
+			CopyStingToBuffer(buffer, "Right");
+		}
+		else if (_key == sfKeyUp)
+		{
+			CopyStingToBuffer(buffer, "Up");
+		}
+		else if (_key == sfKeyDown)
+		{
+			CopyStingToBuffer(buffer, "Down");
+		}
+		else if (_key > 74 && _key < 85)
+		{
+			CopyStingToBuffer(buffer, "Numpad");
+			buffer[6] = '0' + _key - 75;
+		}
+		else if (_key > 84 && _key < 94)
+		{
+			buffer[0] = 'F';
+			buffer[1] = '1' + _key - 85;
+		}
+		else if (_key < 100)
+		{
+			buffer[0] = 'F';
+			buffer[1] = '1';
+			buffer[2] = '0' + _key - 94;
+		}
+		else if (_key == sfMouseLeft + sfKeyCount)
+		{
+			CopyStingToBuffer(buffer, "MouseLeft");
+		}
+		else if (_key == sfMouseRight + sfKeyCount)
+		{
+			CopyStingToBuffer(buffer, "MouseRight");
+		}
+		else if (_key == sfMouseMiddle + sfKeyCount)
+		{
+			CopyStingToBuffer(buffer, "MouseMiddle");
+		}
+		else if (_key == sfMouseXButton1 + sfKeyCount)
+		{
+			CopyStingToBuffer(buffer, "MouseXButton1");
+		}
+		else if (_key == sfMouseXButton2 + sfKeyCount)
+		{
+			CopyStingToBuffer(buffer, "MouseXButton2");
+		}
+		else
+		{
+			return;
+		}
 
-	SetKeyToSave(_index, _key);
-	sfText_setString(menu.mainMenu.key[_index], buffer);
+		SetKeyToSave(_index, _key);
+		sfText_setString(menu.mainMenu.key[_index], buffer);
+	}
 }
 
 int WhichMusicPlaying()
