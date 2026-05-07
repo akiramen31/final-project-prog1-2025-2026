@@ -10,6 +10,7 @@
 Map map;
 
 int rectShapeCount;
+int bossArenaGround = 0;
 sfRectangleShape** rectShape;
 
 sfColor colorBackground;
