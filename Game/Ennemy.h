@@ -47,10 +47,10 @@ typedef struct EnnemyData
 
 typedef struct EnnemyEntity
 {
-	enum EnemyType type;
-	struct EnnemyData ennemydata;
+	EnemyType type;
+	EnnemyData ennemydata;
 	sfBool isJetpack;
-	struct Jetpack jetpack;
+	Jetpack jetpack;
 	sfVector2f acceleration;
 	sfVector2f move;
 	enum State state;

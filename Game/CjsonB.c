@@ -499,11 +499,11 @@ void GetObjectStructTextCjsonB(TextCjsonB* _text)
 	{
 		if (StringCompareCjsonB("text"))
 		{
-			GetValueInBufferCjsonB(CHAR_PTR, _text->text);
+			GetValueInBufferCjsonB(CHAR_PTR, &_text->text);
 		}
 		else if (StringCompareCjsonB("wrap"))
 		{
-			GetValueInBufferCjsonB(BOOL, _text->wrap);
+			GetValueInBufferCjsonB(BOOL, &_text->wrap);
 		}
 	}
 }
