@@ -53,7 +53,7 @@ void LoadEnemy(void)
 		data.armure = LIGHT_ARMOR;
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 		data.armure = HEAVY_ARMOR;
-		ennemyEntity[CROWLER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		ennemyEntity[GROUND_HEAVY] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		/*ennemyEntity[CROWLER_SMALL].type = 0;
 		ennemyEntity[CROWLER_SMALL].ennemydata.life = 3.f;
@@ -216,8 +216,8 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
 	{
-	case CROWLER_SMALL:
-		CreateEnemy(_ennemy, CROWLER_SMALL);
+	case GROUND_HEAVY:
+		CreateEnemy(_ennemy, GROUND_HEAVY);
 		break;
 	case SOLDIER_SMALL:
 		CreateEnemy(_ennemy, SOLDIER_SMALL);
@@ -252,36 +252,12 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
-	case DRONE_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case DRONE_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_SMALL:
+	case GROUND_HEAVY:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case SOLDIER_SMALL:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case SOLDIER_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case SOLDIER_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	default:
@@ -1053,8 +1029,8 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	case DRONE_SMALL:
 		CreateEnemy(ennemy, DRONE_SMALL);
 		break;
-	case CROWLER_SMALL:
-		CreateEnemy(ennemy, CROWLER_SMALL);
+	case GROUND_HEAVY:
+		CreateEnemy(ennemy, GROUND_HEAVY);
 		break;
 	case SOLDIER_SMALL:
 		CreateEnemy(ennemy, SOLDIER_SMALL);
