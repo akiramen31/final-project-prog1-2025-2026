@@ -101,7 +101,7 @@ void UpdatePlayer(float _dt)
 
 		int flySpeed = 500;
 
-		SetViewCenter(GetPlayerPosition());
+		SetViewCenter(posFly);
 
 		if (IfControlKeyPressed(KEY_RIGHT))
 		{
