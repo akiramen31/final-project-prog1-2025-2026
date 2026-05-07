@@ -252,8 +252,8 @@ void* GetAsset(char* _file)
 	{
 		return NULL;
 	}
-
 	entityManager.asset = temp;
+	entityManager.asset[entityManager.assetCount] = (AssetEntity){0};
 
 	char* buffer = GetFormatAsset(_file);
 	if (CompareString(buffer, ".png"))
@@ -268,6 +268,18 @@ void* GetAsset(char* _file)
 	{
 		entityManager.asset[entityManager.assetCount].ptr = sfFont_createFromFile(_file);
 	}
+
+	if (!entityManager.asset[entityManager.assetCount].ptr)
+	{
+		AssetEntity* temp = realloc(entityManager.asset, entityManager.assetCount * sizeof(AssetEntity));
+		if (!temp)
+		{
+			return NULL;
+		}
+		entityManager.asset = temp;
+		return NULL;
+	}
+
 
 	int i = 0;
 	while (_file[i])
@@ -504,7 +516,6 @@ void DestroySoundEntity(void* _entity)
 	{
 		if (entityManager.sound[i].ptr == _entity)
 		{
-
 			if (entityManager.sound[i].type == SOUND)
 			{
 				sfSound_destroy(entityManager.sound[i].ptr);
@@ -512,6 +523,13 @@ void DestroySoundEntity(void* _entity)
 			else if (entityManager.sound[i].type == MUSIC)
 			{
 				sfMusic_destroy(entityManager.sound[i].ptr);
+			}
+			entityManager.soundCount--;
+			entityManager.sound[i] = entityManager.sound[entityManager.soundCount];
+			SoundEntity* temp = realloc(entityManager.sound, entityManager.soundCount * sizeof(SoundEntity));
+			if (temp)
+			{
+				entityManager.sound = temp;
 			}
 			return;
 		}

@@ -15,6 +15,16 @@
 //#define CAMERA_ZOOM_SPEED 3.f
 //#define CAMERA_ZOOM_LOCK 1.f
 
+typedef struct Camera
+{
+	int positionName;
+	int lastPositionName;
+	int index;
+	float zoom;
+	float newZoom;
+}Camera;
+
+void LoadCamera(void);
 void UpdateCamera(float _dt);
 
 void MoveViewSlow(sfVector2f _pos, float _dt);

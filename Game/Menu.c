@@ -293,6 +293,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 						SetSecondaryType(0);
 					}
 					SetGameState(GAME);
+					return;
 				}
 				else
 				{

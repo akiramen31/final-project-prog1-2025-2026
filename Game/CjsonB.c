@@ -1,11 +1,20 @@
 #include "CjsonB.h"
 
+#if 0
 #define START_ALLOC(size) VirtualAlloc(0, size, 0x3000, 4);
 #define FREE_ALLOC(ptr) VirtualFree(ptr, 0, 0x8000);
 #define ALLOC(_size) allocationFree; allocationFree += _size; allocCount += _size;
 
 void* __stdcall VirtualAlloc(void* addr, unsigned long long size, unsigned long type, unsigned long protect);
 int   __stdcall VirtualFree(void* addr, unsigned long long size, unsigned long type);
+
+#else
+#include <stdlib.h>
+#define START_ALLOC(size) calloc(size, sizeof(char));
+#define FREE_ALLOC(ptr) free(ptr);
+#define ALLOC(_size) allocationFree; allocationFree += _size; allocCount += _size;
+
+#endif
 
 int GetObjectStructLayerCjsonB(LayersCjsonB** _layers);
 int GetObjectStructObjectCjsonB(ObjectCjsonB** _object);
@@ -108,7 +117,7 @@ CjsonB* LoadCjsonB(char* _file)
 		}
 	}
 
-	FREE_ALLOC(buffer);
+	FREE_ALLOC(fullBuffer);
 
 	buffer = 0;
 	allocationFree = 0;
