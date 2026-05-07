@@ -1101,7 +1101,7 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			effectGelEnemy(_index, 2, 5);
 			break;
 		case LIGHT:
-			ennemy->ennemyEntity.ennemydata.life -= _degat / 4;
+			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure+1);
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);
@@ -1111,7 +1111,15 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 			}
 			break;
 		case MEDIUM:
-			ennemy->ennemyEntity.ennemydata.life -= _degat / 2;
+			if (ennemy->ennemyEntity.ennemydata.armure == 2)
+			{
+				ennemy->ennemyEntity.ennemydata.life -= _degat / 2;
+			}
+			else
+			{
+				ennemy->ennemyEntity.ennemydata.life -= _degat;
+			}
+
 			if (ennemy->ennemyEntity.ennemydata.life < 0)
 			{
 				sfImage_destroy(ennemy->imageColideur);
