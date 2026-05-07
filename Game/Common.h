@@ -132,6 +132,7 @@ char* StringCopy(char* _string);
 float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
+sfBool IsPointInFloatRect(sfVector2f _pos, sfFloatRect* _rect);
 
 #include "EntityManager.h"
 #include "Map.h"

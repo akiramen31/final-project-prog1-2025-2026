@@ -213,3 +213,16 @@ void ScaleImage(sfImage** _image, int _scale)
 		}
 	}
 }
+
+sfBool IsPointInFloatRect(sfVector2f _pos, sfFloatRect* _rect)
+{
+	if (_pos.x > _rect->left && _pos.x < _rect->left + _rect->width)
+	{
+		if (_pos.y > _rect->top && _pos.y < _rect->top + _rect->height)
+		{
+			return sfTrue;
+		}
+	}
+
+	return sfFalse;
+}
