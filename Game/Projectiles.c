@@ -5,6 +5,7 @@
 #include "Elevator.h"
 
 sfTexture* bulletTexture;
+sfTexture* bulletBossTexture;
 sfTexture* mistealTexture;
 sfTexture* droneTexture;
 sfTexture* explosionTexture;
@@ -15,7 +16,7 @@ Drone droneList[PLAYER_DRONE_MAX] = { 0 };
 ColdBreath coldBreath = { 0 };
 BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
 DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
-Explosion* explosionList;
+Explosion* explosionList = NULL;
 
 Animation explosionAnimation = { 0 };
 
@@ -32,6 +33,7 @@ void SortMistealList(unsigned _index);
 void LoadProjectiles(float _groundlvl)
 {
 	bulletTexture = GetAsset("Assets/Sprites/bullet.png");
+	bulletBossTexture = GetAsset("Assets/Sprites/bulletBoss.png");
 	mistealTexture = GetAsset("Assets/Sprites/Misteal_Ammo_Placeholder.png");
 	mistealCount = 0;
 	bulletCountAlly = 0;
@@ -213,12 +215,14 @@ void UpdateMisteal(float _dt)
 							mistealList[i].velocity.x = -20.f;
 							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
+							mistealList[i].timer = MISTEAL_TIMER_STICKED;
 						}
 						else if (mistealList[i].velocity.x < 0)
 						{
 							mistealList[i].velocity.x = 20.f;
 							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
+							mistealList[i].timer = MISTEAL_TIMER_STICKED;
 						}
 
 					}
@@ -330,8 +334,16 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	}
 
 	Bullet newBullet = { 0 };
+	if (_shooterType.isAlly == sfTrue)
+	{
 	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
+	}
+	else
+	{
+	newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 39.f);
+	}
 	SetSpriteOriginMiddle(newBullet.sprite);
+
 
 	sfVector2f pivotPos = { _posShooter.x, _posShooter.y - _shooterType.weaponPos };
 
@@ -461,6 +473,7 @@ sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
 		hitboxBossDrone = sfSprite_getGlobalBounds(bossDroneList[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxBossDrone, &hitboxColision))
 		{
+			SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
 			DeleteBossDrone(i);
 			return sfTrue;
 		}
@@ -558,7 +571,7 @@ void SortExplosionList(unsigned _index)
 	explosionList[_index] = explosionList[explosionCount];
 	if (explosionCount)
 	{
-		Realloc(explosionList, explosionCount * sizeof(Explosion));
+		explosionList = Realloc(explosionList, explosionCount * sizeof(Explosion));
 	}
 }
 
@@ -790,6 +803,10 @@ void SortMistealList(unsigned _index)
 
 void DeleteBossDrone(unsigned _index)
 {
+	if (_index >= MAX_BOSS_DRONE)
+	{
+
+	}
 	sfSprite_setPosition(bossDroneList[_index].sprite, (sfVector2f) { 0 });
 	bossDroneList[_index].velocity = (sfVector2f){ 0 };
 	bossDroneList[_index].bossDroneState = BDRONE_IS_OUT;

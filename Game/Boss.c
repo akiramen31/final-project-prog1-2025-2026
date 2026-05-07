@@ -229,7 +229,7 @@ sfBool HitBoss(float _damage, sfFloatRect _hitbox, AttackType _attackType)
 				{
 					if (_attackType == MEDIUM || _attackType == HEAVY)
 					{
-						return DamageBoss(_damage);;
+						return DamageBoss(_damage);
 					}
 					return sfTrue;
 				}
