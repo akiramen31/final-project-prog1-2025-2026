@@ -34,7 +34,7 @@ void LoadMap()
 	sfSprite_setColor(map.background, colorBackground);
 
 	LoadBox();
-	SetCameraZoom(0.f);
+	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
 
 	CjsonB* cjson = NULL;
 #if DEV_PIERRE_ENEMY

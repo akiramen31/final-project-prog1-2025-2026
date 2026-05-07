@@ -67,19 +67,20 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f move = { 0 };
 
-	float speed;
+	sfVector2f speed;
 	//if (CamPositonName == 0)
 	if (LastCamPositonName == CamPositonName)
 	{
-		speed = CAMERA_SPEED_ON_PLAYER;
+		speed.x = CAMERA_SPEED_ON_PLAYER_X;
+		speed.y = CAMERA_SPEED_ON_PLAYER_Y;
 	}
 	else
 	{
-		speed = CAMERA_SPEED;
+		speed = (sfVector2f){ CAMERA_SPEED };
 	}
 
-	move.x = _dt * (float)cos(angle) * speed;
-	move.y = _dt * (float)sin(angle) * speed;
+	move.x = _dt * (float)cos(angle) * speed.x;
+	move.y = _dt * (float)sin(angle) * speed.y;
 
 
 	if (POW2(vectorLength.x) > POW2(1000))
@@ -399,7 +400,7 @@ void SetDefaultView(float _dt)
 {
 	sfVector2f pos = GetPlayerPosition();
 	MoveViewSlow((sfVector2f) { pos.x, pos.y - TILE_SIZE * 3 }, _dt);
-	cameraNewZoom = 0.2f;
+	cameraNewZoom = CAMERA_DEFAULT_ZOOM;
 	//cameraNewZoom = 5.f;
 	ChangePosCamera(0, 0);
 }
