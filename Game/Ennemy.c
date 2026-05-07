@@ -135,17 +135,24 @@ void UpdateEnemyI(float _dt, int _index)
 	{
 		ennemy->ennemyEntity.ennemydata.energy = ennemy->ennemyEntity.ennemydata.energyMax;
 	}
-
-	if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
+	if (PlayerVisibility(_index))
 	{
-		ennemy->actiondemander = AStar2(_index, GetPlayerRect());
-		ennemy->ennemyEntity.timer -= TIMER_ASTAR;
+		if (ennemy->ennemyEntity.timerTir >= 1)
+		{
+			ennemy->ennemyEntity.timerTir = 0;
+			shootPlayer(_index);
+		}
 	}
-	if (ennemy->ennemyEntity.timerTir >= 1)
+	else
 	{
-		ennemy->ennemyEntity.timerTir = 0;
-		shootPlayer(_index);
+		if (ennemy->ennemyEntity.timer >= TIMER_ASTAR)
+		{
+			ennemy->actiondemander = AStar2(_index, GetPlayerRect());
+			ennemy->ennemyEntity.timer = 0;
+		}
 	}
+	
+	
 	CalculMoveEnemy(_dt, _index);
 	sfSprite_move(ennemy->sprite, ennemy->ennemyEntity.move);
 	sfFloatRect enemyRect = sfSprite_getGlobalBounds(ennemy->sprite);
@@ -983,11 +990,18 @@ sfBool PlayerVisibility(int _index)
 
 	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
 
-	sfFloatRect bounsplayer = GetPlayerRect();
+	sfFloatRect bounsPlayer = GetPlayerRect();
 
+	sfVector2f pas = { ((bounsPlayer.left + (bounsPlayer.width / 2)) - (bounsEnemy.left + (bounsEnemy.width / 2))) / 50,((bounsPlayer.top + (bounsPlayer.height / 2)) - (bounsEnemy.top + (bounsEnemy.height / 2))) / 50 };
 
-
-	return 0;
+	for (int i = 0; i < 50; i++)
+	{
+		if (Colision((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 1, 1 }, AXIS_BOTH).x || Colision((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 1, 1 }, AXIS_BOTH).y)
+		{
+			return 0;
+		}
+	}
+	return 1;
 }
 
 void shootPlayer(int _index)
