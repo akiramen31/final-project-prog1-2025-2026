@@ -435,12 +435,11 @@ sfBool PauseGameCameraMoveRoom(void)
 void SetCamPositionName(sfFloatRect* _hitbox, InfoZone* _area, float _dt)
 {
 	int num = GetTrigerCount();
-	sfFloatRect area = { 0 };
 	sfVector2f posPlayer = { _hitbox->left + _hitbox->width / 2,_hitbox->top + _hitbox->height / 2 };
 
 	for (int i = 0; i < num; i++)
 	{
-		if (IsPointInFloatRect(posPlayer, &_area[i].hitbox) && sfFloatRect_intersects(_hitbox, &_area[i].hitbox, &area))
+		if (IsPointInFloatRect(posPlayer, &_area[i].hitbox))
 		{
 			if (StringCompare(_area[i].type, "Camera"))
 			{
