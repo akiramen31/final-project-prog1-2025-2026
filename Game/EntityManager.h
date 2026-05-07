@@ -121,6 +121,8 @@ Element* CreateElement(void* _value);
 Element* GetElement(List* _list, unsigned _index);
 void InsertElement(List* _list, Element* _element, unsigned _index);
 void RemoveElement(List* _list, unsigned _index);
+void RemoveElementByValue(List* _list, void* _value);
+void RemoveElementByElement(List* _list, Element* _elementToRemove);
 
 void Load(void);
 void PollEvent(void);

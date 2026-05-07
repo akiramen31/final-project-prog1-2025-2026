@@ -855,24 +855,81 @@ void InsertElement(List* _list, Element* _element, unsigned _index)
 
 void RemoveElement(List* _list, unsigned _index)
 {
-	if (_index == 0)
+	if (_list && _list->first)
 	{
-		Element* elementToRemove = _list->first;
-		_list->first = elementToRemove->next;
-		free(elementToRemove);
-	}
-	else
-	{
-		Element* previousElement = GetElement(_list, _index - 1);
-		if (previousElement && previousElement->next)
+		if (_index == 0)
 		{
-			Element* elementToRemove = previousElement->next;
-			previousElement->next = elementToRemove->next;
+			Element* elementToRemove = _list->first;
+			_list->first = elementToRemove->next;
 			free(elementToRemove);
+		}
+		else
+		{
+			Element* previousElement = GetElement(_list, _index - 1);
+			if (previousElement && previousElement->next)
+			{
+				Element* elementToRemove = previousElement->next;
+				previousElement->next = elementToRemove->next;
+				free(elementToRemove);
+			}
 		}
 	}
 }
 
+void RemoveElementByValue(List* _list, void* _value)
+{
+	if (_list && _list->first)
+	{
+		if (_list->first->value == _value)
+		{
+			Element* elementToRemove = _list->first;
+			_list->first = elementToRemove->next;
+			free(elementToRemove);
+		}
+		else
+		{
+			Element* previousElement = _list->first;
+
+			while (previousElement->next)
+			{
+				if (previousElement->next->value == _value)
+				{
+					Element* elementToRemove = previousElement->next;
+					previousElement->next = elementToRemove->next;
+					free(elementToRemove);
+					return;
+				}
+				previousElement = previousElement->next;
+			}
+		}
+	}
+}
+
+void RemoveElementByElement(List* _list, Element* _elementToRemove)
+{
+	if (_list && _list->first)
+	{
+		if (_list->first == _elementToRemove)
+		{
+			_list->first = _list->first->next;
+			free(_elementToRemove);
+		}
+		else
+		{
+			Element* previousElement = _list->first;
+			while (previousElement->next)
+			{
+				if (previousElement->next == _elementToRemove)
+				{
+					previousElement->next = _elementToRemove->next->next;
+					free(_elementToRemove);
+					return;
+				}
+				previousElement = previousElement->next;
+			}
+		}
+	}
+}
 
 
 void Load(void)

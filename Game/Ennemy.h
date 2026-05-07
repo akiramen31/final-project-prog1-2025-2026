@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 
-#if DEV_PIERRE_ENEMY == 1
+#if DEV_PIERRE_ENEMY
 
 #define TIMER_ASTAR 0.05f
 #define JUMP_FORCE 5
@@ -47,7 +47,7 @@ typedef struct EnnemyEntity
 	sfBool isJetpack;
 	Jetpack jetpack;
 	sfVector2f move;
-	enum State state;
+	int state;
 	float timer;
 	float timerTir;
 	int powerGel;
@@ -100,8 +100,7 @@ typedef struct Tableau
 
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
-void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
+void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);;
 sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _attaque);
 sfVector2f GetPositionEnemy(int _index);
 sfFloatRect GetBounsEnemy(int _index);
@@ -110,7 +109,6 @@ void SetPositionEnemy(sfVector2f _position, int _index);
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 void ResetEnemy(void);
 int GetEnemyZone(void);
-void effectGelEnemy(unsigned _index, int _puissance, float _time);
 
 #else
 #define MAX_FALL_SPEED_ENEMY 1000

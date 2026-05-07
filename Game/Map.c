@@ -171,7 +171,10 @@ void SetPositionEntity(InfoZone* _point, int _count)
 				{
 					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 					{
-						AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, ALEATORY, map.data.triger[j].hitbox);
+						int camName = 0;
+						sscanf_s(_point[i].name, "%d", &camName);
+						camName--;
+						AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, camName, map.data.triger[j].hitbox);
 					}
 				}
 			}
