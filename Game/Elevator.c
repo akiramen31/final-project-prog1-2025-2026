@@ -147,13 +147,18 @@ sfBool ColisionElevatorButon(sfFloatRect _hitbox)
 
 			if (sfFloatRect_intersects(&_hitbox, &hitbox, NULL))
 			{
-				if (j == 1)
+				sfVector2f pos = sfRectangleShape_getPosition(elevatorList[i].hitbox[0]);
+
+				if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] == pos.y)
 				{
-					elevatorList[i].actualLevel++;
-				}
-				else if (j == 2)
-				{
-					elevatorList[i].actualLevel--;
+					if (j == 1)
+					{
+						elevatorList[i].actualLevel++;
+					}
+					else if (j == 2)
+					{
+						elevatorList[i].actualLevel--;
+					}
 				}
 
 				return sfTrue;
