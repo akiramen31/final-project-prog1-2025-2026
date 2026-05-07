@@ -97,9 +97,10 @@ void SwitchBoss(char _index, sfVector2f _position)
 
 void UpdateBoss(sfVector2f _posPlayer, float _dt)
 {
-	if (boss.boss1->isAlive)
+	if (DEV_BOSS)
 	{
-		if (DEV_BOSS)
+		static sfBool n_wasPressed = sfFalse;
+		if (boss.boss1->isAlive)
 		{
 			if (sfKeyboard_isKeyPressed(sfKeyM))
 			{
@@ -109,8 +110,36 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			{
 				MoveBoss1((sfVector2f) { -2.f, 0.f });
 			}
+			if (sfKeyboard_isKeyPressed(sfKeyN))
+			{
+				if (n_wasPressed == sfFalse)
+				{
+					boss.boss1->isAlive = sfFalse;
+					n_wasPressed = sfTrue;
+				}
+				else
+				{
+					n_wasPressed = sfFalse;
+				}
+			}
+		}
+		else
+		{
+			if (sfKeyboard_isKeyPressed(sfKeyN))
+			{
+				if (n_wasPressed == sfFalse)
+				{
+					boss.boss1->isAlive = sfTrue;
+					n_wasPressed = sfTrue;
+				}
+				else
+				{
+					n_wasPressed = sfFalse;
+				}
+			}
 		}
 	}
+
 	if (boss.boss1->isFreezed)
 	{
 		boss.boss1->timerFreezed += _dt;
@@ -578,7 +607,14 @@ float* GetBossHpAdr(void)
 
 float GetBossPositionY(void)
 {
-	return sfSprite_getPosition(boss.boss1->track).y;
+	if (boss.boss1->track != NULL)
+	{
+		return sfSprite_getPosition(boss.boss1->track).y;
+	}
+	else
+	{
+		return 0.f;
+	}
 }
 
 sfBool IsBossActive(void)
