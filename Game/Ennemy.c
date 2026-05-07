@@ -505,7 +505,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnnemy.width + 1,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
 					!TestJump((sfIntRect) { caseRecherche.left, caseRecherche.top + 1, caseRecherche.width - 1, caseRecherche.height }) &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION) 
 
 				{
 					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left + 1].compteur =
@@ -691,7 +691,10 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				//test Bas
 				caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnnemy.width,bounsEnnemy.height };
 				if (TestColision(caseRecherche) != 2 &&
-					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+					tableau.grid[ennemy->ennemyEntity.type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_LEFT &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN_RIGHT &&
+					tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].direction != DOWN)
 				{
 					sfBool temp = sfTrue;
 					char compt = tableau.grid[ennemy->ennemyEntity.type][caseGet.y][caseGet.x].jumpForce + 1;
