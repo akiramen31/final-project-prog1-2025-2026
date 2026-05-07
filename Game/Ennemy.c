@@ -3,7 +3,7 @@
 #include "Projectiles.h"
 
 #define INIT_STRUCT_ENEMY_ENTITY(type,ennemydata, isJetpack, jetpack,move, state, timer, timerTir, powerGel, timerGel, region)(EnnemyEntity) {type,ennemydata, isJetpack, jetpack, move, state, timer, timerTir, powerGel, timerGel, region}
-#define INIT_STRUCT_ENEMY_DATA(life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump) (EnnemyData) {life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump}
+#define INIT_STRUCT_ENEMY_DATA(life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor) (EnnemyData) {life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump, armor}
 #define INIT_STRUCT_ENEMY_JETPACK( trust, consomation, life) (Jetpack) {trust, consomation, life}
 
 void UpdateColisionEnemy(Ennemy* _enemy);
@@ -18,11 +18,12 @@ void AjoutListWait(sfVector2u _caseAjout);
 void RetirerListWait(int _index);
 int TestColision(sfIntRect _intRect);
 int TestJump(sfIntRect _intRect);
-void DebugTab(Case _case);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfIntRect FloatRectIntoIntRect(sfFloatRect _floatRect);
 sfBool PlayerVisibility(int _index);
 void shootPlayer(int _index);
+sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
+void EffectGelEnemy(Ennemy* _enemy, int _puissance, float _time);
 
 List* listEnnemy;
 EnnemyEntity ennemyEntity[ALEATORY];
@@ -39,7 +40,6 @@ int enemyZone;
 void LoadEnemy(void)
 {
 	listEnnemy = 0;
-	ennemyEntity[ALEATORY];
 	mapData = 0;
 	aStarMap = 0;
 	listeWait = 0;
@@ -61,12 +61,13 @@ void LoadEnemy(void)
 	else // charger les diférent type d'ennemy
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
-		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f,6);
-		data.armure = MEDIUM_ARMOR;
+		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, MEDIUM_ARMOR);
 		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
-		data.armure = LIGHT_ARMOR;
+
+		data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, LIGHT_ARMOR);
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
-		data.armure = HEAVY_ARMOR;
+
+		data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6, HEAVY_ARMOR);
 		ennemyEntity[GROUND_HEAVY] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		/*ennemyEntity[CROWLER_SMALL].type = 0;
@@ -104,7 +105,7 @@ void LoadEnemy(void)
 	mapData = GetMapData(); // connaitre la taille de la map
 }
 
-void UpbdateEnemy2(float _dt)
+void UpdateEnemy(float _dt)
 {
 	enemyZone = 0;
 	sfVector2f playerPos = GetPlayerPosition();
@@ -119,28 +120,10 @@ void UpbdateEnemy2(float _dt)
 			UpdateEnemyI(_dt, i, enemy);
 			enemyZone++;
 		}
+		i++;
 		elementActualy = elementActualy->next;
 	}
 
-	for (char i = 0; i < ALEATORY; i++)
-	{
-		tableau.new[i] = sfTrue;
-	}
-}
-
-void UpdateEnemy(float _dt)
-{
-	enemyZone = 0;
-	sfVector2f playerPos = GetPlayerPosition();
-	for (int i = GetEnemyCount() - 1; i >= 0; i--)
-	{
-		Ennemy* enemy = GetElement(listEnnemy, i)->value;
-		if (enemy->ennemyEntity.region.left + TILE_SIZE <= playerPos.x && enemy->ennemyEntity.region.left + TILE_SIZE + enemy->ennemyEntity.region.width - TILE_SIZE * 2 >= playerPos.x && enemy->ennemyEntity.region.top + TILE_SIZE <= playerPos.y && enemy->ennemyEntity.region.top + TILE_SIZE + enemy->ennemyEntity.region.height - TILE_SIZE * 2 >= playerPos.y)
-		{
-			UpdateEnemyI(_dt, i, enemy);
-			enemyZone++;
-		}
-	}
 	for (char i = 0; i < ALEATORY; i++)
 	{
 		tableau.new[i] = sfTrue;
@@ -264,15 +247,12 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 	{
 	case DRONE_SMALL:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case GROUND_HEAVY:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case SOLDIER_SMALL:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	default:
 		break;
@@ -880,14 +860,6 @@ int TestJump(sfIntRect _intRect)
 	return temp;
 }
 
-void DebugTab(Case _case)
-{
-	if (DEBUG_MODE_A_STAR)
-	{
-
-	}
-}
-
 sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
 {
 	_positionReal.x = _positionReal.x / mapData->caseSize.x;
@@ -939,11 +911,10 @@ int GetEnemyZone(void)
 	return enemyZone;
 }
 
-void effectGelEnemy(unsigned _index, int _puissance, float _time)
+void EffectGelEnemy(Ennemy* _enemy, int _puissance, float _time)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	ennemy->ennemyEntity.powerGel = _puissance;
-	ennemy->ennemyEntity.timerGel = _time;
+	_enemy->ennemyEntity.powerGel = _puissance;
+	_enemy->ennemyEntity.timerGel = _time;
 }
 
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
@@ -1038,23 +1009,12 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	Ennemy* ennemy = Calloc(1, sizeof(Ennemy));
 	Element* element = CreateElement(ennemy);
 	element->value = ennemy;
-	switch (_type)
+
+	if (_type == ALEATORY)
 	{
-	case DRONE_SMALL:
-		CreateEnemy(ennemy, DRONE_SMALL);
-		break;
-	case GROUND_HEAVY:
-		CreateEnemy(ennemy, GROUND_HEAVY);
-		break;
-	case SOLDIER_SMALL:
-		CreateEnemy(ennemy, SOLDIER_SMALL);
-		break;
-	case ALEATORY:
-		CreateEnemyRandom(ennemy);
-		break;
-	default:
-		break;
+		_type = rand() % ALEATORY;
 	}
+	CreateEnemy(ennemy, _type);
 
 	ennemy->ennemyEntity.region = _region;
 
@@ -1064,8 +1024,12 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque)
 {
-	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
-	sfColor pixelColor = sfImage_getPixel(ennemy->imageColideur, (int)_touch.x, (int)_touch.y);
+	Ennemy* enemy = GetElement(listEnnemy, _index)->value;
+	
+	sfImage* colideur = sfTexture_copyToImage(sfSprite_getTexture(enemy->sprite));
+	sfColor pixelColor = sfImage_getPixel(colideur, (int)_touch.x, (int)_touch.y);
+	sfImage_destroy(colideur);
+
 	sfBool isTouch = sfFalse;
 	if (pixelColor.a == 255)
 	{
@@ -1075,44 +1039,40 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _a
 		case NOATTACK:
 			break;
 		case FREEZE:
-			effectGelEnemy(_index, 2, 5);
+			EffectGelEnemy(enemy, 2, 5);
 			break;
 		case LIGHT:
-			ennemy->ennemyEntity.ennemydata.life -= _degat / (ennemy->ennemyEntity.ennemydata.armure + 1);
-			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			enemy->ennemyEntity.ennemydata.life -= _degat / (enemy->ennemyEntity.ennemydata.armure + 1);
+			if (enemy->ennemyEntity.ennemydata.life < 0)
 			{
-				sfImage_destroy(ennemy->imageColideur);
-				DestroyVisualEntity(ennemy->sprite);
-				Free(ennemy);
+				DestroyVisualEntity(enemy->sprite);
+				Free(enemy);
 				RemoveElement(listEnnemy, _index);
 			}
 			break;
 		case MEDIUM:
-			if (ennemy->ennemyEntity.ennemydata.armure == 2)
+			if (enemy->ennemyEntity.ennemydata.armure == 2)
 			{
-
-				ennemy->ennemyEntity.ennemydata.life -= _degat / 2;
+				enemy->ennemyEntity.ennemydata.life -= _degat / 2;
 			}
 			else
 			{
-				ennemy->ennemyEntity.ennemydata.life -= _degat;
+				enemy->ennemyEntity.ennemydata.life -= _degat;
 			}
 
-			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			if (enemy->ennemyEntity.ennemydata.life < 0)
 			{
-				sfImage_destroy(ennemy->imageColideur);
-				DestroyVisualEntity(ennemy->sprite);
-				Free(ennemy);
+				DestroyVisualEntity(enemy->sprite);
+				Free(enemy);
 				RemoveElement(listEnnemy, _index);
 			}
 			break;
 		case HEAVY:
-			ennemy->ennemyEntity.ennemydata.life -= _degat;
-			if (ennemy->ennemyEntity.ennemydata.life < 0)
+			enemy->ennemyEntity.ennemydata.life -= _degat;
+			if (enemy->ennemyEntity.ennemydata.life < 0)
 			{
-				sfImage_destroy(ennemy->imageColideur);
-				DestroyVisualEntity(ennemy->sprite);
-				Free(ennemy);
+				DestroyVisualEntity(enemy->sprite);
+				Free(enemy);
 				RemoveElement(listEnnemy, _index);
 			}
 			break;
