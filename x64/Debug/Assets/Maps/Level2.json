@@ -11,7 +11,7 @@
          "name":"Calque d'Images 1",
          "opacity":1,
          "type":"imagelayer",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -173,7 +173,7 @@
          "name":"BackGroundFirst",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":372,
          "x":0,
          "y":0
@@ -336,7 +336,7 @@
          "name":"LevelIn",
          "opacity":0.8,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":372,
          "x":0,
          "y":0
@@ -6551,6 +6551,32 @@
                  "width":0,
                  "x":4896,
                  "y":1904
+                }, 
+                {
+                 "height":0,
+                 "id":1019,
+                 "name":"",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"Boss",
+                 "visible":true,
+                 "width":0,
+                 "x":5440,
+                 "y":160
+                }, 
+                {
+                 "height":0,
+                 "id":1020,
+                 "name":"",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"TpPlayer",
+                 "visible":true,
+                 "width":0,
+                 "x":4960,
+                 "y":160
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6966,7 +6992,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":1019,
+ "nextobjectid":1021,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
