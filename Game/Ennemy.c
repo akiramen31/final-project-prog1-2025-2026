@@ -4,7 +4,7 @@
 
 #if DEV_PIERRE_ENEMY
 
-#define INIT_STRUCT_ENEMY_ENTITY(type,ennemydata, isJetpack, jetpack, acceleration,move, state, timer, timerTir, powerGel, timerGel, region)(EnnemyEntity) {type,ennemydata, isJetpack, jetpack, acceleration,move, state, timer, timerTir, powerGel, timerGel, region}
+#define INIT_STRUCT_ENEMY_ENTITY(type,ennemydata, isJetpack, jetpack,move, state, timer, timerTir, powerGel, timerGel, region)(EnnemyEntity) {type,ennemydata, isJetpack, jetpack, move, state, timer, timerTir, powerGel, timerGel, region}
 #define INIT_STRUCT_ENEMY_DATA(life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump) (EnnemyData) {life, energyMax, energy, energyRegen, accelerationMax, speedMax, jumForce, nbCaseJump}
 #define INIT_STRUCT_ENEMY_JETPACK( trust, consomation, life) (Jetpack) {trust, consomation, life}
 
@@ -49,12 +49,10 @@ void LoadEnemy(void)
 	else // charger les diférent type d'ennemy
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
-		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 5 * TILE_SIZE / G / 3.5f, 5);
+		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f,6);
 		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 		ennemyEntity[CROWLER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
-
-		
 
 		/*ennemyEntity[CROWLER_SMALL].type = 0;
 		ennemyEntity[CROWLER_SMALL].ennemydata.life = 3.f;
@@ -234,7 +232,6 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 	//création et aplication des donné de l'ennemy
 	_ennemy->ennemyEntity.type = _type;
 	_ennemy->ennemyEntity.ennemydata = ennemyEntity[_type].ennemydata;
-	_ennemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
 	_ennemy->ennemyEntity.move = (sfVector2f){ 0,0 };
 	_ennemy->ennemyEntity.timer = 0.f;
 
@@ -291,8 +288,6 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 
 void CalculMoveEnemy(float _dt, Ennemy* _enemy)
 {
-	_enemy->ennemyEntity.acceleration = (sfVector2f){ 0,0 };
-
 	// 1 = droite / -1 = gauche
 	char droitOuGauche = _enemy->actiondemander.droite - _enemy->actiondemander.gauche;
 	if (droitOuGauche)
@@ -313,6 +308,7 @@ void CalculMoveEnemy(float _dt, Ennemy* _enemy)
 		sfFloatRect enemyRect = sfSprite_getGlobalBounds(_enemy->sprite);
 		enemyRect.top += 1;
 		sfVector2f collision = Colision(enemyRect, AXIS_BOTH);
+		collision.y += CollisionPassThrough(enemyRect).y;
 		if (collision.y > -2 && collision.y < 0)
 		{
 			_enemy->ennemyEntity.move.y = -_enemy->ennemyEntity.ennemydata.jumForce;
