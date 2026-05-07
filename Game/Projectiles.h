@@ -1,5 +1,5 @@
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef PROJECTILES_H
+#define PROJECTILES_H
 
 #include "Common.h"
 #include "Box.h"
@@ -8,7 +8,7 @@
 #define MISTEAL_ALLY_MAX 6
 
 #define BULLET_ENEMY_MAX 20
-#define MAX_BOSS_DRONE 4
+#define MAX_BOSS_MISSILE 4
 
 #define BULLET_SPEED_ALLY 300
 #define MISTEAL_SPEED BULLET_SPEED_ALLY * 1.2f
@@ -17,12 +17,12 @@
 #define BULLET_SPEED_ENEMY 250
 #define BULLET_LIFETIME 2.5f
 
-#define MISTEAL_TIMER_OUTMAP_NOTSTICKED 2.f
-#define MISTEAL_TIMER_STICKED MISTEAL_TIMER_OUTMAP_NOTSTICKED * 10.f
+#define MISTEAL_TIMER_GENERAL 2.f
+#define MISTEAL_TIMER_IN_WALL MISTEAL_TIMER_GENERAL * 10.f
 
-#define BOSS_DRONE_SPEED 400.f
-#define BOSS_DRONE_SPAWN_TIME 1.f
-#define BOSS_DRONE_IN_SKY_TIME 3.f
+#define BOSS_MISSILE_SPEED 400.f
+#define BOSS_MISSILE_SPAWN_TIME 1.f
+#define BOSS_MISSILE_AIR_TIME 3.f
 #define BOSS_EXPLOSION_RANGE 3.f
 #define BOSS_SELF_DAMAGE 50.f
 
@@ -58,16 +58,16 @@ typedef struct Misteal
 	float timer;
 }Misteal;
 
-typedef enum BossDroneState
+typedef enum BossMissileState
 {
-	BDRONE_IS_SPAWNING,
-	BDRONE_IS_ASCENDING,
-	BDRONE_IS_STASIC_IN_SKY,
-	BDRONE_IS_FALLING,
-	BDRONE_IS_OUT
-}BossDroneState;
+	BOSS_MISSILE_SPAWNING,
+	BOSS_MISSILE_ASCENDING,
+	BOSS_MISSILE_STASIC,
+	BOSS_MISSILE_FALLING,
+	BOSS_MISSILE_OUT
+}BossMissileState;
 
-typedef struct BossDrone
+typedef struct BossMissile
 {
 	sfSprite* sprite;
 	sfMusic* music;
@@ -75,16 +75,16 @@ typedef struct BossDrone
 	sfVector2f velocity;
 	float destination;
 
-	BossDroneState bossDroneState;
-	float bossDroneTimer;
+	BossMissileState bossMissileState;
+	float bossMissileTimer;
 
-}BossDrone;
+}BossMissile;
 
 typedef struct DangerZone
 {
 	sfSprite* sprite;
-	sfBool isShowed;
-	sfBool isBlink;
+	sfBool isShown;
+	sfBool doBlink;
 }DangerZone;
 
 typedef struct Drone
@@ -116,13 +116,13 @@ typedef struct Explosion
 
 void LoadProjectiles(float _groundlvl);
 void LoadSecondary(void);
-void LoadBossDrone(void);
+void LoadBossMissile(void);
 void LoadDangerZone(void);
 void LoadExplosion(void);
 
 void UpdateProjectiles(sfVector2f _posAim, float _dt);
 void UpdateMisteal(float _dt);
-void UpdateBossDrone(float _dt);
+void UpdateBossMissile(float _dt);
 void UpdateSecondary(sfVector2f _pos, float _dt);
 void UpdateDrone(sfVector2f _playerPos, float _dt);
 void UpdateColdBreath(float _dt);
@@ -133,7 +133,7 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 void AddDrone(sfVector2f _pos, sfBool _isRighted);
 void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 
-void AddBossDrone(sfVector2f _posShooter, float _destination);
+void SpawnBossMissile(sfVector2f _posShooter, float _destination);
 void AddDangerZone(sfVector2f _destination, unsigned _index);
 
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range);
@@ -142,18 +142,18 @@ void SortExplosionList(unsigned _index);
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
 void DeleteMisteal(unsigned _index);
-void DeleteBossDrone(unsigned _index);
+void DeleteBossMissile(unsigned _index);
 void DeleteDangerZone(unsigned _index);
 
 void MoveDrone(unsigned _index, sfVector2f _playerPos, float _dt);
 
-void CheckCollisionMissilesList(void);
+void CheckCollisionDronesList(void);
 void TestCollisionExplosionList(unsigned _index, float _range);
 
-sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox);
+sfBool HitBossMissile(sfFloatRect _hitbox);
 
 unsigned int GetBulletCount(void);
 unsigned GetMistealCount(void);
 unsigned GetExplosionCount(void);
 
-#endif // !BULLET_H
+#endif // !PROJECTILES_H

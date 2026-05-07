@@ -12,13 +12,12 @@ sfTexture* explosionTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
 Bullet bulletListEnemy[BULLET_ENEMY_MAX];
 Misteal mistealList[MISTEAL_ALLY_MAX];
-Drone droneList[PLAYER_DRONE_MAX] = { 0 };
-ColdBreath coldBreath = { 0 };
-BossDrone bossDroneList[MAX_BOSS_DRONE] = { 0 };
-DangerZone dangerZoneList[MAX_BOSS_DRONE] = { 0 };
+Drone droneList[PLAYER_DRONE_MAX];
+ColdBreath coldBreath;
+BossMissile bossMissileList[MAX_BOSS_MISSILE];
+DangerZone dangerZoneList[MAX_BOSS_MISSILE];
 Explosion* explosionList = NULL;
-
-Animation explosionAnimation = { 0 };
+Animation explosionAnimation;
 
 unsigned mistealCount;
 unsigned bulletCountAlly;
@@ -30,7 +29,7 @@ void SortBulletListAlly(unsigned _index);
 void SortBulletListEnemy(unsigned _index);
 void SortMistealList(unsigned _index);
 
-void LoadProjectiles(float _groundlvl)
+void LoadProjectiles(float _groundlevel)
 {
 	bulletTexture = GetAsset("Assets/Sprites/bullet.png");
 	bulletBossTexture = GetAsset("Assets/Sprites/bulletBoss.png");
@@ -38,9 +37,9 @@ void LoadProjectiles(float _groundlvl)
 	mistealCount = 0;
 	bulletCountAlly = 0;
 	bulletCountEnemy = 0;
-	groundLevel = _groundlvl;
+	groundLevel = _groundlevel;
 	LoadSecondary();
-	LoadBossDrone();
+	LoadBossMissile();
 	LoadExplosion();
 }
 
@@ -66,21 +65,21 @@ void LoadSecondary(void)
 		droneList[i].isAlive = sfFalse;
 		droneList[i].ambientSound = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
 	}
-	LoadBossDrone();
+	LoadBossMissile();
 }
 
-void LoadBossDrone(void)
+void LoadBossMissile(void)
 {
-	sfTexture* bossDroneTexture = GetAsset("Assets/Boss/1/Boss_Drone_Placeholder.png");
-	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	sfTexture* bossDroneTexture = GetAsset("Assets/Sprites/tank_ballistic_missile.png");
+	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
-		bossDroneList[i].sprite = CreateSprite(bossDroneTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
-		SetSpriteOriginMiddle(bossDroneList[i].sprite);
+		bossMissileList[i].sprite = CreateSprite(bossDroneTexture, (sfVector2f) { 0, 0 }, 1.f, 39);
+		SetSpriteOriginMiddle(bossMissileList[i].sprite);
 
 		sfVector2f missilePosition = { 0 };
-		bossDroneList[i].velocity = (sfVector2f){ 0 };
-		bossDroneList[i].bossDroneState = BDRONE_IS_OUT;
-		bossDroneList[i].bossDroneTimer = 0;
+		bossMissileList[i].velocity = (sfVector2f){ 0 };
+		bossMissileList[i].bossMissileState = BOSS_MISSILE_OUT;
+		bossMissileList[i].bossMissileTimer = 0;
 		//bossDroneList[i].music = CreateMusic("Assets/Musics/BOSSDRONESOUNDAPLACER.ogg", 0.5f, sfFalse);
 	}
 	LoadDangerZone();
@@ -88,14 +87,12 @@ void LoadBossDrone(void)
 
 void LoadDangerZone(void)
 {
-	sfTexture* dangerZone = GetAsset("Assets/Boss/1/Danger_Zone_Placeholder.png");
-	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	sfTexture* dangerZone = GetAsset("Assets/Sprites/Danger_Zone_Placeholder.png");
+	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
-		dangerZoneList[i].sprite = CreateSprite(dangerZone, (sfVector2f) { 0, 0 }, 1.f, 39);
+		dangerZoneList[i].sprite = CreateSprite(dangerZone, (sfVector2f) { 0 }, 1.f, 39);
 		SetSpriteOriginMiddle(dangerZoneList[i].sprite);
-		dangerZoneList[i].isShowed = sfFalse;
-		sfVector2f missilePosition = { 0 };
-
+		dangerZoneList[i].isShown = sfFalse;
 	}
 }
 
@@ -128,7 +125,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet, LIGHT) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossDrone(sfTrue, hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet, LIGHT) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossMissile(hitboxBullet))
 			{
 				DeleteBulletAlly(i);
 			}
@@ -168,15 +165,22 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 
 	}
 	UpdateMisteal(_dt);
-	UpdateBossDrone(_dt);
+	UpdateBossMissile(_dt);
 	UpdateSecondary(_posAim, _dt);
 	UpdateExplosion(_dt);
 }
 
 void UpdateSecondary(sfVector2f _posAim, float _dt)
 {
-	UpdateColdBreath(_dt);
-	UpdateDrone(_posAim, _dt);
+	switch (GetSecondaryType())
+	{
+	case COLDBREATH:
+		UpdateColdBreath(_dt);
+		break;
+	case DRONE:
+		UpdateDrone(_posAim, _dt);
+		break;
+	}
 }
 
 void UpdateMisteal(float _dt)
@@ -193,7 +197,7 @@ void UpdateMisteal(float _dt)
 			hitboxMisteal.width = 1;
 			hitboxMisteal.height = 1;
 			reactionWall = Colision(hitboxMisteal, AXIS_BOTH);
-			if (mistealList[i].timer > MISTEAL_TIMER_OUTMAP_NOTSTICKED)
+			if (mistealList[i].timer > MISTEAL_TIMER_GENERAL)
 			{
 				DeleteMisteal(i);
 				continue;
@@ -206,7 +210,7 @@ void UpdateMisteal(float _dt)
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
-				if (HitEnemy(9.f, hitboxMisteal, HEAVY) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossDrone(sfTrue, hitboxMisteal))
+				if (HitEnemy(9.f, hitboxMisteal, HEAVY) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossMissile(hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)
 					{
@@ -215,14 +219,14 @@ void UpdateMisteal(float _dt)
 							mistealList[i].velocity.x = -20.f;
 							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
-							mistealList[i].timer = MISTEAL_TIMER_STICKED;
+							mistealList[i].timer = MISTEAL_TIMER_IN_WALL;
 						}
 						else if (mistealList[i].velocity.x < 0)
 						{
 							mistealList[i].velocity.x = 20.f;
 							mistealList[i].velocity.y = 280.f;
 							mistealList[i].isAlreadyHit = sfTrue;
-							mistealList[i].timer = MISTEAL_TIMER_STICKED;
+							mistealList[i].timer = MISTEAL_TIMER_IN_WALL;
 						}
 
 					}
@@ -256,7 +260,7 @@ void UpdateMisteal(float _dt)
 				DeleteMisteal(i);
 				continue;
 			}
-			else if (mistealList[i].timer > MISTEAL_TIMER_STICKED)
+			else if (mistealList[i].timer > MISTEAL_TIMER_IN_WALL)
 			{
 				DeleteMisteal(i);
 				continue;
@@ -265,57 +269,57 @@ void UpdateMisteal(float _dt)
 	}
 }
 
-void UpdateBossDrone(float _dt)
+void UpdateBossMissile(float _dt)
 {
-	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
-		if (bossDroneList[i].bossDroneState == BDRONE_IS_SPAWNING)
+		if (bossMissileList[i].bossMissileState == BOSS_MISSILE_SPAWNING)
 		{
-			bossDroneList[i].bossDroneTimer -= _dt;
-			if (bossDroneList[i].bossDroneTimer < 0)
+			bossMissileList[i].bossMissileTimer -= _dt;
+			if (bossMissileList[i].bossMissileTimer < 0)
 			{
-				bossDroneList[i].bossDroneState = BDRONE_IS_ASCENDING;
+				bossMissileList[i].bossMissileState = BOSS_MISSILE_ASCENDING;
 			}
 		}
-		else if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING)
+		else if (bossMissileList[i].bossMissileState == BOSS_MISSILE_ASCENDING)
 		{
-			if (sfSprite_getPosition(bossDroneList[i].sprite).y <= 620)
+			if (sfSprite_getPosition(bossMissileList[i].sprite).y <= 620)
 			{
-				bossDroneList[i].bossDroneState = BDRONE_IS_STASIC_IN_SKY;
-				AddDangerZone((sfVector2f) { bossDroneList[i].destination, groundLevel }, i);
-				bossDroneList[i].bossDroneTimer = BOSS_DRONE_IN_SKY_TIME;
-				bossDroneList[i].velocity.y = 0;
-				sfSprite_rotate(bossDroneList[i].sprite, 180.f);
-				sfSprite_setPosition(bossDroneList[i].sprite, (sfVector2f) { bossDroneList[i].destination, sfSprite_getPosition(bossDroneList[i].sprite).y });
+				bossMissileList[i].bossMissileState = BOSS_MISSILE_STASIC;
+				AddDangerZone((sfVector2f) { bossMissileList[i].destination, groundLevel }, i);
+				bossMissileList[i].bossMissileTimer = BOSS_MISSILE_AIR_TIME;
+				bossMissileList[i].velocity.y = 0;
+				sfSprite_rotate(bossMissileList[i].sprite, 180.f);
+				sfSprite_setPosition(bossMissileList[i].sprite, (sfVector2f) { bossMissileList[i].destination, sfSprite_getPosition(bossMissileList[i].sprite).y });
 			}
 		}
-		else if (bossDroneList[i].bossDroneState == BDRONE_IS_STASIC_IN_SKY)
+		else if (bossMissileList[i].bossMissileState == BOSS_MISSILE_STASIC)
 		{
-			bossDroneList[i].bossDroneTimer -= _dt;
-			if (bossDroneList[i].bossDroneTimer < 0)
+			bossMissileList[i].bossMissileTimer -= _dt;
+			if (bossMissileList[i].bossMissileTimer < 0)
 			{
-				bossDroneList[i].velocity.y = BOSS_DRONE_SPEED;
-				bossDroneList[i].bossDroneState = BDRONE_IS_FALLING;
+				bossMissileList[i].velocity.y = BOSS_MISSILE_SPEED;
+				bossMissileList[i].bossMissileState = BOSS_MISSILE_FALLING;
 			}
 		}
-		sfSprite_move(bossDroneList[i].sprite, (sfVector2f) { 0, bossDroneList[i].velocity.y* _dt });
-		sfFloatRect hitboxBossDrone = sfSprite_getGlobalBounds(bossDroneList[i].sprite);
+		sfSprite_move(bossMissileList[i].sprite, (sfVector2f) { 0, bossMissileList[i].velocity.y* _dt });
+		sfFloatRect hitboxBossDrone = sfSprite_getGlobalBounds(bossMissileList[i].sprite);
 		sfVector2f reactionWall = Colision(hitboxBossDrone, AXIS_BOTH);
-		if (bossDroneList[i].bossDroneState == BDRONE_IS_SPAWNING)
+		if (bossMissileList[i].bossMissileState == BOSS_MISSILE_SPAWNING)
 		{
 			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue))
 			{
-				SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
-				DeleteBossDrone(i);
+				SpawnExplosion(sfSprite_getPosition(bossMissileList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
+				DeleteBossMissile(i);
 				continue;
 			}
 		}
-		else if (bossDroneList[i].bossDroneState == BDRONE_IS_ASCENDING || bossDroneList[i].bossDroneState == BDRONE_IS_FALLING)
+		else if (bossMissileList[i].bossMissileState == BOSS_MISSILE_ASCENDING || bossMissileList[i].bossMissileState == BOSS_MISSILE_FALLING)
 		{
 			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue) || HitBoss(0, hitboxBossDrone, NONE))
 			{
-				SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
-				DeleteBossDrone(i);
+				SpawnExplosion(sfSprite_getPosition(bossMissileList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
+				DeleteBossMissile(i);
 				continue;
 			}
 		}
@@ -439,18 +443,17 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 	mistealCount++;
 }
 
-void AddBossDrone(sfVector2f _posShooter, float _destination)
+void SpawnBossMissile(sfVector2f _posShooter, float _destination)
 {
-	for (unsigned i = 0; i < MAX_BOSS_DRONE; i++)
+	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
-		if (bossDroneList[i].bossDroneState == BDRONE_IS_OUT)
+		if (bossMissileList[i].bossMissileState == BOSS_MISSILE_OUT)
 		{
-			//sfMusic_play(bossDroneList[i].music);
-			sfSprite_setPosition(bossDroneList[i].sprite, _posShooter);
-			bossDroneList[i].destination = _destination;
-			bossDroneList[i].bossDroneTimer = BOSS_DRONE_SPAWN_TIME;
-			bossDroneList[i].velocity.y = -(BOSS_DRONE_SPEED);
-			bossDroneList[i].bossDroneState = BDRONE_IS_SPAWNING;
+			sfSprite_setPosition(bossMissileList[i].sprite, _posShooter);
+			bossMissileList[i].destination = _destination;
+			bossMissileList[i].bossMissileTimer = BOSS_MISSILE_SPAWN_TIME;
+			bossMissileList[i].velocity.y = -BOSS_MISSILE_SPEED;
+			bossMissileList[i].bossMissileState = BOSS_MISSILE_SPAWNING;
 			return;
 		}
 	}
@@ -458,23 +461,21 @@ void AddBossDrone(sfVector2f _posShooter, float _destination)
 
 void AddDangerZone(sfVector2f _destination, unsigned _index)
 {
-
 	sfSprite_setPosition(dangerZoneList[_index].sprite, _destination);
-	dangerZoneList[_index].isShowed = sfTrue;
+	dangerZoneList[_index].isShown = sfTrue;
 	return;
 }
 
-sfBool HitBossDrone(sfBool _destroy, sfFloatRect _hitbox)
+sfBool HitBossMissile(sfFloatRect _hitbox)
 {
-	sfFloatRect hitboxBossDrone = { 0 };
-	sfFloatRect hitboxColision = { 0 };
-	for (int i = 0; i < MAX_BOSS_DRONE; i++)
+	sfFloatRect hitboxMissile;
+	for (int i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
-		hitboxBossDrone = sfSprite_getGlobalBounds(bossDroneList[i].sprite);
-		if (sfFloatRect_intersects(&_hitbox, &hitboxBossDrone, &hitboxColision))
+		hitboxMissile = sfSprite_getGlobalBounds(bossMissileList[i].sprite);
+		if (sfFloatRect_intersects(&_hitbox, &hitboxMissile, NULL))
 		{
-			SpawnExplosion(sfSprite_getPosition(bossDroneList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
-			DeleteBossDrone(i);
+			SpawnExplosion(sfSprite_getPosition(bossMissileList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
+			DeleteBossMissile(i);
 			return sfTrue;
 		}
 	}
@@ -575,7 +576,6 @@ void SortExplosionList(unsigned _index)
 	}
 }
 
-
 void UpdateDrone(sfVector2f _mousePos, float _dt)
 {
 	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
@@ -585,7 +585,7 @@ void UpdateDrone(sfVector2f _mousePos, float _dt)
 			droneList[i].lifetime += _dt;
 			if (droneList[i].lifetime <= SECONDARY_PROJECTILE_DURATION)
 			{
-				CheckCollisionMissilesList();
+				CheckCollisionDronesList();
 				MoveDrone(i, _mousePos, _dt);
 			}
 			else
@@ -693,7 +693,7 @@ void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
 	sfSprite_move(droneList[_index].sprite, movement);
 }
 
-void CheckCollisionMissilesList(void)
+void CheckCollisionDronesList(void)
 {
 	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
 	{
@@ -801,23 +801,23 @@ void SortMistealList(unsigned _index)
 	mistealList[mistealCount - 1] = (Misteal){ 0 };
 }
 
-void DeleteBossDrone(unsigned _index)
+void DeleteBossMissile(unsigned _index)
 {
-	if (_index >= MAX_BOSS_DRONE)
+	if (_index >= MAX_BOSS_MISSILE)
 	{
-
+		return;
 	}
-	sfSprite_setPosition(bossDroneList[_index].sprite, (sfVector2f) { 0 });
-	bossDroneList[_index].velocity = (sfVector2f){ 0 };
-	bossDroneList[_index].bossDroneState = BDRONE_IS_OUT;
-	bossDroneList[_index].bossDroneTimer = 0;
+	sfSprite_setPosition(bossMissileList[_index].sprite, (sfVector2f) { 0 });
+	bossMissileList[_index].velocity = (sfVector2f){ 0 };
+	bossMissileList[_index].bossMissileState = BOSS_MISSILE_OUT;
+	bossMissileList[_index].bossMissileTimer = 0;
 	DeleteDangerZone(_index);
 }
 
 void DeleteDangerZone(unsigned _index)
 {
 	sfSprite_setPosition(dangerZoneList[_index].sprite, (sfVector2f) { 0 });
-	dangerZoneList[_index].isShowed = sfFalse;
+	dangerZoneList[_index].isShown = sfFalse;
 	return;
 }
 

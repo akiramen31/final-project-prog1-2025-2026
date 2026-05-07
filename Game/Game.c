@@ -22,16 +22,16 @@ void LoadGame(void)
 	LoadCamera();
 	LoadParallax();
 	LoadPlayer();
-	LoadBoss();
+	LoadPlayer();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
-	LoadProjectiles(GetBossPositionY());
+	LoadProjectiles(GetBossPosition().y);
 #if !DEV_PIERRE_ENEMY
 	LoadEnemy();
 #endif
 
 	LoadHUD();
-	SetHpFocus(GetBossHpAdr());
+	SetHpFocus(GetBossLifeAdress());
 	//LoadGUI();
 	LoadWeapons();
 
@@ -219,5 +219,6 @@ void UpdateGame(float _dt)
 	}
 	else
 	{
+		//UpdateGUI(_dt);
 	}
 }
