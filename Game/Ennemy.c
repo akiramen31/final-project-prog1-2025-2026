@@ -61,10 +61,13 @@ void LoadEnemy(void)
 	else // charger les diférent type d'ennemy
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
-		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 6);
+		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f,6);
+		data.armure = MEDIUM_ARMOR;
 		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		data.armure = LIGHT_ARMOR;
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
-		ennemyEntity[CROWLER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		data.armure = HEAVY_ARMOR;
+		ennemyEntity[GROUND_HEAVY] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		/*ennemyEntity[CROWLER_SMALL].type = 0;
 		ennemyEntity[CROWLER_SMALL].ennemydata.life = 3.f;
@@ -227,14 +230,17 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 	enum EnemyType temp = rand() % ALEATORY;
 	switch (temp)
 	{
-	case CROWLER_SMALL:
-		CreateEnemy(_ennemy, CROWLER_SMALL);
+	case GROUND_HEAVY:
+		CreateEnemy(_ennemy, GROUND_HEAVY);
 		break;
 	case SOLDIER_SMALL:
 		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
+	case DRONE_SMALL:
+		CreateEnemy(_ennemy, DRONE_SMALL);
+		break;
 	default:
-		CreateEnemy(_ennemy, SOLDIER_SMALL);
+		CreateEnemy(_ennemy, DRONE_SMALL);
 		break;
 	}
 }
@@ -260,36 +266,12 @@ void CreateEnemy(Ennemy* _ennemy, EnemyType _type)
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
-	case DRONE_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case DRONE_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_SMALL:
+	case GROUND_HEAVY:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case CROWLER_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	case SOLDIER_SMALL:
 		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/spider_small.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case SOLDIER_MEDIUM:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
-		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
-		break;
-	case SOLDIER_HEAVY:
-		_ennemy->sprite = CreateSprite(GetAsset("Assets/Sprites/capsul.png"), (sfVector2f) { 500, 500 }, 1, 1);
 		_ennemy->imageColideur = sfTexture_copyToImage(GetAsset("Assets/Sprites/capsul.png"));
 		break;
 	default:
@@ -1061,23 +1043,11 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	case DRONE_SMALL:
 		CreateEnemy(ennemy, DRONE_SMALL);
 		break;
-	case DRONE_MEDIUM:
-		break;
-	case DRONE_HEAVY:
-		break;
-	case CROWLER_SMALL:
-		CreateEnemy(ennemy, CROWLER_SMALL);
-		break;
-	case CROWLER_MEDIUM:
-		break;
-	case CROWLER_HEAVY:
+	case GROUND_HEAVY:
+		CreateEnemy(ennemy, GROUND_HEAVY);
 		break;
 	case SOLDIER_SMALL:
 		CreateEnemy(ennemy, SOLDIER_SMALL);
-		break;
-	case SOLDIER_MEDIUM:
-		break;
-	case SOLDIER_HEAVY:
 		break;
 	case ALEATORY:
 		CreateEnemyRandom(ennemy);

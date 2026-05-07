@@ -101,7 +101,7 @@ void UpdatePlayer(float _dt)
 
 		int flySpeed = 500;
 
-		SetViewCenter(GetPlayerPosition());
+		SetViewCenter(posFly);
 
 		if (IfControlKeyPressed(KEY_RIGHT))
 		{
@@ -924,13 +924,16 @@ void ChangePlayerInvicibility(void)
 	}
 }
 
-sfBool ColisionWithPlayer(sfFloatRect _rect, int _damage)
+sfBool ColisionWithPlayer(sfFloatRect _rect, sfBool _damage)
 {
 	sfFloatRect playerRect = GetPlayerRect();
 
 	if (sfFloatRect_intersects(&playerRect, &_rect, NULL))
 	{
-		DamagePlayer(_damage);
+		if (_damage)
+		{
+			DamagePlayer(1);
+		}
 		return sfTrue;
 	}
 	return sfFalse;

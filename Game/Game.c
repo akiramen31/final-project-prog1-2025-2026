@@ -37,6 +37,12 @@ void LoadGame(void)
 
 	TpPlayerToSpawn();
 
+	game.timerstartLevel = 0;
+
+	game.startIntroCircle = CreateCircleShape((sfFloatRect) { 0, 0, 1, 1 }, sfTransparent, sfBlack, 1.f);
+	sfCircleShape_setOutlineThickness(game.startIntroCircle, 500.f);
+	game.startIntroCircleHiden = sfFalse;
+
 	switch (GetIntFromSave(CURRENT_MUSIC))
 	{
 	case 0:
@@ -134,6 +140,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
+
 	if (sfTrue /*PauseGame*/)
 	{
 		if (!PauseGameCameraMoveRoom() || game.timerstartLevel <= START_GAME_CAM_DURATION)
@@ -159,28 +166,47 @@ void UpdateGame(float _dt)
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
 
 				VisibilityBossBar(IsBossActive());
+
+			}
+			else
+			{
+				if (game.timerRoomPause <= PAUSE_ROOM_DURATION)
+				{
+					game.timerRoomPause += _dt;
+				}
+			}
+
+			if (game.timerstartLevel < START_GAME_CAM_DURATION)
+			{
+				sfFloatRect hitbox = GetPlayerRect();
+				SetViewCenter((sfVector2f) { hitbox.left + hitbox.width / 2, hitbox.top + hitbox.height / 2 });
+
+				sfCircleShape_setPosition(game.startIntroCircle, (sfVector2f) { hitbox.left + hitbox.width / 2, hitbox.top + hitbox.height / 2 });
+				sfCircleShape_setRadius(game.startIntroCircle, sfCircleShape_getRadius(game.startIntroCircle) + 125 * _dt);
+				hitbox = sfCircleShape_getGlobalBounds(game.startIntroCircle);
+				sfCircleShape_setOrigin(game.startIntroCircle, (sfVector2f) { sfCircleShape_getRadius(game.startIntroCircle), sfCircleShape_getRadius(game.startIntroCircle) });
+
+				game.timerstartLevel += _dt;
+			}
+			else
+			{
+				if (!game.startIntroCircleHiden)
+				{
+					game.startIntroCircleHiden = sfTrue;
+					sfCircleShape_setScale(game.startIntroCircle, (sfVector2f) { 0 });
+				}
 			}
 		}
 		else
 		{
 			game.timerRoomPause = 0;
 		}
+
+		UpdateHUD(_dt);
+		UpdateCamera(_dt);
+		UpdateParallax(_dt);
 	}
 	else
 	{
-	}
-
-	UpdateHUD(_dt);
-	UpdateCamera(_dt);
-	UpdateParallax(_dt);
-
-	if (game.timerRoomPause <= PAUSE_ROOM_DURATION)
-	{
-		game.timerRoomPause += _dt;
-	}
-
-	if (game.timerstartLevel <= START_GAME_CAM_DURATION)
-	{
-		game.timerstartLevel += _dt;
 	}
 }
