@@ -48,8 +48,11 @@ void LoadEnemy(void)
 	{
 		Jetpack jetpack = INIT_STRUCT_ENEMY_JETPACK(10.f, 50.f, 5.f);
 		EnnemyData data = INIT_STRUCT_ENEMY_DATA(3.f, (float)MAX_ENRGIE, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f,6);
+		data.armure = MEDIUM_ARMOR;
 		ennemyEntity[SOLDIER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		data.armure = LIGHT_ARMOR;
 		ennemyEntity[DRONE_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
+		data.armure = HEAVY_ARMOR;
 		ennemyEntity[CROWLER_SMALL] = INIT_STRUCT_ENEMY_ENTITY(0, data, sfTrue, jetpack, 10.f, 0.f, 0, 0.f, 0.f, 0.f, 0.f, 0);
 
 		/*ennemyEntity[CROWLER_SMALL].type = 0;
@@ -219,8 +222,11 @@ void CreateEnemyRandom(Ennemy* _ennemy)
 	case SOLDIER_SMALL:
 		CreateEnemy(_ennemy, SOLDIER_SMALL);
 		break;
+	case DRONE_SMALL:
+		CreateEnemy(_ennemy, DRONE_SMALL);
+		break;
 	default:
-		CreateEnemy(_ennemy, SOLDIER_SMALL);
+		CreateEnemy(_ennemy, DRONE_SMALL);
 		break;
 	}
 }
@@ -1054,23 +1060,11 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	case DRONE_SMALL:
 		CreateEnemy(ennemy, DRONE_SMALL);
 		break;
-	case DRONE_MEDIUM:
-		break;
-	case DRONE_HEAVY:
-		break;
 	case CROWLER_SMALL:
 		CreateEnemy(ennemy, CROWLER_SMALL);
 		break;
-	case CROWLER_MEDIUM:
-		break;
-	case CROWLER_HEAVY:
-		break;
 	case SOLDIER_SMALL:
 		CreateEnemy(ennemy, SOLDIER_SMALL);
-		break;
-	case SOLDIER_MEDIUM:
-		break;
-	case SOLDIER_HEAVY:
 		break;
 	case ALEATORY:
 		CreateEnemyRandom(ennemy);
