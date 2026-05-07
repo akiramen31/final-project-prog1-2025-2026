@@ -13,14 +13,13 @@
 void KeyPressedGame(sfKeyEvent* _keyEvent);
 
 Game game;
-float timer;
-float timerRoomPause = PAUSE_ROOM_DURATION;
-float timerstartLevel = 0;
 
 void LoadGame(void)
 {
-	LoadParallax();
 	game = (Game){ 0 };
+	game.timerRoomPause = PAUSE_ROOM_DURATION;
+
+	LoadParallax();
 	LoadPlayer();
 	LoadBoss();
 	LoadMap();
@@ -36,8 +35,6 @@ void LoadGame(void)
 	LoadWeapons();
 
 	TpPlayerToSpawn();
-
-	timerstartLevel = 0;
 
 	switch (GetIntFromSave(CURRENT_MUSIC))
 	{
@@ -138,9 +135,9 @@ void UpdateGame(float _dt)
 {
 	if (sfTrue /*PauseGame*/)
 	{
-		if (!PauseGameCameraMoveRoom() || timerstartLevel <= START_GAME_CAM_DURATION)
+		if (!PauseGameCameraMoveRoom() || game.timerstartLevel <= START_GAME_CAM_DURATION)
 		{
-			if (timerRoomPause >= PAUSE_ROOM_DURATION)
+			if (game.timerRoomPause >= PAUSE_ROOM_DURATION)
 			{
 				if (GetPlayerLife() <= 0)
 				{
@@ -165,7 +162,7 @@ void UpdateGame(float _dt)
 		}
 		else
 		{
-			timerRoomPause = 0;
+			game.timerRoomPause = 0;
 		}
 	}
 	else
@@ -176,13 +173,13 @@ void UpdateGame(float _dt)
 	UpdateCamera(_dt);
 	UpdateParallax(_dt);
 
-	if (timerRoomPause <= PAUSE_ROOM_DURATION)
+	if (game.timerRoomPause <= PAUSE_ROOM_DURATION)
 	{
-		timerRoomPause += _dt;
+		game.timerRoomPause += _dt;
 	}
 
-	if (timerstartLevel <= START_GAME_CAM_DURATION)
+	if (game.timerstartLevel <= START_GAME_CAM_DURATION)
 	{
-		timerstartLevel += _dt;
+		game.timerstartLevel += _dt;
 	}
 }

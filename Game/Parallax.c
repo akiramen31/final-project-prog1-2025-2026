@@ -6,6 +6,7 @@ parallaxLayers parallax;
 
 void LoadParallax()
 {
+	parallax = (parallaxLayers){ 0 };
 	parallax.offsetX[0] = 64;
 	parallax.offsetX[1] = 256;
 	parallax.offsetY[0] = 64;

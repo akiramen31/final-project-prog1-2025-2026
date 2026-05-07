@@ -333,8 +333,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 {
 	Ennemy* ennemy = GetElement(listEnnemy, _index)->value;
 	sfVector2u gridSize = { ennemy->ennemyEntity.region.width / TILE_SIZE , ennemy->ennemyEntity.region.height / TILE_SIZE };
-	if (ennemy->ennemyEntity.region.top != tableau.region[ennemy->ennemyEntity.type].top
-		|| ennemy->ennemyEntity.region.left != tableau.region[ennemy->ennemyEntity.type].left)
+	if (ennemy->ennemyEntity.region.top != tableau.region[ennemy->ennemyEntity.type].top || ennemy->ennemyEntity.region.left != tableau.region[ennemy->ennemyEntity.type].left)
 	{
 		// liberer lancienne GRID
 		tableau.region[ennemy->ennemyEntity.type] = ennemy->ennemyEntity.region;
@@ -378,9 +377,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 				printf("\n");
 			}
-			printf("\n");
-			printf("\n");
-			printf("\n");
+			printf("\n\n\n");
 		}
 	};
 
@@ -742,9 +739,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 				printf("\n");
 			}
-			printf("\n");
-			printf("\n");
-			printf("\n");
+			printf("\n\n\n");
 			for (int y = 0; y < (int) { ennemy->ennemyEntity.region.height / TILE_SIZE }; y++)
 			{
 				for (int x = 0; x < (int) { ennemy->ennemyEntity.region.width / TILE_SIZE }; x++)
@@ -767,9 +762,7 @@ ActionDemander AStar2(int _index, sfFloatRect _cible)
 				}
 				printf("\n");
 			}
-			printf("\n");
-			printf("\n");
-			printf("\n");
+			printf("\n\n\n");
 		}
 	}
 

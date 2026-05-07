@@ -19,18 +19,11 @@ EntityManager entityManager;
 void LoadEntityManager(void)
 {
 	entityManager = (EntityManager){ 0 };
-	entityManager.assetCount = 0;
-	entityManager.soundCount = 0;
-	entityManager.generalAssetCount = 0;
-	entityManager.listListCount = 0;
-	entityManager.callocListCount = 0;
 	entityManager.asset = calloc(1, sizeof(AssetEntity));
 	entityManager.sound = calloc(1, sizeof(SoundEntity));
 	entityManager.listList = calloc(1, sizeof(List*));
 	entityManager.callocList = calloc(1, sizeof(void*));
-	entityManager.visual = NULL;
 	LoadGeneralAsset();
-
 }
 
 void LoadGeneralAsset(void)
@@ -177,26 +170,35 @@ void CleanupLocal(void)
 		if (entityManager.visual->type == SPRITE)
 		{
 			sfSprite_destroy(entityManager.visual->ptr);
+			entityManager.visualCount--;
 		}
 		else if (entityManager.visual->type == TEXT)
 		{
 			sfText_destroy(entityManager.visual->ptr);
+			entityManager.visualCount--;
 		}
-		else if (entityManager.visual->type == VIEW && entityManager.visual->ptr != entityManager.view)
+		else if (entityManager.visual->type == VIEW)
 		{
-			sfView_destroy(entityManager.visual->ptr);
+			if (entityManager.visual->ptr != entityManager.view)
+			{
+				sfView_destroy(entityManager.visual->ptr);
+			}
+			entityManager.visualCount--;
 		}
 		else if (entityManager.visual->type == RECTANGLE_SHAPE || entityManager.visual->type == CIRCLE_SHAPE || entityManager.visual->type == CONVEX_SHAPE)
 		{
 			sfShape_destroy(entityManager.visual->ptr);
+			entityManager.visualCount--;
 		}
 		else if (entityManager.visual->type == VERTEX_ARRAY)
 		{
 			sfVertexArray_destroy(entityManager.visual->ptr);
+			entityManager.visualCount--;
 		}
 		else if (entityManager.visual->type == VERTEX_BUFFER)
 		{
 			sfVertexBuffer_destroy(entityManager.visual->ptr);
+			entityManager.visualCount--;
 		}
 		VisualEntity* temp = entityManager.visual;
 		entityManager.visual = (VisualEntity*)entityManager.visual->next;
@@ -459,27 +461,32 @@ void DestroyVisualEntity(void* _entity)
 				if (elementNext->type == SPRITE)
 				{
 					sfSprite_destroy(elementNext->ptr);
-					elementNext->ptr = NULL;
+					entityManager.visualCount--;
 				}
 				else if (elementNext->type == TEXT)
 				{
 					sfText_destroy(elementNext->ptr);
+					entityManager.visualCount--;
 				}
 				else if (elementActual->type == VIEW)
 				{
 					sfView_destroy(elementNext->ptr);
+					entityManager.visualCount--;
 				}
 				else if (entityManager.visual->type == RECTANGLE_SHAPE || entityManager.visual->type == CIRCLE_SHAPE || entityManager.visual->type == CONVEX_SHAPE)
 				{
 					sfShape_destroy(entityManager.visual->ptr);
+					entityManager.visualCount--;
 				}
 				else if (entityManager.visual->type == VERTEX_ARRAY)
 				{
 					sfVertexArray_destroy(entityManager.visual->ptr);
+					entityManager.visualCount--;
 				}
 				else if (entityManager.visual->type == VERTEX_BUFFER)
 				{
 					sfVertexBuffer_destroy(entityManager.visual->ptr);
+					entityManager.visualCount--;
 				}
 				elementActual->next = elementNext->next;
 				free(elementNext);
@@ -605,6 +612,7 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 	{
 		previous = previous->next;
 	}
+	entityManager.visualCount++;
 	*newElement = (VisualEntity){ _type, _ptr ,_drawPlan, previous->next };
 	previous->next = newElement;
 }

@@ -45,7 +45,6 @@ void LoadMenu(void)
 		for (int column = 0; column < 3; column++)
 		{
 			menu.selectionMenu.textureRect[(line * 3) + column] = (sfIntRect){ column * 56, line * 18, 56, 18 };
-			printf("Texture n°%d:   { %d, %d, %d, %d}\n", (line * 3)+column, column * 56, line * 18, 56, 18);
 		}
 	}
 
