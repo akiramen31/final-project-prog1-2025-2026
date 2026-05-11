@@ -123,6 +123,7 @@ typedef struct Animation
 #define ANGLE_VECTOR_RAD(v) atan2f(v.y, v.x)
 #define ANGLE_VECTOR_DEG(v) RAD_DEG(ANGLE_VECTOR_RAD(v))
 #define ADD_VECTOR(u,v) {(u.x + v.x), (u.y + v.y)}
+#define RECT_TRANSFORME(newType, rect) (newType) {rect.left, rect.top, rect.width, rect.height}
 #define IF_RECT_EQUAL(_rect1, _rect2) (_rect1.left == _rect2.left && _rect1.top == _rect2.top && _rect1.height == _rect2.height && _rect1.width == _rect2.width)
 #define IF_VECT_EQUAL(u,v) (u.x == v.x && u.y == v.y)
 

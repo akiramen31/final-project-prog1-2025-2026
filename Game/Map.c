@@ -74,8 +74,6 @@ void LoadMap()
 
 #if DEV_PIERRE_ENEMY && DEV_ENEMY
 	LoadEnemy();
-#else
-	ResetEnemy();
 #endif
 
 	LoadElevator();
