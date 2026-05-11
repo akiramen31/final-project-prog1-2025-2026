@@ -188,6 +188,8 @@ void UpdateGame(float _dt)
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
 
+				UpdateEntity(_dt);
+
 				VisibilityBossBar(IsBossActive());
 
 			}

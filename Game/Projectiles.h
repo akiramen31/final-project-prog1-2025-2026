@@ -2,7 +2,7 @@
 #define PROJECTILES_H
 
 #include "Common.h"
-#include "Box.h"
+#include "Entity.h"
 
 #define BULLET_ALLY_MAX 5
 #define MISTEAL_ALLY_MAX 6

@@ -60,7 +60,7 @@
     <ClInclude Include="HUD.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="Entity.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Boss.h">
@@ -81,9 +81,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Common.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Ennemy.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CjsonB.c">
@@ -122,7 +119,7 @@
     <ClCompile Include="Weapons.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Box.c">
+    <ClCompile Include="Entity.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Boss.c">
@@ -132,6 +129,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Elevator.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
