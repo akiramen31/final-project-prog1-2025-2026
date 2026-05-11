@@ -64,7 +64,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	sfVector2f vectorLength = (sfVector2f){ VECTOR(tempPos, _pos) };
 
-	double angle = atan2f(vectorLength.y, vectorLength.x);
+	double angle = ANGLE_VECTOR_RAD(vectorLength);
 
 	sfVector2f move = { 0 };
 
@@ -73,7 +73,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 	if (camera.lastPositionName == camera.positionName)
 	{
 		speed.x = CAMERA_SPEED_ON_PLAYER_X;
-		
+
 		if (sin(angle) >= 0)
 		{
 			speed.y = CAMERA_SPEED_ON_PLAYER_Y_DOWN;
@@ -145,7 +145,7 @@ void UpdatePositionCameraLevel1(float _dt)
 		sfVector2f pos = { 0 };
 
 		if (sfFloatRect_intersects(&hitbox, &area[camera.index].hitbox, NULL) && camera.positionName != 0)
-		//if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
+			//if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
 		{
 			switch (camera.positionName)
 			{

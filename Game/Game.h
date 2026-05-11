@@ -3,18 +3,21 @@
 
 #include "Common.h"
 
-#define START_GAME_CAM_DURATION 1.9f
 #define PAUSE_ROOM_DURATION 0.25f
 
 typedef struct
 {
 	float timer;
 	float timerRoomPause;
-	float timerstartLevel;
+	float timerStartLevel;
+		
+	float timerDurationStartLevel;
+
 	sfSprite* temp;
 
 	sfCircleShape* startIntroCircle;
-	sfBool startIntroCircleHiden;
+	sfRectangleShape* startIntoRectangle;
+	sfBool startIntroIsFinished;
 
 	sfCircleShape* cameraCenter;
 }Game;

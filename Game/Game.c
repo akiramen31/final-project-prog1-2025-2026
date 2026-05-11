@@ -37,11 +37,29 @@ void LoadGame(void)
 
 	TpPlayerToSpawn();
 
-	game.timerstartLevel = 0;
-
 	game.startIntroCircle = CreateCircleShape((sfFloatRect) { 0, 0, 1, 1 }, sfTransparent, sfBlack, 1.f);
 	sfCircleShape_setOutlineThickness(game.startIntroCircle, 500.f);
-	game.startIntroCircleHiden = sfFalse;
+
+	game.startIntoRectangle = CreateRectangleShape((sfFloatRect) { 0, 0, 150, 250 }, sfTransparent, sfBlack, 1.f);
+	sfRectangleShape_setOrigin(game.startIntoRectangle, (sfVector2f) { 75, 125 });
+	sfRectangleShape_setOutlineThickness(game.startIntoRectangle, 500.f);
+
+	game.startIntroIsFinished = sfFalse;
+
+	switch (GetCurrentMap())
+	{
+	case 0:
+		game.timerDurationStartLevel = 2.5f;
+		break;
+	case 1:
+	case 2:
+		game.timerDurationStartLevel = 1.5f;
+		game.timerDurationStartLevel = 1.5f;
+		break;
+	default:
+		game.timerDurationStartLevel = 0;
+		break;
+	}
 
 	if (DEV_MODE_CAMERA)
 	{
@@ -148,7 +166,7 @@ void UpdateGame(float _dt)
 
 	if (sfTrue /*PauseGame*/)
 	{
-		if (!PauseGameCameraMoveRoom() || game.timerstartLevel <= START_GAME_CAM_DURATION)
+		if (!PauseGameCameraMoveRoom() && game.startIntroIsFinished)
 		{
 			if (game.timerRoomPause >= PAUSE_ROOM_DURATION)
 			{
@@ -163,7 +181,7 @@ void UpdateGame(float _dt)
 					UpdateBoss(GetPlayerPosition(), _dt);
 				}
 
-				UpdatePlayer(_dt);
+				UpdatePlayer(sfFalse, _dt);
 				UpdateEnemy(_dt);
 
 				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
@@ -181,30 +199,40 @@ void UpdateGame(float _dt)
 				}
 			}
 
-			if (game.timerstartLevel < START_GAME_CAM_DURATION)
-			{
-				sfFloatRect hitbox = GetPlayerRect();
-				SetViewCenter((sfVector2f) { hitbox.left + hitbox.width / 2, hitbox.top + hitbox.height / 2 });
-
-				sfCircleShape_setPosition(game.startIntroCircle, (sfVector2f) { hitbox.left + hitbox.width / 2, hitbox.top + hitbox.height / 2 });
-				sfCircleShape_setRadius(game.startIntroCircle, sfCircleShape_getRadius(game.startIntroCircle) + 125 * _dt);
-				hitbox = sfCircleShape_getGlobalBounds(game.startIntroCircle);
-				sfCircleShape_setOrigin(game.startIntroCircle, (sfVector2f) { sfCircleShape_getRadius(game.startIntroCircle), sfCircleShape_getRadius(game.startIntroCircle) });
-
-				game.timerstartLevel += _dt;
-			}
-			else
-			{
-				if (!game.startIntroCircleHiden)
-				{
-					game.startIntroCircleHiden = sfTrue;
-					sfCircleShape_setScale(game.startIntroCircle, (sfVector2f) { 0 });
-				}
-			}
 		}
 		else
 		{
 			game.timerRoomPause = 0;
+		}
+
+		if (game.timerStartLevel < game.timerDurationStartLevel)
+		{
+			UpdatePlayer(sfTrue, _dt);
+
+			sfVector2f pos = GetPlayerCenterPosition();
+
+			SetViewCenter(pos);
+
+			sfCircleShape_setPosition(game.startIntroCircle, pos);
+			sfCircleShape_setRadius(game.startIntroCircle, sfCircleShape_getRadius(game.startIntroCircle) + 125 * _dt);
+
+			float radius = sfCircleShape_getRadius(game.startIntroCircle);
+			sfCircleShape_setOrigin(game.startIntroCircle, (sfVector2f) { radius, radius });
+
+			sfRectangleShape_setPosition(game.startIntoRectangle, pos);
+
+			game.timerStartLevel += _dt;
+			VisibilityHUD(sfFalse);
+		}
+		else
+		{
+			if (!game.startIntroIsFinished)
+			{
+				VisibilityHUD(sfTrue);
+				game.startIntroIsFinished = sfTrue;
+				sfCircleShape_setScale(game.startIntroCircle, (sfVector2f) { 0 });
+				sfRectangleShape_setScale(game.startIntoRectangle, (sfVector2f) { 0 });
+			}
 		}
 
 		UpdateHUD(_dt);
