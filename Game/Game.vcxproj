@@ -44,7 +44,6 @@
     <ClCompile Include="Backup.c" />
     <ClCompile Include="Boss.c" />
     <ClCompile Include="Entity.c" />
-	<ClCompile Include="Box.c" />
     <ClCompile Include="JetSteam.c" />
     <ClCompile Include="Projectiles.c" />
     <ClCompile Include="Camera.c" />
