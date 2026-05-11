@@ -175,12 +175,12 @@ void UpdateGame(float _dt)
 					LoadGame();
 				}
 
-				if (GetCurrentMap() == LEVEL1)
+				if (GetCurrentMap() == LEVEL1 || GetCurrentMap() == LEVEL2)
 				{
 					UpdateBoss(GetPlayerPosition(), _dt);
 				}
-
 				UpdateMap(_dt);
+
 				UpdatePlayer(sfFalse, _dt);
 				UpdateEnemy(_dt);
 
