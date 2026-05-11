@@ -2,7 +2,7 @@
 #define PROJECTILES_H
 
 #include "Common.h"
-#include "Box.h"
+#include "Entity.h"
 
 #define BULLET_ALLY_MAX 5
 #define MISTEAL_ALLY_MAX 6
@@ -14,7 +14,7 @@
 #define MISTEAL_SPEED BULLET_SPEED_ALLY * 1.2f
 
 #define MISTEAL_ROTATION 5.f
-#define BULLET_SPEED_ENEMY 250
+#define BULLET_SPEED_ENEMY 150
 #define BULLET_LIFETIME 2.5f
 
 #define MISTEAL_TIMER_GENERAL 2.f

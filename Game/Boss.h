@@ -129,6 +129,7 @@ typedef struct Boss2
 	Boss2Reaction boss2Reaction;
 	float reactionTimer;
 	sfVector2f velocity;
+	sfVector2f aimDestination;
 }Boss2;
 
 typedef struct Boss
