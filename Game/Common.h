@@ -42,7 +42,7 @@
 #define G 5.81f
 //#define G 9.81f
 
-typedef enum CollisionAxis 
+typedef enum CollisionAxis
 {
 	AXIS_X,
 	AXIS_Y,
@@ -121,7 +121,7 @@ typedef struct Animation
 #define DEG_RAD(d) d * (float)M_PI / 180
 #define RAND_RANGE(_min, _max) _min + rand() % (_max - _min + 1)
 #define ANGLE_VECTOR_RAD(v) atan2f(v.y, v.x)
-#define ANGLE_VECTOR_DEG(v) RAD_DEG(atan2f(v.y, v.x))
+#define ANGLE_VECTOR_DEG(v) RAD_DEG(ANGLE_VECTOR_RAD(v))
 #define ADD_VECTOR(u,v) {(u.x + v.x), (u.y + v.y)}
 #define IF_RECT_EQUAL(_rect1, _rect2) (_rect1.left == _rect2.left && _rect1.top == _rect2.top && _rect1.height == _rect2.height && _rect1.width == _rect2.width)
 #define IF_VECT_EQUAL(u,v) (u.x == v.x && u.y == v.y)

@@ -37,6 +37,15 @@ void LoadGame(void)
 
 	TpPlayerToSpawn();
 
+	game.startIntroCircle = CreateCircleShape((sfFloatRect) { 0, 0, 1, 1 }, sfTransparent, sfBlack, 1.f);
+	sfCircleShape_setOutlineThickness(game.startIntroCircle, 500.f);
+
+	game.startIntoRectangle = CreateRectangleShape((sfFloatRect) { 0, 0, 150, 250 }, sfTransparent, sfBlack, 1.f);
+	sfRectangleShape_setOrigin(game.startIntoRectangle, (sfVector2f) { 75, 125 });
+	sfRectangleShape_setOutlineThickness(game.startIntoRectangle, 500.f);
+
+	game.startIntroIsFinished = sfFalse;
+
 	switch (GetCurrentMap())
 	{
 	case 0:
@@ -51,14 +60,6 @@ void LoadGame(void)
 		game.timerDurationStartLevel = 0;
 		break;
 	}
-	game.startIntroCircle = CreateCircleShape((sfFloatRect) { 0, 0, 1, 1 }, sfTransparent, sfBlack, 1.f);
-	sfCircleShape_setOutlineThickness(game.startIntroCircle, 500.f);
-
-	game.startIntoRectangle = CreateRectangleShape((sfFloatRect) { 0, 0, 150, 250 }, sfTransparent, sfBlack, 1.f);
-	sfRectangleShape_setOrigin(game.startIntoRectangle, (sfVector2f) { 75, 125 });
-	sfRectangleShape_setOutlineThickness(game.startIntoRectangle, 500.f);
-
-	game.startIntroFinished = sfFalse;
 
 	if (DEV_MODE_CAMERA)
 	{
@@ -165,7 +166,7 @@ void UpdateGame(float _dt)
 
 	if (sfTrue /*PauseGame*/)
 	{
-		if (!PauseGameCameraMoveRoom() && game.startIntroFinished)
+		if (!PauseGameCameraMoveRoom() && game.startIntroIsFinished)
 		{
 			if (game.timerRoomPause >= PAUSE_ROOM_DURATION)
 			{
@@ -180,7 +181,7 @@ void UpdateGame(float _dt)
 					UpdateBoss(GetPlayerPosition(), _dt);
 				}
 
-				UpdatePlayer(sfTrue, _dt);
+				UpdatePlayer(sfFalse, _dt);
 				UpdateEnemy(_dt);
 
 				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
@@ -206,7 +207,7 @@ void UpdateGame(float _dt)
 
 		if (game.timerStartLevel < game.timerDurationStartLevel)
 		{
-			UpdatePlayer(sfFalse, _dt);
+			UpdatePlayer(sfTrue, _dt);
 
 			sfVector2f pos = GetPlayerCenterPosition();
 
@@ -221,12 +222,14 @@ void UpdateGame(float _dt)
 			sfRectangleShape_setPosition(game.startIntoRectangle, pos);
 
 			game.timerStartLevel += _dt;
+			VisibilityHUD(sfFalse);
 		}
 		else
 		{
-			if (!game.startIntroFinished)
+			if (!game.startIntroIsFinished)
 			{
-				game.startIntroFinished = sfTrue;
+				VisibilityHUD(sfTrue);
+				game.startIntroIsFinished = sfTrue;
 				sfCircleShape_setScale(game.startIntroCircle, (sfVector2f) { 0 });
 				sfRectangleShape_setScale(game.startIntoRectangle, (sfVector2f) { 0 });
 			}

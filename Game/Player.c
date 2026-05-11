@@ -92,7 +92,11 @@ void LoadPlayer(void)
 void UpdatePlayer(sfBool _intro, float _dt)
 {
 	player.weapon = GetWeapon();
-	UpdateWeaponPlayer(_dt);
+	
+	if (!_intro)
+	{
+		UpdateWeaponPlayer(_dt);
+	}
 	UpdateEnergy(_dt);
 
 	if (GetIntFromSave(DEV_MODE_FLY))
@@ -213,7 +217,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 		{
 			player.velocity.x = 0;
 		}
-		else if (IfControlKeyPressed(KEY_RIGHT) && _intro)
+		else if (IfControlKeyPressed(KEY_RIGHT) && !_intro)
 		{
 			if (player.velocity.x <= 1)
 			{
@@ -221,7 +225,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 			}
 
 		}
-		else if (IfControlKeyPressed(KEY_LEFT) && _intro)
+		else if (IfControlKeyPressed(KEY_LEFT) && !_intro)
 		{
 			if (player.velocity.x >= -1)
 			{
@@ -248,7 +252,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 			player.velocity.y = 0;
 			if (!(IfControlKeyPressed(KEY_JUMP) && (IfControlKeyPressed(KEY_DOWN))))
 			{
-				if (IfControlKeyPressed(KEY_JUMP) && _intro)
+				if (IfControlKeyPressed(KEY_JUMP) && !_intro)
 				{
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
@@ -256,7 +260,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
 				}
-				else if (IfControlKeyPressed(KEY_DOWN) && _intro)
+				else if (IfControlKeyPressed(KEY_DOWN) && !_intro)
 				{
 					player.velocity.y++;
 				}
@@ -272,7 +276,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 		}
 	}
 
-	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH))
+	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH) && !_intro)
 	{
 		timerDash = 0;
 

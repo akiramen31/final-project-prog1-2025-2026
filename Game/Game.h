@@ -17,7 +17,7 @@ typedef struct
 
 	sfCircleShape* startIntroCircle;
 	sfRectangleShape* startIntoRectangle;
-	sfBool startIntroFinished;
+	sfBool startIntroIsFinished;
 
 	sfCircleShape* cameraCenter;
 }Game;
