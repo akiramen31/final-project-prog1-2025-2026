@@ -12,7 +12,7 @@ float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
 
 sfBool playerInvicible = sfFalse;
 
-void UpdateMovePlayer(float _dt);
+void UpdateMovePlayer(sfBool _intro, float _dt);
 
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
@@ -89,10 +89,14 @@ void LoadPlayer(void)
 	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 0.5f, sfFalse);
 }
 
-void UpdatePlayer(float _dt)
+void UpdatePlayer(sfBool _intro, float _dt)
 {
 	player.weapon = GetWeapon();
-	UpdateWeaponPlayer(_dt);
+	
+	if (!_intro)
+	{
+		UpdateWeaponPlayer(_dt);
+	}
 	UpdateEnergy(_dt);
 
 	if (GetIntFromSave(DEV_MODE_FLY))
@@ -124,7 +128,7 @@ void UpdatePlayer(float _dt)
 	else
 	{
 		MoveZonePlayer(_dt);
-		UpdateMovePlayer(_dt);
+		UpdateMovePlayer(_intro, _dt);
 		UpdateLockPlayerInRoomIfEnemyAlive();
 	}
 
@@ -198,7 +202,7 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 	}
 }
 
-void UpdateMovePlayer(float _dt)
+void UpdateMovePlayer(sfBool _intro, float _dt)
 {
 	if (timerDash <= PLAYER_DASH_COOLDOWN)
 	{
@@ -213,7 +217,7 @@ void UpdateMovePlayer(float _dt)
 		{
 			player.velocity.x = 0;
 		}
-		else if (IfControlKeyPressed(KEY_RIGHT))
+		else if (IfControlKeyPressed(KEY_RIGHT) && !_intro)
 		{
 			if (player.velocity.x <= 1)
 			{
@@ -221,7 +225,7 @@ void UpdateMovePlayer(float _dt)
 			}
 
 		}
-		else if (IfControlKeyPressed(KEY_LEFT))
+		else if (IfControlKeyPressed(KEY_LEFT) && !_intro)
 		{
 			if (player.velocity.x >= -1)
 			{
@@ -248,7 +252,7 @@ void UpdateMovePlayer(float _dt)
 			player.velocity.y = 0;
 			if (!(IfControlKeyPressed(KEY_JUMP) && (IfControlKeyPressed(KEY_DOWN))))
 			{
-				if (IfControlKeyPressed(KEY_JUMP))
+				if (IfControlKeyPressed(KEY_JUMP) && !_intro)
 				{
 					sfSound_play(player.jumpSound);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
@@ -256,7 +260,7 @@ void UpdateMovePlayer(float _dt)
 					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
 				}
-				else if (IfControlKeyPressed(KEY_DOWN))
+				else if (IfControlKeyPressed(KEY_DOWN) && !_intro)
 				{
 					player.velocity.y++;
 				}
@@ -272,7 +276,7 @@ void UpdateMovePlayer(float _dt)
 		}
 	}
 
-	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH))
+	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH) && !_intro)
 	{
 		timerDash = 0;
 
@@ -491,6 +495,12 @@ void KillPlayer(void)
 sfVector2f GetPlayerPosition(void)
 {
 	return sfRectangleShape_getPosition(player.collision);
+}
+
+sfVector2f GetPlayerCenterPosition(void)
+{
+	sfFloatRect rect = GetPlayerRect();
+	return (sfVector2f) { rect.left + rect.width / 2, rect.top + rect.height / 2 };
 }
 
 void UpdateCooldown(float _dt)

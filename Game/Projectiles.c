@@ -745,12 +745,12 @@ void TestCollisionExplosionList(unsigned _index, float _range)
 		sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
 		if (reaction.x != 0 || reaction.y != 0 || HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY))
 		{
+			if (!explosionList[_index].isAlly)
+			{
+				HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
+				ColisionWithPlayer(hitboxExplosion, sfTrue);
+			}
 		}
-	if (!explosionList[_index].isAlly)
-	{
-		HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
-		ColisionWithPlayer(hitboxExplosion, sfTrue);
-	}
 }
 
 void DeleteBulletAlly(unsigned _index)

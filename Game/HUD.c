@@ -59,9 +59,11 @@ void SetHpFocus(float* _bossHpAdr)
 	hud.bossBar.maxBossLife = *_bossHpAdr;
 }
 
-void VisibilityBossBar(sfBool _visibility)
+void VisibilityBossBar(sfBool _visible)
 {
-	if (_visibility)
+	hud.isBossBarShown = _visible;
+
+	if (_visible)
 	{
 		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 5, 5 });
 		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 5, 5 });
@@ -73,4 +75,29 @@ void VisibilityBossBar(sfBool _visibility)
 	}
 }
 
- 
+void VisibilityHUD(sfBool _visible)
+{
+	if (_visible)
+	{
+		for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
+		{
+			sfSprite_setScale(hud.life[i], (sfVector2f) { 5, 5 });
+		}
+
+		sfSprite_setScale(hud.gauge, (sfVector2f) { 5, 5 });
+
+		VisibilityBossBar(hud.isBossBarShown);
+	}
+	else if (!_visible)
+	{
+		for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
+		{
+			sfSprite_setScale(hud.life[i], (sfVector2f) { 0 });
+		}
+
+		sfSprite_setScale(hud.gauge, (sfVector2f) { 0, 0 });
+
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 0, 0 });
+	}
+}

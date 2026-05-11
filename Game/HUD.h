@@ -18,6 +18,8 @@ typedef struct HUD
 	sfSprite* life[PLAYER_MAX_HEALTH];
 	sfSprite* gauge;
 	BossBar bossBar;
+
+	sfBool isBossBarShown;
 }HUD;
 
 void LoadHUD(void);
@@ -27,6 +29,8 @@ void UpdateHUD(float _dt);
 
 void SetHpFocus(float* _bossHpAdr);
 
-void VisibilityBossBar(sfBool _visibility);
+void VisibilityBossBar(sfBool _visible);
+
+void VisibilityHUD(sfBool _visible);
 
 #endif // !HUD_H

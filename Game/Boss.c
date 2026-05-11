@@ -24,7 +24,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		textureList[TRACK] = GetAsset("Assets/Sprites/tank_track.png");
 		textureList[STEAM_TANK_BOSS1] = GetAsset("Assets/Sprites/tank_steamtank.png");
 		textureList[CARIAGE] = GetAsset("Assets/Sprites/tank_carriage.png");
-		textureList[MISSILE_LAUNCHER] = GetAsset("Assets/Sprites/tank_ballistic_launcher.png");
+		textureList[MISSILE_LAUNCHER] = GetAsset("Assets/Sprites/tank_missile_launcher.png");
 		textureList[L_CHAMBER] = GetAsset("Assets/Sprites/tank_chamber.png");
 		textureList[L_CANNON] = GetAsset("Assets/Sprites/tank_cannon.png");
 		sfVector2f positionListBoss1[PART_COUNT_BOSS1];
@@ -110,7 +110,7 @@ void LoadBoss(int _index, sfVector2f _position)
 				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
 				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[LEFT_ROTOR]);
 			}
-			else								 // NORMAL LOOP + DIE SEHR GROßE KANONE
+			else								 // NORMAL LOOP + DIE SEHR GROÃŸE KANONE
 			{
 				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
 				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[i]);
@@ -145,7 +145,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 	if (boss.timerFrozen != -1)
 	{
 		boss.timerFrozen += _dt;
-		if (boss.timerFrozen > FREEZE_TIMER)
+		if (boss.timerFrozen < FREEZE_TIMER)
 		{
 			switch (boss.currentBoss)
 			{
@@ -167,7 +167,8 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		}
 	}
 	sfFloatRect playerRect = GetPlayerRect();
-	sfVector2f push = { 0 };
+	sfVector2f push = {0} ;
+	CheckBossPlayerState(_posPlayer, _dt);
 	if (boss.life != -1)
 	{
 		switch (boss.currentBoss)
@@ -175,7 +176,6 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		case 1:
 
 			push = TestCollisionBossPlayer(playerRect, boss.boss1->hitboxes, 3, AXIS_BOTH);
-			CheckBossPlayerState(_posPlayer, _dt);
 			if (boss.boss1->playerPositionToBoss1 != SHOT_RANGE_LEFT && boss.boss1->playerPositionToBoss1 != SHOT_RANGE_RIGHT)
 			{
 				UpdateTurret(_posPlayer, _dt);
@@ -348,12 +348,16 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 
 void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 {
-	sfVector2f trackPosition = sfSprite_getPosition(boss.boss1->sprites[TRACK]);
+	switch (boss.currentBoss)
+	{
+	case 1:
+	{
+		sfVector2f trackPosition = sfSprite_getPosition(boss.boss1->sprites[TRACK]);
 
-	sfVector2f posFar = (trackPosition.x > _posPlayer.x) ? trackPosition : _posPlayer;
-	sfVector2f posClose = (trackPosition.x <= _posPlayer.x) ? trackPosition : _posPlayer;
+		sfVector2f posFar = (trackPosition.x > _posPlayer.x) ? trackPosition : _posPlayer;
+		sfVector2f posClose = (trackPosition.x <= _posPlayer.x) ? trackPosition : _posPlayer;
 
-	sfVector2f distance = (sfVector2f){ posFar.x - posClose.x, trackPosition.y - _posPlayer.y };
+		sfVector2f distance = (sfVector2f){ posFar.x - posClose.x, trackPosition.y - _posPlayer.y };
 
 	if (boss.boss1->playerPositionToBoss1 == NOT_IN_ARENA1 && _posPlayer.x > ARENA1_ENTRY)
 	{
@@ -422,7 +426,6 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
 						boss.boss1->boss1Reacting = sfTrue;
 					}
-					boss.boss1->runAwayTiming = 0;
 				}
 			}
 			else if (distance.x < BOSS1_SHOOT_DISTANCE_MIN && distance.y > 30)
@@ -446,7 +449,7 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						boss.boss1->runAwayTiming = 0;
 					}
 				}
-				else if (_posPlayer.x > trackPosition.x)
+				if (distance.x < SHOOT_DISTANCE_MAX && distance.y > 80)
 				{
 					boss.boss1->playerPositionToBoss1 = TURRET_RIGHT;
 					boss.boss1->runAwayTiming += _dt;
@@ -465,10 +468,56 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						boss.boss1->runAwayTiming = 0;
 					}
 				}
-			}
+				else if (distance.x < SHOOT_DISTANCE_MIN && distance.y > 30)
+				{
+					if (_posPlayer.x < trackPosition.x)
+					{
+						boss.boss1->playerPositionToBoss = TURRET_LEFT;
+						boss.boss1->runAwayTiming += _dt;
+						if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+						{
+							if (trackPosition.x > ARENA_CENTER)
+							{
+								boss.boss1->bossReactionToPlayer = SLOW_LEFT;
+								boss.boss1->bossReacting = sfTrue;
+							}
+							else if (trackPosition.x <= ARENA_CENTER)
+							{
+								boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
+								boss.boss1->bossReacting = sfTrue;
+							}
+							boss.boss1->runAwayTiming = 0;
+						}
+					}
+					else if (_posPlayer.x > trackPosition.x)
+					{
+						boss.boss1->playerPositionToBoss = TURRET_RIGHT;
+						boss.boss1->runAwayTiming += _dt;
+						if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+						{
+							if (trackPosition.x > ARENA_CENTER)
+							{
+								boss.boss1->bossReactionToPlayer = SLOW_LEFT;
+								boss.boss1->bossReacting = sfTrue;
+							}
+							else if (trackPosition.x <= ARENA_CENTER)
+							{
+								boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
+								boss.boss1->bossReacting = sfTrue;
+							}
+							boss.boss1->runAwayTiming = 0;
+						}
+					}
+				}
 
+			}
 		}
 	}
+	break;
+	default:
+		break;
+	}
+
 }
 
 void UpdateTurret(sfVector2f _posPlayer, float _dt)
@@ -476,36 +525,50 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 	sfVector2f playerPos = _posPlayer;
 	sfVector2f posL = sfSprite_getPosition(boss.boss1->sprites[L_CANNON]);
 
-	// Sécurité : Si le joueur est trop proche, on ne change pas l'angle
-	float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
-	if (dist < 10.0f) return;
+	//// SÃ©curitÃ© : Si le joueur est trop proche, on ne change pas l'angle
+	//float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
+	//if (dist < 10.0f) return;
 
-	// --- TOURELLE GAUCHE ---
-	// 1. Calcul de la cible
-	float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
+	//// --- TOURELLE GAUCHE ---
+	//// 1. Calcul de la cible
+	//float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
 
-	// 2. CLAMP de la cible d'abord !
-	if (angleTargetL < -90.0f) angleTargetL = -90.0f;
-	if (angleTargetL > 90.0f) angleTargetL = 90.0f;
+	//// 2. CLAMP de la cible d'abord !
+	//if (angleTargetL > 180.f) angleTargetL = 180.f;
+	//if (angleTargetL < 0.F) angleTargetL = 0.f;
 
-	// 3. Interpolation avec l'angle actuel
-	float currentAngleL = sfSprite_getRotation(boss.boss1->sprites[L_CANNON]);
-	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, BOSS1_TURRET_ROTATION_SPEED, _dt);
+	//// 3. Interpolation avec l'angle actuel
+	//float currentAngleL = sfSprite_getRotation(boss.boss1->sprites[L_CANNON]);
+	//float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
 
-	sfSprite_setRotation(boss.boss1->sprites[L_CANNON], newAngleL);
+	//sfSprite_setRotation(boss.boss1->sprites[L_CANNON], newAngleL);
 
-	// --- TOURELLE DROITE ---
+	//// --- TOURELLE DROITE ---
 	sfVector2f posR = sfSprite_getPosition(boss.boss1->sprites[R_CANNON]);
-	float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
+	//float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
 
-	// CLAMP de la cible
-	if (angleTargetR > 90.0f) angleTargetR = 90.0f;
-	if (angleTargetR < -90.0f) angleTargetR = -90.0f;
+	//// CLAMP de la cible
+	//if (angleTargetR > 90.0f) angleTargetR = 90.0f;
+	//if (angleTargetR < -90.0f) angleTargetR = -90.0f;
 
-	float currentAngleR = sfSprite_getRotation(boss.boss1->sprites[R_CANNON]);
-	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, BOSS1_TURRET_ROTATION_SPEED, _dt);
+	//float currentAngleR = sfSprite_getRotation(boss.boss1->sprites[R_CANNON]);
+	//float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
 
-	sfSprite_setRotation(boss.boss1->sprites[R_CANNON], newAngleR);
+
+	if (playerPos.x < sfSprite_getPosition(boss.boss1->sprites[TRACK]).x)
+	{
+		float realDxLeft = playerPos.x - posL.x;
+		float realDyLeft = playerPos.y - posL.y;
+		float realAngleLeft = RAD_DEG(atan2f(realDyLeft, realDxLeft));
+		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], realAngleLeft + 90);
+	}
+	else
+	{
+		float realDxRight = playerPos.x - posR.x;
+		float realDyRight = playerPos.y - posR.y;
+		float realAngleRight = RAD_DEG(atan2f(realDyRight, realDxRight));
+		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], realAngleRight + 90);
+	}
 }
 
 void UpdateBossReaction(float _dt)

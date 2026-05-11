@@ -328,7 +328,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 						SetMenuState(SELECTION_MAP);
 						break;
 					case 1:
-						SetIntToSave(UNLOCKED_LEVEL, 0);
+						SetIntToSave(UNLOCKED_LEVEL, 1);
 						SetIntToSave(UNLOCKED_WEAPON, 1);
 						SetMenuState(SELECTION_MAP);
 						break;
