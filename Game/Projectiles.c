@@ -316,7 +316,7 @@ void UpdateBossMissile(float _dt)
 		}
 		else if (bossMissileList[i].bossMissileState == BOSS_MISSILE_ASCENDING || bossMissileList[i].bossMissileState == BOSS_MISSILE_FALLING)
 		{
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue) || HitBoss(0, hitboxBossDrone, NONE))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBossDrone, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBossDrone, sfTrue) || HitBoss(0, hitboxBossDrone, NOATTACK))
 			{
 				SpawnExplosion(sfSprite_getPosition(bossMissileList[i].sprite), sfFalse, BOSS_EXPLOSION_RANGE);
 				DeleteBossMissile(i);

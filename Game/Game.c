@@ -163,7 +163,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 
 void UpdateGame(float _dt)
 {
-
 	if (sfTrue /*PauseGame*/)
 	{
 		if (!PauseGameCameraMoveRoom() && game.startIntroIsFinished)
@@ -176,10 +175,11 @@ void UpdateGame(float _dt)
 					LoadGame();
 				}
 
-				if (GetCurrentMap() == LEVEL1)
+				if (GetCurrentMap() == LEVEL1 || GetCurrentMap() == LEVEL2)
 				{
 					UpdateBoss(GetPlayerPosition(), _dt);
 				}
+				UpdateMap(_dt);
 
 				UpdatePlayer(sfFalse, _dt);
 				UpdateEnemy(_dt);
@@ -209,6 +209,7 @@ void UpdateGame(float _dt)
 
 		if (game.timerStartLevel < game.timerDurationStartLevel)
 		{
+			UpdateMap(_dt);
 			UpdatePlayer(sfTrue, _dt);
 
 			sfVector2f pos = GetPlayerCenterPosition();

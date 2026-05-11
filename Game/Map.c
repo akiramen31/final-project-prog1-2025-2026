@@ -6,6 +6,7 @@
 #include "Entity.h"
 #include "Elevator.h"
 #include "Camera.h"
+#include "JetSteam.h"
 
 Map map;
 
@@ -76,9 +77,15 @@ void LoadMap()
 	LoadEnemy();
 #endif
 
+	LoadJetSteam();
 	LoadElevator();
 	ReloadEntity();
 	SetPositionEntity(map.data.point, map.data.pointCount);
+}
+
+void UpdateMap(float _dt)
+{
+	UpdateJetSteam(_dt);
 }
 
 void SetCurrentMap(MapState _map)
@@ -115,6 +122,10 @@ void LoadMapData(CjsonB* _cjson)
 		else if (StringCompare(_cjson->layers[i].name, "PassThrough"))
 		{
 			LoadObjectMap(&map.data.passThrough, &map.data.PassThroughCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+		}
+		else if (StringCompare(_cjson->layers[i].name, "Jet"))
+		{
+			LoadObjectMap(&map.data.jet, &map.data.jetCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 		else if (_cjson->layers[i].data && !(map.data.size.x + map.data.size.y))
 		{

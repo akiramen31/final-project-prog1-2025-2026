@@ -21,16 +21,30 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 {
 	_animation->timeActualy += _dt;
 
-	sfSprite_setTextureRect(_sprite, _animation->rectActualy);
-	if (_animation->timeActualy > _animation->frameDuration)
+	if ((int)_animation->timeActualy / (int)_animation->frameDuration < _animation->frameCount)
 	{
-		_animation->timeActualy = 0.f;
-		_animation->rectActualy.left += _animation->rectActualy.width;
-		if (_animation->rectActualy.left > (_animation->rectActualy.width * (_animation->frameCount - 1)))
-		{
-			_animation->rectActualy.left = 0;
-			return !_animation->isLooping;
-		}
+		sfSprite_setTextureRect(_sprite, (sfIntRect) { _animation->rectActualy.left + _animation->rectActualy.width * (int)_animation->timeActualy / (int)_animation->frameDuration, _animation->rectActualy.top, _animation->rectActualy.width, _animation->rectActualy.height });
+	}
+	else
+	{
+		_animation->timeActualy = 0;
+		return !_animation->isLooping;
+	}
+	return sfFalse;
+}
+
+sfBool UpdateAdvencedAnimationAndGiveIfStop(sfSprite* const _sprite, AdvencedAnimation* const _animation, const float _dt)
+{
+	_animation->timeActualy += _dt;
+
+	if ((int)_animation->timeActualy / (int)_animation->frameDuration < _animation->frameCount)
+	{
+		sfSprite_setTextureRect(_sprite, _animation->rectList[(int)_animation->timeActualy / (int)_animation->frameDuration]);
+	}
+	else
+	{
+		_animation->timeActualy = 0;
+		return !_animation->isLooping;
 	}
 	return sfFalse;
 }
