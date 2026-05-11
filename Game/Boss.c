@@ -9,55 +9,132 @@ Boss boss;
 void LoadBoss(int _index, sfVector2f _position)
 {
 	boss = (Boss){ 0 };
-	boss.boss1 = Calloc(1, sizeof(Boss1));
-	boss.life = MAX_BOSS_0_LIFE;
-	if (boss.boss1 != NULL)
-	{
-		DestroyBoss();
-	}
+	boss.life = 0.f;
 
-	boss.currentBoss = _index+1;
+	boss.currentBoss = _index + 1;
 	switch (boss.currentBoss)
 	{
 	case 1:
 		boss.boss1 = Calloc(1, sizeof(Boss1));
-		sfTexture* textureList[PART_COUNT - 2];
+	if (boss.boss1 != NULL)
+	{
+		DestroyBoss(1);
+	}
+		sfTexture* textureList[PART_COUNT_BOSS1 - 2];
 		textureList[TRACK] = GetAsset("Assets/Sprites/tank_track.png");
-		textureList[STEAM_TANK] = GetAsset("Assets/Sprites/tank_steamtank.png");
+		textureList[STEAM_TANK_BOSS1] = GetAsset("Assets/Sprites/tank_steamtank.png");
 		textureList[CARIAGE] = GetAsset("Assets/Sprites/tank_carriage.png");
 		textureList[MISSILE_LAUNCHER] = GetAsset("Assets/Sprites/tank_ballistic_launcher.png");
 		textureList[L_CHAMBER] = GetAsset("Assets/Sprites/tank_chamber.png");
 		textureList[L_CANNON] = GetAsset("Assets/Sprites/tank_cannon.png");
-		sfVector2f positionList[PART_COUNT];
-		positionList[TRACK] = _position;
-		positionList[STEAM_TANK] = (sfVector2f){_position.x, _position.y-sfTexture_getSize(textureList[TRACK]).y};
-		positionList[CARIAGE] = (sfVector2f){ _position.x, _position.y - (sfTexture_getSize(textureList[TRACK]).y/2) };
-		positionList[MISSILE_LAUNCHER] = (sfVector2f){ _position.x, positionList[CARIAGE].y+sfTexture_getSize(textureList[CARIAGE]).y};
-		positionList[L_CHAMBER] = (sfVector2f){ _position.x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[CARIAGE].y};
-		positionList[L_CANNON] = (sfVector2f){ positionList[R_CHAMBER].x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[CARIAGE].y };
-		positionList[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[CARIAGE].y};
-		positionList[R_CANNON] = (sfVector2f){ positionList[R_CHAMBER].x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[CARIAGE].y };
-		for (int i = 0; i < PART_COUNT; i++)
+		sfVector2f positionListBoss1[PART_COUNT_BOSS1];
+		positionListBoss1[TRACK] = _position;
+		positionListBoss1[STEAM_TANK_BOSS1] = (sfVector2f){ _position.x, _position.y - sfTexture_getSize(textureList[TRACK]).y };
+		positionListBoss1[CARIAGE] = (sfVector2f){ _position.x, _position.y - (sfTexture_getSize(textureList[TRACK]).y / 2) };
+		positionListBoss1[MISSILE_LAUNCHER] = (sfVector2f){ _position.x, positionListBoss1[CARIAGE].y + sfTexture_getSize(textureList[CARIAGE]).y };
+		positionListBoss1[L_CHAMBER] = (sfVector2f){ _position.x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y };
+		positionListBoss1[L_CANNON] = (sfVector2f){ positionListBoss1[R_CHAMBER].x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y };
+		positionListBoss1[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y };
+		positionListBoss1[R_CANNON] = (sfVector2f){ positionListBoss1[R_CHAMBER].x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y };
+		for (int i = 0; i < PART_COUNT_BOSS1; i++)
 		{
-			if (i > PART_COUNT - 3)
+			if (i > PART_COUNT_BOSS1 - 3)
 			{
-				boss.boss1->sprites[i] = CreateSprite(textureList[i - 2], positionList[i], 1.f, 10.f + (0.1 * i));
+				boss.boss1->sprites[i] = CreateSprite(textureList[i - 2], positionListBoss1[i], 1.f, 10.f + (0.1 * i));
 			}
 			else
 			{
-				boss.boss1->sprites[i] = CreateSprite(textureList[i], positionList[i], 1.f, 10.f + (0.1 * i));
+				boss.boss1->sprites[i] = CreateSprite(textureList[i], positionListBoss1[i], 1.f, 10.f + (0.1 * i));
 			}
 			SetSpriteOriginFoot(boss.boss1->sprites[i]);
 		}
-		boss.boss1->playerPositionToBoss = NOT_IN_ARENA;
-		boss.boss1->cooldownBullet = 1.f / BOSS_FIRERATE_BULLET;
-		boss.boss1->cooldownBallistic = 1.f / BOSS_FIRERATE_DRONE;
-		boss.boss1->hitboxes[0] = sfSprite_getGlobalBounds(boss.boss1->sprites[STEAM_TANK]);
+		boss.boss1->cooldownBullet = 1.f / BOSS1_FIRERATE_BULLET;
+		boss.boss1->cooldownBallistic = 1.f / BOSS1_FIRERATE_DRONE;
+		boss.boss1->playerPositionToBoss1 = NOT_IN_ARENA1;
+		boss.boss1->hitboxes[0] = sfSprite_getGlobalBounds(boss.boss1->sprites[STEAM_TANK_BOSS1]);
 		boss.boss1->hitboxes[1] = sfSprite_getGlobalBounds(boss.boss1->sprites[L_CHAMBER]);
 		boss.boss1->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss1->sprites[R_CHAMBER]);
 		boss.boss1->hitboxes[3] = sfSprite_getGlobalBounds(boss.boss1->sprites[MISSILE_LAUNCHER]);
-		boss.life = MAX_BOSS_0_LIFE;
+		boss.life = MAX_BOSS1_LIFE;
 		break;
+	case 2:
+		boss.boss2 = Calloc(1, sizeof(Boss2));
+		if (boss.boss2 != NULL)
+		{
+			DestroyBoss(2);
+		}
+		sfTexture* bossSpritesheet = GetAsset("Assets/Sprites/Boss_2.png");
+		sfIntRect textureRectList[PART_COUNT_BOSS2 - 6];
+		textureRectList[BODY] = (sfIntRect){ 16, 32, 80, 32 };
+		textureRectList[STEAM_TANK_BOSS2] = (sfIntRect){ 0,32,16,16 };
+		textureRectList[STEAM_TANK_COVERING] = (sfIntRect){ 64, 0, 18,2 };
+		textureRectList[STEAM_TANK_CHIMNEY] = (sfIntRect){ 48, 0, 4,8 };
+		textureRectList[TURRET_BASE] = (sfIntRect){ 0, 0, 20, 20 };
+		textureRectList[TURRET_CANNON] = (sfIntRect){ 32, 0, 4, 8 };
+		textureRectList[BOMB_BAY] = (sfIntRect){ 48, 18, 28, 7 };
+		textureRectList[LEFT_ROTOR] = (sfIntRect){ 96, 32, 32, 32 };
+		textureRectList[LEFT_KICKSTAND] = (sfIntRect){ 96, 0, 8, 32 };
+		textureRectList[TOP_LEFT_CHIMNEY] = (sfIntRect){ 32, 16, 8, 4 };
+
+		sfVector2f positionListBoss2[PART_COUNT_BOSS2];
+		positionListBoss2[BODY] = _position;
+		positionListBoss2[STEAM_TANK_BOSS2] = (sfVector2f){ _position.x, _position.y - 32.f };
+		positionListBoss2[STEAM_TANK_COVERING] = (sfVector2f){ _position.x, _position.y - 48.f };
+		positionListBoss2[STEAM_TANK_CHIMNEY] = (sfVector2f){ _position.x, _position.y - 50.f };
+		positionListBoss2[TURRET_BASE] = (sfVector2f){ _position.x, _position.y - 6.f };
+		positionListBoss2[TURRET_CANNON] = (sfVector2f){ _position.x, _position.y - 16.f };
+		positionListBoss2[BOMB_BAY] = (sfVector2f){ _position.x, _position.y + 7.f };
+		positionListBoss2[LEFT_ROTOR] = (sfVector2f){ _position.x - 56.f, _position.y };
+		positionListBoss2[RIGHT_ROTOR] = (sfVector2f){ _position.x + 56.f, _position.y };
+		positionListBoss2[LEFT_KICKSTAND] = (sfVector2f){ _position.x - 76.f, _position.y + 16.f };
+		positionListBoss2[MIDDLE_KICKSTAND] = (sfVector2f){ positionListBoss2[LEFT_KICKSTAND].x + 76.f, positionListBoss2[LEFT_KICKSTAND].y };
+		positionListBoss2[RIGHT_KICKSTAND] = (sfVector2f){ positionListBoss2[MIDDLE_KICKSTAND].x + 76.f, positionListBoss2[MIDDLE_KICKSTAND].y };
+		positionListBoss2[TOP_LEFT_CHIMNEY] = (sfVector2f){ positionListBoss2[STEAM_TANK_BOSS2].x - 28.f, positionListBoss2[STEAM_TANK_BOSS2].y };
+		positionListBoss2[TOP_RIGHT_CHIMNEY] = (sfVector2f){ positionListBoss2[TOP_LEFT_CHIMNEY].x + 60, positionListBoss2[TOP_LEFT_CHIMNEY].y };
+		positionListBoss2[BOTTOM_LEFT_CHIMNEY] = (sfVector2f){ positionListBoss2[BOMB_BAY].x - 20, _position.y + 4 };
+		positionListBoss2[BOTTOM_RIGHT_CHIMNEY] = (sfVector2f){ positionListBoss2[BOMB_BAY].x + 20, _position.y + 4 };
+		for (int i = 0; i < PART_COUNT_BOSS2; i++)
+		{
+			if (i > PART_COUNT_BOSS2 - 4)		  // CHIMNEY
+			{
+				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
+				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[TOP_LEFT_CHIMNEY]);
+			}
+			else if (i > PART_COUNT_BOSS2 - 6)	  // KICKSTAND
+			{
+				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
+				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[LEFT_KICKSTAND]);
+			}
+			else if (i > PART_COUNT_BOSS2 - 7)	 // ROTOR
+			{
+				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
+				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[LEFT_ROTOR]);
+			}
+			else								 // NORMAL LOOP + DIE SEHR GROßE KANONE
+			{
+				boss.boss2->sprites[i] = CreateSprite(bossSpritesheet, positionListBoss2[i], 1.f, 10.f + (0.1 * i));
+				sfSprite_setTextureRect(boss.boss2->sprites[i], textureRectList[i]);
+
+			}
+			SetSpriteOriginFoot(boss.boss2->sprites[i]);
+		}
+		boss.boss2->playerPositionToBoss2 = NOT_IN_ARENA2;
+		boss.boss2->hitboxes[0] = sfSprite_getGlobalBounds(boss.boss2->sprites[BODY]);
+		boss.boss2->hitboxes[1] = sfSprite_getGlobalBounds(boss.boss2->sprites[STEAM_TANK_BOSS2]);
+		boss.boss2->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss2->sprites[STEAM_TANK_COVERING]);
+		boss.boss2->hitboxes[4] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOMB_BAY]);
+		boss.boss2->hitboxes[5] = sfSprite_getGlobalBounds(boss.boss2->sprites[LEFT_ROTOR]);
+		boss.boss2->hitboxes[6] = sfSprite_getGlobalBounds(boss.boss2->sprites[RIGHT_ROTOR]);
+		boss.boss2->hitboxes[7] = sfSprite_getGlobalBounds(boss.boss2->sprites[LEFT_ROTOR]);
+		boss.boss2->hitboxes[8] = sfSprite_getGlobalBounds(boss.boss2->sprites[LEFT_KICKSTAND]);
+		boss.boss2->hitboxes[3] = sfSprite_getGlobalBounds(boss.boss2->sprites[RIGHT_KICKSTAND]);
+		boss.boss2->hitboxes[9] = sfSprite_getGlobalBounds(boss.boss2->sprites[STEAM_TANK_CHIMNEY]);
+		boss.boss2->hitboxes[10] = sfSprite_getGlobalBounds(boss.boss2->sprites[TOP_LEFT_CHIMNEY]);
+		boss.boss2->hitboxes[11] = sfSprite_getGlobalBounds(boss.boss2->sprites[TOP_RIGHT_CHIMNEY]);
+		boss.boss2->hitboxes[12] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_LEFT_CHIMNEY]);
+		boss.boss2->hitboxes[13] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_RIGHT_CHIMNEY]);
+		
+		boss.life = MAX_BOSS2_LIFE;
 	default:
 		break;
 	}
@@ -65,7 +142,7 @@ void LoadBoss(int _index, sfVector2f _position)
 
 void UpdateBoss(sfVector2f _posPlayer, float _dt)
 {
-	if (boss.timerFrozen != 1)
+	if (boss.timerFrozen != -1)
 	{
 		boss.timerFrozen += _dt;
 		if (boss.timerFrozen > FREEZE_TIMER)
@@ -73,9 +150,15 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			switch (boss.currentBoss)
 			{
 			case 1:
-				for (int i = PART_COUNT - 1; i >= 0; i--)
+				for (int i = PART_COUNT_BOSS1 - 1; i >= 0; i--)
 				{
 					sfSprite_setColor(boss.boss1->sprites[i], (sfColor) { 255, 255, 255, 255 });
+				}
+				break;
+			case 2:
+				for (int i = PART_COUNT_BOSS2 - 1; i >= 0; i--)
+				{
+					sfSprite_setColor(boss.boss2->sprites[i], (sfColor) { 255, 255, 255, 255 });
 				}
 				break;
 			default:
@@ -84,21 +167,26 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		}
 	}
 	sfFloatRect playerRect = GetPlayerRect();
-	sfVector2f push;
+	sfVector2f push = { 0 };
 	if (boss.life != -1)
 	{
 		switch (boss.currentBoss)
 		{
 		case 1:
-		{
-			push = TestCollisionBossPlayer(playerRect, &boss.boss1->hitboxes, 3, AXIS_BOTH);
+
+			push = TestCollisionBossPlayer(playerRect, boss.boss1->hitboxes, 3, AXIS_BOTH);
 			CheckBossPlayerState(_posPlayer, _dt);
-			if (boss.boss1->playerPositionToBoss != SHOT_RANGE_LEFT && boss.boss1->playerPositionToBoss != SHOT_RANGE_RIGHT)
+			if (boss.boss1->playerPositionToBoss1 != SHOT_RANGE_LEFT && boss.boss1->playerPositionToBoss1 != SHOT_RANGE_RIGHT)
 			{
 				UpdateTurret(_posPlayer, _dt);
 			}
 			break;
-		}
+
+		case 2:
+
+			push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 3, AXIS_BOTH);
+			UpdateTurret(_posPlayer, _dt);
+			break;
 		default:
 			break;
 		}
@@ -115,7 +203,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		}
 		HandlePlayerBossCollision(push);
 		UpdateBossReaction(_dt);
-		
+
 		BossShoot(_posPlayer, _dt);
 	}
 }
@@ -125,7 +213,7 @@ void MoveBoss(sfVector2f _move)
 	switch (boss.currentBoss)
 	{
 	case 1:
-		for (int i = 0; i < PART_COUNT; i++)
+		for (int i = 0; i < PART_COUNT_BOSS1; i++)
 		{
 			sfSprite_move(boss.boss1->sprites[i], _move);
 		}
@@ -153,7 +241,7 @@ sfBool HitBoss(float _damage, sfFloatRect _hitbox, AttackType _attackType)
 				{
 					if (_attackType == FREEZE)
 					{
-						if (boss.timerFrozen!=-1)
+						if (boss.timerFrozen != -1)
 						{
 							boss.timerFrozen = 0.f;
 						}
@@ -188,25 +276,28 @@ sfBool HitBoss(float _damage, sfFloatRect _hitbox, AttackType _attackType)
 sfBool DamageBoss(float _damage)
 {
 	boss.life -= _damage;
-	if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA_CENTER)
+	if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA1_CENTER)
 	{
-		if (boss.boss1->playerPositionToBoss == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss == SHOT_RANGE_RIGHT)
+		if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT)
 		{
-			boss.boss1->bossReactionToPlayer = SLOW_LEFT;
-			boss.boss1->bossReacting = sfTrue;
+			boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+			boss.boss1->boss1Reacting = sfTrue;
 		}
 	}
-	else if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x <= ARENA_CENTER)
+	else if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x <= ARENA1_CENTER)
 	{
-		if (boss.boss1->playerPositionToBoss == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss == SHOT_RANGE_RIGHT)
+		if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT)
 		{
-			boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
-			boss.boss1->bossReacting = sfTrue;
+			boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+			boss.boss1->boss1Reacting = sfTrue;
 		}
 	}
 	if (boss.life <= 0)
 	{
-		DestroyBoss();
+		if (boss.currentBoss == 1)
+		{
+			DestroyBoss(1);
+		}
 	}
 	return sfTrue;
 }
@@ -264,112 +355,112 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 
 	sfVector2f distance = (sfVector2f){ posFar.x - posClose.x, trackPosition.y - _posPlayer.y };
 
-	if (boss.boss1->playerPositionToBoss == NOT_IN_ARENA && _posPlayer.x > ARENA_ENTRY)
+	if (boss.boss1->playerPositionToBoss1 == NOT_IN_ARENA1 && _posPlayer.x > ARENA1_ENTRY)
 	{
-		boss.boss1->playerPositionToBoss = AWAY_LEFT;
+		boss.boss1->playerPositionToBoss1 = AWAY_LEFT;
 	}
-	if (!boss.boss1->bossReacting)
+	if (!boss.boss1->boss1Reacting)
 	{
-		if (boss.boss1->playerPositionToBoss != NOT_IN_ARENA)
+		if (boss.boss1->playerPositionToBoss1 != NOT_IN_ARENA1)
 		{
-			if (distance.x > SHOOT_DISTANCE_MAX && _posPlayer.x < trackPosition.x)
+			if (distance.x > BOSS1_SHOOT_DISTANCE_MAX && _posPlayer.x < trackPosition.x)
 			{
-				boss.boss1->playerPositionToBoss = AWAY_LEFT;
-				boss.boss1->bossReactionToPlayer = SLOW_LEFT;
+				boss.boss1->playerPositionToBoss1 = AWAY_LEFT;
+				boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
 			}
-			else if (distance.x > SHOOT_DISTANCE_MAX && _posPlayer.x > trackPosition.x)
+			else if (distance.x > BOSS1_SHOOT_DISTANCE_MAX && _posPlayer.x > trackPosition.x)
 			{
-				boss.boss1->playerPositionToBoss = AWAY_RIGHT;
-				boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
+				boss.boss1->playerPositionToBoss1 = AWAY_RIGHT;
+				boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
 			}
-			if (distance.x < SHOOT_DISTANCE_MAX && distance.x > SHOOT_DISTANCE_MIN)
+			if (distance.x < BOSS1_SHOOT_DISTANCE_MAX && distance.x > BOSS1_SHOOT_DISTANCE_MIN)
 			{
 				if (_posPlayer.x < trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss = SHOT_RANGE_LEFT;
-					boss.boss1->bossReactionToPlayer = NONE;
+					boss.boss1->playerPositionToBoss1 = SHOT_RANGE_LEFT;
+					boss.boss1->boss1ReactionToPlayer = NONE1;
 
 				}
 				else if (_posPlayer.x > trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss = SHOT_RANGE_RIGHT;
-					boss.boss1->bossReactionToPlayer = NONE;
+					boss.boss1->playerPositionToBoss1 = SHOT_RANGE_RIGHT;
+					boss.boss1->boss1ReactionToPlayer = NONE1;
 				}
 			}
 			if (distance.x < 48 && distance.y < 32)
 			{
-				boss.boss1->playerPositionToBoss = UNDER;
+				boss.boss1->playerPositionToBoss1 = UNDER;
 				boss.boss1->runAwayTiming += _dt;
-				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+				if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 				{
-					if (trackPosition.x > ARENA_CENTER)
+					if (trackPosition.x > ARENA1_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = SLOW_LEFT;
-						boss.boss1->bossReacting = sfTrue;
+						boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+						boss.boss1->boss1Reacting = sfTrue;
 					}
-					else if (trackPosition.x <= ARENA_CENTER)
+					else if (trackPosition.x <= ARENA1_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
-						boss.boss1->bossReacting = sfTrue;
+						boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+						boss.boss1->boss1Reacting = sfTrue;
 					}
 					boss.boss1->runAwayTiming = 0;
 				}
 			}
-			if (distance.x < SHOOT_DISTANCE_MAX && distance.y > 80)
+			if (distance.x < BOSS1_SHOOT_DISTANCE_MAX && distance.y > 80)
 			{
-				boss.boss1->playerPositionToBoss = TOP;
+				boss.boss1->playerPositionToBoss1 = TOP;
 				boss.boss1->runAwayTiming += _dt;
-				if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+				if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 				{
-					if (trackPosition.x > ARENA_CENTER)
+					if (trackPosition.x > ARENA1_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = SLOW_LEFT;
-						boss.boss1->bossReacting = sfTrue;
+						boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+						boss.boss1->boss1Reacting = sfTrue;
 					}
-					else if (trackPosition.x <= ARENA_CENTER)
+					else if (trackPosition.x <= ARENA1_CENTER)
 					{
-						boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
-						boss.boss1->bossReacting = sfTrue;
+						boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+						boss.boss1->boss1Reacting = sfTrue;
 					}
 					boss.boss1->runAwayTiming = 0;
 				}
 			}
-			else if (distance.x < SHOOT_DISTANCE_MIN && distance.y > 30)
+			else if (distance.x < BOSS1_SHOOT_DISTANCE_MIN && distance.y > 30)
 			{
 				if (_posPlayer.x < trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss = TURRET_LEFT;
+					boss.boss1->playerPositionToBoss1 = TURRET_LEFT;
 					boss.boss1->runAwayTiming += _dt;
-					if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+					if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 					{
-						if (trackPosition.x > ARENA_CENTER)
+						if (trackPosition.x > ARENA1_CENTER)
 						{
-							boss.boss1->bossReactionToPlayer = SLOW_LEFT;
-							boss.boss1->bossReacting = sfTrue;
+							boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+							boss.boss1->boss1Reacting = sfTrue;
 						}
-						else if (trackPosition.x <= ARENA_CENTER)
+						else if (trackPosition.x <= ARENA1_CENTER)
 						{
-							boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
-							boss.boss1->bossReacting = sfTrue;
+							boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+							boss.boss1->boss1Reacting = sfTrue;
 						}
 						boss.boss1->runAwayTiming = 0;
 					}
 				}
 				else if (_posPlayer.x > trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss = TURRET_RIGHT;
+					boss.boss1->playerPositionToBoss1 = TURRET_RIGHT;
 					boss.boss1->runAwayTiming += _dt;
-					if (boss.boss1->runAwayTiming >= RUNAWAY_TIMER)
+					if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 					{
-						if (trackPosition.x > ARENA_CENTER)
+						if (trackPosition.x > ARENA1_CENTER)
 						{
-							boss.boss1->bossReactionToPlayer = SLOW_LEFT;
-							boss.boss1->bossReacting = sfTrue;
+							boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+							boss.boss1->boss1Reacting = sfTrue;
 						}
-						else if (trackPosition.x <= ARENA_CENTER)
+						else if (trackPosition.x <= ARENA1_CENTER)
 						{
-							boss.boss1->bossReactionToPlayer = SLOW_RIGHT;
-							boss.boss1->bossReacting = sfTrue;
+							boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+							boss.boss1->boss1Reacting = sfTrue;
 						}
 						boss.boss1->runAwayTiming = 0;
 					}
@@ -399,7 +490,7 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 
 	// 3. Interpolation avec l'angle actuel
 	float currentAngleL = sfSprite_getRotation(boss.boss1->sprites[L_CANNON]);
-	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
+	float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, BOSS1_TURRET_ROTATION_SPEED, _dt);
 
 	sfSprite_setRotation(boss.boss1->sprites[L_CANNON], newAngleL);
 
@@ -412,54 +503,54 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 	if (angleTargetR < -90.0f) angleTargetR = -90.0f;
 
 	float currentAngleR = sfSprite_getRotation(boss.boss1->sprites[R_CANNON]);
-	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
+	float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, BOSS1_TURRET_ROTATION_SPEED, _dt);
 
 	sfSprite_setRotation(boss.boss1->sprites[R_CANNON], newAngleR);
 }
 
 void UpdateBossReaction(float _dt)
 {
-	switch (boss.boss1->bossReactionToPlayer)
+	switch (boss.boss1->boss1ReactionToPlayer)
 	{
 	case SLOW_LEFT:
-		if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA_LIMITE_LEFT)
+		if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA1_LIMITE_LEFT)
 		{
-			if (boss.boss1->bossReacting)
+			if (boss.boss1->boss1Reacting)
 			{
-				MoveBoss((sfVector2f) { -(BOSS_SPEED_RUNAWAY * _dt), 0 });
+				MoveBoss((sfVector2f) { -(BOSS1_SPEED_RUNAWAY * _dt), 0 });
 			}
 			else
 			{
-				MoveBoss((sfVector2f) { -(BOSS_SPEED * _dt), 0 });
+				MoveBoss((sfVector2f) { -(BOSS1_SPEED * _dt), 0 });
 			}
 		}
 		else
 		{
-			boss.boss1->bossReactionToPlayer = NONE;
-			if (boss.boss1->bossReacting)
+			boss.boss1->boss1ReactionToPlayer = NONE1;
+			if (boss.boss1->boss1Reacting)
 			{
-				boss.boss1->bossReacting = sfFalse;
+				boss.boss1->boss1Reacting = sfFalse;
 			}
 		}
 		break;
 	case SLOW_RIGHT:
-		if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x < ARENA_LIMITE_RIGHT)
+		if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x < ARENA1_LIMITE_RIGHT)
 		{
-			if (boss.boss1->bossReacting)
+			if (boss.boss1->boss1Reacting)
 			{
-				MoveBoss((sfVector2f) { (BOSS_SPEED_RUNAWAY * _dt), 0 });
+				MoveBoss((sfVector2f) { (BOSS1_SPEED_RUNAWAY * _dt), 0 });
 			}
 			else
 			{
-				MoveBoss((sfVector2f) { (BOSS_SPEED * _dt), 0 });
+				MoveBoss((sfVector2f) { (BOSS1_SPEED * _dt), 0 });
 			}
 		}
 		else
 		{
-			boss.boss1->bossReactionToPlayer = NONE;
-			if (boss.boss1->bossReacting)
+			boss.boss1->boss1ReactionToPlayer = NONE1;
+			if (boss.boss1->boss1Reacting)
 			{
-				boss.boss1->bossReacting = sfFalse;
+				boss.boss1->boss1Reacting = sfFalse;
 			}
 		}
 		break;
@@ -475,14 +566,14 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 	case 1:
 		if (boss.boss1->cooldownBullet <= 0)
 		{
-			boss.boss1->cooldownBullet += 1.f / BOSS_FIRERATE_BULLET;
+			boss.boss1->cooldownBullet += 1.f / BOSS1_FIRERATE_BULLET;
 			ShooterType shooterType = { 0 };
 			shooterType.bulletType = LIGHT;
 			shooterType.isRighted = sfTrue;
 			shooterType.isAlly = sfFalse;
 			sfVector2f playerPos = _posPlayer;
 			playerPos.y -= TILE_SIZE;
-			AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss % 2) * 2)]), playerPos, shooterType);
+			AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType);
 		}
 		else
 		{
@@ -490,9 +581,9 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 		}
 		if (boss.boss1->cooldownBallistic <= 0)
 		{
-			if (boss.boss1->playerPositionToBoss == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss == SHOT_RANGE_RIGHT || boss.boss1->playerPositionToBoss == AWAY_LEFT || boss.boss1->playerPositionToBoss == AWAY_RIGHT)
+			if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT || boss.boss1->playerPositionToBoss1 == AWAY_LEFT || boss.boss1->playerPositionToBoss1 == AWAY_RIGHT)
 			{
-				boss.boss1->cooldownBallistic += 1.f / BOSS_FIRERATE_BULLET;
+				boss.boss1->cooldownBallistic += 1.f / BOSS1_FIRERATE_BULLET;
 				SpawnBossMissile(sfSprite_getPosition(boss.boss1->sprites[MISSILE_LAUNCHER]), _posPlayer.x);
 			}
 		}
@@ -506,9 +597,9 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 	}
 }
 
-void DestroyBoss(void)
+void DestroyBoss(int _boss)
 {
-	for (int i = 0; i < PART_COUNT; i++)
+	for (int i = 0; i < PART_COUNT_BOSS1; i++)
 	{
 		DestroyVisualEntity(boss.boss1->sprites[i]);
 	}
@@ -522,7 +613,7 @@ void DestroyBoss(void)
 
 void FreezeBoss(void)
 {
-	for (int i = PART_COUNT - 1; i >= 0; i--)
+	for (int i = PART_COUNT_BOSS1 - 1; i >= 0; i--)
 	{
 		sfSprite_setColor(boss.boss1->sprites[i], (sfColor) { 180, 180, 255, 255 });
 	}
@@ -547,6 +638,7 @@ sfVector2f GetBossPosition(void)
 		return sfSprite_getPosition(boss.boss1->sprites[TRACK]);
 		break;
 	default:
+		return sfSprite_getPosition(boss.boss2->sprites[BODY]);
 		break;
 	}
 }
