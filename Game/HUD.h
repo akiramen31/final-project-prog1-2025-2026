@@ -23,11 +23,9 @@ typedef struct HUD
 }HUD;
 
 void LoadHUD(void);
-void LoadBossBar(void);
+void LoadBossBar(float* _bossHpAdr);
 
 void UpdateHUD(float _dt);
-
-void SetHpFocus(float* _bossHpAdr);
 
 void VisibilityBossBar(sfBool _visible);
 

@@ -27,7 +27,7 @@ void LoadGame(void)
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
 	LoadHUD();
-	SetHpFocus(GetBossLifeAdress());
+	LoadBossBar(GetBossLifeAdress());
 	//LoadGUI();
 	LoadWeapons();
 
@@ -178,6 +178,8 @@ void UpdateGame(float _dt)
 				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
+
+				UpdateEntity(_dt);
 
 				VisibilityBossBar(IsBossActive());
 

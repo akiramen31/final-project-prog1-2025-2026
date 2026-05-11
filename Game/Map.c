@@ -3,7 +3,7 @@
 #include "CjsonB.h"
 #include "Boss.h"
 #include "Parallax.h"
-#include "Box.h"
+#include "Entity.h"
 #include "Elevator.h"
 #include "Camera.h"
 #include "JetSteam.h"
@@ -25,7 +25,7 @@ void LoadMap()
 	int val = 169;
 	sfSprite_setColor(map.background, (sfColor) {val, val, val, 255});
 
-	LoadBox();
+	LoadEntity();
 	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
 
 	CjsonB* cjson = NULL;
@@ -66,7 +66,7 @@ void LoadMap()
 
 	LoadJetSteam();
 	LoadElevator();
-	ReloadBox();
+	ReloadEntity();
 	SetPositionEntity(map.data.point, map.data.pointCount);
 }
 
@@ -152,6 +152,10 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		if (StringCompare(_point[i].type, "Box"))
 		{
 			AddBox((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
+		else if (StringCompare(_point[i].type, "Conveyor"))
+		{
+			AddConveyor((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
 		else if (StringCompare(_point[i].type, "Boss"))
 		{

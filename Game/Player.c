@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Box.h"
+#include "Entity.h"
 #include "Enemy.h"
 #include "Elevator.h"
 #include "Boss.h"

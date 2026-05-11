@@ -32,8 +32,8 @@ void SortMistealList(unsigned _index);
 void LoadProjectiles(float _groundlevel)
 {
 	bulletTexture = GetAsset("Assets/Sprites/bullet.png");
-	bulletBossTexture = GetAsset("Assets/Sprites/bulletBoss.png");
-	mistealTexture = GetAsset("Assets/Sprites/Misteal_Ammo_Placeholder.png");
+	bulletBossTexture = GetAsset("Assets/Sprites/bullet_boss.png");
+	mistealTexture = GetAsset("Assets/Sprites/mi-steel_ammo.png");
 	mistealCount = 0;
 	bulletCountAlly = 0;
 	bulletCountEnemy = 0;
@@ -48,7 +48,7 @@ void LoadSecondary(void)
 	//COLDBREATH PART
 	droneTexture = GetAsset("Assets/Sprites/drone.png");
 
-	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/ColdBreath_Placeholder.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
+	coldBreath.sprite = CreateSprite(GetAsset("Assets/Sprites/cold_breath.png"), (sfVector2f) { 0, 0 }, 1.f, 39);
 	SetSpriteOriginMiddle(coldBreath.sprite);
 	coldBreath.lifetime = 0.f;
 	coldBreath.isAlive = sfFalse;
@@ -87,7 +87,7 @@ void LoadBossMissile(void)
 
 void LoadDangerZone(void)
 {
-	sfTexture* dangerZone = GetAsset("Assets/Sprites/Danger_Zone_Placeholder.png");
+	sfTexture* dangerZone = GetAsset("Assets/Sprites/danger_zone.png");
 	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
 		dangerZoneList[i].sprite = CreateSprite(dangerZone, (sfVector2f) { 0 }, 1.f, 39);
@@ -98,7 +98,7 @@ void LoadDangerZone(void)
 
 void LoadExplosion(void)
 {
-	explosionTexture = GetAsset("Assets/Sprites/Explosion_Placeholder.png");
+	explosionTexture = GetAsset("Assets/Sprites/explosion.png");
 	explosionAnimation.rectActualy = (sfIntRect){ 0,0,16,16 };
 	explosionAnimation.frameCount = 4;
 	explosionAnimation.frameDuration = EXPLOSION_FRAME_DURATION;
