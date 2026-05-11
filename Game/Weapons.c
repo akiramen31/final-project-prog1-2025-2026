@@ -14,11 +14,11 @@ void LoadWeapons(void)
 	weapon.railGun.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });
 
-	textureWeapon = GetAsset("Assets/Sprites/Axe_Placeholder.png");
+	textureWeapon = GetAsset("Assets/Sprites/axe_placeholder.png");
 	weapon.steamAxe.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.steamAxe.sprite, (sfVector2f) { 1, 1 });
 
-	textureWeapon = GetAsset("Assets/Sprites/Misteal_Launcher_Placeholder.png");
+	textureWeapon = GetAsset("Assets/Sprites/mi-steel_launcher.png");
 	weapon.miSteal.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.miSteal.sprite, (sfVector2f) { 3, 5 });
 
