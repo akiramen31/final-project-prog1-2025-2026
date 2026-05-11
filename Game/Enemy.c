@@ -28,7 +28,7 @@ typedef struct ActionDemander
 typedef struct Case2
 {
 	int jumpForce;
-	enum Direction direction;
+	Direction direction;
 	sfBool jetPackActive;
 	int compteur;
 }Case2;
@@ -42,7 +42,7 @@ typedef struct Tableau
 }Tableau;
 #pragma endregion
 
-typedef struct EnemyDataByTypeB
+typedef struct EnemyDataByType
 {
 	sfTexture* texture;
 	ArmorType armure;
@@ -55,9 +55,9 @@ typedef struct EnemyDataByTypeB
 	float speedMax;
 	float jumForce;
 	float shootCooldown;
-}EnemyDataByTypeB;
+}EnemyDataByType;
 
-typedef struct EnemyEntityB
+typedef struct EnemyEntity
 {
 	sfSprite* sprite;
 	EnemyType type;
@@ -70,51 +70,50 @@ typedef struct EnemyEntityB
 	float shootTimer;
 	float aStarTimer;
 	float energy;
-}EnemyEntityB;
+}EnemyEntity;
 
-typedef struct EnemyB
+typedef struct Enemy
 {
 #pragma region AStar
 	List* listeWait;
 	Tableau tableau;
 #pragma endregion
 
-	EnemyDataByTypeB dataByType[ALEATORY];
-	EnemyEntityB* entity;
+	EnemyDataByType dataByType[ALEATORY];
+	EnemyEntity* entity;
 	int activeCount;
 	unsigned count;
-}EnemyB;
+}Enemy;
 
 
 void UpdateColisionEnemy(unsigned _index);
 void UpdateEnemyI(float _dt, unsigned _index);
 void CalculMoveEnemy(float _dt, unsigned _index);
-ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible);
+ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfBool PlayerVisibility(unsigned _index);
 void shootPlayer(unsigned _index);
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
-void EffectGelEnemy(unsigned _index, int _puissance, float _time);
 
-EnemyB enemy;
+Enemy enemy;
 
 void LoadEnemy(void)
 {
-	enemy = (EnemyB){ 0 };
+	enemy = (Enemy){ 0 };
 
 	enemy.listeWait = CreateList();
-	enemy.entity = Calloc(1, sizeof(EnemyEntityB));
+	enemy.entity = Calloc(1, sizeof(EnemyEntity));
 
-	enemy.dataByType[DRONE_SMALL] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
 }
 
 void UpdateEnemy(float _dt)
 {
 	enemy.activeCount = 0;
 	sfVector2f playerPos = GetPlayerPosition();
-	for(unsigned i = 0; i < enemy.count; i++)
+	for (unsigned i = 0; i < enemy.count; i++)
 	{
 		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + TILE_SIZE + enemy.entity[i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + TILE_SIZE + enemy.entity[i].region.height - TILE_SIZE * 2 >= playerPos.y)
 		{
@@ -289,12 +288,8 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 		_type = rand() % ALEATORY;
 	}
 
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntityB));
-	enemy.entity[enemy.count] = (EnemyEntityB){ 0 };
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].life = enemy.dataByType[_type].lifeMax;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1);
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
+	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
 }
@@ -309,16 +304,17 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _t
 	{
 		if (_type == FREEZE)
 		{
-			EffectGelEnemy(_index, 2, 5);
+			enemy.entity[_index].freezePower = 2;
+			enemy.entity[_index].freezeTimer = 5;
 		}
 
-		enemy.entity[_index].life -= _degat / (enemy.dataByType[enemy.entity[_index].type].armure + 1);
+		enemy.entity[_index].life -= _degat / ((enemy.dataByType[enemy.entity[_index].type].armure + 1) * (_type - FREEZE));
 		if (enemy.entity[_index].life < 0)
 		{
 			DestroyVisualEntity(enemy.entity[_index].sprite);
 			enemy.count--;
 			enemy.entity[_index] = enemy.entity[enemy.count];
-			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntityB));
+			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
 		}
 		return sfTrue;
 	}
@@ -332,25 +328,14 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 	sfVector2f touch = { 0 };
 	for (int i = 0; i < enemy.count; i++)
 	{
-		
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2, hitboxTir.top + hitboxTir.height / 2 };
-			touch.x -= hitboxEnemy.left;
-			touch.y -= hitboxEnemy.top;
+			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
 			return HitEnemyI(i, touch, _degat, _type);
 		}
 	}
 	return sfFalse;
-}
-
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
-{
-	_positionReal.x = _positionReal.x / TILE_SIZE;
-	_positionReal.y = _positionReal.y / TILE_SIZE;
-	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
-	return newposition;
 }
 
 sfVector2f GetPositionEnemy(unsigned _index)
@@ -378,21 +363,16 @@ int GetEnemyZone(void)
 	return enemy.activeCount;
 }
 
-void EffectGelEnemy(unsigned _index, int _puissance, float _time)
-{
-	enemy.entity[_index].freezePower = _puissance;
-	enemy.entity[_index].freezeTimer = _time;
-}
-
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 {
 	int proxi = 0;
+	sfVector2f positionProxi = sfSprite_getPosition(enemy.entity[proxi].sprite);
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		sfVector2f positionProxi = sfSprite_getPosition(enemy.entity[proxi].sprite);
 		sfVector2f positionI = sfSprite_getPosition(enemy.entity[i].sprite);
 		if (NORM_POW2(positionI, _position) < NORM_POW2(positionProxi, _position))
 		{
+			positionProxi = positionI;
 			proxi = i;
 		}
 	}
@@ -408,7 +388,7 @@ int TestColision(sfIntRect _intRect);
 int TestJump(sfIntRect _intRect);
 sfIntRect FloatRectIntoIntRectByCase(sfFloatRect _floatRect);
 
-ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible)
+ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 {
 	sfVector2u gridSize = { _enemy->region.width / TILE_SIZE , _enemy->region.height / TILE_SIZE };
 	if (_enemy->region.top != enemy.tableau.region.top || _enemy->region.left != enemy.tableau.region.left)

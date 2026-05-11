@@ -26,10 +26,6 @@ void LoadGame(void)
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
-#if !DEV_PIERRE_ENEMY
-	LoadEnemy();
-#endif
-
 	LoadHUD();
 	SetHpFocus(GetBossLifeAdress());
 	//LoadGUI();
@@ -138,11 +134,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF4:
 			SetCurrentMap(LEVEL_TEST);
 			break;
-#if DEV_PIERRE_ENEMY
-		case sfKeyP:
-			HitEnemyI(0, (sfVector2f) { 7, 7 }, 5, HEAVY);
-			break;
-#endif
 		case sfKeyF5:
 			SetIntToSave(DEV_MODE_FLY, 1);
 			break;

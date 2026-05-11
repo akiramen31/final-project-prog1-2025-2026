@@ -9,17 +9,9 @@
 #include "JetSteam.h"
 
 Map map;
-
-int rectShapeCount;
-int bossArenaGround = 0;
-sfRectangleShape** rectShape;
-
-sfColor colorBackground;
-
 void LoadMapData(CjsonB* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount);
 void SetPositionEntity(InfoZone* _point, int _count);
-void CreateRectVisible(InfoZone* _infoZone, int _count);
 
 void LoadMap()
 {
@@ -31,9 +23,7 @@ void LoadMap()
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
 
 	int val = 169;
-	colorBackground = sfColor_fromRGB(val, val, val);
-
-	sfSprite_setColor(map.background, colorBackground);
+	sfSprite_setColor(map.background, (sfColor) {val, val, val, 255});
 
 	LoadBox();
 	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
@@ -72,10 +62,7 @@ void LoadMap()
 		LoadMapData(cjson);
 		CleanupCjsonB(cjson);
 	}
-
-#if DEV_PIERRE_ENEMY && DEV_ENEMY
 	LoadEnemy();
-#endif
 
 	LoadJetSteam();
 	LoadElevator();
@@ -132,9 +119,6 @@ void LoadMapData(CjsonB* _cjson)
 			map.data.size = (sfVector2u){ _cjson->layers[i].width, _cjson->layers[i].height };
 		}
 	}
-
-	CreateRectVisible(map.data.move, map.data.moveCount);
-
 	map.data.caseSize = (sfVector2f){ (float)_cjson->tilewidth, (float)_cjson->tileheight };
 }
 
@@ -196,24 +180,6 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "TpPlayer"))
 		{
 			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
-		}
-	}
-}
-
-void CreateRectVisible(InfoZone* _infoZone, int _count)
-{
-	rectShapeCount = _count;
-	rectShape = Calloc(_count, sizeof(sfRectangleShape*));
-	if (rectShape)
-	{
-		for (int i = 0; i < _count; i++)
-		{
-			rectShape[i] = sfRectangleShape_create();
-			sfRectangleShape_setFillColor(rectShape[i], sfColor_fromRGBA(0, 0, 255, 125));
-			sfRectangleShape_setSize(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.width, _infoZone[i].hitbox.height });
-			sfRectangleShape_setPosition(rectShape[i], (sfVector2f) { _infoZone[i].hitbox.left, _infoZone[i].hitbox.top });
-			sfRectangleShape_setOutlineColor(rectShape[i], sfColor_fromRGB(rand() % 256, rand() % 256, rand() % 256));
-			sfRectangleShape_setOutlineThickness(rectShape[i], -1.f);
 		}
 	}
 }
@@ -311,16 +277,4 @@ InfoZone* GetInfoZoneMove(void)
 int GetMoveCount(void)
 {
 	return map.data.moveCount;
-}
-
-void DrawDev(sfRenderWindow* _renderWindow)
-{
-	if (DEV_MAP_COLIDER)
-	{
-		for (int i = 0; i < rectShapeCount; i++)
-		{
-			sfRenderWindow_drawRectangleShape(_renderWindow, rectShape[i], NULL);
-		}
-
-	}
 }
