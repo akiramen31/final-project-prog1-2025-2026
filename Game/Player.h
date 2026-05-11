@@ -71,12 +71,13 @@ typedef struct Player
 }Player;
 
 void LoadPlayer(void);
-void UpdatePlayer(float _dt);
+void UpdatePlayer(sfBool _intro, float _dt);
 
 void DamagePlayer(int _damage);
 void KillPlayer(void);
 
 sfVector2f GetPlayerPosition(void);
+sfVector2f GetPlayerCenterPosition(void);
 sfFloatRect GetPlayerRect(void);
 
 sfVector2f GetPlayerVelocity(void);
