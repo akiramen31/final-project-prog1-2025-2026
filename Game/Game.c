@@ -31,7 +31,7 @@ void LoadGame(void)
 #endif
 
 	LoadHUD();
-	SetHpFocus(GetBossLifeAdress());
+	LoadBossBar(GetBossLifeAdress());
 	//LoadGUI();
 	LoadWeapons();
 

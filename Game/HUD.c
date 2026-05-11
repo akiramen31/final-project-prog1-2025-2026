@@ -13,13 +13,14 @@ void LoadHUD()
 	{
 		hud.life[i] = CreateSprite(GetAsset("Assets/Sprites/health_cog.png"), (sfVector2f) { 90 + (32 * i), 90 }, 5.f, -10.f);
 	}
-	LoadBossBar();
 }
 
-void LoadBossBar(void)
+void LoadBossBar(float* _bossHpAdr)
 {
-	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Boss/1/Boss_Lifebar_Placeholder.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
-	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Boss/1/Boss_Life_Placeholder.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
+	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Sprites/Boss_Lifebar_Placeholder.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
+	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Sprites/Boss_Life_Placeholder.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
+	hud.bossBar.bossLife = _bossHpAdr;
+	hud.bossBar.maxBossLife = *_bossHpAdr;
 }
 
 
@@ -49,14 +50,11 @@ void UpdateHUD(float _dt)
 		}
 	}
 	//Boss
-	float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
-	sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
-}
-
-void SetHpFocus(float* _bossHpAdr)
-{
-	hud.bossBar.bossLife = _bossHpAdr;
-	hud.bossBar.maxBossLife = *_bossHpAdr;
+	if (hud.bossBar.bossLife != -1)
+	{
+		float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
+		sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
+	}
 }
 
 void VisibilityBossBar(sfBool _visible)

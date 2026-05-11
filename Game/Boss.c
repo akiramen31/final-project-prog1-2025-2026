@@ -34,9 +34,9 @@ void LoadBoss(int _index, sfVector2f _position)
 		positionList[STEAM_TANK] = (sfVector2f){ _position.x, _position.y - sfTexture_getSize(textureList[TRACK]).y };
 		positionList[CARIAGE] = (sfVector2f){ _position.x, _position.y - (sfTexture_getSize(textureList[TRACK]).y / 3) };
 		positionList[MISSILE_LAUNCHER] = (sfVector2f){ _position.x, positionList[CARIAGE].y - sfTexture_getSize(textureList[CARIAGE]).y };
-		positionList[L_CHAMBER] = (sfVector2f){ _position.x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) - sfTexture_getSize(textureList[STEAM_TANK]).x, positionList[CARIAGE].y-10 };
+		positionList[L_CHAMBER] = (sfVector2f){ _position.x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) - (sfTexture_getSize(textureList[STEAM_TANK]).x/2), positionList[CARIAGE].y - 10 };
 		positionList[L_CANNON] = (sfVector2f){ positionList[L_CHAMBER].x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[L_CHAMBER].y - (sfTexture_getSize(textureList[L_CHAMBER]).y / 2) };
-		positionList[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) + sfTexture_getSize(textureList[STEAM_TANK]).x, positionList[CARIAGE].y-10 };
+		positionList[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) + (sfTexture_getSize(textureList[STEAM_TANK]).x/2), positionList[CARIAGE].y - 10 };
 		positionList[R_CANNON] = (sfVector2f){ positionList[R_CHAMBER].x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionList[L_CANNON].y};
 		for (int i = 0; i < PART_COUNT; i++)
 		{
