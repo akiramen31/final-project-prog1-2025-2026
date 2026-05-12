@@ -260,6 +260,31 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
 	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+
+	enum EnemyType a;
+	switch (a)
+	{
+	case DRONE_SMALL:
+	case GROUND_HEAVY:
+	case SOLDIER_SMALL:
+		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect){1,2,14,14});
+		break;
+	case DRONE_SMALL_MEDIUM:
+	case GROUND_HEAVY_MEDIUM:
+	case SOLDIER_SMALL_MEDIUM:
+		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
+		break;
+	case DRONE_SMALL_LARGE:
+	case GROUND_HEAVY_LARGE:
+	case SOLDIER_SMALL_LARGE:
+		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
+		break;
+	case ALEATORY:
+		break;
+	default:
+		break;
+	}
+	
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
 }
