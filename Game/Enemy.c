@@ -7,6 +7,7 @@ void UpdateColisionEnemy(unsigned _index);
 void UpdateEnemyI(float _dt, unsigned _index);
 void CalculMoveEnemy(float _dt, unsigned _index);
 ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible);
+ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfBool PlayerVisibility(unsigned _index);
 void shootPlayer(unsigned _index);
@@ -20,9 +21,15 @@ void LoadEnemy(void)
 
 	enemy.listeWait = CreateList();
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
-	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 5.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
 }
 
 void UpdateEnemy(float _dt)
@@ -66,23 +73,65 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	{
 		enemy.entity[_i].energy = enemy.dataByType[enemy.entity[_i].type].energyMax;
 	}
-	if (PlayerVisibility(_i))
+	switch (enemy.entity[_i].type)
 	{
-		if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+	case DRONE_SMALL:
+	case DRONE_SMALL_MEDIUM:
+	case DRONE_SMALL_LARGE:
+		if (PlayerVisibility(_i))
 		{
-			enemy.entity[_i].shootTimer = 0;
-			shootPlayer(_i);
+			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			{
+				enemy.entity[_i].shootTimer = 0;
+				shootPlayer(_i);
+			}
+			enemy.entity[_i].action = (ActionDemander){ 0 };
 		}
-		enemy.entity[_i].action = (ActionDemander){ 0 };
-	}
-	else
-	{
+		else
+		{
+			if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+			{
+				enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
+				enemy.entity[_i].aStarTimer = 0;
+			}
+		}
+		break;
+	case GROUND_HEAVY:
+	case GROUND_HEAVY_MEDIUM:
+	case GROUND_HEAVY_LARGE:
 		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
 			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
 			enemy.entity[_i].aStarTimer = 0;
 		}
+		break;
+	case SOLDIER_SMALL:
+	case SOLDIER_SMALL_MEDIUM:
+	case SOLDIER_SMALL_LARGE:
+		if (PlayerVisibility(_i))
+		{
+			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			{
+				enemy.entity[_i].shootTimer = 0;
+				shootPlayer(_i);
+			}
+			enemy.entity[_i].action = (ActionDemander){ 0 };
+		}
+		else
+		{
+			if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+			{
+				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
+				enemy.entity[_i].aStarTimer = 0;
+			}
+		}
+		break;
+	case ALEATORY:
+		break;
+	default:
+		break;
 	}
+	
 	CalculMoveEnemy(_dt, _i);
 	UpdateColisionEnemy(_i);
 }
@@ -766,6 +815,322 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 		break;
 	case DOWN_RIGHT:
 		actionDemander.droite = sfTrue;
+		break;
+	case LEFT:
+		actionDemander.gauche = sfTrue;
+		break;
+	case NO_DIRECTION:
+		break;
+	case RIGHT:
+		actionDemander.droite = sfTrue;
+		break;
+	case UP_LEFT:
+		actionDemander.gauche = sfTrue;
+		actionDemander.Saut = sfTrue;
+		break;
+	case UP:
+		actionDemander.Saut = sfTrue;
+		break;
+	case UP_RIGHT:
+		actionDemander.droite = sfTrue;
+		actionDemander.Saut = sfTrue;
+		break;
+	default:
+		break;
+	}
+	return actionDemander;
+}
+
+ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
+{
+	sfVector2u gridSize = { _enemy->region.width / TILE_SIZE , _enemy->region.height / TILE_SIZE };
+	if (_enemy->region.top != enemy.tableau.region.top || _enemy->region.left != enemy.tableau.region.left)
+	{
+		// liberer lancienne GRID
+		enemy.tableau.region = _enemy->region;
+
+		for (int i = 0; i < ALEATORY; i++)
+		{
+			FreeGrid(enemy.tableau.grid[_enemy->type]);
+			enemy.tableau.grid[i] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
+		}
+		FreeGrid(enemy.tableau.collision);
+		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
+
+		for (int y = 0; y < gridSize.y; y++)
+		{
+			for (int x = 0; x < gridSize.x; x++)
+			{
+				if (y == 0 || y == gridSize.y - 1 || x == 0 || x == gridSize.x - 1)
+				{
+					grid[y][x] = 2;
+				}
+				else
+				{
+					sfVector2f reaction = Colision((sfFloatRect) { _enemy->region.left + x * TILE_SIZE, _enemy->region.top + y * TILE_SIZE, TILE_SIZE, TILE_SIZE }, AXIS_BOTH);
+					if (reaction.x || reaction.y)
+					{
+						grid[y][x] = 2;
+					}
+					else if (CollisionPassThrough((sfFloatRect) { _enemy->region.left + x * TILE_SIZE, _enemy->region.top + y * TILE_SIZE - 13, TILE_SIZE, TILE_SIZE }).y)
+					{
+						grid[y][x] = 1;
+					}
+				}
+			}
+		}
+		enemy.tableau.collision = grid;
+		if (0 && DEBUG_MODE_A_STAR)
+		{
+			for (int y = 0; y < gridSize.y; y++)
+			{
+				for (int x = 0; x < gridSize.x; x++)
+				{
+					printf("%d", enemy.tableau.collision[y][x]);
+				}
+				printf("\n");
+			}
+			printf("\n\n\n");
+		}
+	};
+
+	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
+	bouns.left -= _enemy->region.left;
+	bouns.top -= _enemy->region.top + 1;
+	sfIntRect bounsEnemy = FloatRectIntoIntRectByCase(bouns);
+	_cible.left -= _enemy->region.left;
+	_cible.top -= _enemy->region.top + 1;
+	sfIntRect bounsCible = FloatRectIntoIntRectByCase(_cible);
+	// problème colision plafon
+	while (bounsCible.top + bounsEnemy.height < 1)
+	{
+		bounsCible.top += 1;
+	}
+	//problème collision mur de droite
+	while (bounsCible.left + bounsEnemy.width > gridSize.x - 1)
+	{
+		bounsCible.left -= 1;
+	}
+
+	if (enemy.tableau.new[_enemy->type])
+	{
+		for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+			{
+				enemy.tableau.grid[_enemy->type][y][x].direction = EMPTY_DIRECTION;
+				enemy.tableau.grid[_enemy->type][y][x].compteur = 0;
+				enemy.tableau.grid[_enemy->type][y][x].jumpForce = 0;
+			}
+		}
+
+		sfVector2u caseGet = { bounsCible.left, bounsCible.top };
+		sfIntRect caseRecherche = { 0 };
+
+		caseRecherche = (sfIntRect){ caseGet.x, caseGet.y - 1,bounsEnemy.width,bounsEnemy.height };
+		if (!TestColision(caseRecherche))
+		{
+			while (!TestColision(caseRecherche))
+			{
+				caseRecherche.top--;
+				bounsCible.top--;
+			}
+		}
+		else
+		{
+			if (caseGet.x >= 1)
+			{
+				caseRecherche.left -= 1;
+				while (!TestColision(caseRecherche))
+				{
+					caseRecherche.top--;
+					bounsCible.top--;
+				}
+			}
+		}
+		caseGet = (sfVector2u){ bounsCible.left, bounsCible.top };
+
+		enemy.tableau.grid[_enemy->type][bounsCible.top][bounsCible.left].compteur = 0;
+		enemy.tableau.grid[_enemy->type][bounsCible.top][bounsCible.left].jumpForce = 0;
+		enemy.tableau.grid[_enemy->type][bounsCible.top][bounsCible.left].direction = NO_DIRECTION;
+
+		enemy.tableau.new[_enemy->type] = sfFalse;
+
+		AjoutListWait((sfVector2u) { bounsCible.left, bounsCible.top });
+
+		while (enemy.count > 0)
+		{
+			int min = MinResultCase(_enemy->type);
+			if (!enemy.listeWait->first)
+			{
+				break;
+			}
+			sfVector2u* temp = GetElement(enemy.listeWait, min)->value;
+			caseGet = *temp;
+			//test gauche
+			caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 2;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = RIGHT;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+			}
+
+			//test haut gauche
+			caseRecherche = (sfIntRect){ caseGet.x - 1, caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 5;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = DOWN_RIGHT;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+			}
+
+			//test bas gauche
+			caseRecherche = (sfIntRect){ caseGet.x - 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+			{
+
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 3;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = UP_RIGHT;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+
+			}
+
+			//test Droite
+			caseRecherche = (sfIntRect){ caseGet.x + 1, caseGet.y ,bounsEnemy.width,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 2;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = LEFT;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+			}
+
+			//test haut droite
+			caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width + 1,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left + 1].direction == EMPTY_DIRECTION)
+
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left + 1].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 5;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left + 1].direction = DOWN_LEFT;
+				AjoutListWait((sfVector2u) { caseRecherche.left + 1, caseRecherche.top });
+			}
+
+			//test bas droite
+			caseRecherche = (sfIntRect){ caseGet.x + 1 , caseGet.y + 1 ,bounsEnemy.width ,bounsEnemy.height - 1 };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+			{
+
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 3;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = UP_LEFT;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+
+			}
+
+			//test haut
+			caseRecherche = (sfIntRect){ caseGet.x , caseGet.y - 1 ,bounsEnemy.width,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 3;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = DOWN;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+			}
+
+			//test Bas
+			caseRecherche = (sfIntRect){ caseGet.x , caseGet.y + 1 ,bounsEnemy.width,bounsEnemy.height };
+			if (!TestColision(caseRecherche) &&
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction == EMPTY_DIRECTION)
+			{
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].compteur =
+					enemy.tableau.grid[_enemy->type][caseGet.y][caseGet.x].compteur + 1;
+				enemy.tableau.grid[_enemy->type][caseRecherche.top][caseRecherche.left].direction = UP;
+				AjoutListWait((sfVector2u) { caseRecherche.left, caseRecherche.top });
+			}
+			RetirerListWait(min);
+		}
+		if (1 && DEBUG_MODE_A_STAR)
+		{
+			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+			{
+				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				{
+					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					{
+						if (enemy.tableau.collision[y][x])
+						{
+							printf("X");
+						}
+						else
+						{
+							printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
+						}
+					}
+					else
+					{
+						printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
+					}
+				}
+				printf("\n");
+			}
+			printf("\n\n\n");
+			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+			{
+				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				{
+					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					{
+						if (enemy.tableau.collision[y][x])
+						{
+							printf(" X/");
+						}
+						else
+						{
+							printf(" M/");
+						}
+					}
+					else
+					{
+						printf("%2d/", enemy.tableau.grid[_enemy->type][y][x].compteur);
+					}
+				}
+				printf("\n");
+			}
+			printf("\n\n\n");
+		}
+	}
+
+	ActionDemander actionDemander = { 0 };
+
+	switch (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction)
+	{
+	case EMPTY_DIRECTION:
+		break;
+	case DOWN_LEFT:
+		actionDemander.gauche = sfTrue;
+		actionDemander.bas = sfTrue;
+		break;
+	case DOWN:
+		actionDemander.bas = sfTrue;
+		break;
+	case DOWN_RIGHT:
+		actionDemander.droite = sfTrue;
+		actionDemander.bas = sfTrue;
 		break;
 	case LEFT:
 		actionDemander.gauche = sfTrue;
