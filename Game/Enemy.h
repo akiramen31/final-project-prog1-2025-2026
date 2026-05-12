@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-#define TIMER_ASTAR 0.05f
+#define TIMER_ASTAR 0.5f
 #define JUMP_FORCE 5
 #define MAX_ENRGIE 300
 
@@ -23,6 +23,7 @@ typedef struct ActionDemander
 	char droite;
 	char Saut;
 	char jetPack;
+	char bas;
 }ActionDemander;
 
 typedef struct Case2
@@ -93,7 +94,6 @@ sfVector2f GetPositionEnemy(unsigned _index);
 sfFloatRect GetBounsEnemy(unsigned _index);
 int GetEnemyCount(void);
 void SetPositionEnemy(sfVector2f _position, unsigned _index);
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal);
 int GetEnemyZone(void);
 
 #endif // !GAME_H
