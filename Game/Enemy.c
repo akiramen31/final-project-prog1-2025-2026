@@ -21,9 +21,15 @@ void LoadEnemy(void)
 
 	enemy.listeWait = CreateList();
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
-	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 5.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
 }
 
 void UpdateEnemy(float _dt)
@@ -70,6 +76,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	switch (enemy.entity[_i].type)
 	{
 	case DRONE_SMALL:
+	case DRONE_SMALL_MEDIUM:
+	case DRONE_SMALL_LARGE:
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
@@ -89,6 +97,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		}
 		break;
 	case GROUND_HEAVY:
+	case GROUND_HEAVY_MEDIUM:
+	case GROUND_HEAVY_LARGE:
 		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
 			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
@@ -96,6 +106,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		}
 		break;
 	case SOLDIER_SMALL:
+	case SOLDIER_SMALL_MEDIUM:
+	case SOLDIER_SMALL_LARGE:
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
