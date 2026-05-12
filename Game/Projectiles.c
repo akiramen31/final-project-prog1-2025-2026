@@ -340,11 +340,11 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	Bullet newBullet = { 0 };
 	if (_shooterType.isAlly == sfTrue)
 	{
-	newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
+		newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
 	}
 	else
 	{
-	newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 39.f);
+		newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 39.f);
 	}
 	SetSpriteOriginMiddle(newBullet.sprite);
 
@@ -737,20 +737,24 @@ void CheckCollisionDronesList(void)
 
 void TestCollisionExplosionList(unsigned _index, float _range)
 {
-		sfFloatRect hitboxExplosion = { 0 };
-		hitboxExplosion.left = sfSprite_getPosition(explosionList[_index].sprite).x;
-		hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
-		hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
-		hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
-		sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
-		if (reaction.x != 0 || reaction.y != 0 || HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY))
+	sfFloatRect hitboxExplosion = { 0 };
+	hitboxExplosion.left = sfSprite_getPosition(explosionList[_index].sprite).x;
+	hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
+	hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
+	hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
+	sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
+	if (reaction.x != 0 || reaction.y != 0)
+	{
+		if (!explosionList[_index].isAlly)
 		{
-			if (!explosionList[_index].isAlly)
-			{
-				HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
-				ColisionWithPlayer(hitboxExplosion, sfTrue);
-			}
+			HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
+			HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY);
 		}
+		else
+		{
+			ColisionWithPlayer(hitboxExplosion, sfTrue);
+		}
+	}
 }
 
 void DeleteBulletAlly(unsigned _index)

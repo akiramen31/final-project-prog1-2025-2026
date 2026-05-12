@@ -308,7 +308,8 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 
 sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 {
-	sfImage* colideur = sfTexture_copyToImage(sfSprite_getTexture(enemy.entity[_i].sprite));
+	sfTexture* texture = sfSprite_getTexture(enemy.entity[_i].sprite);
+	sfImage* colideur = sfTexture_copyToImage(texture);
 	sfColor pixelColor = sfImage_getPixel(colideur, (int)_touch.x, (int)_touch.y);
 	sfImage_destroy(colideur);
 
@@ -323,10 +324,18 @@ sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 		enemy.entity[_i].life -= _degat / ((enemy.dataByType[enemy.entity[_i].type].armure + 1) * (_type - FREEZE));
 		if (enemy.entity[_i].life < 0)
 		{
+			sfFloatRect rect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+			
+			sfVector2f pos = { rect.left + rect.width / 2.f, rect.top + rect.height / 2.f };
+			float range = (rect.width + rect.height) / 4.f;
 			DestroyVisualEntity(enemy.entity[_i].sprite);
 			enemy.count--;
 			enemy.entity[_i] = enemy.entity[enemy.count];
-			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
+			if (enemy.count > 0)
+			{
+				enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
+			}
+			SpawnExplosion(pos, sfFalse, range / EXPLOSION_BASIC_RANGE);
 		}
 		return sfTrue;
 	}
