@@ -123,7 +123,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 		velocity.y = vectorLength.y;
 	}
 
-	if (POW2(velocity.x) < CAMERA_SPEED_LOCK && POW2(velocity.y) < CAMERA_SPEED_LOCK)
+	if (POW2(velocity.x) < CAMERA_LOCK && POW2(velocity.y) < CAMERA_LOCK)
 	{
 		SetViewCenter(_pos);
 		camera.lastPositionName = camera.positionName;
