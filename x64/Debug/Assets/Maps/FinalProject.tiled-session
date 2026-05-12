@@ -1,5 +1,5 @@
 {
-    "activeFile": "Level2.tmx",
+    "activeFile": "Level1.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "."
@@ -43,8 +43,8 @@
             "scale": 0.33,
             "selectedLayer": 9,
             "viewCenter": {
-                "x": 4721.212121212121,
-                "y": 574.2424242424241
+                "x": 5359.090909090909,
+                "y": 575.7575757575758
             }
         },
         "Level1_2.tmx": {
@@ -78,19 +78,19 @@
                 5,
                 8
             ],
-            "scale": 1.5,
-            "selectedLayer": 8,
+            "scale": 0.5,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 2976,
-                "y": 1216.3333333333333
+                "x": 2977,
+                "y": 1216
             }
         },
         "Level3.tmx": {
             "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 545.4545454545455,
-                "y": 640.909090909091
+                "x": 543.9393939393938,
+                "y": 639.3939393939394
             }
         },
         "LevelTest.tmx": {
@@ -108,8 +108,8 @@
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 248,
-                "y": 296.25
+                "x": 247.75,
+                "y": 296
             }
         },
         "Tilesets/FullTiles.tsx": {
@@ -167,12 +167,12 @@
     ],
     "project": "FinalProject.tiled-project",
     "recentFiles": [
-        "Level1.tmx",
         "Tilesets/SpritesList.tsx",
         "Tilesets/FullTiles.tsx",
         "Tilesets/AutoTileRules.tmx",
         "Level3.tmx",
         "Level2.tmx",
+        "Level1.tmx",
         "LevelTest.tmx",
         "Level1_Demo.tmx",
         "Level1_2.tmx",

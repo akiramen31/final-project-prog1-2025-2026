@@ -173,18 +173,21 @@ sfBool ColisionElevatorButon(sfFloatRect _hitbox)
 
 void LoadElevatorLevel1(void)
 {
-	numElevator = 1;
+	numElevator = 2;
 
 	CreateElevator();
 
-	elevatorList[0].numberLevel = 2;
 
-	elevatorList[0].posYlevel[0] = 752.f + DECAL;
-	elevatorList[0].posYlevel[1] = 272.f + DECAL;
+	for (int i = 0; i < numElevator; i++)
+	{
+		elevatorList[i].numberLevel = 2;
+		elevatorList[i].posYlevel[0] = 752.f + DECAL;
+		elevatorList[i].posYlevel[1] = 272.f + DECAL;
+		elevatorList[i].actualLevel = 1;
+	}
 
-	elevatorList[0].actualLevel = 1;
-
-	sfRectangleShape_setPosition(elevatorList[0].hitbox[0], (sfVector2f) { 1696, elevatorList[0].posYlevel[1] });
+	sfRectangleShape_setPosition(elevatorList[0].hitbox[0], (sfVector2f) { 1248, elevatorList[0].posYlevel[1] });
+	sfRectangleShape_setPosition(elevatorList[1].hitbox[0], (sfVector2f) { 2976, elevatorList[1].posYlevel[1] });
 
 	for (int i = 0; i < numElevator; i++)
 	{
@@ -213,7 +216,7 @@ void LoadElevatorLevel2(void)
 		elevatorList[i].actualLevel = 1;
 	}
 	sfRectangleShape_setPosition(elevatorList[0].hitbox[0], (sfVector2f) { 2624, elevatorList[0].posYlevel[1] });
-	sfRectangleShape_setPosition(elevatorList[1].hitbox[0], (sfVector2f) { 4608, elevatorList[0].posYlevel[1] });
+	sfRectangleShape_setPosition(elevatorList[1].hitbox[0], (sfVector2f) { 4608, elevatorList[1].posYlevel[1] });
 
 	for (int i = 0; i < numElevator; i++)
 	{
