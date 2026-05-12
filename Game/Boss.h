@@ -21,14 +21,31 @@
 
 //
 #define MAX_BOSS2_LIFE 150.f
-#define SPEED_BOSS2_FLOATING 20.f
+#define BOSS2_SWITCH_MODE_TIMER 2.f
+
+#define SPEED_BOSS2_ASCENDING 140.f
+#define SPEED_BOSS2_STEAMTANK 14.f
+
+#define BOSS2_UNHIDDING_HEIGHT 285.f
+#define BOSS2_SHOOT_HEIGHT 180.f
+#define BOSS2_SPEED_SHOOTING_HORIZONTALE 70.f
+#define BOSS2_BOMB_HEIGHT 100.f
+#define BOSS2_SPEED_BOMBING_HORIZONTALE 110.f
 
 #define ARENA1_CENTER 8671.f
-#define ARENA1_ENTRY 8290.f
+#define ARENA1_ENTRY ARENA1_CENTER -381.f
 
-#define ARENA1_LIMITE_LEFT 8351.f
-#define ARENA1_LIMITE_RIGHT 8991.f
+#define ARENA1_LIMITE_LEFT ARENA1_CENTER - 320.f
+#define ARENA1_LIMITE_RIGHT ARENA1_CENTER + 320.f
 
+#define ARENA2_CENTER 5189.f
+#define ARENA2_ENTRY ARENA2_CENTER -381.f
+
+#define ARENA2_LIMITE_LEFT ARENA2_CENTER - 300.f
+#define ARENA2_LIMITE_RIGHT ARENA2_CENTER + 300.f
+
+#define ARENA2_BOMBING_LIMITE_LEFT ARENA2_CENTER - 150.f
+#define ARENA2_BOMBING_LIMITE_RIGHT ARENA2_CENTER - 150.f
 
 typedef enum PlayerPositionToBoss1
 {
@@ -65,13 +82,13 @@ typedef enum PlayerPositionToBoss2
 
 typedef enum Boss2Reaction
 {
-	NONE2,
-	STARTING,
-	SHOOT,
-	BOMB,
-	UNHIDE,
-	DROP_PLAYER,
-	RESTARTING
+	BOSS2_NONE,
+	BOSS2_STARTING,
+	BOSS2_SHOOT,
+	BOSS2_BOMB,
+	BOSS2_UNHIDE,
+	BOSS2_DROP_PLAYER,
+	BOSS2_RESTARTING
 }Boss2Reaction;
 
 typedef enum Boss1Parts
@@ -129,8 +146,10 @@ typedef struct Boss2
 	PlayerPositionToBoss2 playerPositionToBoss2;
 	Boss2Reaction boss2Reaction;
 	float reactionTimer;
+	float powerMultiplier;
 	sfVector2f velocity;
 	sfVector2f aimDestination;
+	sfBool wasBombing;
 }Boss2;
 
 typedef struct Boss
@@ -163,7 +182,7 @@ float GetBossLife(void);
 float* GetBossLifeAdress(void);
 sfVector2f GetBossPosition(void);
 
-void FloatingHandlerBoss2(float _dt);
+void MoveSteamTankBoss2(float _dt);
 
 sfBool IsBossActive(void);
 #endif // !BOSS_H

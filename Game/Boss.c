@@ -1,7 +1,7 @@
 #include "Boss.h"
 
 void MoveBoss(sfVector2f _move);
-void UpdateBossReaction(float _dt);
+void UpdateBossReaction(sfVector2f _posPlayer, float _dt);
 void FreezeBoss(void);
 
 Boss boss;
@@ -139,6 +139,9 @@ void LoadBoss(int _index, sfVector2f _position)
 
 		boss.life = MAX_BOSS2_LIFE;
 		boss.boss2->aimDestination = (sfVector2f){ GetBossPosition().x, GetBossPosition().y + 40.f };
+		boss.boss2->boss2Reaction = BOSS2_STARTING;
+		boss.boss2->powerMultiplier = 1.f;
+		boss.boss2->reactionTimer = BOSS2_SWITCH_MODE_TIMER;
 	default:
 		break;
 	}
@@ -178,15 +181,23 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		switch (boss.currentBoss)
 		{
 		case 1:
-			//push = TestCollisionBossPlayer(playerRect, boss.boss1->hitboxes, 3, AXIS_BOTH);
 			break;
 		case 2:
-
-			//push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 8, AXIS_BOTH);
-			UpdateTurret(_posPlayer, _dt);
-			FloatingHandlerBoss2(_dt);
-			//push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 3, AXIS_BOTH);
-			//UpdateTurret(_posPlayer, _dt);
+			if (boss)
+			boss.boss2->reactionTimer -= _dt;
+			if (boss.boss2->reactionTimer < 0)
+			{
+				if (boss.boss2->wasBombing)
+				{
+					boss.boss2->boss2Reaction = BOSS2_SHOOT;
+					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+				}
+				else
+				{
+					boss.boss2->boss2Reaction = BOSS2_BOMB;
+					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+				}
+			}
 			break;
 		default:
 			break;
@@ -204,7 +215,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		}
 		UpdateTurret(_posPlayer, _dt);
 		HandlePlayerBossCollision(push);
-		UpdateBossReaction(_dt);
+		UpdateBossReaction(_posPlayer, _dt);
 
 		BossShoot(_posPlayer, _dt);
 	}
@@ -230,7 +241,7 @@ void MoveBoss(sfVector2f _move)
 		{
 			sfSprite_move(boss.boss2->sprites[i], _move);
 		}
-		for (int i = 0; i < 14; i++)
+		for (int i = 0; i < 12; i++)
 		{
 			boss.boss2->hitboxes[i].left += _move.x;
 			boss.boss2->hitboxes[i].top += _move.y;
@@ -430,8 +441,8 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 					}
 				}
 			}
-			return vectorMove;
 		}
+		return vectorMove;
 	}
 
 	return vectorMove;
@@ -676,8 +687,9 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 	}
 }
 
-void UpdateBossReaction(float _dt)
+void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 {
+	float bossPlayerDistance = _posPlayer.x - sfSprite_getPosition(boss.boss2->sprites[BODY]).x;
 	if (boss.currentBoss == 1)
 	{
 		switch (boss.boss1->boss1ReactionToPlayer)
@@ -728,6 +740,84 @@ void UpdateBossReaction(float _dt)
 			break;
 		}
 	}
+	else if (boss.currentBoss == 2)
+	{
+		if ((!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x < ARENA2_LIMITE_LEFT) || bossPlayerDistance > 0.f) && (!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x > ARENA2_LIMITE_RIGHT) || bossPlayerDistance < 0.f))
+		{
+			if (boss.boss2->boss2Reaction == BOSS2_STARTING || boss.boss2->boss2Reaction == BOSS2_RESTARTING);
+			{
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y > 16.f)
+				{
+					MoveSteamTankBoss2(_dt);
+				}
+				else if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y) <= 16.f)
+				{
+					boss.boss2->boss2Reaction = BOSS2_SHOOT;
+					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_BOMB)
+			{
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_BOMB_HEIGHT)
+				{
+					MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
+				}
+				else if (bossPlayerDistance > 0)
+				{
+					if (!(bossPlayerDistance < 10.f))
+					{
+						MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+					}
+				}
+				else if (bossPlayerDistance < 0)
+				{
+					if (!(bossPlayerDistance > -10.f))
+					{
+						MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+					}
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_SHOOT)
+			{
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_SHOOT_HEIGHT)
+				{
+					MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
+				}
+				else if (bossPlayerDistance > 0)
+				{
+					if (!(bossPlayerDistance < 10.f))
+					{
+						MoveBoss((sfVector2f) { BOSS2_SPEED_SHOOTING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+					}
+				}
+				else if (bossPlayerDistance < 0)
+				{
+					if (!(bossPlayerDistance > -10.f))
+					{
+						MoveBoss((sfVector2f) { -BOSS2_SPEED_SHOOTING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+					}
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_UNHIDE)
+			{
+				if (!boss.boss2->aimDestination.x || !boss.boss2->aimDestination.y)
+				{
+					if (bossPlayerDistance < 0) // LEFT
+					{
+						boss.boss2->aimDestination = (sfVector2f){ ARENA2_LIMITE_LEFT, BOSS2_UNHIDDING_HEIGHT };
+					}
+					else // RIGHT
+					{
+						boss.boss2->aimDestination = (sfVector2f){ ARENA2_LIMITE_RIGHT, BOSS2_UNHIDDING_HEIGHT };
+					}
+				}
+				else
+				{
+
+				}
+			}
+		}
+	}
 }
 
 void BossShoot(sfVector2f _posPlayer, float _dt)
@@ -771,12 +861,19 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 	}
 }
 
-void FloatingHandlerBoss2(float _dt)
+void MoveSteamTankBoss2(float _dt)
 {
-	if (!boss.boss2->boss2Reaction == RESTARTING || !boss.boss2->boss2Reaction == NONE2 || !boss.boss2->boss2Reaction == UNHIDE || !boss.boss2->boss2Reaction == DROP_PLAYER)
+	for (int i = 3; i <= 5; i++)
 	{
-
+		sfSprite_move(boss.boss2->sprites[i], (sfVector2f) { 0, SPEED_BOSS2_STEAMTANK* _dt });
 	}
+
+	boss.boss2->hitboxes[1].left += 0.f;
+	boss.boss2->hitboxes[1].top += SPEED_BOSS2_STEAMTANK * _dt;
+	boss.boss2->hitboxes[2].left += 0.f;
+	boss.boss2->hitboxes[2].top += SPEED_BOSS2_STEAMTANK * _dt;
+	boss.boss2->hitboxes[8].left += 0.f;
+	boss.boss2->hitboxes[8].top += SPEED_BOSS2_STEAMTANK * _dt;
 }
 
 void DestroyBoss(int _boss)

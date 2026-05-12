@@ -39,6 +39,8 @@
 #define EXPLOSION_FRAME_DURATION 0.1f
 #define EXPLOSION_BASIC_RANGE 12.f
 
+#define GRENADE_LIFETIME 3.f
+
 typedef struct Bullet
 {
 	sfSprite* sprite;
@@ -97,6 +99,12 @@ typedef struct Drone
 	sfBool isAlive;
 }Drone;
 
+typedef struct Grenade
+{
+	sfSprite* sprite;
+	float lifetime;
+}Grenade;
+
 typedef struct ColdBreath
 {
 	sfSprite* sprite;
@@ -115,6 +123,7 @@ typedef struct Explosion
 }Explosion;
 
 void LoadProjectiles(float _groundlvl);
+void LoadGrenade(void);
 void LoadSecondary(void);
 void LoadBossMissile(void);
 void LoadDangerZone(void);
