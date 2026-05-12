@@ -190,19 +190,21 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		case 1:
 			break;
 		case 2:
-			if (boss)
-			boss.boss2->reactionTimer -= _dt;
-			if (boss.boss2->reactionTimer < 0)
+			if (boss.boss2->boss2Reaction == BOSS2_SHOOT || boss.boss2->boss2Reaction == BOSS2_BOMB)
 			{
-				if (boss.boss2->wasBombing)
+				boss.boss2->reactionTimer -= _dt;
+				if (boss.boss2->reactionTimer < 0)
 				{
-					boss.boss2->boss2Reaction = BOSS2_SHOOT;
-					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
-				}
-				else
-				{
-					boss.boss2->boss2Reaction = BOSS2_BOMB;
-					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+					if (boss.boss2->wasBombing)
+					{
+						boss.boss2->boss2Reaction = BOSS2_SHOOT;
+						boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+					}
+					else
+					{
+						boss.boss2->boss2Reaction = BOSS2_BOMB;
+						boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
+					}
 				}
 			}
 			break;
@@ -228,7 +230,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 	}
 	else if (_posPlayer.x > ARENA1_ENTRY)
 	{
- 		boss.life = MAX_BOSS1_LIFE;
+		boss.life = MAX_BOSS1_LIFE;
 	}
 }
 
@@ -695,7 +697,6 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 
 void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 {
-	float bossPlayerDistance = _posPlayer.x - sfSprite_getPosition(boss.boss2->sprites[BODY]).x;
 	if (boss.currentBoss == 1)
 	{
 		switch (boss.boss1->boss1ReactionToPlayer)
@@ -748,6 +749,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 	}
 	else if (boss.currentBoss == 2)
 	{
+		float bossPlayerDistance = _posPlayer.x - sfSprite_getPosition(boss.boss2->sprites[BODY]).x;
 		if ((!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x < ARENA2_LIMITE_LEFT) || bossPlayerDistance > 0.f) && (!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x > ARENA2_LIMITE_RIGHT) || bossPlayerDistance < 0.f))
 		{
 			if (boss.boss2->boss2Reaction == BOSS2_STARTING || boss.boss2->boss2Reaction == BOSS2_RESTARTING);
