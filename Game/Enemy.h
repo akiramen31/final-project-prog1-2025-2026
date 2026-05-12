@@ -60,6 +60,7 @@ typedef struct EnemyDataByType
 	float speedMax;
 	float jumForce;
 	float shootCooldown;
+	int scoreValue;
 }EnemyDataByType;
 
 typedef struct EnemyEntity
