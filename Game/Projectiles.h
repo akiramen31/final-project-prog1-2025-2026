@@ -40,6 +40,7 @@
 #define EXPLOSION_BASIC_RANGE 12.f
 
 #define GRENADE_LIFETIME 3.f
+#define GRENADE_FALL_SPEED 200.f
 
 typedef struct Bullet
 {
@@ -102,6 +103,7 @@ typedef struct Drone
 typedef struct Grenade
 {
 	sfSprite* sprite;
+	sfVector2f velocity;
 	float lifetime;
 }Grenade;
 

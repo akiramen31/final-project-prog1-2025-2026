@@ -9,9 +9,9 @@ Boss boss;
 
 void LoadBoss(int _index, sfVector2f _position)
 {
-
 	boss = (Boss){ 0 };
 	boss.currentBoss = _index + 1;
+	
 	switch (boss.currentBoss)
 	{
 	case 1:
@@ -58,7 +58,6 @@ void LoadBoss(int _index, sfVector2f _position)
 		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], 90);
 		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], -90);
 		boss.life = -1;
-
 		break;
 	case 2:
 		printf("Position du boss : %f et %f", _position.x, _position.y);
@@ -136,14 +135,6 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->hitboxes[10] = sfSprite_getGlobalBounds(boss.boss2->sprites[TOP_RIGHT_CHIMNEY]);
 		boss.boss2->hitboxes[11] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_LEFT_CHIMNEY]);
 		boss.boss2->hitboxes[12] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_RIGHT_CHIMNEY]);
-
-		//sfRectangleShape* colBoss[PART_COUNT_BOSS2];
-		//for (int i = 0; i < PART_COUNT_BOSS2; i++)
-		//{
-		//	colBoss[i] = CreateRectangleShape(boss.boss2->hitboxes[i], sfTransparent, sfRed, 1.f);
-		//}
-
-
 		boss.life = MAX_BOSS2_LIFE;
 		boss.boss2->aimDestination = (sfVector2f){ GetBossPosition().x, GetBossPosition().y + 40.f };
 		boss.boss2->boss2Reaction = BOSS2_STARTING;
@@ -152,6 +143,7 @@ void LoadBoss(int _index, sfVector2f _position)
 	default:
 		break;
 	}
+	boss.entity = boss.boss1;
 }
 
 void UpdateBoss(sfVector2f _posPlayer, float _dt)
@@ -164,16 +156,22 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			switch (boss.currentBoss)
 			{
 			case 1:
+			{
+				Boss1* entity = boss.entity;
 				for (int i = PART_COUNT_BOSS1 - 1; i >= 0; i--)
 				{
-					sfSprite_setColor(boss.boss1->sprites[i], (sfColor) { 255, 255, 255, 255 });
+					sfSprite_setColor(entity->sprites[i], (sfColor) { 255, 255, 255, 255 });
 				}
+			}
 				break;
 			case 2:
+			{
+				Boss2* entity = boss.entity;
 				for (int i = PART_COUNT_BOSS2 - 1; i >= 0; i--)
 				{
-					sfSprite_setColor(boss.boss2->sprites[i], (sfColor) { 255, 255, 255, 255 });
+					sfSprite_setColor(entity->sprites[i], (sfColor) { 255, 255, 255, 255 });
 				}
+			}
 				break;
 			default:
 				break;
