@@ -75,6 +75,7 @@ typedef struct EnemyEntity
 	float shootTimer;
 	float aStarTimer;
 	float energy;
+	float domageTimer;
 }EnemyEntity;
 
 typedef struct Enemy
