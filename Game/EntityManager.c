@@ -103,12 +103,6 @@ void Draw(void)
 
 		elementActual = elementActual->next;
 	}
-
-	if (entityManager.gameState == GAME && DEV_MODE)
-	{
-		DrawDev(entityManager.renderWindow);
-	}
-
 	sfRenderWindow_display(entityManager.renderWindow);
 }
 

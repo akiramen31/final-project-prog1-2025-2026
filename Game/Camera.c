@@ -66,7 +66,7 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 
 	double angle = ANGLE_VECTOR_RAD(vectorLength);
 
-	sfVector2f move = { 0 };
+	sfVector2f velocity = { 0 };
 
 	sfVector2f speed;
 	//if (camera.positionName == 0)
@@ -88,49 +88,49 @@ void MoveViewSlow(sfVector2f _pos, float _dt)
 		speed = (sfVector2f){ CAMERA_SPEED,CAMERA_SPEED };
 	}
 
-	move.x = _dt * (float)cos(angle) * speed.x;
-	move.y = _dt * (float)sin(angle) * speed.y;
+	velocity.x = _dt * (float)cos(angle) * speed.x;
+	velocity.y = _dt * (float)sin(angle) * speed.y;
 
 	if (POW2(vectorLength.x) > POW2(1000))
 	{
 		if (vectorLength.x < 0)
 		{
-			move.x = -1000;
+			velocity.x = -1000;
 		}
 		else
 		{
-			move.x = 1000;
+			velocity.x = 1000;
 		}
 	}
 	if (POW2(vectorLength.y) > POW2(1000))
 	{
 		if (vectorLength.y < 0)
 		{
-			move.y = -1000;
+			velocity.y = -1000;
 		}
 		else
 		{
-			move.y = 1000;
+			velocity.y = 1000;
 		}
 	}
 
-	if (POW2(move.x) > POW2(vectorLength.x))
+	if (POW2(velocity.x) > POW2(vectorLength.x))
 	{
-		move.x = vectorLength.x;
+		velocity.x = vectorLength.x;
 	}
-	if (POW2(move.y) > POW2(vectorLength.y))
+	if (POW2(velocity.y) > POW2(vectorLength.y))
 	{
-		move.y = vectorLength.y;
+		velocity.y = vectorLength.y;
 	}
 
-	if (POW2(move.x) < CAMERA_SPEED_LOCK && POW2(move.y) < CAMERA_SPEED_LOCK)
+	if (POW2(velocity.x) < CAMERA_SPEED_LOCK && POW2(velocity.y) < CAMERA_SPEED_LOCK)
 	{
 		SetViewCenter(_pos);
 		camera.lastPositionName = camera.positionName;
 	}
 	else
 	{
-		MoveView(move);
+		MoveView(velocity);
 	}
 }
 

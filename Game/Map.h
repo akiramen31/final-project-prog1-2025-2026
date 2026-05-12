@@ -21,7 +21,7 @@ typedef struct MapData
 	InfoZone* triger;
 	int trigerCount;
 
-	InfoZone* move;
+	InfoZone* velocity;
 	int moveCount;
 
 	InfoZone* point;

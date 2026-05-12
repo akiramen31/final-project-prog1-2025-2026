@@ -1549,7 +1549,7 @@
   <object id="1018" name="7" type="Bonus" x="4896" y="1904">
    <point/>
   </object>
-  <object id="1019" type="Boss" x="5280" y="160">
+  <object id="1019" type="Boss" x="5408" y="288">
    <point/>
   </object>
   <object id="1020" type="TpPlayer" x="4960" y="320">

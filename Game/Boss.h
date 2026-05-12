@@ -21,6 +21,7 @@
 
 //
 #define MAX_BOSS2_LIFE 150.f
+#define SPEED_BOSS2_FLOATING 20.f
 
 #define ARENA1_CENTER 8671.f
 #define ARENA1_ENTRY 8290.f
@@ -148,7 +149,8 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt);
 void UpdateBoss(sfVector2f _posPlayer, float _dt);
 void UpdateTurret(sfVector2f _posPlayer, float _dt);
 
-sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
+sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox);
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount);
 
 sfBool HitBoss(float _degat, sfFloatRect _hitbox, AttackType _attackType);
 sfBool DamageBoss(float _damage);
@@ -160,6 +162,8 @@ void DestroyBoss(int _boss);
 float GetBossLife(void);
 float* GetBossLifeAdress(void);
 sfVector2f GetBossPosition(void);
+
+void FloatingHandlerBoss2(float _dt);
 
 sfBool IsBossActive(void);
 #endif // !BOSS_H
