@@ -73,11 +73,10 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	{
 		enemy.entity[_i].energy = enemy.dataByType[enemy.entity[_i].type].energyMax;
 	}
-	switch (enemy.entity[_i].type)
+
+	if (enemy.entity[_i].type < GROUND_HEAVY)
 	{
-	case DRONE_SMALL:
-	case DRONE_SMALL_MEDIUM:
-	case DRONE_SMALL_LARGE:
+
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
@@ -87,27 +86,33 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 			enemy.entity[_i].action = (ActionDemander){ 0 };
 		}
-		else
+		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
-			if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
-			{
-				enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
-				enemy.entity[_i].aStarTimer = 0;
-			}
+			enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
+			enemy.entity[_i].aStarTimer = 0;
 		}
-		break;
-	case GROUND_HEAVY:
-	case GROUND_HEAVY_MEDIUM:
-	case GROUND_HEAVY_LARGE:
-		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+	}
+	else if (enemy.entity[_i].type < SOLDIER_SMALL)
+	{
+		sfFloatRect rectPlayer = GetPlayerRect();
+		sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+		if (sfFloatRect_intersects(&rectPlayer, &rectEnemy, NULL))
+		{
+			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			{
+				enemy.entity[_i].shootTimer = 0;
+				shootPlayer(_i);
+			}
+			enemy.entity[_i].action = (ActionDemander){ 0 };
+		}
+		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
 			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
 			enemy.entity[_i].aStarTimer = 0;
 		}
-		break;
-	case SOLDIER_SMALL:
-	case SOLDIER_SMALL_MEDIUM:
-	case SOLDIER_SMALL_LARGE:
+	}
+	else if (enemy.entity[_i].type < ALEATORY)
+	{
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
@@ -117,21 +122,12 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 			enemy.entity[_i].action = (ActionDemander){ 0 };
 		}
-		else
+		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
-			if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
-			{
-				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
-				enemy.entity[_i].aStarTimer = 0;
-			}
+			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
+			enemy.entity[_i].aStarTimer = 0;
 		}
-		break;
-	case ALEATORY:
-		break;
-	default:
-		break;
 	}
-	
 	CalculMoveEnemy(_dt, _i);
 	UpdateColisionEnemy(_i);
 }
@@ -173,44 +169,76 @@ void UpdateColisionEnemy(unsigned _i)
 
 void CalculMoveEnemy(float _dt, unsigned _i)
 {
-	// 1 = droite / -1 = gauche
-	char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
-	if (droitOuGauche)
+	if (enemy.entity[_i].type < GROUND_HEAVY)
 	{
-		enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
-		if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
+		if (droitOuGauche)
 		{
-			enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
+			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+			{
+				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+			}
+		}
+		else
+		{
+			enemy.entity[_i].velocity.x = 0;
+		}
+
+		char basOuGauche = enemy.entity[_i].action.bas - enemy.entity[_i].action.saut;
+		if (basOuGauche)
+		{
+			enemy.entity[_i].velocity.y += basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
+			if (basOuGauche * enemy.entity[_i].velocity.y > basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+			{
+				enemy.entity[_i].velocity.y = basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+			}
+		}
+		else
+		{
+			enemy.entity[_i].velocity.y = 0;
 		}
 	}
 	else
 	{
-		enemy.entity[_i].velocity.x = 0;
-	}
-
-	if (enemy.entity[_i].action.Saut)
-	{
-		sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-		enemyRect.top += 1;
-		sfVector2f collision = Colision(enemyRect, AXIS_BOTH);
-		collision.y += CollisionPassThrough(enemyRect).y;
-		if (collision.y > -2 && collision.y < 0)
+		// 1 = droite / -1 = gauche
+		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
+		if (droitOuGauche)
 		{
-			enemy.entity[_i].velocity.y = -enemy.dataByType[enemy.entity[_i].type].jumForce;
+			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
+			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+			{
+				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+			}
 		}
-		else if (0 && enemy.entity[_i].velocity.y >= 0 && enemy.dataByType[enemy.entity[_i].type].trust && enemy.dataByType[enemy.entity[_i].type].consomation * _dt < enemy.entity[_i].energy)
+		else
 		{
-			enemy.entity[_i].velocity.y -= enemy.dataByType[enemy.entity[_i].type].trust;
-			enemy.entity[_i].energy -= enemy.dataByType[enemy.entity[_i].type].consomation * _dt;
+			enemy.entity[_i].velocity.x = 0;
+		}
+
+		if (enemy.entity[_i].action.saut)
+		{
+			sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+			enemyRect.top += 1;
+			sfVector2f collision = Colision(enemyRect, AXIS_BOTH);
+			collision.y += CollisionPassThrough(enemyRect).y;
+			if (collision.y > -2 && collision.y < 0)
+			{
+				enemy.entity[_i].velocity.y = -enemy.dataByType[enemy.entity[_i].type].jumForce;
+			}
+			else if (0 && enemy.entity[_i].velocity.y >= 0 && enemy.dataByType[enemy.entity[_i].type].trust && enemy.dataByType[enemy.entity[_i].type].consomation * _dt < enemy.entity[_i].energy)
+			{
+				enemy.entity[_i].velocity.y -= enemy.dataByType[enemy.entity[_i].type].trust;
+				enemy.entity[_i].energy -= enemy.dataByType[enemy.entity[_i].type].consomation * _dt;
+			}
+		}
+		enemy.entity[_i].velocity.y += G * _dt;
+
+		if (enemy.entity[_i].velocity.y > enemy.dataByType[enemy.entity[_i].type].jumForce)
+		{
+			enemy.entity[_i].velocity.y = enemy.dataByType[enemy.entity[_i].type].jumForce;
 		}
 	}
-	enemy.entity[_i].velocity.y += G * _dt;
-
-	if (enemy.entity[_i].velocity.y > enemy.dataByType[enemy.entity[_i].type].jumForce)
-	{
-		enemy.entity[_i].velocity.y = enemy.dataByType[enemy.entity[_i].type].jumForce;
-	}
-
 	sfSprite_move(enemy.entity[_i].sprite, enemy.entity[_i].velocity);
 }
 
@@ -253,7 +281,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	_region.top -= TILE_SIZE;
 	_region.width += TILE_SIZE * 2;
 	_region.height += TILE_SIZE * 2;
-	if (_type == ALEATORY)
+	if (_type >= ALEATORY)
 	{
 		_type = rand() % ALEATORY;
 	}
@@ -261,30 +289,19 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
 	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 
-	enum EnemyType a;
-	switch (a)
+	if (!enemy.entity[enemy.count].type % GROUND_HEAVY)
 	{
-	case DRONE_SMALL:
-	case GROUND_HEAVY:
-	case SOLDIER_SMALL:
-		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect){1,2,14,14});
-		break;
-	case DRONE_SMALL_MEDIUM:
-	case GROUND_HEAVY_MEDIUM:
-	case SOLDIER_SMALL_MEDIUM:
 		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
-		break;
-	case DRONE_SMALL_LARGE:
-	case GROUND_HEAVY_LARGE:
-	case SOLDIER_SMALL_LARGE:
-		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
-		break;
-	case ALEATORY:
-		break;
-	default:
-		break;
 	}
-	
+	else if (enemy.entity[enemy.count].type % GROUND_HEAVY == 1)
+	{
+		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
+	}
+	else if (enemy.entity[enemy.count].type % GROUND_HEAVY == 2)
+	{
+		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
+	}
+
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
 }
@@ -851,14 +868,14 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 		break;
 	case UP_LEFT:
 		actionDemander.gauche = sfTrue;
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	case UP:
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	case UP_RIGHT:
 		actionDemander.droite = sfTrue;
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	default:
 		break;
@@ -1167,14 +1184,14 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 		break;
 	case UP_LEFT:
 		actionDemander.gauche = sfTrue;
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	case UP:
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	case UP_RIGHT:
 		actionDemander.droite = sfTrue;
-		actionDemander.Saut = sfTrue;
+		actionDemander.saut = sfTrue;
 		break;
 	default:
 		break;
