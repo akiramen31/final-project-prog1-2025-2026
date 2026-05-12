@@ -1,5 +1,6 @@
 #include "Backup.h"
 
+
 Backup backup;
 
 void LoadBackup(void)
@@ -63,7 +64,11 @@ void SetMouseKeyToSave(KeySave _index, char _value)
 }
 sfBool IfControlKeyPressed(KeySave _index)
 {
-	return sfKeyboard_isKeyPressed(backup.valueKey[_index]) || sfMouse_isButtonPressed((backup.valueKey[_index] - sfKeyCount));
+	if (sfRenderWindow_hasFocus(GetRenderWindow()))
+	{
+		return sfKeyboard_isKeyPressed(backup.valueKey[_index]) || sfMouse_isButtonPressed((backup.valueKey[_index] - sfKeyCount));
+	}
+	return 0;
 }
 
 int GetIntFromSave(IntSave _index)

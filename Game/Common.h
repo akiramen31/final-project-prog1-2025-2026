@@ -10,6 +10,7 @@
 #include "SFML/Audio.h"
 
 #include "Backup.h"
+#include "EntityManager.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f

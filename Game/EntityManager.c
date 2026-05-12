@@ -943,7 +943,7 @@ void PollEvent(void)
 		{
 			sfRenderWindow_close(entityManager.renderWindow);
 		}
-		else
+		else if(sfRenderWindow_hasFocus(entityManager.renderWindow))
 		{
 			switch (entityManager.gameState)
 			{
