@@ -7,9 +7,6 @@
 #define KEY_COUNT 8
 #define MAX_INFO 6
 #define MUSIC_COUNT 5
-#define MAP_COUNT 3
-#define WEAPON_COUNT 4
-#define SECONDARY_COUNT 2
 
 typedef enum MenuState
 {
@@ -18,9 +15,9 @@ typedef enum MenuState
 	SETTINGS,
 	CREDITS,
 	CONTROLS,
-	SELECTION_MAP,
-	SELECTION_WEAPON,
-	SELECTION_BONUS
+	MAP,
+	WEAPON,
+	BONUS
 }MenuState;
 
 typedef enum ButtonRect

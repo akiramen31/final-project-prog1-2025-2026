@@ -10,6 +10,7 @@
 #include "SFML/Audio.h"
 
 #include "Backup.h"
+#include "EntityManager.h"
 
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
@@ -22,6 +23,10 @@
 #define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
 #define BPP 32
+
+#define MAP_COUNT 3
+#define WEAPON_COUNT 3
+#define SECONDARY_COUNT 2
 
 #define DEV_MODE sfTrue
 #define DEV_ENEMY sfTrue

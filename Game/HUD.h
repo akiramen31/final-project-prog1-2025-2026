@@ -8,7 +8,6 @@ typedef struct BossBar
 {
 	sfSprite* bossLifeContainer;
 	sfSprite* bossLifeBar;
-	sfBool isActive;
 	float* bossLife;
 	float maxBossLife;
 }BossBar;
@@ -18,17 +17,14 @@ typedef struct HUD
 	sfSprite* life[PLAYER_MAX_HEALTH];
 	sfSprite* gauge;
 	BossBar bossBar;
-
-	sfBool isBossBarShown;
+	char isHudVisible;
 }HUD;
 
 void LoadHUD(void);
-void LoadBossBar(float* _bossHpAdr);
+void LoadBossBar(float* _bossHpAdr, float _maxHealth);
 
 void UpdateHUD(float _dt);
 
-void VisibilityBossBar(sfBool _visible);
-
-void VisibilityHUD(sfBool _visible);
+void ToggleVisibilityHUD(sfBool _visible);
 
 #endif // !HUD_H
