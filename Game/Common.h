@@ -23,6 +23,10 @@
 
 #define BPP 32
 
+#define MAP_COUNT 3
+#define WEAPON_COUNT 3
+#define SECONDARY_COUNT 2
+
 #define DEV_MODE sfTrue
 #define DEV_ENEMY sfTrue
 #define DEV_MAP_COLIDER sfFalse
