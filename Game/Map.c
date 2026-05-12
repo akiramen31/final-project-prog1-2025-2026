@@ -246,11 +246,12 @@ sfVector2f CollisionPassThrough(sfFloatRect _hitbox)
 	{
 		if (sfFloatRect_intersects(&_hitbox, &map.data.passThrough[i].hitbox, &reaction))
 		{
-			if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - map.data.passThrough[i].hitbox.top < (map.data.passThrough[i].hitbox.height - _hitbox.height / 2))
-			{
-				vectorMove.y -= reaction.height;
-			}
-			_hitbox.top += vectorMove.y;
+			float hitboxCenterY = _hitbox.top + (_hitbox.height / 2.f);
+			float coliderCenterY = map.data.passThrough[i].hitbox.top + (map.data.passThrough[i].hitbox.height / 4.f);
+			float push = (hitboxCenterY < coliderCenterY) ? -reaction.height : 0;
+
+			vectorMove.y += push;
+			_hitbox.top += push;
 		}
 	}
 	return vectorMove;
