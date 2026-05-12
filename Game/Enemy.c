@@ -53,6 +53,16 @@ void UpdateEnemy(float _dt)
 
 void UpdateEnemyI(float _dt, unsigned _i)
 {
+	if (enemy.entity[_i].domageTimer > 0)
+	{
+		enemy.entity[_i].domageTimer -= _dt;
+		if (enemy.entity[_i].domageTimer > 0)
+		{
+			sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 255, 255));
+			enemy.entity[_i].domageTimer = 0;
+		}
+	}
+
 	if (enemy.entity[_i].freezeTimer > 0)
 	{
 		enemy.entity[_i].freezeTimer -= _dt;
@@ -73,6 +83,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	{
 		enemy.entity[_i].energy = enemy.dataByType[enemy.entity[_i].type].energyMax;
 	}
+
 
 	if (enemy.entity[_i].type < GROUND_HEAVY)
 	{
@@ -321,6 +332,8 @@ sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 		}
 
 		enemy.entity[_i].life -= _degat / ((enemy.dataByType[enemy.entity[_i].type].armure + 1) * (_type - FREEZE));
+		sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 0, 0));
+		enemy.entity[_i].domageTimer = 0.1;
 		if (enemy.entity[_i].life < 0)
 		{
 			DestroyVisualEntity(enemy.entity[_i].sprite);
