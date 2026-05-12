@@ -1,8 +1,9 @@
 #include "EntityManager.h"
 #include "Menu.h"
 #include "Game.h"
-#include "GameOver.h"
+#include "StartGame.h"
 #include "Camera.h"
+#include "GameOver.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -247,7 +248,7 @@ void* GetAsset(char* _file)
 		return NULL;
 	}
 	entityManager.asset = temp;
-	entityManager.asset[entityManager.assetCount] = (AssetEntity){0};
+	entityManager.asset[entityManager.assetCount] = (AssetEntity){ 0 };
 
 	char* buffer = GetFormatAsset(_file);
 	if (CompareString(buffer, ".png"))
@@ -931,7 +932,7 @@ void Load(void)
 	LoadBackup();
 	LoadEntityManager();
 	LoadMainData();
-	SetGameState(GAME_OVER);
+	SetGameState(START_GAME);
 }
 
 void PollEvent(void)
@@ -943,7 +944,7 @@ void PollEvent(void)
 		{
 			sfRenderWindow_close(entityManager.renderWindow);
 		}
-		else if(sfRenderWindow_hasFocus(entityManager.renderWindow))
+		else if (sfRenderWindow_hasFocus(entityManager.renderWindow))
 		{
 			switch (entityManager.gameState)
 			{
@@ -952,6 +953,9 @@ void PollEvent(void)
 				break;
 			case GAME:
 				PollEventGame(&event);
+				break;
+			case START_GAME:
+				PollEventStartGame(&event);
 				break;
 			case GAME_OVER:
 				PollEventGameOver(&event);
@@ -980,6 +984,9 @@ void Update(void)
 		break;
 	case GAME:
 		UpdateGame(dt);
+		break;
+	case START_GAME:
+		UpdateStartGame(dt);
 		break;
 	case GAME_OVER:
 		UpdateGameOver(dt);
@@ -1077,6 +1084,9 @@ void SetGameState(GameState _gameState)
 		break;
 	case GAME:
 		LoadGame();
+		break;
+	case START_GAME:
+		LoadStartGame();
 		break;
 	case GAME_OVER:
 		LoadGameOver();

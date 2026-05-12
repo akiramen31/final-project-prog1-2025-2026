@@ -8,15 +8,7 @@
 
 typedef struct GameOver
 {
-	sfSprite* crea1;
-	sfSprite* crea2;
-	sfTexture* textureCrea[2];
-
-	sfSprite* rose1;
-	sfSprite* rose2;
-
-	sfBool update;
-	float timer;
+	sfSprite* sprite;
 }GameOver;
 
 void LoadGameOver(void);

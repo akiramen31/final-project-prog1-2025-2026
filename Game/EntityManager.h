@@ -55,6 +55,7 @@ typedef struct List
 
 typedef enum GameState
 {
+	START_GAME,
 	MENU,
 	GAME,
 	GAME_OVER
