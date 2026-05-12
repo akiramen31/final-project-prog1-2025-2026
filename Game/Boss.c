@@ -8,7 +8,7 @@ Boss boss;
 
 void LoadBoss(int _index, sfVector2f _position)
 {
-	
+
 	boss = (Boss){ 0 };
 	boss.life = 0.f;
 
@@ -34,8 +34,8 @@ void LoadBoss(int _index, sfVector2f _position)
 		positionListBoss1[CARIAGE] = (sfVector2f){ _position.x, _position.y - (sfTexture_getSize(textureList[TRACK]).y / 2) };
 		positionListBoss1[MISSILE_LAUNCHER] = (sfVector2f){ _position.x, positionListBoss1[CARIAGE].y - sfTexture_getSize(textureList[CARIAGE]).y };
 		positionListBoss1[L_CHAMBER] = (sfVector2f){ _position.x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) - (sfTexture_getSize(textureList[STEAM_TANK_BOSS1]).x / 2), positionListBoss1[CARIAGE].y };
-		positionListBoss1[L_CANNON] = (sfVector2f){ positionListBoss1[L_CHAMBER].x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y- 20 };
-		positionListBoss1[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2)+(sfTexture_getSize(textureList[STEAM_TANK_BOSS1]).x / 2), positionListBoss1[CARIAGE].y};
+		positionListBoss1[L_CANNON] = (sfVector2f){ positionListBoss1[L_CHAMBER].x - (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y - 20 };
+		positionListBoss1[R_CHAMBER] = (sfVector2f){ _position.x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2) + (sfTexture_getSize(textureList[STEAM_TANK_BOSS1]).x / 2), positionListBoss1[CARIAGE].y };
 		positionListBoss1[R_CANNON] = (sfVector2f){ positionListBoss1[R_CHAMBER].x + (sfTexture_getSize(textureList[L_CHAMBER]).x / 2), positionListBoss1[CARIAGE].y - 20 };
 		for (int i = 0; i < PART_COUNT_BOSS1; i++)
 		{
@@ -57,8 +57,8 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss1->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss1->sprites[R_CHAMBER]);
 		boss.boss1->hitboxes[3] = sfSprite_getGlobalBounds(boss.boss1->sprites[MISSILE_LAUNCHER]);
 		boss.life = MAX_BOSS1_LIFE;
-		sfSprite_setRotation(boss.boss1->sprites[L_CANNON],90);
-		sfSprite_setRotation(boss.boss1->sprites[R_CANNON],-90);
+		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], 90);
+		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], -90);
 		break;
 	case 2:
 		boss.boss2 = Calloc(1, sizeof(Boss2));
@@ -177,14 +177,10 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		switch (boss.currentBoss)
 		{
 		case 1:
-
-			push = TestCollisionBossPlayer(playerRect, boss.boss1->hitboxes, 3, AXIS_BOTH);
-			
+			//push = TestCollisionBossPlayer(playerRect, boss.boss1->hitboxes, 3, AXIS_BOTH);
 			break;
-
 		case 2:
-
-			push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 3, AXIS_BOTH);
+			//push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 3, AXIS_BOTH);
 			//UpdateTurret(_posPlayer, _dt);
 			break;
 		default:
@@ -323,7 +319,33 @@ sfBool DamageBoss(float _damage)
 	}
 }
 
-sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis)
+sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox)
+{
+	sfVector2f push = { 0 };
+
+	if (boss.life != -1)
+	{
+		switch (boss.currentBoss)
+		{
+		case 1:
+
+			push = TestCollisionBossPlayer(_playerHitbox, boss.boss1->hitboxes, 3);
+
+			break;
+
+		case 2:
+
+			push = TestCollisionBossPlayer(_playerHitbox, boss.boss2->hitboxes, 3);
+			break;
+		default:
+			break;
+		}
+	}
+
+	return push;
+}
+
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount)
 {
 	sfVector2f vectorMove = { 0, 0 };
 	sfFloatRect reaction = { 0, 0, 0, 0 };
@@ -332,19 +354,7 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 	{
 		if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 		{
-			int resolveX = 0;
-			if (_axis == AXIS_X)
-			{
-				resolveX = 1;
-			}
-			else if (_axis == AXIS_Y)
-			{
-				resolveX = 0;
-			}
-			else
-			{
-				resolveX = (reaction.width < reaction.height);
-			}
+			int resolveX = (reaction.width < reaction.height);
 
 			if (resolveX)
 			{

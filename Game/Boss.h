@@ -148,7 +148,8 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt);
 void UpdateBoss(sfVector2f _posPlayer, float _dt);
 void UpdateTurret(sfVector2f _posPlayer, float _dt);
 
-sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, int _axis);
+sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox);
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount);
 
 sfBool HitBoss(float _degat, sfFloatRect _hitbox, AttackType _attackType);
 sfBool DamageBoss(float _damage);

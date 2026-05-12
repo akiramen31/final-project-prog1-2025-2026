@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Elevator.h"
 #include "Boss.h"
+
 Player player;
 
 float timerDash = 0;
@@ -301,11 +302,13 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 void ColisionMapPlayer(float _dt)
 {
 	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
-	sfVector2f reactionY = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y);
-	sfVector2f reactionPassThrough = CollisionPassThrough(sfRectangleShape_getGlobalBounds(player.collision));
+	sfVector2f reactionY = Colision(GetPlayerRect(), AXIS_Y);
+	sfVector2f reactionPassThrough = CollisionPassThrough(GetPlayerRect());
+	sfVector2f BossReactionColision = ColisionBossplayer(GetPlayerRect());
 
 	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_Y).y;
 	reactionY.y += ColisionElevator(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y).y;
+	reactionY.y += BossReactionColision.y;
 
 	if (reactionPassThrough.y < 0)
 	{
@@ -365,6 +368,7 @@ void ColisionMapPlayer(float _dt)
 
 		sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
 		reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
+		reactionX.x += BossReactionColision.x;
 
 		if (reactionX.x != 0)
 		{
@@ -757,7 +761,6 @@ void UpdateSteamAxe(float _dt)
 		}
 	}
 }
-
 
 void UpdateEnergy(float _dt)
 {
