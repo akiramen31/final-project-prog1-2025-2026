@@ -154,6 +154,7 @@ typedef struct Boss2
 
 typedef struct Boss
 {
+	void* entity;
 	Boss1* boss1;
 	Boss2* boss2;
 	int currentBoss;
