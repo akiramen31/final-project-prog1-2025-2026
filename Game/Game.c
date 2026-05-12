@@ -19,6 +19,8 @@ void LoadGame(void)
 	game = (Game){ 0 };
 	game.timerRoomPause = PAUSE_ROOM_DURATION;
 
+	SetIntToSave(CURRENT_SCORE, 0);
+
 	LoadCamera();
 	LoadParallax();
 	LoadPlayer();
@@ -100,8 +102,6 @@ void PollEventGame(sfEvent* _event)
 		default:
 			break;
 		}
-		break;
-	case sfEvtMouseMoved:
 		break;
 	default:
 		break;
