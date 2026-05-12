@@ -174,26 +174,26 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 				{
 					if (GetEnemyZone() > 0 || IsBossActive())
 					{
-						sfFloatRect move = GetPlayerRect();
-						move.width -= areaReaction.width;
-						move.height -= areaReaction.height;
+						sfFloatRect velocity = GetPlayerRect();
+						velocity.width -= areaReaction.width;
+						velocity.height -= areaReaction.height;
 
-						if (move.left < area[i].hitbox.left + area[i].hitbox.width / 2)
+						if (velocity.left < area[i].hitbox.left + area[i].hitbox.width / 2)
 						{
-							MovePlayer((sfVector2f) { move.width, 0 });
+							MovePlayer((sfVector2f) { velocity.width, 0 });
 						}
 						else
 						{
-							MovePlayer((sfVector2f) { -move.width, 0 });
+							MovePlayer((sfVector2f) { -velocity.width, 0 });
 						}
 
-						if (move.top < area[i].hitbox.top + area[i].hitbox.height / 2)
+						if (velocity.top < area[i].hitbox.top + area[i].hitbox.height / 2)
 						{
-							MovePlayer((sfVector2f) { 0, move.height });
+							MovePlayer((sfVector2f) { 0, velocity.height });
 						}
 						else
 						{
-							MovePlayer((sfVector2f) { 0, -move.height });
+							MovePlayer((sfVector2f) { 0, -velocity.height });
 						}
 					}
 				}

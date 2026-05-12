@@ -43,7 +43,7 @@ sfVector2f UpdateElevator(sfFloatRect _rectPlayer, sfVector2f _posPlayer, float 
 	for (int i = 0; i < numElevator; i++)
 	{
 		sfVector2f pos = sfRectangleShape_getPosition(elevatorList[i].hitbox[0]);
-		sfVector2f move = { 0 };
+		sfVector2f velocity = { 0 };
 
 		if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] != pos.y)
 		{
@@ -51,19 +51,19 @@ sfVector2f UpdateElevator(sfFloatRect _rectPlayer, sfVector2f _posPlayer, float 
 
 			if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] < pos.y)
 			{
-				move = (sfVector2f){ 0, -SPEED_ELEVATOR * _dt };
+				velocity = (sfVector2f){ 0, -SPEED_ELEVATOR * _dt };
 			}
 			else
 			{
-				move = (sfVector2f){ 0, SPEED_ELEVATOR * _dt };
+				velocity = (sfVector2f){ 0, SPEED_ELEVATOR * _dt };
 			}
 
-			if (POW2(move.y) > POW2(vectorYLength))
+			if (POW2(velocity.y) > POW2(vectorYLength))
 			{
-				move.y = vectorYLength;
+				velocity.y = vectorYLength;
 			}
 
-			sfRectangleShape_move(elevatorList[i].hitbox[0], move);
+			sfRectangleShape_move(elevatorList[i].hitbox[0], velocity);
 		}
 		pos = sfRectangleShape_getPosition(elevatorList[i].hitbox[0]);
 
@@ -78,7 +78,7 @@ sfVector2f UpdateElevator(sfFloatRect _rectPlayer, sfVector2f _posPlayer, float 
 
 		if (sfFloatRect_intersects(&_rectPlayer, &rectElevator, NULL))
 		{
-			return move;
+			return velocity;
 		}
 	}
 }

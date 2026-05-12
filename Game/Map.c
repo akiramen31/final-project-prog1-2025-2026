@@ -100,7 +100,7 @@ void LoadMapData(CjsonB* _cjson)
 		}
 		else if (StringCompare(_cjson->layers[i].name, "Move"))
 		{
-			LoadObjectMap(&map.data.move, &map.data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
+			LoadObjectMap(&map.data.velocity, &map.data.moveCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
 		else if (StringCompare(_cjson->layers[i].name, "Point"))
 		{
@@ -275,7 +275,7 @@ int GetTrigerCount(void)
 
 InfoZone* GetInfoZoneMove(void)
 {
-	return map.data.move;
+	return map.data.velocity;
 }
 
 int GetMoveCount(void)
