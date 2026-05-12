@@ -40,11 +40,11 @@
                 37,
                 32
             ],
-            "scale": 0.33,
-            "selectedLayer": 9,
+            "scale": 1,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 5359.090909090909,
-                "y": 575.7575757575758
+                "x": 10047.5,
+                "y": 461
             }
         },
         "Level1_2.tmx": {
@@ -138,7 +138,7 @@
             "scaleInEditor": 8
         },
         "Tilesets/SpritesList.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.5,
             "scaleInEditor": 0.75
         },
         "Tilesets/TileForAutomaping.tsx": {
