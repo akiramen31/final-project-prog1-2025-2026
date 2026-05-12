@@ -26,12 +26,8 @@ void LoadGame(void)
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
-#if !DEV_PIERRE_ENEMY
-	LoadEnemy();
-#endif
-
 	LoadHUD();
-	SetHpFocus(GetBossLifeAdress());
+	LoadBossBar(GetBossLifeAdress());
 	//LoadGUI();
 	LoadWeapons();
 
@@ -138,11 +134,6 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF4:
 			SetCurrentMap(LEVEL_TEST);
 			break;
-#if DEV_PIERRE_ENEMY
-		case sfKeyP:
-			HitEnemyI(0, (sfVector2f) { 7, 7 }, 5, HEAVY);
-			break;
-#endif
 		case sfKeyF5:
 			SetIntToSave(DEV_MODE_FLY, 1);
 			break;
@@ -187,6 +178,8 @@ void UpdateGame(float _dt)
 				UpdateProjectiles(GetMousePositionToOrigin(), _dt);
 				UpdateSecondary(GetMousePositionToOrigin(), _dt);
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
+
+				UpdateEntity(_dt);
 
 				VisibilityBossBar(IsBossActive());
 

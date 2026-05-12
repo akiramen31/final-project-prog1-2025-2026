@@ -24,7 +24,7 @@ void LoadParallax()
 			parallax.layer[i] = CreateSprite(GetAsset("Assets/Maps/parallax_lv1_la1.png"), (sfVector2f) { 0 }, 1.f, 1000 + (10 * i));
 			break;
 		}
-		sfSprite_setTextureRect(parallax.layer[i], (sfIntRect) {0, 0, 384, 216});
+		sfSprite_setTextureRect(parallax.layer[i], (sfIntRect) {parallax.offsetX[i], parallax.offsetY[i], 384+parallax.offsetX[i], 216 + parallax.offsetY[i]});
 		sfSprite_setOrigin(parallax.layer[i], (sfVector2f) { 384 / 2, 216 / 2 });
 		sfSprite_setPosition(parallax.layer[i], GetViewPosition());
 		sfSprite_setColor(parallax.layer[i], sfColor_fromRGB(200 + 30 * i, 200 + 30 * i,200+30*i));
@@ -53,8 +53,8 @@ void UpdateParallax(float _dt)
 	for (int i = 0; i < LAYER_COUNT; i++)
 	{
 		sfIntRect textureRect = sfSprite_getTextureRect(parallax.layer[i]);
-		textureRect.left = parallax.offsetX[i] * (int)ratioX;
-		textureRect.top = parallax.offsetY[i] * (int)ratioY;
+		textureRect.left = parallax.offsetX[i] * ratioX;
+		textureRect.top = parallax.offsetY[i] * ratioY;
 		sfSprite_setPosition(parallax.layer[i], viewCenterPos);
 		sfSprite_setTextureRect(parallax.layer[i], textureRect);
 	}

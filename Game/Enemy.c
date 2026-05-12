@@ -3,251 +3,171 @@
 #include "Projectiles.h"
 #include "Player.h"
 
-#define TIMER_ASTAR 0.05f
-#define JUMP_FORCE 5
-#define MAX_ENRGIE 300
-
-
-typedef enum EnemyType
-{
-	DRONE_SMALL,
-	GROUND_HEAVY,
-	SOLDIER_SMALL,
-	ALEATORY,
-}EnemyType;
-
-#pragma region AStar
-typedef struct ActionDemander
-{
-	char gauche;
-	char droite;
-	char Saut;
-	char jetPack;
-}ActionDemander;
-
-typedef struct Case2
-{
-	int jumpForce;
-	enum Direction direction;
-	sfBool jetPackActive;
-	int compteur;
-}Case2;
-
-typedef struct Tableau
-{
-	Case2** grid[ALEATORY];
-	sfFloatRect region;
-	char** collision;
-	sfBool new[ALEATORY];
-}Tableau;
-#pragma endregion
-
-typedef struct EnemyDataByTypeB
-{
-	sfTexture* texture;
-	ArmorType armure;
-	float trust;
-	float consomation;
-	float lifeMax;
-	float energyMax;
-	float energyRegen;
-	float accelerationMax;
-	float speedMax;
-	float jumForce;
-	float shootCooldown;
-}EnemyDataByTypeB;
-
-typedef struct EnemyEntityB
-{
-	sfSprite* sprite;
-	EnemyType type;
-	sfVector2f move;
-	ActionDemander action;
-	sfFloatRect region;
-	float life;
-	float freezeTimer;
-	float freezePower;
-	float shootTimer;
-	float aStarTimer;
-	float energy;
-}EnemyEntityB;
-
-typedef struct EnemyB
-{
-#pragma region AStar
-	List* listeWait;
-	Tableau tableau;
-#pragma endregion
-
-	EnemyDataByTypeB dataByType[ALEATORY];
-	EnemyEntityB* entity;
-	int activeCount;
-	unsigned count;
-}EnemyB;
-
-
 void UpdateColisionEnemy(unsigned _index);
 void UpdateEnemyI(float _dt, unsigned _index);
 void CalculMoveEnemy(float _dt, unsigned _index);
-ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible);
+ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible);
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfBool PlayerVisibility(unsigned _index);
 void shootPlayer(unsigned _index);
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
-void EffectGelEnemy(unsigned _index, int _puissance, float _time);
 
-EnemyB enemy;
+Enemy enemy;
 
 void LoadEnemy(void)
 {
-	enemy = (EnemyB){ 0 };
+	enemy = (Enemy){ 0 };
 
 	enemy.listeWait = CreateList();
-	enemy.entity = Calloc(1, sizeof(EnemyEntityB));
-
-	enemy.dataByType[DRONE_SMALL] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByTypeB){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 10.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 10.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.entity = Calloc(1, sizeof(EnemyEntity));
+	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
 }
 
 void UpdateEnemy(float _dt)
 {
 	enemy.activeCount = 0;
 	sfVector2f playerPos = GetPlayerPosition();
-	for(unsigned i = 0; i < enemy.count; i++)
+	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + TILE_SIZE + enemy.entity[i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + TILE_SIZE + enemy.entity[i].region.height - TILE_SIZE * 2 >= playerPos.y)
+		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + TILE_SIZE + enemy.entity[i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + enemy.entity[i].region.height - TILE_SIZE >= playerPos.y)
 		{
 			UpdateEnemyI(_dt, i);
 			enemy.activeCount++;
 		}
 	}
+
+	for (char i = 0; i < ALEATORY; i++)
+	{
+		enemy.tableau.new[i] = sfTrue;
+	}
 }
 
-void UpdateEnemyI(float _dt, unsigned _index)
+void UpdateEnemyI(float _dt, unsigned _i)
 {
-	if (enemy.entity[_index].freezeTimer > 0)
+	if (enemy.entity[_i].freezeTimer > 0)
 	{
-		enemy.entity[_index].freezeTimer -= _dt;
-		_dt = _dt / enemy.entity[_index].freezePower;
-		if (enemy.entity[_index].freezeTimer < 0)
+		enemy.entity[_i].freezeTimer -= _dt;
+		_dt /= enemy.entity[_i].freezePower;
+		if (enemy.entity[_i].freezeTimer < 0)
 		{
-			enemy.entity[_index].freezeTimer = 0;
+			enemy.entity[_i].freezeTimer = 0;
 		}
 	}
 
-	enemy.entity[_index].aStarTimer += _dt;
-	enemy.entity[_index].shootTimer += _dt;
-	if (enemy.entity[_index].energy < enemy.dataByType[enemy.entity[_index].type].energyMax)
+	enemy.entity[_i].aStarTimer += _dt;
+	enemy.entity[_i].shootTimer += _dt;
+	if (enemy.entity[_i].energy < enemy.dataByType[enemy.entity[_i].type].energyMax)
 	{
-		enemy.entity[_index].energy += enemy.dataByType[enemy.entity[_index].type].energyRegen * _dt;
+		enemy.entity[_i].energy += enemy.dataByType[enemy.entity[_i].type].energyRegen * _dt;
 	}
 	else
 	{
-		enemy.entity[_index].energy = enemy.dataByType[enemy.entity[_index].type].energyMax;
+		enemy.entity[_i].energy = enemy.dataByType[enemy.entity[_i].type].energyMax;
 	}
-	if (PlayerVisibility(_index))
+	if (PlayerVisibility(_i))
 	{
-		if (enemy.entity[_index].shootTimer >= enemy.dataByType[enemy.entity[_index].type].shootCooldown)
+		if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
 		{
-			enemy.entity[_index].shootTimer = 0;
-			shootPlayer(_index);
+			enemy.entity[_i].shootTimer = 0;
+			shootPlayer(_i);
 		}
-		enemy.entity[_index].action = (ActionDemander){ 0 };
+		enemy.entity[_i].action = (ActionDemander){ 0 };
 	}
 	else
 	{
-		if (enemy.entity[_index].aStarTimer >= TIMER_ASTAR)
+		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
-			enemy.entity[_index].action = AStar2(&enemy.entity[_index], GetPlayerRect());
-			enemy.entity[_index].aStarTimer = 0;
+			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
+			enemy.entity[_i].aStarTimer = 0;
 		}
 	}
-	CalculMoveEnemy(_dt, _index);
-	UpdateColisionEnemy(_index);
+	CalculMoveEnemy(_dt, _i);
+	UpdateColisionEnemy(_i);
 }
 
-void UpdateColisionEnemy(unsigned _index)
+void UpdateColisionEnemy(unsigned _i)
 {
-	sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_index].sprite);
-	sfFloatRect realRegion = { enemy.entity[_index].region.left + TILE_SIZE ,enemy.entity[_index].region.top + TILE_SIZE , enemy.entity[_index].region.width - TILE_SIZE * 2, enemy.entity[_index].region.height - TILE_SIZE * 2 };
+	sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+	sfFloatRect realRegion = { enemy.entity[_i].region.left + TILE_SIZE ,enemy.entity[_i].region.top + TILE_SIZE , enemy.entity[_i].region.width - TILE_SIZE * 2, enemy.entity[_i].region.height - TILE_SIZE * 2 };
 
-	sfVector2f collision = Colision(sfSprite_getGlobalBounds(enemy.entity[_index].sprite), AXIS_BOTH);
-	collision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[_index].sprite)).y;
-	sfSprite_move(enemy.entity[_index].sprite, collision);
+	sfVector2f collision = Colision(sfSprite_getGlobalBounds(enemy.entity[_i].sprite), AXIS_BOTH);
+	collision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[_i].sprite)).y;
+	sfSprite_move(enemy.entity[_i].sprite, collision);
 	if (collision.x)
 	{
-		enemy.entity[_index].move.x = 0;
+		enemy.entity[_i].velocity.x = 0;
 	}
 	if (collision.y)
 	{
-		enemy.entity[_index].move.y = 0;
+		enemy.entity[_i].velocity.y = 0;
 	}
 
 	if (realRegion.left > enemyRect.left)
 	{
-		sfSprite_move(enemy.entity[_index].sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
 	}
 	else if (realRegion.left + realRegion.width < (enemyRect.left + enemyRect.width))
 	{
-		sfSprite_move(enemy.entity[_index].sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
 	}
 	if (realRegion.top > enemyRect.top)
 	{
-		sfSprite_move(enemy.entity[_index].sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
 	}
 	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
 	{
-		sfSprite_move(enemy.entity[_index].sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
 	}
 }
 
-void CalculMoveEnemy(float _dt, unsigned _index)
+void CalculMoveEnemy(float _dt, unsigned _i)
 {
 	// 1 = droite / -1 = gauche
-	char droitOuGauche = enemy.entity[_index].action.droite - enemy.entity[_index].action.gauche;
+	char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
 	if (droitOuGauche)
 	{
-		enemy.entity[_index].move.x += droitOuGauche * enemy.dataByType[enemy.entity[_index].type].accelerationMax * _dt;
-		if (droitOuGauche * enemy.entity[_index].move.x > droitOuGauche * enemy.dataByType[enemy.entity[_index].type].speedMax)
+		enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
+		if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
 		{
-			enemy.entity[_index].move.x = droitOuGauche * enemy.dataByType[enemy.entity[_index].type].speedMax;
+			enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
 		}
 	}
 	else
 	{
-		enemy.entity[_index].move.x = 0;
+		enemy.entity[_i].velocity.x = 0;
 	}
 
-	if (enemy.entity[_index].action.Saut)
+	if (enemy.entity[_i].action.Saut)
 	{
-		sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_index].sprite);
+		sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
 		enemyRect.top += 1;
 		sfVector2f collision = Colision(enemyRect, AXIS_BOTH);
 		collision.y += CollisionPassThrough(enemyRect).y;
 		if (collision.y > -2 && collision.y < 0)
 		{
-			enemy.entity[_index].move.y = -enemy.dataByType[enemy.entity[_index].type].jumForce;
+			enemy.entity[_i].velocity.y = -enemy.dataByType[enemy.entity[_i].type].jumForce;
 		}
-		else if (0 && enemy.entity[_index].move.y >= 0 && enemy.dataByType[enemy.entity[_index].type].trust && enemy.dataByType[enemy.entity[_index].type].consomation * _dt < enemy.entity[_index].energy)
+		else if (0 && enemy.entity[_i].velocity.y >= 0 && enemy.dataByType[enemy.entity[_i].type].trust && enemy.dataByType[enemy.entity[_i].type].consomation * _dt < enemy.entity[_i].energy)
 		{
-			enemy.entity[_index].move.y -= enemy.dataByType[enemy.entity[_index].type].trust;
-			enemy.entity[_index].energy -= enemy.dataByType[enemy.entity[_index].type].consomation * _dt;
+			enemy.entity[_i].velocity.y -= enemy.dataByType[enemy.entity[_i].type].trust;
+			enemy.entity[_i].energy -= enemy.dataByType[enemy.entity[_i].type].consomation * _dt;
 		}
 	}
-	enemy.entity[_index].move.y += G * _dt;
+	enemy.entity[_i].velocity.y += G * _dt;
 
-	if (enemy.entity[_index].move.y > enemy.dataByType[enemy.entity[_index].type].jumForce)
+	if (enemy.entity[_i].velocity.y > enemy.dataByType[enemy.entity[_i].type].jumForce)
 	{
-		enemy.entity[_index].move.y = enemy.dataByType[enemy.entity[_index].type].jumForce;
+		enemy.entity[_i].velocity.y = enemy.dataByType[enemy.entity[_i].type].jumForce;
 	}
 
-	sfSprite_move(enemy.entity[_index].sprite, enemy.entity[_index].move);
+	sfSprite_move(enemy.entity[_i].sprite, enemy.entity[_i].velocity);
 }
 
-sfBool PlayerVisibility(unsigned _index)
+sfBool PlayerVisibility(unsigned _i)
 {
-	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
+	sfFloatRect bounsEnemy = GetBounsEnemy(_i);
 
 	sfFloatRect bounsPlayer = GetPlayerRect();
 
@@ -263,9 +183,9 @@ sfBool PlayerVisibility(unsigned _index)
 	return 1;
 }
 
-void shootPlayer(unsigned _index)
+void shootPlayer(unsigned _i)
 {
-	sfFloatRect bounsEnemy = GetBounsEnemy(_index);
+	sfFloatRect bounsEnemy = GetBounsEnemy(_i);
 	sfVector2f posGun = (sfVector2f){ bounsEnemy.left + (bounsEnemy.width / 2),bounsEnemy.top + (bounsEnemy.height / 2) };
 
 	sfFloatRect bounsPlayer = GetPlayerRect();
@@ -289,19 +209,15 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 		_type = rand() % ALEATORY;
 	}
 
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntityB));
-	enemy.entity[enemy.count] = (EnemyEntityB){ 0 };
-	enemy.entity[enemy.count].type = _type;
-	enemy.entity[enemy.count].life = enemy.dataByType[_type].lifeMax;
-	enemy.entity[enemy.count].region = _region;
-	enemy.entity[enemy.count].sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1);
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
+	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
 }
 
-sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _type)
+sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 {
-	sfImage* colideur = sfTexture_copyToImage(sfSprite_getTexture(enemy.entity[_index].sprite));
+	sfImage* colideur = sfTexture_copyToImage(sfSprite_getTexture(enemy.entity[_i].sprite));
 	sfColor pixelColor = sfImage_getPixel(colideur, (int)_touch.x, (int)_touch.y);
 	sfImage_destroy(colideur);
 
@@ -309,16 +225,17 @@ sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _t
 	{
 		if (_type == FREEZE)
 		{
-			EffectGelEnemy(_index, 2, 5);
+			enemy.entity[_i].freezePower = 2;
+			enemy.entity[_i].freezeTimer = 5;
 		}
 
-		enemy.entity[_index].life -= _degat / (enemy.dataByType[enemy.entity[_index].type].armure + 1);
-		if (enemy.entity[_index].life < 0)
+		enemy.entity[_i].life -= _degat / ((enemy.dataByType[enemy.entity[_i].type].armure + 1) * (_type - FREEZE));
+		if (enemy.entity[_i].life < 0)
 		{
-			DestroyVisualEntity(enemy.entity[_index].sprite);
+			DestroyVisualEntity(enemy.entity[_i].sprite);
 			enemy.count--;
-			enemy.entity[_index] = enemy.entity[enemy.count];
-			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntityB));
+			enemy.entity[_i] = enemy.entity[enemy.count];
+			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
 		}
 		return sfTrue;
 	}
@@ -332,35 +249,24 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 	sfVector2f touch = { 0 };
 	for (int i = 0; i < enemy.count; i++)
 	{
-		
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2, hitboxTir.top + hitboxTir.height / 2 };
-			touch.x -= hitboxEnemy.left;
-			touch.y -= hitboxEnemy.top;
+			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
 			return HitEnemyI(i, touch, _degat, _type);
 		}
 	}
 	return sfFalse;
 }
 
-sfVector2u RealPositionConvertTableauPosition(sfVector2f _positionReal)
+sfVector2f GetPositionEnemy(unsigned _i)
 {
-	_positionReal.x = _positionReal.x / TILE_SIZE;
-	_positionReal.y = _positionReal.y / TILE_SIZE;
-	sfVector2u newposition = { (unsigned)_positionReal.x, (unsigned)_positionReal.y };
-	return newposition;
+	return sfSprite_getPosition(enemy.entity[_i].sprite);
 }
 
-sfVector2f GetPositionEnemy(unsigned _index)
+sfFloatRect GetBounsEnemy(unsigned _i)
 {
-	return sfSprite_getPosition(enemy.entity[_index].sprite);
-}
-
-sfFloatRect GetBounsEnemy(unsigned _index)
-{
-	return sfSprite_getGlobalBounds(enemy.entity[_index].sprite);
+	return sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
 }
 
 int GetEnemyCount(void)
@@ -368,9 +274,9 @@ int GetEnemyCount(void)
 	return enemy.count;
 }
 
-void SetPositionEnemy(sfVector2f _position, unsigned _index)
+void SetPositionEnemy(sfVector2f _position, unsigned _i)
 {
-	sfSprite_setPosition(enemy.entity[_index].sprite, _position);
+	sfSprite_setPosition(enemy.entity[_i].sprite, _position);
 }
 
 int GetEnemyZone(void)
@@ -378,21 +284,16 @@ int GetEnemyZone(void)
 	return enemy.activeCount;
 }
 
-void EffectGelEnemy(unsigned _index, int _puissance, float _time)
-{
-	enemy.entity[_index].freezePower = _puissance;
-	enemy.entity[_index].freezeTimer = _time;
-}
-
 int GetNearestEnemy(List* _listeIgnore, sfVector2f _position)
 {
 	int proxi = 0;
+	sfVector2f positionProxi = sfSprite_getPosition(enemy.entity[proxi].sprite);
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		sfVector2f positionProxi = sfSprite_getPosition(enemy.entity[proxi].sprite);
 		sfVector2f positionI = sfSprite_getPosition(enemy.entity[i].sprite);
 		if (NORM_POW2(positionI, _position) < NORM_POW2(positionProxi, _position))
 		{
+			positionProxi = positionI;
 			proxi = i;
 		}
 	}
@@ -408,7 +309,7 @@ int TestColision(sfIntRect _intRect);
 int TestJump(sfIntRect _intRect);
 sfIntRect FloatRectIntoIntRectByCase(sfFloatRect _floatRect);
 
-ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible)
+ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 {
 	sfVector2u gridSize = { _enemy->region.width / TILE_SIZE , _enemy->region.height / TILE_SIZE };
 	if (_enemy->region.top != enemy.tableau.region.top || _enemy->region.left != enemy.tableau.region.left)
@@ -420,10 +321,6 @@ ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible)
 		{
 			FreeGrid(enemy.tableau.grid[_enemy->type]);
 			enemy.tableau.grid[i] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
-		}
-		for (char i = 0; i < ALEATORY; i++)
-		{
-			enemy.tableau.new[i] = sfTrue;
 		}
 		FreeGrid(enemy.tableau.collision);
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
@@ -451,7 +348,7 @@ ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		if (DEBUG_MODE_A_STAR)
+		if (0 && DEBUG_MODE_A_STAR)
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -805,7 +702,7 @@ ActionDemander AStar2(EnemyEntityB* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		if (DEBUG_MODE_A_STAR)
+		if (1 && DEBUG_MODE_A_STAR)
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{

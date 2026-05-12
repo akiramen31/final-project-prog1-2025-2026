@@ -31,7 +31,7 @@
 #define DEBUG_MODE_A_STAR sfFalse
 #define DEV_PIERRE_ENEMY sfTrue
 #define DEV_ENEMY_BASIC sfFalse
-#define DEV_MODE_CAMERA sfTrue
+#define DEV_MODE_CAMERA sfFalse
 
 #define TILE_SIZE 16
 
