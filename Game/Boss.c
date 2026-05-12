@@ -3,6 +3,7 @@
 void MoveBoss(sfVector2f _move);
 void UpdateBossReaction(float _dt);
 void FreezeBoss(void);
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, CollisionAxis _axis);
 
 Boss boss;
 
@@ -136,6 +137,13 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->hitboxes[10] = sfSprite_getGlobalBounds(boss.boss2->sprites[TOP_RIGHT_CHIMNEY]);
 		boss.boss2->hitboxes[11] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_LEFT_CHIMNEY]);
 		boss.boss2->hitboxes[12] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_RIGHT_CHIMNEY]);
+
+		//sfRectangleShape* colBoss[PART_COUNT_BOSS2];
+		//for (int i = 0; i < PART_COUNT_BOSS2; i++)
+		//{
+		//	colBoss[i] = CreateRectangleShape(boss.boss2->hitboxes[i], sfTransparent, sfRed, 1.f);
+		//}
+
 
 		boss.life = MAX_BOSS2_LIFE;
 		boss.boss2->aimDestination = (sfVector2f){ GetBossPosition().x, GetBossPosition().y + 40.f };
@@ -324,7 +332,7 @@ sfBool DamageBoss(float _damage)
 	}
 }
 
-sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox)
+sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox, CollisionAxis _axis)
 {
 	sfVector2f push = { 0 };
 
@@ -333,24 +341,19 @@ sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox)
 		switch (boss.currentBoss)
 		{
 		case 1:
-
-			push = TestCollisionBossPlayer(_playerHitbox, boss.boss1->hitboxes, 3);
-
+			push = TestCollisionBossPlayer(_playerHitbox, boss.boss1->hitboxes, 3, _axis);
 			break;
-
 		case 2:
-
-			push = TestCollisionBossPlayer(_playerHitbox, boss.boss2->hitboxes, 8);
+			push = TestCollisionBossPlayer(_playerHitbox, boss.boss2->hitboxes, 8, _axis);
 			break;
 		default:
 			break;
 		}
 	}
-
 	return push;
 }
 
-sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount)
+sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts, int _partCount, CollisionAxis _axis)
 {
 	sfVector2f vectorMove = { 0, 0 };
 	sfFloatRect reaction = { 0, 0, 0, 0 };
@@ -361,7 +364,20 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 		{
 			if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 			{
-				int resolveX = (reaction.width < reaction.height);
+				int resolveX = 0;
+
+				if (_axis == AXIS_X)
+				{
+					resolveX = 1;
+				}
+				else if (_axis == AXIS_Y)
+				{
+					resolveX = 0;
+				}
+				else
+				{
+					resolveX = (reaction.width < reaction.height);
+				}
 
 				if (resolveX)
 				{
@@ -394,15 +410,19 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 			{
 				int resolveX = (reaction.width < reaction.height);
 
-				if (resolveX)
+				if (!resolveX)
 				{
 					if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 					{
-						if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - _bossParts[i].top < (_bossParts[i].height - _hitbox.height / 2))
+						if (GetPlayerVelocity().y >= 0)
 						{
-							vectorMove.y -= reaction.height;
+							float hitboxCenterY = _hitbox.top + (_hitbox.height / 2.f);
+							float coliderCenterY = _bossParts[i].top + (_bossParts[i].height / 4.f);
+							float push = (hitboxCenterY < coliderCenterY) ? -reaction.height : 0;
+
+							vectorMove.y += push;
+							_hitbox.top += push;
 						}
-						_hitbox.top += vectorMove.y;
 					}
 				}
 			}
@@ -410,7 +430,20 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 			{
 				if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 				{
-					int resolveX = (reaction.width < reaction.height);
+					int resolveX = 0;
+
+					if (_axis == AXIS_X)
+					{
+						resolveX = 1;
+					}
+					else if (_axis == AXIS_Y)
+					{
+						resolveX = 0;
+					}
+					else
+					{
+						resolveX = (reaction.width < reaction.height);
+					}
 
 					if (resolveX)
 					{
@@ -430,7 +463,6 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 					}
 				}
 			}
-			return vectorMove;
 		}
 	}
 

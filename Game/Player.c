@@ -304,11 +304,10 @@ void ColisionMapPlayer(float _dt)
 	sfRectangleShape_move(player.collision, (sfVector2f) { 0, PLAYER_VERTICAL_SPEED_MAX* player.velocity.y* _dt });
 	sfVector2f reactionY = Colision(GetPlayerRect(), AXIS_Y);
 	sfVector2f reactionPassThrough = CollisionPassThrough(GetPlayerRect());
-	sfVector2f BossReactionColision = ColisionBossplayer(GetPlayerRect());
 
-	reactionY.y += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_Y).y;
-	reactionY.y += ColisionElevator(sfRectangleShape_getGlobalBounds(player.collision), AXIS_Y).y;
-	reactionY.y += BossReactionColision.y;
+	reactionY.y += ColisionBox(GetPlayerRect(), sfFalse, AXIS_Y).y;
+	reactionY.y += ColisionElevator(GetPlayerRect(), AXIS_Y).y;
+	reactionY.y += ColisionBossplayer(GetPlayerRect(),AXIS_Y).y;
 
 	if (reactionPassThrough.y < 0)
 	{
@@ -352,6 +351,7 @@ void ColisionMapPlayer(float _dt)
 			sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
 			reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
 			reactionX.x += ColisionElevator(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X).x;
+			reactionX.x += ColisionBossplayer(GetPlayerRect(), AXIS_X).x;
 
 			if (reactionX.x != 0)
 			{
@@ -368,7 +368,7 @@ void ColisionMapPlayer(float _dt)
 
 		sfVector2f reactionX = Colision(sfRectangleShape_getGlobalBounds(player.collision), AXIS_X);
 		reactionX.x += ColisionBox(sfRectangleShape_getGlobalBounds(player.collision), sfFalse, AXIS_X).x;
-		reactionX.x += BossReactionColision.x;
+		reactionX.x += ColisionBossplayer(GetPlayerRect(), AXIS_X).x;
 
 		if (reactionX.x != 0)
 		{
