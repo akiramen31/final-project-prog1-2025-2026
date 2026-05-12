@@ -37,6 +37,7 @@
 #define DEV_PIERRE_ENEMY sfTrue
 #define DEV_ENEMY_BASIC sfFalse
 #define DEV_MODE_CAMERA sfFalse
+#define DEV_PRINT_ERROR sfTrue
 
 #define TILE_SIZE 16
 

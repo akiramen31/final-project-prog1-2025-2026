@@ -54,7 +54,7 @@
     <ClInclude Include="Backup.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GameOver.h">
+    <ClInclude Include="StartGame.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
@@ -73,6 +73,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="JetSteam.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOver.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,7 +104,7 @@
     <ClCompile Include="main.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="GameOver.c">
+    <ClCompile Include="StartGame.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="HUD.c">
@@ -138,6 +141,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="JetSteam.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOver.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -22,14 +22,14 @@ void LoadEnemy(void)
 	enemy.listeWait = CreateList();
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
 	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
-	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
-	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
+	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f };
 	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
-	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
-	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
+	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f };
 	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 5.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
-	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
+	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f };
 }
 
 void UpdateEnemy(float _dt)
@@ -288,6 +288,8 @@ void shootPlayer(unsigned _i)
 
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
+	_type = DRONE_SMALL_LARGE;
+
 	_region.left -= TILE_SIZE;
 	_region.top -= TILE_SIZE;
 	_region.width += TILE_SIZE * 2;
@@ -298,20 +300,15 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	}
 
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1, 1), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 
-	if (!enemy.entity[enemy.count].type % GROUND_HEAVY)
+#if DEV_PRINT_ERROR
+	sfFloatRect rect = sfShape_getLocalBounds(enemy.entity[enemy.count].sprite);
+	if (enemy.entity[enemy.count].type % GROUND_HEAVY == 0 && (rect.width > 14 || rect.height > 14) || enemy.entity[enemy.count].type % GROUND_HEAVY == 1 && (rect.width > 14 || rect.height > 30) || enemy.entity[enemy.count].type % GROUND_HEAVY == 1 && (rect.width > 30 || rect.height > 46))
 	{
-		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
+		printf("\nMauvaise taille sprite %d\n", _type);
 	}
-	else if (enemy.entity[enemy.count].type % GROUND_HEAVY == 1)
-	{
-		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
-	}
-	else if (enemy.entity[enemy.count].type % GROUND_HEAVY == 2)
-	{
-		sfSprite_setTextureRect(enemy.entity[enemy.count].sprite, (sfIntRect) { 1, 2, 14, 14 });
-	}
+#endif
 
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
