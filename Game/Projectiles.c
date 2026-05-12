@@ -567,6 +567,9 @@ void SpawnGrenade(sfVector2f _spawnZone)
 	
 	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, 1.f, 16.f);
 	newGrenade.lifetime = GRENADE_LIFETIME;
+	newGrenade.velocity.y = GRENADE_FALL_SPEED;
+	grenadeList[grenadeCount] = newGrenade;
+	grenadeCount++;
 }
 
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
@@ -674,6 +677,29 @@ void UpdateExplosion(float _dt)
 		{
 			DestroyVisualEntity(explosionList[i].sprite);
 			SortExplosionList(i);
+		}
+	}
+}
+
+void UpdateGrenade(float _dt)
+{
+	sfFloatRect hitboxGrenade = { 0 };
+	for (int i = grenadeCount - 1; i >= 0; i--)
+	{
+		hitboxGrenade = sfSprite_getGlobalBounds(grenadeList[i].sprite);
+		sfVector2f reactionPassThrough = CollisionPassThrough(hitboxGrenade);
+		sfVector2f reactionWall = Colision(hitboxGrenade, AXIS_BOTH);
+		sfVector2f reactionBox = ColisionBox(hitboxGrenade, sfFalse, AXIS_BOTH);
+		reactionWall.y += reactionPassThrough.y + reactionBox.y;
+		if (reactionWall.y)
+		{
+			sfSprite_move(grenadeList[i].sprite, reactionWall);
+			grenadeList[i].velocity.y = 0.f;
+		}
+		grenadeList[i].lifetime -= _dt;
+		if (grenadeList[i].lifetime < 0.f)
+		{
+			SpawnExplosion(sfSprite_getPosition(grenadeList[i].sprite), sfFalse, 1.f);
 		}
 	}
 }
