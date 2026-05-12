@@ -15,12 +15,12 @@ void LoadHUD()
 	}
 }
 
-void LoadBossBar(float* _bossHpAdr)
+void LoadBossBar(float* _bossHpAdr, float _maxHealth)
 {
 	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Sprites/boss_lifebar.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
 	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Sprites/boss_life.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
 	hud.bossBar.bossLife = _bossHpAdr;
-	hud.bossBar.maxBossLife = *_bossHpAdr;
+	hud.bossBar.maxBossLife = _maxHealth;
 }
 
 
@@ -50,52 +50,48 @@ void UpdateHUD(float _dt)
 		}
 	}
 	//Boss
-	if (hud.bossBar.bossLife != -1)
+	if (*hud.bossBar.bossLife != -1)
 	{
+		sfVector2f visibleScale = (sfVector2f){ 5,5 };
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, visibleScale);
+		sfSprite_setScale(hud.bossBar.bossLifeBar, visibleScale);
 		float lifePercentage = *hud.bossBar.bossLife / hud.bossBar.maxBossLife;
 		sfSprite_setTextureRect(hud.bossBar.bossLifeBar, (sfIntRect) { 0, 0, (int) { 113 * lifePercentage }, 8 });
 	}
+	else
+	{
+		sfVector2f invisibleScale = (sfVector2f){ 0 };
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, invisibleScale);
+		sfSprite_setScale(hud.bossBar.bossLifeBar, invisibleScale);
+	}
 }
 
-void VisibilityBossBar(sfBool _visible)
-{
-	hud.isBossBarShown = _visible;
 
+void ToggleVisibilityHUD(sfBool _visible)
+{
 	if (_visible)
 	{
-		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 5, 5 });
-		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 5, 5 });
+		sfVector2f visibleScale = (sfVector2f){ 5,5 };
+		for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
+		{
+			sfSprite_setScale(hud.life[i], visibleScale);
+		}
+		sfSprite_setScale(hud.gauge, visibleScale);
+		if (*hud.bossBar.bossLife !=-1)
+		{
+			sfSprite_setScale(hud.bossBar.bossLifeBar, visibleScale);
+			sfSprite_setScale(hud.bossBar.bossLifeContainer, visibleScale);
+		}
 	}
 	else
 	{
-		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 0, 0 });
-		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 0, 0 });
-	}
-}
-
-void VisibilityHUD(sfBool _visible)
-{
-	if (_visible)
-	{
+		sfVector2f invisibleScale = (sfVector2f){ 0 };
 		for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
 		{
-			sfSprite_setScale(hud.life[i], (sfVector2f) { 5, 5 });
+			sfSprite_setScale(hud.life[i], invisibleScale);
 		}
-
-		sfSprite_setScale(hud.gauge, (sfVector2f) { 5, 5 });
-
-		VisibilityBossBar(hud.isBossBarShown);
-	}
-	else if (!_visible)
-	{
-		for (int i = 0; i < PLAYER_MAX_HEALTH; i++)
-		{
-			sfSprite_setScale(hud.life[i], (sfVector2f) { 0 });
-		}
-
-		sfSprite_setScale(hud.gauge, (sfVector2f) { 0, 0 });
-
-		sfSprite_setScale(hud.bossBar.bossLifeContainer, (sfVector2f) { 0, 0 });
-		sfSprite_setScale(hud.bossBar.bossLifeBar, (sfVector2f) { 0, 0 });
+		sfSprite_setScale(hud.gauge, invisibleScale);
+		sfSprite_setScale(hud.bossBar.bossLifeBar, invisibleScale);
+		sfSprite_setScale(hud.bossBar.bossLifeContainer, invisibleScale);
 	}
 }

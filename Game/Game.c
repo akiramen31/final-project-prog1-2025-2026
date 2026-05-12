@@ -27,7 +27,7 @@ void LoadGame(void)
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
 	LoadHUD();
-	LoadBossBar(GetBossLifeAdress());
+	LoadBossBar(GetBossLifeAdress(), GetBossMaxLife());
 	//LoadGUI();
 	LoadWeapons();
 
@@ -180,9 +180,6 @@ void UpdateGame(float _dt)
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
 
 				UpdateEntity(_dt);
-
-				VisibilityBossBar(IsBossActive());
-
 			}
 			else
 			{
@@ -216,13 +213,13 @@ void UpdateGame(float _dt)
 			sfRectangleShape_setPosition(game.startIntoRectangle, pos);
 
 			game.timerStartLevel += _dt;
-			VisibilityHUD(sfFalse);
+			ToggleVisibilityHUD(sfFalse);
 		}
 		else
 		{
 			if (!game.startIntroIsFinished)
 			{
-				VisibilityHUD(sfTrue);
+				ToggleVisibilityHUD(sfTrue);
 				game.startIntroIsFinished = sfTrue;
 				sfCircleShape_setScale(game.startIntroCircle, (sfVector2f) { 0 });
 				sfRectangleShape_setScale(game.startIntoRectangle, (sfVector2f) { 0 });

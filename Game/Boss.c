@@ -10,8 +10,6 @@ void LoadBoss(int _index, sfVector2f _position)
 {
 
 	boss = (Boss){ 0 };
-	boss.life = 0.f;
-
 	boss.currentBoss = _index + 1;
 	switch (boss.currentBoss)
 	{
@@ -56,9 +54,10 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss1->hitboxes[1] = sfSprite_getGlobalBounds(boss.boss1->sprites[L_CHAMBER]);
 		boss.boss1->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss1->sprites[R_CHAMBER]);
 		boss.boss1->hitboxes[3] = sfSprite_getGlobalBounds(boss.boss1->sprites[MISSILE_LAUNCHER]);
-		boss.life = MAX_BOSS1_LIFE;
 		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], 90);
 		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], -90);
+		boss.life = -1;
+
 		break;
 	case 2:
 		printf("Position du boss : %f et %f", _position.x, _position.y);
@@ -205,8 +204,11 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		UpdateTurret(_posPlayer, _dt);
 		HandlePlayerBossCollision(push);
 		UpdateBossReaction(_dt);
-
 		BossShoot(_posPlayer, _dt);
+	}
+	else if (_posPlayer.x > ARENA1_ENTRY)
+	{
+ 		boss.life = MAX_BOSS1_LIFE;
 	}
 }
 
@@ -618,40 +620,9 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 
 
 		sfVector2f playerPos = _posPlayer;
-		sfVector2f posL = sfSprite_getPosition(boss.boss1->sprites[L_CANNON]);
-
-		//// Sécurité : Si le joueur est trop proche, on ne change pas l'angle
-		//float dist = sqrtf(powf(playerPos.x - posL.x, 2) + powf(playerPos.y - posL.y, 2));
-		//if (dist < 10.0f) return;
-
-		//// --- TOURELLE GAUCHE ---
-		//// 1. Calcul de la cible
-		//float angleTargetL = atan2f(-(playerPos.y - posL.y), -(playerPos.x - posL.x)) * (180.0f / 3.14159f);
-
-		//// 2. CLAMP de la cible d'abord !
-		//if (angleTargetL > 180.f) angleTargetL = 180.f;
-		//if (angleTargetL < 0.F) angleTargetL = 0.f;
-
-		//// 3. Interpolation avec l'angle actuel
-		//float currentAngleL = sfSprite_getRotation(boss.boss1->sprites[L_CANNON]);
-		//float newAngleL = MoveTowardsAngle(currentAngleL, angleTargetL, TURRET_ROTATION_SPEED, _dt);
-
-		//sfSprite_setRotation(boss.boss1->sprites[L_CANNON], newAngleL);
-
-		//// --- TOURELLE DROITE ---
-		sfVector2f posR = sfSprite_getPosition(boss.boss1->sprites[R_CANNON]);
-		//float angleTargetR = atan2f(playerPos.y - posR.y, playerPos.x - posR.x) * (180.0f / 3.14159f);
-
-		//// CLAMP de la cible
-		//if (angleTargetR > 90.0f) angleTargetR = 90.0f;
-		//if (angleTargetR < -90.0f) angleTargetR = -90.0f;
-
-		//float currentAngleR = sfSprite_getRotation(boss.boss1->sprites[R_CANNON]);
-		//float newAngleR = MoveTowardsAngle(currentAngleR, angleTargetR, TURRET_ROTATION_SPEED, _dt);
-
-
 		if (playerPos.x < sfSprite_getPosition(boss.boss1->sprites[TRACK]).x)
 		{
+			sfVector2f posL = sfSprite_getPosition(boss.boss1->sprites[L_CANNON]);
 			float realDxLeft = playerPos.x - posL.x;
 			float realDyLeft = playerPos.y - posL.y;
 			float realAngleLeft = RAD_DEG(atan2f(realDyLeft, realDxLeft));
@@ -659,6 +630,7 @@ void UpdateTurret(sfVector2f _posPlayer, float _dt)
 		}
 		else
 		{
+			sfVector2f posR = sfSprite_getPosition(boss.boss1->sprites[R_CANNON]);
 			float realDxRight = playerPos.x - posR.x;
 			float realDyRight = playerPos.y - posR.y;
 			float realAngleRight = RAD_DEG(atan2f(realDyRight, realDxRight));
@@ -746,7 +718,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 				shooterType.isAlly = sfFalse;
 				sfVector2f playerPos = _posPlayer;
 				playerPos.y -= TILE_SIZE;
-				//AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType);
+				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType);
 			}
 			else
 			{
@@ -809,9 +781,20 @@ void DestroyBoss(int _boss)
 
 void FreezeBoss(void)
 {
-	for (int i = PART_COUNT_BOSS1 - 1; i >= 0; i--)
+	switch (boss.currentBoss)
 	{
-		sfSprite_setColor(boss.boss1->sprites[i], (sfColor) { 180, 180, 255, 255 });
+	case 1:
+		for (int i = PART_COUNT_BOSS1 - 1; i >= 0; i--)
+		{
+			sfSprite_setColor(boss.boss1->sprites[i], (sfColor) { 180, 180, 255, 255 });
+		}
+		break;
+	case 2:
+		for (int i = PART_COUNT_BOSS2 - 1; i >= 0; i--)
+		{
+			sfSprite_setColor(boss.boss2->sprites[i], (sfColor) { 180, 180, 255, 255 });
+		}
+		break;
 	}
 	boss.timerFrozen = 0.f;
 }
@@ -824,6 +807,19 @@ float GetBossLife(void)
 float* GetBossLifeAdress(void)
 {
 	return &boss.life;
+}
+
+float GetBossMaxLife(void)
+{
+	switch (boss.currentBoss)
+	{
+	case 1:
+		return MAX_BOSS1_LIFE;
+		break;
+	case 2:
+		return MAX_BOSS2_LIFE;
+		break;
+	}
 }
 
 sfVector2f GetBossPosition(void)

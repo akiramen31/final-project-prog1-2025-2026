@@ -161,6 +161,7 @@ void DestroyBoss(int _boss);
 
 float GetBossLife(void);
 float* GetBossLifeAdress(void);
+float GetBossMaxLife(void);
 sfVector2f GetBossPosition(void);
 
 void FloatingHandlerBoss2(float _dt);
