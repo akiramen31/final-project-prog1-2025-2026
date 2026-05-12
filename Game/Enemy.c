@@ -76,6 +76,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	switch (enemy.entity[_i].type)
 	{
 	case DRONE_SMALL:
+	case DRONE_SMALL_MEDIUM:
+	case DRONE_SMALL_LARGE:
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
@@ -95,6 +97,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		}
 		break;
 	case GROUND_HEAVY:
+	case GROUND_HEAVY_MEDIUM:
+	case GROUND_HEAVY_LARGE:
 		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
 			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
@@ -102,6 +106,8 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		}
 		break;
 	case SOLDIER_SMALL:
+	case SOLDIER_SMALL_MEDIUM:
+	case SOLDIER_SMALL_LARGE:
 		if (PlayerVisibility(_i))
 		{
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
