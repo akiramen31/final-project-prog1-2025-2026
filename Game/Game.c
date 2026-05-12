@@ -162,8 +162,8 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					AddPlayerLife(PLAYER_MAX_HEALTH);
-					LoadGame();
+					SetGameState(GAME);
+					return;
 				}
 
 				if (GetCurrentMap() == LEVEL1 || GetCurrentMap() == LEVEL2)

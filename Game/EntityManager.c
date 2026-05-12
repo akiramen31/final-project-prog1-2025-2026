@@ -931,7 +931,7 @@ void Load(void)
 	LoadBackup();
 	LoadEntityManager();
 	LoadMainData();
-	SetGameState(MENU);
+	SetGameState(GAME_OVER);
 }
 
 void PollEvent(void)
