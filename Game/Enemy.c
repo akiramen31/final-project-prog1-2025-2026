@@ -3,88 +3,6 @@
 #include "Projectiles.h"
 #include "Player.h"
 
-#define TIMER_ASTAR 0.05f
-#define JUMP_FORCE 5
-#define MAX_ENRGIE 300
-
-#pragma region Struct
-typedef enum EnemyType
-{
-	DRONE_SMALL,
-	GROUND_HEAVY,
-	SOLDIER_SMALL,
-	ALEATORY,
-}EnemyType;
-
-#pragma region AStar
-typedef struct ActionDemander
-{
-	char gauche;
-	char droite;
-	char Saut;
-	char jetPack;
-}ActionDemander;
-
-typedef struct Case2
-{
-	int jumpForce;
-	Direction direction;
-	char jetPackActive;
-	int compteur;
-}Case2;
-
-typedef struct Tableau
-{
-	Case2** grid[ALEATORY];
-	sfFloatRect region;
-	char** collision;
-	char new[ALEATORY];
-}Tableau;
-#pragma endregion
-
-typedef struct EnemyDataByType
-{
-	sfTexture* texture;
-	ArmorType armure;
-	float trust;
-	float consomation;
-	float lifeMax;
-	float energyMax;
-	float energyRegen;
-	float speedMax;
-	float jumForce;
-	float shootCooldown;
-}EnemyDataByType;
-
-typedef struct EnemyEntity
-{
-	sfSprite* sprite;
-	EnemyType type;
-	sfVector2f velocity;
-	ActionDemander action;
-	sfFloatRect region;
-	float life;
-	float freezeTimer;
-	float freezePower;
-	float shootTimer;
-	float aStarTimer;
-	float energy;
-}EnemyEntity;
-
-typedef struct Enemy
-{
-#pragma region AStar
-	List* listeWait;
-	Tableau tableau;
-#pragma endregion
-
-	EnemyDataByType dataByType[ALEATORY];
-	EnemyEntity* entity;
-	int activeCount;
-	unsigned count;
-}Enemy;
-#pragma endregion
-
 void UpdateColisionEnemy(unsigned _index);
 void UpdateEnemyI(float _dt, unsigned _index);
 void CalculMoveEnemy(float _dt, unsigned _index);
@@ -113,11 +31,16 @@ void UpdateEnemy(float _dt)
 	sfVector2f playerPos = GetPlayerPosition();
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + enemy.entity[i].region.width - TILE_SIZE >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + enemy.entity[i].region.height - TILE_SIZE >= playerPos.y)
+		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + TILE_SIZE + enemy.entity[i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + enemy.entity[i].region.height - TILE_SIZE >= playerPos.y)
 		{
 			UpdateEnemyI(_dt, i);
 			enemy.activeCount++;
 		}
+	}
+
+	for (char i = 0; i < ALEATORY; i++)
+	{
+		enemy.tableau.new[i] = sfTrue;
 	}
 }
 
@@ -226,7 +149,7 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 		{
 			enemy.entity[_i].velocity.y = -enemy.dataByType[enemy.entity[_i].type].jumForce;
 		}
-		else if (enemy.entity[_i].velocity.y >= 0 && enemy.dataByType[enemy.entity[_i].type].trust && enemy.dataByType[enemy.entity[_i].type].consomation * _dt < enemy.entity[_i].energy)
+		else if (0 && enemy.entity[_i].velocity.y >= 0 && enemy.dataByType[enemy.entity[_i].type].trust && enemy.dataByType[enemy.entity[_i].type].consomation * _dt < enemy.entity[_i].energy)
 		{
 			enemy.entity[_i].velocity.y -= enemy.dataByType[enemy.entity[_i].type].trust;
 			enemy.entity[_i].energy -= enemy.dataByType[enemy.entity[_i].type].consomation * _dt;
@@ -399,10 +322,6 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			FreeGrid(enemy.tableau.grid[_enemy->type]);
 			enemy.tableau.grid[i] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		}
-		for (char i = 0; i < ALEATORY; i++)
-		{
-			enemy.tableau.new[i] = sfTrue;
-		}
 		FreeGrid(enemy.tableau.collision);
 		char** grid = CreateGrid(gridSize.x, gridSize.y, sizeof(char));
 
@@ -429,7 +348,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		if (DEBUG_MODE_A_STAR)
+		if (0 && DEBUG_MODE_A_STAR)
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -783,7 +702,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		if (DEBUG_MODE_A_STAR)
+		if (1 && DEBUG_MODE_A_STAR)
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{
