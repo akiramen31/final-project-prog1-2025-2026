@@ -27,8 +27,7 @@ typedef struct ActionDemander
 {
 	char gauche;
 	char droite;
-	char Saut;
-	char jetPack;
+	char saut;
 	char bas;
 }ActionDemander;
 
