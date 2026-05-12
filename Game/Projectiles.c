@@ -8,6 +8,7 @@ sfTexture* bulletTexture;
 sfTexture* bulletBossTexture;
 sfTexture* mistealTexture;
 sfTexture* droneTexture;
+sfTexture* grenadeTexture;
 sfTexture* explosionTexture;
 Bullet bulletListAlly[BULLET_ALLY_MAX];
 Bullet bulletListEnemy[BULLET_ENEMY_MAX];
@@ -17,12 +18,14 @@ ColdBreath coldBreath;
 BossMissile bossMissileList[MAX_BOSS_MISSILE];
 DangerZone dangerZoneList[MAX_BOSS_MISSILE];
 Explosion* explosionList = NULL;
+Grenade* grenadeList = NULL;
 Animation explosionAnimation;
 
 unsigned mistealCount;
 unsigned bulletCountAlly;
 unsigned bulletCountEnemy;
 unsigned explosionCount;
+unsigned grenadeCount;
 float groundLevel;
 
 void SortBulletListAlly(unsigned _index);
@@ -38,9 +41,17 @@ void LoadProjectiles(float _groundlevel)
 	bulletCountAlly = 0;
 	bulletCountEnemy = 0;
 	groundLevel = _groundlevel;
+	LoadGrenade();
 	LoadSecondary();
 	LoadBossMissile();
 	LoadExplosion();
+}
+
+void LoadGrenade(void)
+{
+	grenadeTexture = GetAsset("Assets/Sprites/Grenade_Boss.png");
+	grenadeList = Calloc(1, sizeof(Grenade));
+	grenadeCount = 0;
 }
 
 void LoadSecondary(void)
@@ -541,6 +552,21 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 
 	coldBreath.lifetime = 0.f;
 	coldBreath.isAlive = sfTrue;
+}
+
+void SpawnGrenade(sfVector2f _spawnZone)
+{
+	Grenade* temp = Realloc(grenadeList, (size_t)(explosionCount + 1) * sizeof(Grenade));
+	if (!temp)
+	{
+		return;
+	}
+	grenadeList = temp;
+	temp = NULL;
+	Grenade newGrenade = { 0 };
+	
+	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, 1.f, 16.f);
+	newGrenade.lifetime = GRENADE_LIFETIME;
 }
 
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
