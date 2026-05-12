@@ -21,6 +21,7 @@
 
 //
 #define MAX_BOSS2_LIFE 150.f
+#define SPEED_BOSS2_FLOATING 20.f
 
 #define ARENA1_CENTER 8671.f
 #define ARENA1_ENTRY 8290.f
@@ -160,6 +161,8 @@ void DestroyBoss(int _boss);
 float GetBossLife(void);
 float* GetBossLifeAdress(void);
 sfVector2f GetBossPosition(void);
+
+void FloatingHandlerBoss2(float _dt);
 
 sfBool IsBossActive(void);
 #endif // !BOSS_H

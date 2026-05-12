@@ -21,9 +21,9 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* const _sprite, Animation* const _a
 {
 	_animation->timeActualy += _dt;
 
-	if ((int)_animation->timeActualy / (int)_animation->frameDuration < _animation->frameCount)
+	if ((int)(_animation->timeActualy / _animation->frameDuration) < _animation->frameCount)
 	{
-		sfSprite_setTextureRect(_sprite, (sfIntRect) { _animation->rectActualy.left + _animation->rectActualy.width * (int)_animation->timeActualy / (int)_animation->frameDuration, _animation->rectActualy.top, _animation->rectActualy.width, _animation->rectActualy.height });
+		sfSprite_setTextureRect(_sprite, (sfIntRect) { _animation->rectActualy.left + _animation->rectActualy.width * (int)(_animation->timeActualy / _animation->frameDuration), _animation->rectActualy.top, _animation->rectActualy.width, _animation->rectActualy.height });
 	}
 	else
 	{
