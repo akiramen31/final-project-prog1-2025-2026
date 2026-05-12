@@ -182,7 +182,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			break;
 		case 2:
 
-			push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 8, AXIS_BOTH);
+			//push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 8, AXIS_BOTH);
 			UpdateTurret(_posPlayer, _dt);
 			FloatingHandlerBoss2(_dt);
 			//push = TestCollisionBossPlayer(playerRect, boss.boss2->hitboxes, 3, AXIS_BOTH);
@@ -340,7 +340,7 @@ sfVector2f ColisionBossplayer(sfFloatRect _playerHitbox)
 
 		case 2:
 
-			push = TestCollisionBossPlayer(_playerHitbox, boss.boss2->hitboxes, 3);
+			push = TestCollisionBossPlayer(_playerHitbox, boss.boss2->hitboxes, 8);
 			break;
 		default:
 			break;
@@ -361,19 +361,7 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 		{
 			if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 			{
-				int resolveX = 0;
-				if (_axis == AXIS_X)
-				{
-					resolveX = 1;
-				}
-				else if (_axis == AXIS_Y)
-				{
-					resolveX = 0;
-				}
-				else
-				{
-					resolveX = (reaction.width < reaction.height);
-				}
+				int resolveX = (reaction.width < reaction.height);
 
 				if (resolveX)
 				{
@@ -402,37 +390,27 @@ sfVector2f TestCollisionBossPlayer(sfFloatRect _hitbox, sfFloatRect* _bossParts,
 			{
 				continue;
 			}
-			if (i == 6 || i == 7)
-			int resolveX = (reaction.width < reaction.height);
-
-			if (resolveX)
+			else if (i == 6 || i == 7)
 			{
-				if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
+				int resolveX = (reaction.width < reaction.height);
+
+				if (resolveX)
 				{
-					if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - _bossParts[i].top < (_bossParts[i].height - _hitbox.height / 2))
+					if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 					{
-						vectorMove.y -= reaction.height;
+						if (_hitbox.top + _hitbox.height / 4.f * 3.f + vectorMove.y - _bossParts[i].top < (_bossParts[i].height - _hitbox.height / 2))
+						{
+							vectorMove.y -= reaction.height;
+						}
+						_hitbox.top += vectorMove.y;
 					}
-					_hitbox.top += vectorMove.y;
 				}
 			}
 			else
 			{
 				if (sfFloatRect_intersects(&_hitbox, &_bossParts[i], &reaction))
 				{
-					int resolveX = 0;
-					if (_axis == AXIS_X)
-					{
-						resolveX = 1;
-					}
-					else if (_axis == AXIS_Y)
-					{
-						resolveX = 0;
-					}
-					else
-					{
-						resolveX = (reaction.width < reaction.height);
-					}
+					int resolveX = (reaction.width < reaction.height);
 
 					if (resolveX)
 					{
