@@ -959,6 +959,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 	bouns.left -= _enemy->region.left;
 	bouns.top -= _enemy->region.top + 1;
 	sfIntRect bounsEnemy = FloatRectIntoIntRectByCase(bouns);
+	bounsEnemy.top -=1;
 	_cible.left -= _enemy->region.left;
 	_cible.top -= _enemy->region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRectByCase(_cible);
@@ -1178,6 +1179,10 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
+	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0)
+	{
+		bounsEnemy.top -= 1;
+	}
 	switch (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction)
 	{
 	case EMPTY_DIRECTION:
