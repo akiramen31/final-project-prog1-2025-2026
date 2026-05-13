@@ -138,6 +138,7 @@ void UpdateSecondary(sfVector2f _pos, float _dt);
 void UpdateDrone(sfVector2f _playerPos, float _dt);
 void UpdateColdBreath(float _dt);
 void UpdateExplosion(float _dt);
+void UpdateGrenade(float _dt);
 
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
@@ -150,11 +151,15 @@ void AddDangerZone(sfVector2f _destination, unsigned _index);
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range);
 void SortExplosionList(unsigned _index);
 
+void SpawnGrenade(sfVector2f _spawnZone);
+void SortGrenadeList(unsigned _index);
+
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
 void DeleteMisteal(unsigned _index);
 void DeleteBossMissile(unsigned _index);
 void DeleteDangerZone(unsigned _index);
+void DeleteGrenade(unsigned _index);
 
 void MoveDrone(unsigned _index, sfVector2f _playerPos, float _dt);
 
@@ -162,8 +167,9 @@ void CheckCollisionDronesList(void);
 void TestCollisionExplosionList(unsigned _index, float _range);
 
 sfBool HitBossMissile(sfFloatRect _hitbox);
+sfBool HitGrenade(sfFloatRect _hitbox);
 
-unsigned int GetBulletCount(void);
+unsigned GetBulletCount(void);
 unsigned GetMistealCount(void);
 unsigned GetExplosionCount(void);
 
