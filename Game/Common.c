@@ -61,7 +61,7 @@ void SetSpriteOriginMiddle(sfSprite* _sprite)
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });
 }
 
-void CopyStingToBuffer(char* _buffer, char* _string)
+void CopyStringToBuffer(char* _buffer, char* _string)
 {
 	int i = 0;
 	while (_string[i] > 0)

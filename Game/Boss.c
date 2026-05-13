@@ -209,7 +209,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		default:
 			break;
 		}
-		if (DEV_BOSS)
+		/*if (DEV_BOSS)
 		{
 			if (sfKeyboard_isKeyPressed(sfKeyM))
 			{
@@ -219,7 +219,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			{
 				MoveBoss((sfVector2f) { -2.f, 0.f });
 			}
-		}
+		}*/
 		UpdateTurret(_posPlayer, _dt);
 		HandlePlayerBossCollision(push);
 		UpdateBossReaction(_posPlayer, _dt);
