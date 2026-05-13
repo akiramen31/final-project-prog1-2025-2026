@@ -29,14 +29,14 @@ void LoadEntityManager(void)
 
 void LoadGeneralAsset(void)
 {
-	void* ptr = GetAsset("Assets/Fonts/Daydream.otf");
+	void* ptr = GetAsset(FONT);
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
 void Draw(void)
 {
-	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
-	//sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
+	//sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
+	sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
 
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);

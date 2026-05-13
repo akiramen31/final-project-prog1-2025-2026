@@ -13,6 +13,4 @@ typedef struct GameOver
 void LoadGameOver(void);
 void PollEventGameOver(sfEvent* _event);
 void UpdateGameOver(float _dt);
-
-
 #endif // !GAME_OVER_H
