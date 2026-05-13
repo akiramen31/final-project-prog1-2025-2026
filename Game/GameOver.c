@@ -4,6 +4,10 @@
 GameOver gameOver;
 
 int live;
+int score = 50000;
+int tempScore = 0;
+int highScore = 100000;
+int tempHighScore = 0;
 
 void KeyPressedGameOver(sfEvent* _event);
 void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent);
@@ -14,25 +18,25 @@ void LoadGameOver(void)
 	gameOver = (GameOver){ 0 };
 	SetViewZoom(1.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
-	int highScore = 50;
-	//int score = GetIntFromSave(CURRENT_SCORE);
-	int score = 0;
-	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
 
-	switch (GetCurrentMap())
-	{
-	case LEVEL1:
-		highScore = GetIntFromSave(HIGH_SCORE_1);
-		break;
-	case LEVEL2:
-		highScore = GetIntFromSave(HIGH_SCORE_2);
-		break;
-	case LEVEL3:
-		highScore = GetIntFromSave(HIGH_SCORE_3);
-		break;
-	default:
-		break;
-	}
+	sfFont* font = GetAsset(FONT);
+
+	//score = GetIntFromSave(CURRENT_SCORE);
+
+	//switch (GetCurrentMap())
+	//{
+	//case LEVEL1:
+	//	highScore = GetIntFromSave(HIGH_SCORE_1);
+	//	break;
+	//case LEVEL2:
+	//	highScore = GetIntFromSave(HIGH_SCORE_2);
+	//	break;
+	//case LEVEL3:
+	//	highScore = GetIntFromSave(HIGH_SCORE_3);
+	//	break;
+	//default:
+	//	break;
+	//}
 
 	highScore = (score > highScore) ? score : highScore;
 
@@ -43,6 +47,7 @@ void LoadGameOver(void)
 	{
 		gameOver.button[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 3 * (i + 1), SCREEN_HEIGHT / 3 * 2 }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.button[i], 60);
+		sfText_setColor(gameOver.button[i], (sfColor) { 255, 165, 0, 255 });
 	}
 
 	sfText_setString(gameOver.button[0], "MENU");
@@ -54,6 +59,24 @@ void LoadGameOver(void)
 		sfText_setOrigin(gameOver.button[i], (sfVector2f) { rect.width / 2, rect.height });
 	}
 #pragma endregion
+
+	{
+		gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 }, 1.f, 10);
+		sfText_setCharacterSize(gameOver.text, 60);
+
+		if (GetPlayerLife() > 0)
+		{
+			sfText_setString(gameOver.text, "YOU WENT TO THE NEXT LEVEL");
+		}
+		else
+		{
+			sfText_setColor(gameOver.text, (sfColor) { 114, 28, 29, 255 });
+			sfText_setString(gameOver.text, "YOU DIED");
+		}
+
+		sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);
+		sfText_setOrigin(gameOver.text, (sfVector2f) { rect.width / 2, rect.height });
+	}
 
 #pragma region score
 	int decal = 50;
@@ -81,9 +104,9 @@ void LoadGameOver(void)
 	}
 
 	char* text[50];
-	sprintf_s(text, sizeof(text), "%07d", score);
+	sprintf_s(text, sizeof(text), "%07d", 0);
 	sfText_setString(gameOver.score[2], text);
-	sprintf_s(text, sizeof(text), "%07d", highScore);
+	sprintf_s(text, sizeof(text), "%07d", 0);
 	sfText_setString(gameOver.score[3], text);
 
 	for (int i = 2; i < 4; i++)
@@ -131,6 +154,22 @@ void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent)
 {
 	switch (_mouseButtonEvent->button)
 	{
+	case sfMouseLeft:
+		for (int i = 0; i < 2; i++)
+		{
+			if (CompareColor(sfText_getColor(gameOver.button[i]), sfWhite))
+			{
+				if (i == 0)
+				{
+					SetGameState(MENU);
+				}
+				else if (i == 1)
+				{
+					SetGameState(GAME);
+				}
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -138,12 +177,34 @@ void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent)
 
 void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent)
 {
-	float mouseX = (float)_mouseMovedEvent->x;
-	float mouseY = (float)_mouseMovedEvent->y;
+	sfVector2f mouse = { _mouseMovedEvent->x,_mouseMovedEvent->y };
+
+	for (int i = 0; i < 2; i++)
+	{
+		sfFloatRect rect = sfText_getGlobalBounds(gameOver.button[i]);
+		if (IsColidingPointHitbox(&rect, mouse))
+		{
+			sfText_setColor(gameOver.button[i], sfWhite);
+		}
+		else
+		{
+			sfText_setColor(gameOver.button[i], (sfColor) { 255, 165, 0, 255 });
+		}
+	}
 }
 
 
 void UpdateGameOver(float _dt)
 {
+	tempScore += RAND_RANGE(1, 100);
+	tempScore = (tempScore > score) ? score : tempScore;
 
+	tempHighScore += RAND_RANGE(1, 100);
+	tempHighScore = (tempHighScore > highScore) ? highScore : tempHighScore;
+
+	char* text[50];
+	sprintf_s(text, sizeof(text), "%07d", tempScore);
+	sfText_setString(gameOver.score[2], text);
+	sprintf_s(text, sizeof(text), "%07d", tempHighScore);
+	sfText_setString(gameOver.score[3], text);
 }

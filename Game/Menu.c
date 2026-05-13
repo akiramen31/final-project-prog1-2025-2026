@@ -72,7 +72,7 @@ void LoadMenu(void)
 	int textSizeLarge = 70;
 	int textSizeMedium = 50;
 	int textSizeSmall = 45;
-	sfFont* font = GetAsset("Assets/Fonts/GallaeciaForte.ttf");
+	sfFont* font = GetAsset(FONT);
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
 		SetFloatToSave(LIGHT_LEVEL, 1.f);

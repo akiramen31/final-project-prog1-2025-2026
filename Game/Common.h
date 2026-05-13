@@ -22,6 +22,8 @@
 #define PLAYER_COLLISION_HEIGHT 30
 #define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
+#define FONT "Assets/Fonts/GallaeciaForte.ttf"
+
 #define BPP 32
 
 #define MAP_COUNT 3
