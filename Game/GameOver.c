@@ -60,6 +60,24 @@ void LoadGameOver(void)
 	}
 #pragma endregion
 
+	{
+		gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 }, 1.f, 10);
+		sfText_setCharacterSize(gameOver.text, 60);
+
+		if (GetPlayerLife() > 0)
+		{
+			sfText_setString(gameOver.text, "YOU WENT TO THE NEXT LEVEL");
+		}
+		else
+		{
+			sfText_setColor(gameOver.text, (sfColor) { 114, 28, 29, 255 });
+			sfText_setString(gameOver.text, "YOU DIED");
+		}
+
+		sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);
+		sfText_setOrigin(gameOver.text, (sfVector2f) { rect.width / 2, rect.height });
+	}
+
 #pragma region score
 	int decal = 50;
 
@@ -136,6 +154,22 @@ void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent)
 {
 	switch (_mouseButtonEvent->button)
 	{
+	case sfMouseLeft:
+		for (int i = 0; i < 2; i++)
+		{
+			if (CompareColor(sfText_getColor(gameOver.button[i]), sfWhite))
+			{
+				if (i == 0)
+				{
+					SetGameState(MENU);
+				}
+				else if (i == 1)
+				{
+					SetGameState(GAME);
+				}
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -162,7 +196,6 @@ void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent)
 
 void UpdateGameOver(float _dt)
 {
-
 	tempScore += RAND_RANGE(1, 100);
 	tempScore = (tempScore > score) ? score : tempScore;
 

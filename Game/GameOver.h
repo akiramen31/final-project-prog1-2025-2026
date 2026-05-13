@@ -5,8 +5,8 @@
 
 typedef struct GameOver
 {
-	sfSprite* sprite;
 	sfText* button[2];
+	sfText* text;
 	sfText* score[4];
 }GameOver;
 
