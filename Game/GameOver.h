@@ -6,6 +6,8 @@
 typedef struct GameOver
 {
 	sfSprite* sprite;
+	sfText* button[2];
+	sfText* score[4];
 }GameOver;
 
 void LoadGameOver(void);

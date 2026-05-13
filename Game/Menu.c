@@ -184,6 +184,9 @@ void KeyPressedMenu(sfEvent* _event)
 
 		}
 		return;
+	case sfKeyEnter:
+		SetGameState(GAME_OVER);
+		break;
 	default:
 		break;
 	}
@@ -919,147 +922,147 @@ void UpdateTextKey(int _index, int _key)
 		}
 		else if (_key == sfKeyLControl)
 		{
-			CopyStingToBuffer(buffer, "LControl");
+			CopyStringToBuffer(buffer, "LControl");
 		}
 		else if (_key == sfKeyLShift)
 		{
-			CopyStingToBuffer(buffer, "LShift");
+			CopyStringToBuffer(buffer, "LShift");
 		}
 		else if (_key == sfKeyLAlt)
 		{
-			CopyStingToBuffer(buffer, "LAlt");
+			CopyStringToBuffer(buffer, "LAlt");
 		}
 		else if (_key == sfKeyRControl)
 		{
-			CopyStingToBuffer(buffer, "RControl");
+			CopyStringToBuffer(buffer, "RControl");
 		}
 		else if (_key == sfKeyRShift)
 		{
-			CopyStingToBuffer(buffer, "RShift");
+			CopyStringToBuffer(buffer, "RShift");
 		}
 		else if (_key == sfKeyRAlt)
 		{
-			CopyStingToBuffer(buffer, "RAlt");
+			CopyStringToBuffer(buffer, "RAlt");
 		}
 		else if (_key == sfKeyLBracket)
 		{
-			CopyStingToBuffer(buffer, "LBracket");
+			CopyStringToBuffer(buffer, "LBracket");
 		}
 		else if (_key == sfKeyRBracket)
 		{
-			CopyStingToBuffer(buffer, "RBracket");
+			CopyStringToBuffer(buffer, "RBracket");
 		}
 		else if (_key == sfKeySemicolon)
 		{
-			CopyStingToBuffer(buffer, "Semicolon");
+			CopyStringToBuffer(buffer, "Semicolon");
 		}
 		else if (_key == sfKeyComma)
 		{
-			CopyStingToBuffer(buffer, "Comma");
+			CopyStringToBuffer(buffer, "Comma");
 		}
 		else if (_key == sfKeyPeriod)
 		{
-			CopyStingToBuffer(buffer, "Period");
+			CopyStringToBuffer(buffer, "Period");
 		}
 		else if (_key == sfKeyQuote)
 		{
-			CopyStingToBuffer(buffer, "Quote");
+			CopyStringToBuffer(buffer, "Quote");
 		}
 		else if (_key == sfKeySlash)
 		{
-			CopyStingToBuffer(buffer, "Slash");
+			CopyStringToBuffer(buffer, "Slash");
 		}
 		else if (_key == sfKeyBackslash)
 		{
-			CopyStingToBuffer(buffer, "Backslash");
+			CopyStringToBuffer(buffer, "Backslash");
 		}
 		else if (_key == sfKeyTilde)
 		{
-			CopyStingToBuffer(buffer, "Tilde");
+			CopyStringToBuffer(buffer, "Tilde");
 		}
 		else if (_key == sfKeyEqual)
 		{
-			CopyStingToBuffer(buffer, "Equal");
+			CopyStringToBuffer(buffer, "Equal");
 		}
 		else if (_key == sfKeyHyphen)
 		{
-			CopyStingToBuffer(buffer, "Hyphen");
+			CopyStringToBuffer(buffer, "Hyphen");
 		}
 		else if (_key == sfKeySpace)
 		{
-			CopyStingToBuffer(buffer, "Space");
+			CopyStringToBuffer(buffer, "Space");
 		}
 		else if (_key == sfKeyEnter)
 		{
-			CopyStingToBuffer(buffer, "Enter");
+			CopyStringToBuffer(buffer, "Enter");
 		}
 		else if (_key == sfKeyBackspace)
 		{
-			CopyStingToBuffer(buffer, "Backspace");
+			CopyStringToBuffer(buffer, "Backspace");
 		}
 		else if (_key == sfKeyTab)
 		{
-			CopyStingToBuffer(buffer, "Tab");
+			CopyStringToBuffer(buffer, "Tab");
 		}
 		else if (_key == sfKeyPageUp)
 		{
-			CopyStingToBuffer(buffer, "PageUp");
+			CopyStringToBuffer(buffer, "PageUp");
 		}
 		else if (_key == sfKeyPageDown)
 		{
-			CopyStingToBuffer(buffer, "PageDown");
+			CopyStringToBuffer(buffer, "PageDown");
 		}
 		else if (_key == sfKeyEnd)
 		{
-			CopyStingToBuffer(buffer, "End");
+			CopyStringToBuffer(buffer, "End");
 		}
 		else if (_key == sfKeyHome)
 		{
-			CopyStingToBuffer(buffer, "Home");
+			CopyStringToBuffer(buffer, "Home");
 		}
 		else if (_key == sfKeyInsert)
 		{
-			CopyStingToBuffer(buffer, "Insert");
+			CopyStringToBuffer(buffer, "Insert");
 		}
 		else if (_key == sfKeyDelete)
 		{
-			CopyStingToBuffer(buffer, "Delete");
+			CopyStringToBuffer(buffer, "Delete");
 		}
 		else if (_key == sfKeyAdd)
 		{
-			CopyStingToBuffer(buffer, "Add");
+			CopyStringToBuffer(buffer, "Add");
 		}
 		else if (_key == sfKeySubtract)
 		{
-			CopyStingToBuffer(buffer, "Subtract");
+			CopyStringToBuffer(buffer, "Subtract");
 		}
 		else if (_key == sfKeyMultiply)
 		{
-			CopyStingToBuffer(buffer, "Multiply");
+			CopyStringToBuffer(buffer, "Multiply");
 		}
 		else if (_key == sfKeyDivide)
 		{
-			CopyStingToBuffer(buffer, "Divide");
+			CopyStringToBuffer(buffer, "Divide");
 		}
 		else if (_key == sfKeyLeft)
 		{
-			CopyStingToBuffer(buffer, "Left");
+			CopyStringToBuffer(buffer, "Left");
 		}
 		else if (_key == sfKeyRight)
 		{
-			CopyStingToBuffer(buffer, "Right");
+			CopyStringToBuffer(buffer, "Right");
 		}
 		else if (_key == sfKeyUp)
 		{
-			CopyStingToBuffer(buffer, "Up");
+			CopyStringToBuffer(buffer, "Up");
 		}
 		else if (_key == sfKeyDown)
 		{
-			CopyStingToBuffer(buffer, "Down");
+			CopyStringToBuffer(buffer, "Down");
 		}
 		else if (_key > 74 && _key < 85)
 		{
-			CopyStingToBuffer(buffer, "Numpad");
+			CopyStringToBuffer(buffer, "Numpad");
 			buffer[6] = '0' + _key - 75;
 		}
 		else if (_key > 84 && _key < 94)
@@ -1075,23 +1078,23 @@ void UpdateTextKey(int _index, int _key)
 		}
 		else if (_key == sfMouseLeft + sfKeyCount)
 		{
-			CopyStingToBuffer(buffer, "MouseLeft");
+			CopyStringToBuffer(buffer, "MouseLeft");
 		}
 		else if (_key == sfMouseRight + sfKeyCount)
 		{
-			CopyStingToBuffer(buffer, "MouseRight");
+			CopyStringToBuffer(buffer, "MouseRight");
 		}
 		else if (_key == sfMouseMiddle + sfKeyCount)
 		{
-			CopyStingToBuffer(buffer, "MouseMiddle");
+			CopyStringToBuffer(buffer, "MouseMiddle");
 		}
 		else if (_key == sfMouseXButton1 + sfKeyCount)
 		{
-			CopyStingToBuffer(buffer, "MouseXButton1");
+			CopyStringToBuffer(buffer, "MouseXButton1");
 		}
 		else if (_key == sfMouseXButton2 + sfKeyCount)
 		{
-			CopyStingToBuffer(buffer, "MouseXButton2");
+			CopyStringToBuffer(buffer, "MouseXButton2");
 		}
 		else
 		{
