@@ -136,7 +136,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListAlly[i].sprite);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
 
-			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet, LIGHT) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossMissile(hitboxBullet))
+			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || HitEnemy(9.f, hitboxBullet, LIGHT) || HitBoss(9.f, hitboxBullet, LIGHT) || ColisionElevatorButon(hitboxBullet) || HitBossMissile(hitboxBullet) || HitGrenade(hitboxBullet))
 			{
 				DeleteBulletAlly(i);
 			}
@@ -178,6 +178,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 	UpdateMisteal(_dt);
 	UpdateBossMissile(_dt);
 	UpdateSecondary(_posAim, _dt);
+	UpdateGrenade(_dt);
 	UpdateExplosion(_dt);
 }
 
@@ -221,7 +222,7 @@ void UpdateMisteal(float _dt)
 			}
 			if (!mistealList[i].isAlreadyHit)
 			{
-				if (HitEnemy(9.f, hitboxMisteal, HEAVY) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossMissile(hitboxMisteal))
+				if (HitEnemy(9.f, hitboxMisteal, HEAVY) || HitBoss(36.f, hitboxMisteal, HEAVY) || HitBossMissile(hitboxMisteal) || HitGrenade(hitboxMisteal))
 				{
 					if (!mistealList[i].isAlreadyHit)
 					{
@@ -493,6 +494,25 @@ sfBool HitBossMissile(sfFloatRect _hitbox)
 	return sfFalse;
 }
 
+sfBool HitGrenade(sfFloatRect _hitbox)
+{
+	if (grenadeCount > 0)
+	{
+		sfFloatRect hitboxGrenade;
+		for (int i = grenadeCount - 1; i >= 0; i--)
+		{
+			hitboxGrenade = sfSprite_getGlobalBounds(grenadeList[i].sprite);
+			if (sfFloatRect_intersects(&_hitbox, &hitboxGrenade, NULL))
+			{
+				DeleteGrenade(i);
+				return sfTrue;
+			}
+		}
+		return sfFalse;
+	}
+	return sfFalse;
+}
+
 void AddDrone(sfVector2f _pos, sfBool _isRighted)
 {
 	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
@@ -605,6 +625,16 @@ void SortExplosionList(unsigned _index)
 	}
 }
 
+void SortGrenadeList(unsigned _index)
+{
+	grenadeCount--;
+	grenadeList[_index] = grenadeList[grenadeCount];
+	if (grenadeCount)
+	{
+		grenadeList = Realloc(grenadeList, grenadeCount * sizeof(Explosion));
+	}
+}
+
 void UpdateDrone(sfVector2f _mousePos, float _dt)
 {
 	for (unsigned i = 0; i < PLAYER_DRONE_MAX; i++)
@@ -626,9 +656,10 @@ void UpdateDrone(sfVector2f _mousePos, float _dt)
 			}
 			sfVector2f reaction = Colision(sfSprite_getGlobalBounds(droneList[i].sprite), AXIS_BOTH);
 			sfVector2f reactionBox = ColisionBox(sfSprite_getGlobalBounds(droneList[i].sprite), sfTrue, AXIS_BOTH);
+			sfFloatRect hitboxDrone = sfSprite_getGlobalBounds(droneList[i].sprite);
 			reaction.x += reactionBox.x;
 			reaction.y += reactionBox.y;
-			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY) || HitBoss(10.f, sfSprite_getGlobalBounds(droneList[i].sprite), HEAVY))
+			if (reaction.x != 0 || reaction.y != 0 || HitEnemy(10.f, hitboxDrone, HEAVY) || HitBoss(10.f, hitboxDrone, HEAVY) || HitGrenade(hitboxDrone))
 			{
 				SpawnExplosion(sfSprite_getPosition(droneList[i].sprite), sfTrue, 3.f);
 				sfMusic_stop(droneList[i].ambientSound);
@@ -699,9 +730,17 @@ void UpdateGrenade(float _dt)
 		grenadeList[i].lifetime -= _dt;
 		if (grenadeList[i].lifetime < 0.f)
 		{
-			SpawnExplosion(sfSprite_getPosition(grenadeList[i].sprite), sfFalse, 1.f);
+			DeleteGrenade(i);
 		}
+		sfSprite_move(grenadeList[i].sprite, (sfVector2f) { grenadeList[i].velocity.x* _dt, grenadeList[i].velocity.y* _dt });
 	}
+}
+
+void DeleteGrenade(unsigned _index)
+{
+	SpawnExplosion(sfSprite_getPosition(grenadeList[_index].sprite), sfFalse, 1.f);
+	DestroyVisualEntity(grenadeList[_index].sprite);
+	SortGrenadeList(_index);
 }
 
 void MoveDrone(unsigned _index, sfVector2f _mousePos, float _dt)
