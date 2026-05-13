@@ -226,7 +226,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 
 		BossShoot(_posPlayer, _dt);
 	}
-	else if (_posPlayer.x > ARENA1_ENTRY)
+	else if (boss.boss1->sprites[0] != NULL && _posPlayer.x > ARENA1_ENTRY)
 	{
 		boss.life = MAX_BOSS1_LIFE;
 	}

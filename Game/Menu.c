@@ -47,7 +47,6 @@ void LoadMenu(void)
 			menu.selectionMenu.textureRect[(line * 3) + column] = (sfIntRect){ column * 56, line * 18, 56, 18 };
 		}
 	}
-
 	for (int i = 0; i < WEAPON_COUNT; i++)
 	{
 		menu.selectionMenu.generalButton[i] = CreateSprite(GetAsset("Assets/Sprites/selection_menu_sprites.png"), (sfVector2f) { 0 }, 0.f, 60.f);
@@ -68,10 +67,12 @@ void LoadMenu(void)
 	sfMusic_play(menu.musics[GetIntFromSave(CURRENT_MUSIC)]);
 
 	//Texts
-	//menu.highlightTextColor = (sfColor){ 255, 165, 0 , 255 };
 	menu.textColor = (sfColor){ 255, 165, 0 , 255 };
 	menu.highlightTextColor = sfWhite;
-	sfFont* font = GetAsset("Assets/Fonts/Daydream.otf");
+	int textSizeLarge = 70;
+	int textSizeMedium = 50;
+	int textSizeSmall = 45;
+	sfFont* font = GetAsset("Assets/Fonts/GallaeciaForte.ttf");
 	if (GetFloatFromSave(LIGHT_LEVEL) < 0.25f)
 	{
 		SetFloatToSave(LIGHT_LEVEL, 1.f);
@@ -80,17 +81,20 @@ void LoadMenu(void)
 	{
 		SetSpriteOriginMiddle(menu.mainMenu.logo[i]);
 	}
-	sfVector2f positionTopButton[5] = { { 32, 23 }, { 332, 23 }, { 850, 23 },{ 1308, 23 }, { 1600, 23 } };
-	for (int i = 0; i < 5; i++)
+	sfVector2f positionTopButton[4] = { { 24, 8 }, { 336, 8 }, { 848, 8 },{ 1312, 8 }};
+	for (int i = 0; i < 4; i++)
 	{
-		menu.mainMenu.topButtons[i] = CreateText(font, positionTopButton[i], 50, 5.f);
+		menu.mainMenu.topButtons[i] = CreateText(font, positionTopButton[i], textSizeLarge, 5.f);
+		sfText_setColor(menu.mainMenu.topButtons[i], menu.textColor);
 	}
 	char* bufferKeyType[KEY_COUNT] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < KEY_COUNT; i++)
 	{
-		menu.mainMenu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, 30, 5.f);
-		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, 30, 5.f);
+		menu.mainMenu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, textSizeSmall, 5.f);
+		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, textSizeSmall, 5.f);
 		sfText_setString(menu.mainMenu.keyType[i], bufferKeyType[i]);
+		sfText_setColor(menu.mainMenu.keyType[i], menu.textColor);
+		sfText_setColor(menu.mainMenu.key[i], menu.textColor);
 	}
 	menu.state = CONTROLS;
 	for (int i = 0; i < KEY_COUNT; i++)
@@ -103,16 +107,30 @@ void LoadMenu(void)
 	menu.mainMenu.name[2] = "MEURISSE PEREZ B.";
 	menu.mainMenu.name[3] = "PAGLIAZZO P.";
 	menu.mainMenu.name[4] = "VOLLAIRE A.";
+
+	menu.selectionMenu.mapDesc[0] = "The new cog\non the block\n\nScore=\n\nWalk around the\nfactories and find \nyour way to the docks";
+	menu.selectionMenu.mapDesc[1] = "Henry in the sky\nwith ballons\n\nScore=\n\nNow on a flagship, you\nmust reach the top to\nensure you can leave\nwhen it docks";
+	menu.selectionMenu.mapDesc[2] = "Unused level\n";
+	menu.selectionMenu.weaponDesc[0] = "Railgun\n\nDamage=\n\nThe gun of the common man,\nshoots high velocity bullets\nthat do some pretty\nreliable damage.";
+	menu.selectionMenu.weaponDesc[1] = "Steam powered axe\n\nDamage=\n\nWith steam propulsion this axe can\ndo powerful hits that sometimes\ntake your arm too far";
+	menu.selectionMenu.weaponDesc[2] = "Mi-steel launcher\n\nDamage=\n\nShoots a half steel beam that\nsticks in walls, should it hit one";
+	menu.selectionMenu.secondaryDesc[0] = "Kamikaze drone\nWhile pretty costly in steam,\nthis drone can reach niches\nand blow them up for ye!";
+	menu.selectionMenu.secondaryDesc[1] = "Coldbreath\nHelp your ennemies \"cool\" down";
+
+	menu.selectionMenu.descriptionText = CreateText(font, (sfVector2f) {936,96}, textSizeMedium, 5.f);
+
 	for (int i = 0; i < MAX_INFO; i++)
 	{
-		menu.mainMenu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 72 * (float)i }, 50, 5.f);
+		menu.mainMenu.infoDisplay[i] = CreateText(font, (sfVector2f) { 50, 342 + 96 * (float)i }, textSizeLarge, 5.f);
+		sfText_setColor(menu.mainMenu.infoDisplay[i], menu.textColor);
 	}
 	sfVector2f temp[2] = { {830, 840}, {1410, 840} };
 	for (int i = 0; i < 2; i++)
 	{
-		menu.selectionMenu.bottomText[i] = CreateText(font, temp[i], 60, 5.f);
+		menu.selectionMenu.bottomText[i] = CreateText(font, temp[i], textSizeLarge, 5.f);
 		sfText_setLetterSpacing(menu.selectionMenu.bottomText[i], 11.5f);
 		sfText_setScale(menu.selectionMenu.bottomText[i], (sfVector2f) { 0 });
+		sfText_setColor(menu.selectionMenu.bottomText[i], menu.textColor);
 	}
 	sfText_setString(menu.selectionMenu.bottomText[0], "next");
 	sfText_setString(menu.selectionMenu.bottomText[1], "back");
@@ -200,6 +218,8 @@ void KeyPressedMenu(sfEvent* _event)
 
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 {
+	sfVector2f invisible = { 0 };
+	sfVector2f visibleText = { 1,1 };
 	if (menu.state == CONTROLS)
 	{
 		for (int i = 0; i < KEY_COUNT; i++)
@@ -223,7 +243,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			{
 				NextMusic();
 			}
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				if (CompareColor(sfText_getColor(menu.mainMenu.topButtons[i]), menu.highlightTextColor))
 				{
@@ -246,7 +266,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 							SetMenuState(CREDITS);
 							return;
 						default:
-							return;
+							break;
 						}
 					}
 				}
@@ -376,6 +396,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
 					SetCurrentMap(i);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.mapDesc[i]);
 					for (int j = 0; j < MAP_COUNT; j++)
 					{
 						if (j != i)
@@ -397,6 +419,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
 					SetWeapon(i);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.weaponDesc[i]);
 					for (int j = 0; j < WEAPON_COUNT; j++)
 					{
 						if (j != i)
@@ -419,6 +443,8 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
 					SetSecondaryType(i);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.secondaryDesc[i]);
 					for (int j = 0; j < SECONDARY_COUNT; j++)
 					{
 						if (j != i)
@@ -635,13 +661,14 @@ void SetMenuState(MenuState _state)
 				sfSprite_setScale(menu.selectionMenu.generalButton[i], invisible);
 				sfSprite_setScale(menu.selectionMenu.generalIcon[i], invisible);
 			}
+			sfText_setScale(menu.selectionMenu.descriptionText, invisible);
 			//Loading the main menu
 			sfSprite_setTexture(menu.overlay, GetAsset("Assets/Sprites/starting_menu_overlay.png"), sfFalse);
 			for (int i = 0; i < 2; i++)
 			{
 				sfSprite_setScale(menu.mainMenu.logo[i], visibleSprite);
 			}
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				sfText_setScale(menu.mainMenu.topButtons[i], visibleText);
 			}
@@ -659,10 +686,11 @@ void SetMenuState(MenuState _state)
 		sfText_setString(menu.mainMenu.topButtons[1], "Setting");
 		sfText_setString(menu.mainMenu.topButtons[2], "Credits");
 		sfText_setString(menu.mainMenu.topButtons[3], "Quit");
-		sfText_setString(menu.mainMenu.topButtons[4], "");
 		sfSprite_setScale(menu.mainMenu.infoBox, visibleSprite);
 
 		menu.state = _state;
+		sfVector2f tempPos;
+		sfVector2f tempPos2;
 		switch (menu.state)
 		{
 		case PLAY:
@@ -670,15 +698,24 @@ void SetMenuState(MenuState _state)
 			for (int i = 0; i < 2; i++)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);
+
+				tempPos = (sfVector2f){ 40, 352 };
+				tempPos.y += (432 / (2) * (i));
+				sfText_setPosition(menu.mainMenu.infoDisplay[i], tempPos);
 			}
 			sfText_setString(menu.mainMenu.infoDisplay[0], "Load Save");
 			sfText_setString(menu.mainMenu.infoDisplay[1], "New Save");
 			break;
 		case SETTINGS:
 			sfText_setString(menu.mainMenu.topButtons[1], "Back");
+			
 			for (int i = 0; i < 4; i++)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);
+
+				tempPos = (sfVector2f){ 40, 352 };
+				tempPos.y += (432 / (4) * (i));
+				sfText_setPosition(menu.mainMenu.infoDisplay[i], tempPos);
 			}
 			sfText_setString(menu.mainMenu.infoDisplay[0], "Light Level");
 			sfText_setString(menu.mainMenu.infoDisplay[1], "Sound Volume");
@@ -695,10 +732,14 @@ void SetMenuState(MenuState _state)
 			break;
 		case CREDITS:
 			sfText_setString(menu.mainMenu.topButtons[2], "Back");
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < CREDIT_COUNT; i++)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);
 				sfText_setString(menu.mainMenu.infoDisplay[i], menu.mainMenu.name[i]);
+
+				tempPos = (sfVector2f){ 40, 352 };
+				tempPos.y += (432 / (CREDIT_COUNT) * (i));
+				sfText_setPosition(menu.mainMenu.infoDisplay[i], tempPos);
 			}
 			break;
 		case CONTROLS:
@@ -707,6 +748,13 @@ void SetMenuState(MenuState _state)
 			{
 				sfText_setScale(menu.mainMenu.key[i], visibleText);
 				sfText_setScale(menu.mainMenu.keyType[i], visibleText);
+
+				tempPos = (sfVector2f){ 40, 352 };
+				tempPos2 = (sfVector2f){ 512, 352 };
+				tempPos.y += (312 / (KEY_COUNT) * (i));
+				tempPos2.y += tempPos.y;
+				sfText_setPosition(menu.mainMenu.key[i], tempPos);
+				sfText_setPosition(menu.mainMenu.keyType[i], tempPos2);
 			}
 			break;
 		case STARTING_MENU:
@@ -734,7 +782,7 @@ void SetMenuState(MenuState _state)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], invisible);
 			}
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				sfText_setScale(menu.mainMenu.topButtons[i], invisible);
 			}
@@ -767,16 +815,19 @@ void SetMenuState(MenuState _state)
 		case MAP:
 			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[0], (sfIntRect) { 0, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[0], (sfIntRect) { 0, 16, 16, 16 });
+			sfText_setScale(menu.selectionMenu.descriptionText, invisible);
 			break;
 		case WEAPON:
 			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[1], (sfIntRect) { 0, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[1], (sfIntRect) { 16, 16, 16, 16 });
+			sfText_setScale(menu.selectionMenu.descriptionText, invisible);
 			break;
 		case BONUS:
 			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[2], (sfIntRect) { 0, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[2], (sfIntRect) { 32, 16, 16, 16 });
 			sfText_setString(menu.selectionMenu.bottomText[0], "next");
 			sfText_setLetterSpacing(menu.selectionMenu.bottomText[0], 11.5f);
+			sfText_setScale(menu.selectionMenu.descriptionText, invisible);
 			break;
 		}
 		menu.state = _state;
@@ -791,6 +842,8 @@ void SetMenuState(MenuState _state)
 				if (GetCurrentMap() == i)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.mapDesc[i]);
 				}
 				else
 				{
@@ -822,6 +875,8 @@ void SetMenuState(MenuState _state)
 				if (GetWeapon().weaponType == i)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.weaponDesc[i]);
 				}
 				else
 				{
@@ -848,13 +903,14 @@ void SetMenuState(MenuState _state)
 			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[2], (sfIntRect) { 36, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[2], (sfIntRect) { 32, 0, 16, 16 });
 			sfText_setString(menu.selectionMenu.bottomText[0], "Play");
-			sfText_setLetterSpacing(menu.selectionMenu.bottomText[0], 13.5f);
 			for (int i = 0; i < SECONDARY_COUNT; i++)
 			{
 				sfSprite_setScale(menu.selectionMenu.generalButton[i], visibleSprite);
 				if (GetSecondaryType() == i)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
+					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
+					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.secondaryDesc[i]);
 				}
 				else
 				{
