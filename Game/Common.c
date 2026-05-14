@@ -127,7 +127,7 @@ void FreeGrid(void** grid)
 
 sfBool StringCompare(char* _string1, char* _string2)
 {
-	if(_string1 && _string2)
+	if (_string1 && _string2)
 	{
 		int i = 0;
 		while (_string1[i] == _string2[i])
@@ -155,7 +155,7 @@ char* StringCopy(char* _string)
 	{
 		stringCopy[j] = _string[j];
 	}
-	return stringCopy;	
+	return stringCopy;
 }
 
 
@@ -188,20 +188,20 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt)
 	return 0;*/
 
 
-		// 1. On ramène l'angle SFML (0/360) vers le format mathématique (-180/180)
-		if (_current > 180.0f) _current -= 360.0f;
+	// 1. On ramène l'angle SFML (0/360) vers le format mathématique (-180/180)
+	if (_current > 180.0f) _current -= 360.0f;
 
-		float diff = _target - _current;
+	float diff = _target - _current;
 
-		// 2. On prend toujours le chemin le plus court
-		while (diff < -180.0f) diff += 360.0f;
-		while (diff > 180.0f) diff -= 360.0f;
+	// 2. On prend toujours le chemin le plus court
+	while (diff < -180.0f) diff += 360.0f;
+	while (diff > 180.0f) diff -= 360.0f;
 
-		float step = _speed * _dt;
+	float step = _speed * _dt;
 
-		if (fabsf(diff) <= step) return _target;
+	if (fabsf(diff) <= step) return _target;
 
-		return _current + (diff > 0 ? step : -step);
+	return _current + (diff > 0 ? step : -step);
 }
 
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
@@ -213,17 +213,20 @@ sfBool VerificationEntityIsNotInMap(sfFloatRect _rect)
 
 void ScaleImage(sfImage** _image, int _scale)
 {
-	sfImage* image = *_image;
-	sfVector2u imageSize = sfImage_getSize(image);
-	sfVector2u newSize = { imageSize.x * _scale, imageSize.y * _scale };
-	*_image = sfImage_create(newSize.x, newSize.y);
-
-	for (unsigned int y = 0; y < newSize.y; y++)
+	if (_image && *_image)
 	{
-		for (unsigned int x = 0; x < newSize.x; x++)
+		sfImage* image = *_image;
+		sfVector2u imageSize = sfImage_getSize(image);
+		sfVector2u newSize = { imageSize.x * _scale, imageSize.y * _scale };
+		*_image = sfImage_create(newSize.x, newSize.y);
+
+		for (unsigned int y = 0; y < newSize.y; y++)
 		{
-			sfColor color = sfImage_getPixel(image, (int)(x / _scale), (int)(y / _scale));
-			sfImage_setPixel(*_image, x, y, color);
+			for (unsigned int x = 0; x < newSize.x; x++)
+			{
+				sfColor color = sfImage_getPixel(image, (int)(x / _scale), (int)(y / _scale));
+				sfImage_setPixel(*_image, x, y, color);
+			}
 		}
 	}
 }
@@ -239,4 +242,68 @@ sfBool IsPointInFloatRect(sfVector2f _pos, sfFloatRect* _rect)
 	}
 
 	return sfFalse;
+}
+
+void FusionString(char* _buffer, int _count, char** _strings)
+{
+	int size = 0;
+	for (int i = 0; i < _count; i++)
+	{
+		int j = 0;
+		while (_strings[i][j])
+		{
+			_buffer[size] = _strings[i][j];
+			j++;
+			size++;
+		}
+	}
+}
+
+void TransformIntToString(char* _buffer, int _value)
+{
+	if (_value)
+	{
+		int power = 1000000000;
+		int index = 0;
+		for (int i = 0; i < 10; i++)
+		{
+			if (_value / power)
+			{
+				_buffer[index] = _value / power % 10 + '0';
+				index++;
+			}
+			power /= 10;
+		}
+	}
+	else
+	{
+		_buffer[0] = '0';
+	}
+}
+
+int GetSizeString(char* _string)
+{
+	int size = 0;
+
+	while (_string[size])
+	{
+		size++;
+	}
+	return size;
+}
+
+sfBool UpdateTextHighlightTextColor(sfText* _text, sfColor _base, sfColor _highlight, sfVector2f _posMouse)
+{
+	sfFloatRect rect = sfText_getGlobalBounds(_text);
+	if (rect.left < _posMouse.x && rect.left + rect.width > _posMouse.x && rect.top < _posMouse.y && rect.top + rect.height > _posMouse.y)
+	{
+		sfText_setColor(_text, _highlight);
+		return 1;
+	}
+	else
+	{
+		sfText_setColor(_text, _base);
+		return 0;
+	}
+	return 0;
 }

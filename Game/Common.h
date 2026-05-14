@@ -47,6 +47,8 @@
 #define FREEZE_TIMER 4.f
 #define FREEZE_DMG -1.f
 
+#define COLOR_ORANGE (sfColor){ 255, 165, 0 , 255 }
+
 #define G 5.81f
 //#define G 9.81f
 
@@ -161,7 +163,10 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
 sfBool IsPointInFloatRect(sfVector2f _pos, sfFloatRect* _rect);
-
+void FusionString(char* _buffer, int _count, char** _strings);
+void TransformIntToString(char* _buffer, int _value);
+int GetSizeString(char* _string);
+sfBool UpdateTextHighlightTextColor(sfText* _text, sfColor _base, sfColor _highlight, sfVector2f _posMouse);
 #include "EntityManager.h"
 #include "Map.h"
 

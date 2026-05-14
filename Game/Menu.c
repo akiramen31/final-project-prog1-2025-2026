@@ -1,6 +1,7 @@
 #include "Menu.h"
 #include "Map.h"
 #include "Weapons.h"
+#include "LoadGameSave.h"
 
 void KeyPressedMenu(sfEvent* _event);
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent);
@@ -67,7 +68,7 @@ void LoadMenu(void)
 	sfMusic_play(menu.musics[GetIntFromSave(CURRENT_MUSIC)]);
 
 	//Texts
-	menu.textColor = (sfColor){ 255, 165, 0 , 255 };
+	menu.textColor = COLOR_ORANGE;
 	menu.highlightTextColor = sfWhite;
 	int textSizeLarge = 70;
 	int textSizeMedium = 50;
@@ -81,7 +82,7 @@ void LoadMenu(void)
 	{
 		SetSpriteOriginMiddle(menu.mainMenu.logo[i]);
 	}
-	sfVector2f positionTopButton[4] = { { 24, 8 }, { 336, 8 }, { 848, 8 },{ 1312, 8 }};
+	sfVector2f positionTopButton[4] = { { 24, 8 }, { 336, 8 }, { 848, 8 },{ 1312, 8 } };
 	for (int i = 0; i < 4; i++)
 	{
 		menu.mainMenu.topButtons[i] = CreateText(font, positionTopButton[i], textSizeLarge, 5.f);
@@ -117,7 +118,7 @@ void LoadMenu(void)
 	menu.selectionMenu.secondaryDesc[0] = "Kamikaze drone\nWhile pretty costly in steam,\nthis drone can reach niches\nand blow them up for ye!";
 	menu.selectionMenu.secondaryDesc[1] = "Coldbreath\nHelp your ennemies \"cool\" down";
 
-	menu.selectionMenu.descriptionText = CreateText(font, (sfVector2f) {936,96}, textSizeMedium, 5.f);
+	menu.selectionMenu.descriptionText = CreateText(font, (sfVector2f) { 936, 96 }, textSizeMedium, 5.f);
 
 	for (int i = 0; i < MAX_INFO; i++)
 	{
@@ -159,6 +160,8 @@ void LoadMenu(void)
 
 	SetViewZoom(1.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
+
+	LoadLoadGameSave(font);
 	SetMenuState(STARTING_MENU);
 }
 
@@ -202,21 +205,18 @@ void KeyPressedMenu(sfEvent* _event)
 
 		}
 		return;
-	case sfKeyEnter:
-		SetGameState(GAME_OVER);
-		break;
 	default:
 		break;
 	}
 	for (int i = 0; i < KEY_COUNT; i++)
 	{
-
 		if (CompareColor(sfText_getColor(menu.mainMenu.key[i]), menu.highlightTextColor))
 		{
 			UpdateTextKey(i, _event->key.code);
 			return;
 		}
 	}
+	KeyPressedLoadGameSave(_event);
 }
 
 void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
@@ -341,26 +341,15 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		switch (menu.state)
 		{
 		case PLAY:
-			for (int i = 0; i < 3; i++)
+		{
+			int i = MouseButtonPressedLoadGameSave(_mouseButtonEvent);
+			if (i)
 			{
-				if (CompareColor(sfText_getColor(menu.mainMenu.infoDisplay[i]), menu.highlightTextColor))
-				{
-					switch (i)
-					{
-					case 0:
-						SetMenuState(MAP);
-						break;
-					case 1:
-						SetIntToSave(UNLOCKED_LEVEL, 1);
-						SetIntToSave(UNLOCKED_WEAPON, 1);
-						SetMenuState(MAP);
-						break;
-					default:
-						break;
-					}
-					return;
-				}
+				SetIntToSave(UNLOCKED_LEVEL, i);
+				SetIntToSave(UNLOCKED_WEAPON, i);
+				SetMenuState(MAP);
 			}
+		}
 			break;
 		case SETTINGS:
 			for (int i = 0; i < 4; i++)
@@ -388,8 +377,6 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					return;
 				}
 			}
-			break;
-		case CREDITS:
 			break;
 		case MAP:
 			for (int i = 0; i < 3; i++)
@@ -438,7 +425,6 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 			}
 			break;
 		case BONUS:
-		{
 			for (int i = 0; i < SECONDARY_COUNT; i++)
 			{
 				temp = sfSprite_getTextureRect(menu.selectionMenu.generalButton[i]);
@@ -460,8 +446,9 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					}
 				}
 			}
-		}
-		break;
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -470,49 +457,24 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 {
 	float mouseX = (float)_mouseMovedEvent->x;
 	float mouseY = (float)_mouseMovedEvent->y;
+	sfVector2f posMouse = { _mouseMovedEvent->x , _mouseMovedEvent->y };
 	sfFloatRect hitbox;
-	sfColor highlightColor = menu.highlightTextColor;
-	sfColor baseColor = menu.textColor;
 	if (menu.state < 5)
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			hitbox = sfText_getGlobalBounds(menu.mainMenu.topButtons[i]);
-			if (sfFloatRect_contains(&hitbox, mouseX, mouseY))
-			{
-				sfText_setColor(menu.mainMenu.topButtons[i], highlightColor);
-			}
-			else
-			{
-				sfText_setColor(menu.mainMenu.topButtons[i], baseColor);
-			}
+			UpdateTextHighlightTextColor(menu.mainMenu.topButtons[i], menu.textColor, menu.highlightTextColor, posMouse);
 		}
 		for (int i = 0; i < NB_INFO_BUTTONS; i++)
 		{
-			hitbox = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
-			if (sfFloatRect_contains(&hitbox, mouseX, mouseY))
-			{
-				sfText_setColor(menu.mainMenu.infoDisplay[i], highlightColor);
-			}
-			else
-			{
-				sfText_setColor(menu.mainMenu.infoDisplay[i], baseColor);
-			}
+			UpdateTextHighlightTextColor(menu.mainMenu.infoDisplay[i], menu.textColor, menu.highlightTextColor, posMouse);
 		}
 	}
 	else
 	{
 		for (int i = 0; i < 2; i++)
 		{
-			hitbox = sfText_getGlobalBounds(menu.selectionMenu.bottomText[i]);
-			if (sfFloatRect_contains(&hitbox, mouseX, mouseY))
-			{
-				sfText_setColor(menu.selectionMenu.bottomText[i], highlightColor);
-			}
-			else
-			{
-				sfText_setColor(menu.selectionMenu.bottomText[i], baseColor);
-			}
+			UpdateTextHighlightTextColor(menu.selectionMenu.bottomText[i], menu.textColor, menu.highlightTextColor, posMouse);
 		}
 		for (int i = 0; i < 3; i++)
 		{
@@ -591,16 +553,16 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 	switch (menu.state)
 	{
 	case PLAY:
-
+		MouseMovedLoadGameSave(_mouseMovedEvent);
 		break;
 	case SETTINGS:
 		if (GetFloatFromSave(LIGHT_LEVEL) <= 0.25f)
 		{
-			sfText_setColor(menu.mainMenu.infoDisplay[0], highlightColor);
+			sfText_setColor(menu.mainMenu.infoDisplay[0], sfRed);
 		}
 		if (GetFloatFromSave(SOUND_VOLUME) <= 0.0f)
 		{
-			sfText_setColor(menu.mainMenu.infoDisplay[1], highlightColor);
+			sfText_setColor(menu.mainMenu.infoDisplay[1], sfRed);
 		}
 		break;
 	case CONTROLS:
@@ -608,17 +570,14 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 		sfFloatRect hitbox2 = { 0 };
 		for (int i = 0; i < KEY_COUNT; i++)
 		{
-			hitbox = sfText_getGlobalBounds(menu.mainMenu.key[i]);
-			hitbox2 = sfText_getGlobalBounds(menu.mainMenu.keyType[i]);
-			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y) || sfFloatRect_contains(&hitbox2, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
+			int temp = UpdateTextHighlightTextColor(menu.mainMenu.key[i], menu.textColor, menu.highlightTextColor, posMouse) - UpdateTextHighlightTextColor(menu.mainMenu.keyType[i], menu.textColor, menu.highlightTextColor, posMouse);
+			if (temp == -1)
 			{
-				sfText_setColor(menu.mainMenu.key[i], highlightColor);
-				sfText_setColor(menu.mainMenu.keyType[i], highlightColor);
+				sfText_setColor(menu.mainMenu.key[i], menu.highlightTextColor);
 			}
-			else
+			else if (temp == 1)
 			{
-				sfText_setColor(menu.mainMenu.key[i], baseColor);
-				sfText_setColor(menu.mainMenu.keyType[i], baseColor);
+				sfText_setColor(menu.mainMenu.keyType[i], menu.highlightTextColor);
 			}
 		}
 		break;
@@ -626,15 +585,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 	case CREDITS:
 		for (int i = 0; i < 5; i++)
 		{
-			hitbox = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
-			if (sfFloatRect_contains(&hitbox, (float)_mouseMovedEvent->x, (float)_mouseMovedEvent->y))
-			{
-				sfText_setColor(menu.mainMenu.infoDisplay[i], highlightColor);
-			}
-			else
-			{
-				sfText_setColor(menu.mainMenu.infoDisplay[i], baseColor);
-			}
+			UpdateTextHighlightTextColor(menu.mainMenu.infoDisplay[i], menu.textColor, menu.highlightTextColor, posMouse);
 		}
 		break;
 	}
@@ -645,6 +596,7 @@ void SetMenuState(MenuState _state)
 	sfVector2f invisible = { 0 };
 	sfVector2f visibleText = { 1,1 };
 	sfVector2f visibleSprite = { 8,8 };
+	SetVisibleLoadGameSave(sfFalse);
 	if (_state < 5)
 	{
 		if (menu.state > 4)
@@ -697,21 +649,12 @@ void SetMenuState(MenuState _state)
 		switch (menu.state)
 		{
 		case PLAY:
+			SetVisibleLoadGameSave(sfTrue);
 			sfText_setString(menu.mainMenu.topButtons[0], "Back");
-			for (int i = 0; i < 2; i++)
-			{
-				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);
-
-				tempPos = (sfVector2f){ 40, 352 };
-				tempPos.y += (432 / (2) * (i));
-				sfText_setPosition(menu.mainMenu.infoDisplay[i], tempPos);
-			}
-			sfText_setString(menu.mainMenu.infoDisplay[0], "Load Save");
-			sfText_setString(menu.mainMenu.infoDisplay[1], "New Save");
 			break;
 		case SETTINGS:
 			sfText_setString(menu.mainMenu.topButtons[1], "Back");
-			
+
 			for (int i = 0; i < 4; i++)
 			{
 				sfText_setScale(menu.mainMenu.infoDisplay[i], visibleText);

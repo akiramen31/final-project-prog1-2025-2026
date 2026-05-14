@@ -78,6 +78,9 @@
     <ClInclude Include="GameOver.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="LoadGameSave.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -147,6 +150,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="GameOver.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameSave.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Sound.c">
