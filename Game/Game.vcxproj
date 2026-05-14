@@ -33,6 +33,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="StartGame.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="HUD.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="Enemy.c" />
     <ClCompile Include="EntityManager.c" />
     <ClCompile Include="Game.c" />
+    <ClCompile Include="Sound.c" />
     <ClCompile Include="StartGame.c" />
     <ClCompile Include="GUI.c" />
     <ClCompile Include="HUD.c" />

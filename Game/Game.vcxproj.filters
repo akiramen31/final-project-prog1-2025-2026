@@ -81,6 +81,9 @@
     <ClInclude Include="LoadGameSave.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Map.c">
@@ -150,6 +153,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="LoadGameSave.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
