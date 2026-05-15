@@ -167,7 +167,7 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 		{
 			if (_destroy)
 			{
-				PlaySound(CATEGORY_GENERAL, GENERAL_BOX);
+				PlaySound(GENERAL_BOX);
 				entity.boxData.count--;
 				DestroyVisualEntity(entity.boxData.entity[i].sprite);
 				if (entity.boxData.count)

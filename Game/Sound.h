@@ -5,6 +5,7 @@
 
 #define MAX_SOUNDS 30
 
+/*
 typedef enum SoundCategory
 {
 	CATEGORY_PLAYER,
@@ -81,17 +82,50 @@ typedef struct BuffersList
 	sfSoundBuffer* secondary[SECONDARY_SOUND_COUNT];
 	sfSoundBuffer* general[GENERAL_SOUND_COUNT];
 }BuffersList;
+*/
+
+typedef enum SoundIndex
+{
+	PLAYER_DASH,
+	PLAYER_JUMP,
+	PLAYER_WALK,
+	PLAYER_LAND,
+	PLAYER_MELEE,
+	PLAYER_HURT, 
+	ENNEMY_HURT_LIGHT,
+	ENNEMY_HURT_MEDIUM,
+	ENNEMY_HURT_HEAVY,
+	ENNEMY_SHOOT,
+	BOSS_DAMAGE,
+	BOSS_MOVE,
+	BOSS_SHOOT_MISSILE,
+	BOSS_MISSILE_EXPLODE,
+	WEAPON_RAYGUN_SHOOT,
+	WEAPON_RAYGUN_HIT,
+	WEAPON_MISTEEL_NO_AMMO,
+	WEAPON_MISTEEL_RELOAD,
+	WEAPON_MISTEEL_SHOOT,
+	WEAPON_AXE_MISS,
+	WEAPON_AXE_SMALL,
+	WEAPON_AXE_MEDIUM,
+	WEAPON_AXE_LONG,
+	DRONE_PASSIVE,
+	COLDBREATH_SHOOT,
+	GENERAL_EXPLOSION,
+	GENERAL_BOX,
+	SOUND_INDEX_COUNT,
+}SoundIndex;
 
 typedef struct Sounds
 {
 	sfSound* sound[MAX_SOUNDS];
-	sfSoundBuffer* buffer[SOUND_CATEGORY_COUNT][WEAPON_SOUND_COUNT];
+	sfSoundBuffer* buffer[SOUND_INDEX_COUNT];
 	int currentPlayingCount;
 }Sounds;
 
 void LoadSounds(void);
 void StopSound(sfSound* _sound);
-sfSound* PlaySound(SoundCategory _category, int _index);
+sfSound* PlaySound(SoundIndex _index);
 void CleanUpFinishedSounds(void);
 
 #endif // !SOUND_H

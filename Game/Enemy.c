@@ -361,6 +361,14 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
+			if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR )
+			{
+				PlaySound(ENNEMY_HURT_MEDIUM);
+			}
+			else if (enemy.dataByType[enemy.entity[i].type].armure == HEAVY_ARMOR)
+			{
+				PlaySound(ENNEMY_HURT_HEAVY);
+			}
 			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
 			return HitEnemyI(i, touch, _degat, _type);
 		}

@@ -68,16 +68,16 @@ void LoadGame(void)
 	switch (GetCurrentMap())
 	{
 	case 0:
-		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_1_Cog.wav", 0.1f, sfTrue), sfTrue);
+		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_1_Cog.wav", 0.05f, sfTrue), sfTrue);
 		break;
 	case 1:
-		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_2_Cog.wav", 0.1f, sfTrue), sfTrue);
+		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_2_Cog.wav", 0.05f, sfTrue), sfTrue);
 		break;
 	case 2:
-		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.1f, sfTrue);
+		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.05f, sfTrue);
 		break;
 	case 3:
-		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 0.1f, sfTrue);
+		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 0.05f, sfTrue);
 		break;
 	case 4:
 		CreateMusic("Assets/Musics/1917_Over_There.ogg", 0.1f, sfTrue);
@@ -202,6 +202,7 @@ void UpdateGame(float _dt)
 		{
 			game.timerRoomPause = 0;
 		}
+		CleanUpFinishedSounds();
 
 		if (game.timerStartLevel < game.timerDurationStartLevel)
 		{
@@ -242,10 +243,6 @@ void UpdateGame(float _dt)
 			sfCircleShape_setPosition(game.cameraCenter, pos);
 		}
 		UpdateParallax(_dt);
-	}
-	else
-	{
-		//UpdateGUI(_dt);
 	}
 }
 

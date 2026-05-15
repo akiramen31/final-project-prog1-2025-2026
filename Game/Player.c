@@ -302,7 +302,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 			{
 				if (IfControlKeyPressed(KEY_JUMP) && !_intro)
 				{
-					PlaySound(CATEGORY_PLAYER, PLAYER_JUMP);
+					PlaySound(PLAYER_JUMP);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
 					timerFaling += PLAYER_JUMP_FORGIVE;
@@ -326,6 +326,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 
 	if (timerDash >= PLAYER_DASH_COOLDOWN && player.ener.energy > player.ener.dashConsuption && IfControlKeyPressed(KEY_DASH) && !_intro)
 	{
+		PlaySound(PLAYER_DASH);
 		timerDash = 0;
 
 		player.velocity.y /= 1.2f;
@@ -468,7 +469,7 @@ void UpdateAnimation(float _dt)
 			{
 				if (!player.running.timeActualy)
 				{
-					player.soundWalk = PlaySound(CATEGORY_PLAYER, PLAYER_WALK);
+					player.soundWalk = PlaySound(PLAYER_WALK);
 				}
 				else
 				{
@@ -534,7 +535,7 @@ void DamagePlayer(int _damage)
 		{
 			if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
 			{
-				PlaySound(CATEGORY_PLAYER, PLAYER_HURT);
+				PlaySound(PLAYER_HURT);
 				player.life -= _damage;
 				timerlastDamageReceive = 0;
 			}
@@ -785,26 +786,50 @@ void UpdateSteamAxe(float _dt)
 
 			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
-				HitEnemy(1.f, axeHitbox, LIGHT);
+				if (HitEnemy(1.f, axeHitbox, LIGHT))
+				{
+					PlaySound(WEAPON_AXE_SMALL);
+				}
 				if (HitBoss(5.f, axeHitbox, LIGHT))
 				{
+					PlaySound(WEAPON_AXE_MEDIUM);
 					CanHitBoss(sfFalse);
+				}
+				else
+				{
+					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 			else if (player.weapon.steamAxe.attackType == MEDIUM)
 			{
-				HitEnemy(2.f, axeHitbox, MEDIUM);
-				if (HitBoss(8.f, axeHitbox, MEDIUM))
+				if(HitEnemy(2.f, axeHitbox, MEDIUM))
 				{
+					PlaySound(WEAPON_AXE_MEDIUM);
+				}
+				else if (HitBoss(8.f, axeHitbox, MEDIUM))
+				{
+					PlaySound(WEAPON_AXE_MEDIUM);
 					CanHitBoss(sfFalse);
+				}
+				else
+				{
+					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 			else if (player.weapon.steamAxe.attackType == HEAVY)
 			{
-				HitEnemy(3.f, axeHitbox, HEAVY);
-				if (HitBoss(14.f, axeHitbox, HEAVY))
+				if (HitEnemy(3.f, axeHitbox, HEAVY))
 				{
+					PlaySound(WEAPON_AXE_LONG);
+				}
+				else if (HitBoss(14.f, axeHitbox, HEAVY))
+				{
+					PlaySound(WEAPON_AXE_LONG);
 					CanHitBoss(sfFalse);
+				}
+				else
+				{
+					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 		}

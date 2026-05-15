@@ -238,6 +238,7 @@ void UpdateMisteal(float _dt)
 			reactionWall = Colision(hitboxMisteal, AXIS_BOTH);
 			if (mistealList[i].timer > MISTEAL_TIMER_GENERAL)
 			{
+				PlaySound(WEAPON_MISTEEL_RELOAD);
 				DeleteMisteal(i);
 				continue;
 			}
@@ -448,6 +449,7 @@ void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoo
 {
 	if (mistealCount >= MISTEAL_ALLY_MAX)
 	{
+		PlaySound(WEAPON_MISTEEL_NO_AMMO);
 		return;
 	}
 
@@ -634,6 +636,7 @@ void SpawnUnhiddingBomb(sfVector2f _spawnZone)
 
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
 {
+	PlaySound(GENERAL_EXPLOSION);
 	Explosion* temp = Realloc(explosionList, (size_t)(explosionCount + 1) * sizeof(Explosion));
 	if (!temp)
 	{
@@ -657,6 +660,7 @@ void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
 
 void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn)
 {
+	PlaySound(GENERAL_EXPLOSION);
 	if (unhiddingExplosion.isOn)
 	{
 		return;
