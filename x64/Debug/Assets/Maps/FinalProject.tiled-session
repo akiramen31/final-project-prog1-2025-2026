@@ -80,11 +80,11 @@
                 8,
                 6
             ],
-            "scale": 0.75,
+            "scale": 0.25,
             "selectedLayer": 8,
             "viewCenter": {
-                "x": 5556.666666666666,
-                "y": 556
+                "x": 2682,
+                "y": 1268
             }
         },
         "Level3.tmx": {
