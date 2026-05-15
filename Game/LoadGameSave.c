@@ -142,11 +142,16 @@ int MouseButtonPressedLoadGameSave(sfMouseButtonEvent* _mouseButtonEvent)
 		if (gameSave->actualy == -1)
 		{
 			AddGameSave();
-			return 3;
+			gameSave->dataActualy.levelUnlock = 7;
+			gameSave->dataActualy.weaponUnlock = 7;
+			gameSave->dataActualy.secondaryUnlock = 7;
+			SaveGameData();
+			ReloadLoadGameSave();
+			return 1;
 		}
 		else
 		{
-			return gameSave->dataActualy.levelUnlock;
+			return 1;
 		}
 	}
 	else if (CompareColor(sfWhite, sfText_getColor(data.back)))
@@ -167,7 +172,7 @@ int MouseButtonPressedLoadGameSave(sfMouseButtonEvent* _mouseButtonEvent)
 		{
 			if (CompareColor(sfWhite, sfText_getColor(data.save[i])))
 			{
-				LoadGameData(i + NB_SAVE * 0);
+				LoadGameData(i + NB_SAVE * data.pageI);
 				ReloadLoadGameSave();
 			}
 		}
