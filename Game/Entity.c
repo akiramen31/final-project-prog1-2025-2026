@@ -10,14 +10,25 @@ void LoadEntity(void)
 	entity = (Entity){ 0 };
 	entity.boxData.texture = GetAsset("Assets/Sprites/Box.png");
 	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
+
 	entity.conveyorData.texture = GetAsset("Assets/Sprites/conveyor.png");
+	entity.conveyorData.animation.frameCount = 4;
+	entity.conveyorData.animation.frameDuration = 0.1f;
+	entity.conveyorData.animation.isLooping = sfTrue;
+	entity.conveyorData.animation.rectActualy = (sfIntRect){ 0,0,16,16 };
+	entity.conveyorData.animation.timeActualy = 0;
 }
 
 void UpdateEntity(float _dt)
 {
-	for (int i = 0; i < entity.conveyorData.count; i++)
+	if (entity.conveyorData.count > 0)
 	{
-		UpdateAnimationAndGiveIfStop(entity.conveyorData.entity[i].sprite, &entity.conveyorData.entity[i].animation, _dt);
+		UpdateAnimationAndGiveIfStop(entity.conveyorData.entity[0].sprite, &entity.conveyorData.animation, _dt);
+		sfIntRect rect = sfSprite_getTextureRect(entity.conveyorData.entity[0].sprite);
+		for (int i = 1; i < entity.conveyorData.count; i++)
+		{
+			sfSprite_setTextureRect(entity.conveyorData.entity[i].sprite, rect);
+		}
 	}
 
 	UpdateBluePrint(_dt);
@@ -35,21 +46,15 @@ void AddConveyor(sfVector2f _position)
 {
 	entity.conveyorData.entity = Realloc(entity.conveyorData.entity, (size_t)(entity.conveyorData.count + 1) * sizeof(ConveyorEntity));
 	entity.conveyorData.entity[entity.conveyorData.count].sprite = CreateSprite(entity.conveyorData.texture, _position, 1.f, 50.f);
-
-	entity.conveyorData.entity[entity.conveyorData.count].animation.frameCount = 4;
-	entity.conveyorData.entity[entity.conveyorData.count].animation.frameDuration = 0.1f;
-	entity.conveyorData.entity[entity.conveyorData.count].animation.isLooping = sfTrue;
-	entity.conveyorData.entity[entity.conveyorData.count].animation.rectActualy = (sfIntRect){ 0,0,16,16 };
-	entity.conveyorData.entity[entity.conveyorData.count].animation.timeActualy = 0;
 	entity.conveyorData.count++;
 }
 
 void AddBluePrint(InfoZone* _infoZone)
 {
-	entity.bluePrint.entity = Realloc(entity.bluePrint.entity, (size_t)(entity.bluePrint.count + 1) * sizeof(BluePrintEntity));
-	entity.bluePrint.entity[entity.bluePrint.count].sprite = CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f);
-	entity.bluePrint.entity[entity.bluePrint.count].type = _infoZone->name[0] - '0';
-	entity.bluePrint.count++;
+	entity.bluePrintData.entity = Realloc(entity.bluePrintData.entity, (size_t)(entity.bluePrintData.count + 1) * sizeof(BluePrintEntity));
+	entity.bluePrintData.entity[entity.bluePrintData.count].sprite = CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f);
+	entity.bluePrintData.entity[entity.bluePrintData.count].type = _infoZone->name[0] - '0';
+	entity.bluePrintData.count++;
 }
 
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
@@ -134,16 +139,16 @@ void ReloadEntity(void)
 UpdateBluePrint(float _dt)
 {
 	sfFloatRect playerRect = GetPlayerRect();
-	for (int i = 0; i < entity.bluePrint.count; i++)
+	for (int i = 0; i < entity.bluePrintData.count; i++)
 	{
-		sfFloatRect rect = sfSprite_getGlobalBounds(entity.bluePrint.entity[i].sprite);
+		sfFloatRect rect = sfSprite_getGlobalBounds(entity.bluePrintData.entity[i].sprite);
 		if (sfFloatRect_intersects(&rect, &playerRect, NULL))
 		{
 			MapState map = GetCurrentMap();
 			GameData* data = GetGameData();
 			if (map == LEVEL1)
 			{
-				if (entity.bluePrint.entity[i].type == 1)
+				if (entity.bluePrintData.entity[i].type == 1)
 				{
 					if (data->secondaryUnlock & 1)
 					{
@@ -157,15 +162,15 @@ UpdateBluePrint(float _dt)
 			}
 			else if (map == LEVEL2)
 			{
-				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
+				if (entity.bluePrintData.entity[i].type == 1 || entity.bluePrintData.entity[i].type == 5)
 				{
 					data->score2 += 2500;
 				}
-				else if (entity.bluePrint.entity[i].type == 2)
+				else if (entity.bluePrintData.entity[i].type == 2)
 				{
 					data->score2 += 5000;
 				}
-				else if (entity.bluePrint.entity[i].type == 3)
+				else if (entity.bluePrintData.entity[i].type == 3)
 				{
 					if (data->weaponUnlock & 2)
 					{
@@ -176,11 +181,11 @@ UpdateBluePrint(float _dt)
 						data->weaponUnlock += 2;
 					}
 				}
-				else if (entity.bluePrint.entity[i].type == 4)
+				else if (entity.bluePrintData.entity[i].type == 4)
 				{
 					data->score2 += 1000;
 				}
-				else if (entity.bluePrint.entity[i].type == 6)
+				else if (entity.bluePrintData.entity[i].type == 6)
 				{
 					if (data->weaponUnlock & 4)
 					{
@@ -191,7 +196,7 @@ UpdateBluePrint(float _dt)
 						data->weaponUnlock += 4;
 					}
 				}
-				else if (entity.bluePrint.entity[i].type == 7)
+				else if (entity.bluePrintData.entity[i].type == 7)
 				{
 					if (data->secondaryUnlock & 2)
 					{
@@ -204,10 +209,10 @@ UpdateBluePrint(float _dt)
 				}
 			}
 
-			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
-			entity.bluePrint.count--;
-			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
-			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+			DestroyVisualEntity(entity.bluePrintData.entity[i].sprite);
+			entity.bluePrintData.count--;
+			entity.bluePrintData.entity[i] = entity.bluePrintData.entity[entity.bluePrintData.count];
+			entity.bluePrintData.entity = Realloc(entity.bluePrintData.entity, entity.bluePrintData.count * sizeof(BluePrintEntity));
 		}
 	}
 }
