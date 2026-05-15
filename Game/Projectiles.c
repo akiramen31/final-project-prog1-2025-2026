@@ -123,7 +123,7 @@ void LoadExplosion(void)
 
 void LoadUnhiddingExplosion(void)
 {
-	unhiddingExplosion.sprite = CreateSprite(("Assets/Sprites/unhidding_explosion.png"), (sfVector2f) { 0, 0 }, 1.f, 0.01f);
+	unhiddingExplosion.sprite = CreateSprite(GetAsset("Assets/Sprites/unhidding_explosion.png"), (sfVector2f) { 0, 0 }, 1.f, 0.01f);
 	sfSprite_setTextureRect(unhiddingExplosion.sprite, (sfIntRect) {0, 0, 512, 16});
 	SetSpriteOriginFoot(unhiddingExplosion.sprite);
 	unhiddingExplosion.isOn;

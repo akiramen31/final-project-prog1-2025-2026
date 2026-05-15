@@ -142,7 +142,7 @@ int MouseButtonPressedLoadGameSave(sfMouseButtonEvent* _mouseButtonEvent)
 		if (gameSave->actualy == -1)
 		{
 			AddGameSave();
-			gameSave->dataActualy.levelUnlock = 7;
+			gameSave->dataActualy.levelUnlock = 3;
 			gameSave->dataActualy.weaponUnlock = 7;
 			gameSave->dataActualy.secondaryUnlock = 7;
 			SaveGameData();
