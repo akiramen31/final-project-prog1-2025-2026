@@ -60,7 +60,7 @@ void LoadMenu(void)
 
 	//Musics
 	float volume = 0.5f;
-	menu.musics[0] = CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", volume, sfFalse);
+	menu.musics[0] = CreateMusic("Assets/Musics/luis_humanoide-clockwork-adventure-steampunk-music-no-melody-288522.wav", volume, sfFalse);
 	menu.musics[1] = CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", volume, sfFalse);
 	menu.musics[2] = CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", volume, sfFalse);
 	menu.musics[3] = CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", volume, sfFalse);
