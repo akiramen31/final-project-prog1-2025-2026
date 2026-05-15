@@ -35,10 +35,11 @@
 
 #define BOSS2_BOMBING_RATE 0.5f
 
+#define BOSS2_GO_UNHIDDING 2.5f
+
 #define BOSS2_FIRERATE_SHOOTING 1.f
 #define BOSS2_FIRERATE_BOMBING BOSS2_FIRERATE_SHOOTING * 1.5f
-#define BOSS2_FIRERATE_UNHIDDING BOSS2_FIRERATE_SHOOTING * 1.6f
-#define BOSS2_FIRERATE_STEAMTANK_EXPOSED BOSS2_FIRERATE_SHOOTING * 1.8f
+#define BOSS2_FIRERATE_UNHIDDING BOSS2_FIRERATE_SHOOTING * 2.f
 
 #define ARENA1_CENTER 9952.f
 #define ARENA1_ENTRY ARENA1_CENTER -381.f
@@ -47,6 +48,7 @@
 #define ARENA1_LIMITE_RIGHT ARENA1_CENTER + 320.f
 
 #define ARENA2_CENTER 5189.f
+#define ARENA2_GROUND 430.f
 #define ARENA2_ENTRY ARENA2_CENTER -381.f
 
 #define ARENA2_LIMITE_LEFT ARENA2_CENTER - 300.f
@@ -94,9 +96,7 @@ typedef enum Boss2Reaction
 	BOSS2_STARTING,
 	BOSS2_SHOOTING,
 	BOSS2_BOMBING,
-	BOSS2_UNHIDDING,
-	BOSS2_DROP_PLAYER,
-	BOSS2_RESTARTING
+	BOSS2_UNHIDDING
 }Boss2Reaction;
 
 typedef enum Boss1Parts
@@ -153,13 +153,14 @@ typedef struct Boss2
 	sfFloatRect hitboxes[14];
 	PlayerPositionToBoss2 playerPositionToBoss2;
 	Boss2Reaction boss2Reaction;
+	float unhiddingReactionTimer;
 	float reactionTimer;
 	float powerMultiplier;
 	float cooldownBullet;
 	float cooldownBomb;
 	sfVector2f velocity;
 	sfVector2f aimDestination;
-	sfBool wasBombing;
+	sfBool bombOut;
 }Boss2;
 
 typedef struct Boss
