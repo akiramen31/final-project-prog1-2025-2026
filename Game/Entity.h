@@ -55,6 +55,7 @@ void UpdateEntity(float _dt);
 
 void AddBox(sfVector2f _position);
 void AddConveyor(sfVector2f _position);
+void AddBluePrint(InfoZone* _infoZone);
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
 void ReloadEntity(void);
 #endif //ENTITY_H

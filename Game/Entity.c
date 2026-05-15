@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Player.h"
 
 Entity entity;
 
@@ -15,6 +16,84 @@ void UpdateEntity(float _dt)
 	for (int i = 0; i < entity.conveyorData.count; i++)
 	{
 		UpdateAnimationAndGiveIfStop(entity.conveyorData.entity[i].sprite, &entity.conveyorData.entity[i].animation, _dt);
+	}
+
+	sfFloatRect playerRect = GetPlayerRect();
+	for (int i = 0; i < entity.bluePrint.count; i++)
+	{
+		sfFloatRect rect = sfSprite_getGlobalBounds(entity.bluePrint.entity[i].sprite);
+		if (sfFloatRect_intersects(&rect, &playerRect, NULL))
+		{
+			MapState map = GetCurrentMap();
+			GameData* data = GetGameData();
+			if (map == LEVEL1)
+			{
+				if (entity.bluePrint.entity[i].type == 1)
+				{
+					if (data->secondaryUnlock & 1)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->secondaryUnlock++;
+					}
+				}
+			}
+			else if (map == LEVEL2)
+			{
+				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
+				{
+					data->score2 += 2500;
+				}
+				else if (entity.bluePrint.entity[i].type == 2)
+				{
+					data->score2 += 5000;
+				}
+				else if (entity.bluePrint.entity[i].type == 3)
+				{
+					if (data->weaponUnlock & 2)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->weaponUnlock += 2;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 4)
+				{
+					data->score2 += 1000;
+				}
+				else if (entity.bluePrint.entity[i].type == 6)
+				{
+					if (data->weaponUnlock & 4)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->weaponUnlock += 4;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 7)
+				{
+					if (data->secondaryUnlock & 2)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->secondaryUnlock += 2;
+					}
+				}
+			}
+
+			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
+			entity.bluePrint.count--;
+			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
+			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+		}
 	}
 }
 
@@ -36,8 +115,15 @@ void AddConveyor(sfVector2f _position)
 	entity.conveyorData.entity[entity.conveyorData.count].animation.isLooping = sfTrue;
 	entity.conveyorData.entity[entity.conveyorData.count].animation.rectActualy = (sfIntRect){ 0,0,16,16 };
 	entity.conveyorData.entity[entity.conveyorData.count].animation.timeActualy = 0;
-
 	entity.conveyorData.count++;
+}
+
+void AddBluePrint(InfoZone* _infoZone)
+{
+	entity.bluePrint.entity = Realloc(entity.bluePrint.entity, (size_t)(entity.bluePrint.count + 1) * sizeof(BluePrintEntity));
+	entity.bluePrint.entity[entity.bluePrint.count].sprite = CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f);
+	entity.bluePrint.entity[entity.bluePrint.count].type = _infoZone->name[0] - '0';
+	entity.bluePrint.count++;
 }
 
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
