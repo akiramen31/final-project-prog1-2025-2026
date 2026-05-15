@@ -600,7 +600,7 @@ void UpdateFireControl(float _dt)
 	if (DEV_WEAPON)
 	{
 		static sfBool k_wasPressed = sfFalse;
-		static sfBool m_wasPressed = sfFalse;
+		
 
 		if (sfKeyboard_isKeyPressed(sfKeyK))
 		{
@@ -613,20 +613,6 @@ void UpdateFireControl(float _dt)
 		else
 		{
 			k_wasPressed = sfFalse;
-		}
-		if (sfKeyboard_isKeyPressed(sfKeyM))
-		{
-			if (m_wasPressed == sfFalse)
-			{
-				sfVector2f playerPos = GetPlayerPosition();
-				playerPos.y -= 50;
-				SpawnGrenade(playerPos);
-				m_wasPressed = sfTrue;
-			}
-		}
-		else
-		{
-			m_wasPressed = sfFalse;
 		}
 	}
 }

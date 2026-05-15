@@ -86,6 +86,7 @@ typedef struct ShooterType
 	AttackType bulletType;
 	sfBool isAlly;
 	sfBool isRighted;
+	sfBool isBoss2;
 }ShooterType;
 
 typedef enum EnergyEnum

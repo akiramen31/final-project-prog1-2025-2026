@@ -11,7 +11,7 @@ void LoadBoss(int _index, sfVector2f _position)
 {
 	boss = (Boss){ 0 };
 	boss.currentBoss = _index + 1;
-	
+
 	switch (boss.currentBoss)
 	{
 	case 1:
@@ -140,6 +140,8 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->boss2Reaction = BOSS2_STARTING;
 		boss.boss2->powerMultiplier = 1.f;
 		boss.boss2->reactionTimer = BOSS2_SWITCH_MODE_TIMER;
+		boss.boss2->cooldownBomb = BOSS2_BOMBING_RATE;
+		boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_STEAMTANK_EXPOSED;
 	default:
 		break;
 	}
@@ -163,7 +165,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 					sfSprite_setColor(entity->sprites[i], (sfColor) { 255, 255, 255, 255 });
 				}
 			}
-				break;
+			break;
 			case 2:
 			{
 				Boss2* entity = boss.entity;
@@ -172,7 +174,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 					sfSprite_setColor(entity->sprites[i], (sfColor) { 255, 255, 255, 255 });
 				}
 			}
-				break;
+			break;
 			default:
 				break;
 			}
@@ -188,19 +190,19 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		case 1:
 			break;
 		case 2:
-			if (boss.boss2->boss2Reaction == BOSS2_SHOOT || boss.boss2->boss2Reaction == BOSS2_BOMB)
+			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING || boss.boss2->boss2Reaction == BOSS2_BOMBING)
 			{
 				boss.boss2->reactionTimer -= _dt;
 				if (boss.boss2->reactionTimer < 0)
 				{
-					if (boss.boss2->wasBombing)
+					if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
 					{
-						boss.boss2->boss2Reaction = BOSS2_SHOOT;
+						boss.boss2->boss2Reaction = BOSS2_SHOOTING;
 						boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
 					}
-					else
+					else if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
 					{
-						boss.boss2->boss2Reaction = BOSS2_BOMB;
+						boss.boss2->boss2Reaction = BOSS2_BOMBING;
 						boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
 					}
 				}
@@ -747,10 +749,37 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 	}
 	else if (boss.currentBoss == 2)
 	{
+		static sfBool m_wasPressed = sfFalse;
+		static sfBool l_wasPressed = sfFalse;
+		if (sfKeyboard_isKeyPressed(sfKeyM))
+		{
+			if (m_wasPressed == sfFalse)
+			{
+				boss.boss2->boss2Reaction = BOSS2_UNHIDDING;
+				m_wasPressed = sfTrue;
+			}
+		}
+		else
+		{
+			m_wasPressed = sfFalse;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyL))
+		{
+			if (l_wasPressed == sfFalse)
+			{
+				boss.boss2->boss2Reaction = BOSS2_BOMBING;
+				l_wasPressed = sfTrue;
+			}
+		}
+		else
+		{
+			l_wasPressed = sfFalse;
+		}
+
 		float bossPlayerDistance = _posPlayer.x - sfSprite_getPosition(boss.boss2->sprites[BODY]).x;
 		if ((!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x < ARENA2_LIMITE_LEFT) || bossPlayerDistance > 0.f) && (!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x > ARENA2_LIMITE_RIGHT) || bossPlayerDistance < 0.f))
 		{
-			if (boss.boss2->boss2Reaction == BOSS2_STARTING || boss.boss2->boss2Reaction == BOSS2_RESTARTING);
+			if (boss.boss2->boss2Reaction == BOSS2_STARTING || boss.boss2->boss2Reaction == BOSS2_RESTARTING)
 			{
 				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y > 16.f)
 				{
@@ -758,69 +787,173 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 				}
 				else if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y) <= 16.f)
 				{
-					boss.boss2->boss2Reaction = BOSS2_SHOOT;
+					boss.boss2->boss2Reaction = BOSS2_SHOOTING;
 					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_BOMB)
+			if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
 			{
 				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_BOMB_HEIGHT)
 				{
-					MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
-				}
-				else if (bossPlayerDistance > 0)
-				{
-					if (!(bossPlayerDistance < 10.f))
+					if (!((-SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier) < (BOSS2_BOMB_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
 					{
-						MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+						MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
+					}
+					else
+					{
+						if (bossPlayerDistance > 0)
+						{
+							if (!(bossPlayerDistance < 10.f))
+							{
+								MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+						else if (bossPlayerDistance < 0)
+						{
+							if (!(bossPlayerDistance > -10.f))
+							{
+								MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+							}
+						}
 					}
 				}
-				else if (bossPlayerDistance < 0)
+				else if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y < BOSS2_BOMB_HEIGHT)
 				{
-					if (!(bossPlayerDistance > -10.f))
+					if (!((SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier) > (BOSS2_BOMB_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
+					{
+						MoveBoss((sfVector2f) { 0.f, SPEED_BOSS2_ASCENDING* _dt* boss.boss2->powerMultiplier });
+					}
+					else
+					{
+						if (bossPlayerDistance > 0)
+						{
+							if (!(bossPlayerDistance < 10.f))
+							{
+								MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+						else if (bossPlayerDistance < 0)
+						{
+							if (!(bossPlayerDistance > -10.f))
+							{
+								MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+					}
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
+			{
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_SHOOT_HEIGHT)
+				{
+					if (!((-SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier) < (BOSS2_SHOOT_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
+					{
+						MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
+					}
+					else
+					{
+						if (bossPlayerDistance > 0)
+						{
+							if (!(bossPlayerDistance < 10.f))
+							{
+								MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+						else if (bossPlayerDistance < 0)
+						{
+							if (!(bossPlayerDistance > -10.f))
+							{
+								MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+					}
+				}
+				else if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y < BOSS2_SHOOT_HEIGHT)
+				{
+					if (!((SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier) > (BOSS2_SHOOT_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
+					{
+						MoveBoss((sfVector2f) { 0.f, SPEED_BOSS2_ASCENDING* _dt* boss.boss2->powerMultiplier });
+					}
+					else
+					{
+						if (bossPlayerDistance > 0)
+						{
+							if (!(bossPlayerDistance < 10.f))
+							{
+								MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+						else if (bossPlayerDistance < 0)
+						{
+							if (!(bossPlayerDistance > -10.f))
+							{
+								MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+							}
+						}
+					}
+				}
+			}
+		}
+		if (boss.boss2->boss2Reaction == BOSS2_UNHIDDING)
+		{
+			if (GetPlayerPosition().x > (ARENA2_LIMITE_RIGHT))
+			{
+				if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).x >= ARENA2_LIMITE_BOMBING_RIGHT))
+				{
+					if (!((-BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier) < (ARENA2_LIMITE_BOMBING_RIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).x)))
 					{
 						MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
 					}
 				}
-			}
-			if (boss.boss2->boss2Reaction == BOSS2_SHOOT)
-			{
-				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_SHOOT_HEIGHT)
+				else if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).x < ARENA2_LIMITE_BOMBING_RIGHT))
 				{
-					MoveBoss((sfVector2f) { 0.f, -SPEED_BOSS2_ASCENDING * _dt * boss.boss2->powerMultiplier });
-				}
-				else if (bossPlayerDistance > 0)
-				{
-					if (!(bossPlayerDistance < 10.f))
+					if (!((BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier) > (ARENA2_LIMITE_BOMBING_RIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).x)))
 					{
-						MoveBoss((sfVector2f) { BOSS2_SPEED_SHOOTING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
+						MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
 					}
 				}
-				else if (bossPlayerDistance < 0)
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).x < (ARENA2_LIMITE_BOMBING_RIGHT + 10.f) || sfSprite_getPosition(boss.boss2->sprites[BODY]).x >(ARENA2_LIMITE_BOMBING_RIGHT - 10.f))
 				{
-					if (!(bossPlayerDistance > -10.f))
+					if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).y <= BOSS2_UNHIDDING_HEIGHT))
 					{
-						MoveBoss((sfVector2f) { -BOSS2_SPEED_SHOOTING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+						if (!((BOSS2_SPEED_DESCENDING * _dt * boss.boss2->powerMultiplier) > (BOSS2_UNHIDDING_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
+						{
+							MoveBoss((sfVector2f) { 0.f, BOSS2_SPEED_DESCENDING* _dt* boss.boss2->powerMultiplier });
+						}
 					}
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_UNHIDE)
+			//player left 
+			else if (GetPlayerPosition().x < (ARENA2_LIMITE_LEFT))
 			{
-				if (!boss.boss2->aimDestination.x || !boss.boss2->aimDestination.y)
+				if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).x <= ARENA2_LIMITE_BOMBING_LEFT))
 				{
-					if (bossPlayerDistance < 0) // LEFT
+					if (!((BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier) > (ARENA2_LIMITE_BOMBING_LEFT - sfSprite_getPosition(boss.boss2->sprites[BODY]).x)))
 					{
-						boss.boss2->aimDestination = (sfVector2f){ ARENA2_LIMITE_LEFT, BOSS2_UNHIDDING_HEIGHT };
-					}
-					else // RIGHT
-					{
-						boss.boss2->aimDestination = (sfVector2f){ ARENA2_LIMITE_RIGHT, BOSS2_UNHIDDING_HEIGHT };
+						MoveBoss((sfVector2f) { BOSS2_SPEED_BOMBING_HORIZONTALE* _dt* boss.boss2->powerMultiplier, 0.f });
 					}
 				}
-				else
+				else if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).x > ARENA2_LIMITE_BOMBING_LEFT))
 				{
-
+					if (!((-BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier) < (ARENA2_LIMITE_BOMBING_LEFT - sfSprite_getPosition(boss.boss2->sprites[BODY]).x)))
+					{
+						MoveBoss((sfVector2f) { -BOSS2_SPEED_BOMBING_HORIZONTALE * _dt * boss.boss2->powerMultiplier, 0.f });
+					}
 				}
+				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).x < (ARENA2_LIMITE_BOMBING_LEFT + 10.f) || sfSprite_getPosition(boss.boss2->sprites[BODY]).x >(ARENA2_LIMITE_BOMBING_LEFT - 10.f))
+				{
+					if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).y <= BOSS2_UNHIDDING_HEIGHT))
+					{
+						if (!((BOSS2_SPEED_DESCENDING * _dt * boss.boss2->powerMultiplier) > (BOSS2_UNHIDDING_HEIGHT - sfSprite_getPosition(boss.boss2->sprites[BODY]).y)))
+						{
+							MoveBoss((sfVector2f) { 0.f, BOSS2_SPEED_DESCENDING* _dt* boss.boss2->powerMultiplier });
+						}
+					}
+				}
+			}
+			else
+			{
+				boss.boss2->boss2Reaction = BOSS2_SHOOTING;
 			}
 		}
 	}
@@ -840,6 +973,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 				shooterType.bulletType = LIGHT;
 				shooterType.isRighted = sfTrue;
 				shooterType.isAlly = sfFalse;
+				shooterType.isBoss2 = sfFalse;
 				sfVector2f playerPos = _posPlayer;
 				playerPos.y -= TILE_SIZE;
 				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType);
@@ -862,6 +996,55 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			boss.boss1->cooldownBallistic -= _dt;
 		}
 		break;
+	case 2:
+		if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+		{
+			boss.boss2->cooldownBomb -= _dt;
+			if (boss.boss2->cooldownBomb < 0.f)
+			{
+				if (GetPlayerPosition().x < (sfSprite_getPosition(boss.boss2->sprites[BODY]).x + 15.f) && GetPlayerPosition().x >(sfSprite_getPosition(boss.boss2->sprites[BODY]).x - 15.f))
+				{
+					SpawnGrenade(sfSprite_getPosition(boss.boss2->sprites[BOMB_BAY]), 2.f, 5.f);
+					boss.boss2->cooldownBomb = 1.f / BOSS2_BOMBING_RATE * boss.boss2->powerMultiplier;
+				}
+
+			}
+		}
+		if (boss.boss2->boss2Reaction != BOSS2_STARTING)
+		{
+			ShooterType bossShooter = { 0 };
+			bossShooter.weaponPos = 0;
+			bossShooter.shootPosition = (sfVector2f){ 0,0 };
+			bossShooter.bulletType = HEAVY;
+			bossShooter.isAlly = sfFalse;
+			bossShooter.isRighted = sfFalse;
+			bossShooter.isBoss2 = sfTrue;
+			boss.boss2->cooldownBullet -= _dt;
+			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
+			{
+				if (boss.boss2->cooldownBullet < 0.f)
+				{
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					boss.boss2->cooldownBullet = BOSS2_FIRERATE_SHOOTING * boss.boss2->powerMultiplier;
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+			{
+				if (boss.boss2->cooldownBullet < 0.f)
+				{
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					boss.boss2->cooldownBullet = BOSS2_FIRERATE_BOMBING * boss.boss2->powerMultiplier;
+				}
+			}
+			if (boss.boss2->boss2Reaction == BOSS2_UNHIDDING)
+			{
+				if (boss.boss2->cooldownBullet < 0.f)
+				{
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					boss.boss2->cooldownBullet = BOSS2_FIRERATE_UNHIDDING * boss.boss2->powerMultiplier;
+				}
+			}
+		}
 	default:
 		break;
 	}

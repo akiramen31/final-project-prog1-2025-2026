@@ -104,6 +104,8 @@ typedef struct Grenade
 {
 	sfSprite* sprite;
 	sfVector2f velocity;
+	float sizeGrenade;
+	float rangeGrenade;
 	float lifetime;
 }Grenade;
 
@@ -124,12 +126,20 @@ typedef struct Explosion
 	float range;
 }Explosion;
 
+typedef struct UnhiddingExplosion
+{
+	sfSprite* sprite;
+	Animation unhiddingExplosionAnim;
+	sfBool isOn;
+}UnhiddingExplosion;
+
 void LoadProjectiles(float _groundlvl);
 void LoadGrenade(void);
 void LoadSecondary(void);
 void LoadBossMissile(void);
 void LoadDangerZone(void);
 void LoadExplosion(void);
+void LoadUnhiddingExplosion(void);
 
 void UpdateProjectiles(sfVector2f _posAim, float _dt);
 void UpdateMisteal(float _dt);
@@ -138,6 +148,7 @@ void UpdateSecondary(sfVector2f _pos, float _dt);
 void UpdateDrone(sfVector2f _playerPos, float _dt);
 void UpdateColdBreath(float _dt);
 void UpdateExplosion(float _dt);
+void UpdateUnhiddingExplosion(float _dt);
 void UpdateGrenade(float _dt);
 
 void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
@@ -151,7 +162,7 @@ void AddDangerZone(sfVector2f _destination, unsigned _index);
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range);
 void SortExplosionList(unsigned _index);
 
-void SpawnGrenade(sfVector2f _spawnZone);
+void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade);
 void SortGrenadeList(unsigned _index);
 
 void DeleteBulletAlly(unsigned _index);
@@ -165,6 +176,7 @@ void MoveDrone(unsigned _index, sfVector2f _playerPos, float _dt);
 
 void CheckCollisionDronesList(void);
 void TestCollisionExplosionList(unsigned _index, float _range);
+void TestCollisionUnhiddingExplosion(void);
 
 sfBool HitBossMissile(sfFloatRect _hitbox);
 sfBool HitGrenade(sfFloatRect _hitbox);

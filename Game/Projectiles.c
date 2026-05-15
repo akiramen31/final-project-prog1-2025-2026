@@ -18,6 +18,7 @@ ColdBreath coldBreath;
 BossMissile bossMissileList[MAX_BOSS_MISSILE];
 DangerZone dangerZoneList[MAX_BOSS_MISSILE];
 Explosion* explosionList = NULL;
+UnhiddingExplosion unhiddingExplosion;
 Grenade* grenadeList = NULL;
 Animation explosionAnimation;
 
@@ -45,6 +46,7 @@ void LoadProjectiles(float _groundlevel)
 	LoadSecondary();
 	LoadBossMissile();
 	LoadExplosion();
+	LoadUnhiddingExplosion();
 }
 
 void LoadGrenade(void)
@@ -119,10 +121,24 @@ void LoadExplosion(void)
 	explosionCount = 0;
 }
 
+void LoadUnhiddingExplosion(void)
+{
+	unhiddingExplosion.sprite = CreateSprite(("Assets/Sprites/unhidding_explosion.png"), (sfVector2f) { 0, 0 }, 1.f, 0.01f);
+	sfSprite_setTextureRect(unhiddingExplosion.sprite, (sfIntRect) {0, 0, 512, 16});
+	SetSpriteOriginFoot(unhiddingExplosion.sprite);
+	unhiddingExplosion.isOn;
+	unhiddingExplosion.unhiddingExplosionAnim.rectActualy = (sfIntRect){ 0,0,512,16 };
+	unhiddingExplosion.unhiddingExplosionAnim.frameCount = 4;
+	unhiddingExplosion.unhiddingExplosionAnim.frameDuration = EXPLOSION_FRAME_DURATION;
+	unhiddingExplosion.unhiddingExplosionAnim.isLooping = sfFalse;
+	unhiddingExplosion.unhiddingExplosionAnim.timeActualy = 0;
+}
+
 void UpdateProjectiles(sfVector2f _posAim, float _dt)
 {
 	sfFloatRect hitboxBullet = { 0 };
 	sfVector2f reactionWall = { 0 };
+	sfVector2f reactionPassThrough = { 0 };
 	for (int i = (int)bulletCountAlly - 1; i >= 0; i--)
 	{
 		bulletListAlly[i].lifetime -= _dt;
@@ -160,7 +176,10 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 		else
 		{
 			hitboxBullet = sfSprite_getGlobalBounds(bulletListEnemy[i].sprite);
+			reactionPassThrough = CollisionPassThrough(hitboxBullet);
 			reactionWall = Colision(hitboxBullet, AXIS_BOTH);
+			reactionWall.x += reactionPassThrough.x;
+			reactionWall.y += reactionPassThrough.y;
 
 			if (reactionWall.x || reactionWall.y || ColisionBox(hitboxBullet, sfTrue, AXIS_BOTH).x || ColisionWithPlayer(hitboxBullet, sfTrue))
 			{
@@ -180,6 +199,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 	UpdateSecondary(_posAim, _dt);
 	UpdateGrenade(_dt);
 	UpdateExplosion(_dt);
+	UpdateUnhiddingExplosion(_dt);
 }
 
 void UpdateSecondary(sfVector2f _posAim, float _dt)
@@ -356,7 +376,7 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	}
 	else
 	{
-		newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 39.f);
+		newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 0.01f);
 	}
 	SetSpriteOriginMiddle(newBullet.sprite);
 
@@ -386,6 +406,11 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	{
 		newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED_ALLY;
 		newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED_ALLY;
+	}
+	else if (_shooterType.isBoss2)
+	{
+		newBullet.velocity.x = cosf(realAngleRad) * BULLET_SPEED_ENEMY * 2.f;
+		newBullet.velocity.y = sinf(realAngleRad) * BULLET_SPEED_ENEMY * 2.f;
 	}
 	else if (_shooterType.isAlly == sfFalse)
 	{
@@ -574,9 +599,9 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 	coldBreath.isAlive = sfTrue;
 }
 
-void SpawnGrenade(sfVector2f _spawnZone)
+void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade)
 {
-	Grenade* temp = Realloc(grenadeList, (size_t)(explosionCount + 1) * sizeof(Grenade));
+	Grenade* temp = Realloc(grenadeList, (size_t)(grenadeCount + 1) * sizeof(Grenade));
 	if (!temp)
 	{
 		return;
@@ -585,9 +610,11 @@ void SpawnGrenade(sfVector2f _spawnZone)
 	temp = NULL;
 	Grenade newGrenade = { 0 };
 	
-	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, 1.f, 16.f);
+	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, _sizeGrenade, 16.f);
 	newGrenade.lifetime = GRENADE_LIFETIME;
 	newGrenade.velocity.y = GRENADE_FALL_SPEED;
+	newGrenade.sizeGrenade = _sizeGrenade;
+	newGrenade.rangeGrenade = _rangeGrenade;
 	grenadeList[grenadeCount] = newGrenade;
 	grenadeCount++;
 }
@@ -615,6 +642,17 @@ void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
 	explosionCount++;
 }
 
+void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn)
+{
+	if (unhiddingExplosion.isOn)
+	{
+		return;
+	}
+	sfSprite_setPosition(unhiddingExplosion.sprite, _explosionSpawn);
+	unhiddingExplosion.isOn = sfTrue;
+	TestCollisionUnhiddingExplosion();
+}
+
 void SortExplosionList(unsigned _index)
 {
 	explosionCount--;
@@ -631,7 +669,7 @@ void SortGrenadeList(unsigned _index)
 	grenadeList[_index] = grenadeList[grenadeCount];
 	if (grenadeCount)
 	{
-		grenadeList = Realloc(grenadeList, grenadeCount * sizeof(Explosion));
+		grenadeList = Realloc(grenadeList, grenadeCount * sizeof(Grenade));
 	}
 }
 
@@ -712,11 +750,24 @@ void UpdateExplosion(float _dt)
 	}
 }
 
+void UpdateUnhiddingExplosion(float _dt)
+{
+	if (UpdateAnimationAndGiveIfStop(unhiddingExplosion.sprite, &unhiddingExplosion.unhiddingExplosionAnim, _dt))
+	{
+		unhiddingExplosion.isOn = sfFalse;
+		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { 0, 0 });
+	}
+}
+
 void UpdateGrenade(float _dt)
 {
 	sfFloatRect hitboxGrenade = { 0 };
 	for (int i = grenadeCount - 1; i >= 0; i--)
 	{
+		if (!grenadeList[i].sprite)
+		{
+			continue;
+		}
 		hitboxGrenade = sfSprite_getGlobalBounds(grenadeList[i].sprite);
 		sfVector2f reactionPassThrough = CollisionPassThrough(hitboxGrenade);
 		sfVector2f reactionWall = Colision(hitboxGrenade, AXIS_BOTH);
@@ -731,6 +782,7 @@ void UpdateGrenade(float _dt)
 		if (grenadeList[i].lifetime < 0.f)
 		{
 			DeleteGrenade(i);
+			continue;
 		}
 		sfSprite_move(grenadeList[i].sprite, (sfVector2f) { grenadeList[i].velocity.x* _dt, grenadeList[i].velocity.y* _dt });
 	}
@@ -738,7 +790,7 @@ void UpdateGrenade(float _dt)
 
 void DeleteGrenade(unsigned _index)
 {
-	SpawnExplosion(sfSprite_getPosition(grenadeList[_index].sprite), sfFalse, 1.f);
+	SpawnExplosion(sfSprite_getPosition(grenadeList[_index].sprite), sfFalse, grenadeList[_index].rangeGrenade);
 	DestroyVisualEntity(grenadeList[_index].sprite);
 	SortGrenadeList(_index);
 }
@@ -836,16 +888,23 @@ void TestCollisionExplosionList(unsigned _index, float _range)
 	sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
 	if (reaction.x != 0 || reaction.y != 0)
 	{
-		if (!explosionList[_index].isAlly)
+		if (explosionList[_index].isAlly)
 		{
-			HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
 			HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY);
 		}
 		else
 		{
 			ColisionWithPlayer(hitboxExplosion, sfTrue);
 		}
+		HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
 	}
+}
+
+void TestCollisionUnhiddingExplosion(void)
+{
+	sfFloatRect hitboxUnhidding = { 0 };
+	hitboxUnhidding = sfSprite_getGlobalBounds(unhiddingExplosion.sprite);
+	ColisionWithPlayer(hitboxUnhidding, sfTrue);
 }
 
 void DeleteBulletAlly(unsigned _index)

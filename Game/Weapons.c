@@ -105,6 +105,7 @@ void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 	shooterType.bulletType = LIGHT;
 	shooterType.isRighted = _isRighted;
 	shooterType.isAlly = sfTrue;
+	shooterType.isBoss2 = sfFalse;
 	shooterType.weaponPos = WEAPON_ORIGIN;
 	AddBullet(_posShooter, _posTarget, shooterType);
 }
@@ -117,6 +118,7 @@ void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 	shooterType.bulletType = HEAVY;
 	shooterType.isRighted = _isRighted;
 	shooterType.isAlly = sfTrue;
+	shooterType.isBoss2 = sfFalse;
 	shooterType.weaponPos = WEAPON_ORIGIN;
 	AddMisteal(_posShooter, _posTarget, shooterType);
 }
