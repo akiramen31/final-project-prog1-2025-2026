@@ -109,6 +109,15 @@ typedef struct Grenade
 	float lifetime;
 }Grenade;
 
+typedef struct UnhiddingBomb
+{
+	sfSprite* sprite;
+	sfVector2f velocity;
+	float droptiming;
+	float lifetime;
+	sfBool isGrounded;
+}UnhiddingBomb;
+
 typedef struct ColdBreath
 {
 	sfSprite* sprite;
@@ -136,7 +145,7 @@ typedef struct UnhiddingExplosion
 void LoadProjectiles(float _groundlvl);
 void LoadGrenade(void);
 void LoadSecondary(void);
-void LoadBossMissile(void);
+void LoadBossProjectiles(void);
 void LoadDangerZone(void);
 void LoadExplosion(void);
 void LoadUnhiddingExplosion(void);
