@@ -694,18 +694,31 @@ void* Calloc(size_t _count, size_t _size)
 
 void* Realloc(void* _block, size_t _size)
 {
-	void* temp = realloc(_block, _size);
-	if (temp)
+	void* temp = 0;
+	if (!_size && _block)
 	{
-		for (int i = 0; i < entityManager.callocListCount; i++)
+		Free(_block);
+	}
+	else if (_block)
+	{
+		temp = realloc(_block, _size);
+		if (temp)
 		{
-			if (entityManager.callocList[i] == _block)
+			for (int i = 0; i < entityManager.callocListCount; i++)
 			{
-				entityManager.callocList[i] = temp;
-				return temp;
+				if (entityManager.callocList[i] == _block)
+				{
+					entityManager.callocList[i] = temp;
+					return temp;
+				}
 			}
 		}
 	}
+	else
+	{
+		temp = Calloc(1, _size);
+	}
+	
 	return temp;
 }
 

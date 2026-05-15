@@ -4,13 +4,9 @@ Entity entity;
 
 void LoadEntity(void)
 {
-	entity.boxData.count = 0;
-	entity.boxData.entity = Calloc(1, sizeof(BoxEntity));
+	entity = (Entity){ 0 };
 	entity.boxData.texture = GetAsset("Assets/Sprites/Box.png");
 	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
-
-	entity.conveyorData.count = 0;
-	entity.conveyorData.entity = Calloc(1, sizeof(BoxEntity));
 	entity.conveyorData.texture = GetAsset("Assets/Sprites/conveyor.png");
 }
 
