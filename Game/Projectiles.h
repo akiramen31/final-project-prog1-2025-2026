@@ -42,6 +42,9 @@
 #define GRENADE_LIFETIME 3.f
 #define GRENADE_FALL_SPEED 200.f
 
+#define UNHIDDING_FALL_SPEED 200.f
+#define UNHIDDING_TIMER 1.f
+
 typedef struct Bullet
 {
 	sfSprite* sprite;
@@ -113,7 +116,6 @@ typedef struct UnhiddingBomb
 {
 	sfSprite* sprite;
 	sfVector2f velocity;
-	float droptiming;
 	float lifetime;
 	sfBool isGrounded;
 }UnhiddingBomb;
@@ -157,6 +159,7 @@ void UpdateSecondary(sfVector2f _pos, float _dt);
 void UpdateDrone(sfVector2f _playerPos, float _dt);
 void UpdateColdBreath(float _dt);
 void UpdateExplosion(float _dt);
+void UpdateUnhiddingBomb(float _dt);
 void UpdateUnhiddingExplosion(float _dt);
 void UpdateGrenade(float _dt);
 
@@ -174,6 +177,10 @@ void SortExplosionList(unsigned _index);
 void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade);
 void SortGrenadeList(unsigned _index);
 
+void SpawnUnhiddingBomb(sfVector2f _spawnZone);
+
+void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn);
+
 void DeleteBulletAlly(unsigned _index);
 void DeleteBulletEnemy(unsigned _index);
 void DeleteMisteal(unsigned _index);
@@ -186,6 +193,8 @@ void MoveDrone(unsigned _index, sfVector2f _playerPos, float _dt);
 void CheckCollisionDronesList(void);
 void TestCollisionExplosionList(unsigned _index, float _range);
 void TestCollisionUnhiddingExplosion(void);
+
+sfBool CheckIfUnhiddingBombBlow(void);
 
 sfBool HitBossMissile(sfFloatRect _hitbox);
 sfBool HitGrenade(sfFloatRect _hitbox);
