@@ -93,11 +93,10 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
 			{
 				enemy.entity[_i].shootTimer = 0;
-				shootPlayer(_i);
+				SpawnGrenade(GetPositionEnemy(_i), (float){enemy.entity[_i].type % GROUND_HEAVY}, (float) { enemy.entity[_i].type% GROUND_HEAVY });
 			}
-			enemy.entity[_i].action = (ActionDemander){ 0 };
 		}
-		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 		{
 			enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
 			enemy.entity[_i].aStarTimer = 0;

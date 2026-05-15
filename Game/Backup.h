@@ -44,8 +44,9 @@ typedef enum IntSave
 
 typedef struct GameData
 {
-	int levelUnlock;
-	int weaponUnlock;
+	char levelUnlock;
+	char weaponUnlock;
+	char secondaryUnlock;
 	int score1;
 	int score2;
 	int score3;
