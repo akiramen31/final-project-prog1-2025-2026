@@ -27,16 +27,10 @@ typedef enum KeySave
 
 typedef enum IntSave
 {
-	UNLOCKED_LEVEL,
-	UNLOCKED_WEAPON,
-	UNLOCKED_SECONDARY,
 	FULL_SCREEN,
 	TROPHY,
 	DEV_MODE_FLY,
 	CURRENT_MUSIC,
-	HIGH_SCORE_1,
-	HIGH_SCORE_2,
-	HIGH_SCORE_3,
 	CURRENT_SCORE,
 	INT_COUNT
 
@@ -47,9 +41,7 @@ typedef struct GameData
 	char levelUnlock;
 	char weaponUnlock;
 	char secondaryUnlock;
-	int score1;
-	int score2;
-	int score3;
+	int score[LEVEL_TEST];
 }GameData;
 
 typedef struct GameSave
@@ -57,6 +49,7 @@ typedef struct GameSave
 	char** name;
 	int count;
 
+	char nameActualy[20];
 	GameData dataActualy;
 	int actualy;
 }GameSave;
@@ -99,4 +92,5 @@ void SaveGameData(void);
 void DestroySave(void);
 void AddGameSave(void);
 char CheckIfSaveExist(char* _newName);
+void RechargeSaves(void);
 #endif // !BACKUP_H

@@ -13,7 +13,7 @@ typedef struct BoxData
 {
 	BoxEntity* entity;
 	unsigned count;
-	sfTexture* texture;
+	sfSound* breakSound;
 }BoxData;
 
 typedef struct ConveyorEntity
@@ -26,7 +26,6 @@ typedef struct ConveyorData
 	ConveyorEntity* entity;
 	Animation animation;
 	unsigned count;
-	sfTexture* texture;
 }ConveyorData;
 
 typedef struct BluePrintEntity
@@ -38,13 +37,26 @@ typedef struct BluePrintEntity
 typedef struct BluePrintData
 {
 	BluePrintEntity* entity;
-	sfTexture* texture;
 	int count;
 }BluePrintData;
 
+typedef struct JetSteamEntity
+{
+	sfSprite* sprite;
+	Animation animation;
+	float cooldown;
+}JetSteamEntity;
+
+typedef struct JetSteam
+{
+	JetSteamEntity* entity;
+	unsigned count;
+}JetSteam;
+
 typedef struct Entity
 {
-	BluePrintData bluePrintData;
+	JetSteam jetSteam;
+	BluePrint bluePrint;
 	BoxData boxData;
 	ConveyorData conveyorData;
 }Entity;
@@ -55,6 +67,7 @@ void UpdateEntity(float _dt);
 void AddBox(sfVector2f _position);
 void AddConveyor(sfVector2f _position);
 void AddBluePrint(InfoZone* _infoZone);
+void AddJetSteam(InfoZone* _infoZone);
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
 void ReloadEntity(void);
 #endif //ENTITY_H

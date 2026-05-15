@@ -17,6 +17,7 @@ void LoadEntity(void)
 	entity.conveyorData.animation.isLooping = sfTrue;
 	entity.conveyorData.animation.rectActualy = (sfIntRect){ 0,0,16,16 };
 	entity.conveyorData.animation.timeActualy = 0;
+	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
 }
 
 void UpdateEntity(float _dt)
@@ -32,29 +33,130 @@ void UpdateEntity(float _dt)
 	}
 
 	UpdateBluePrint(_dt);
+			MapState map = GetCurrentMap();
+			GameData* data = GetGameData();
+			if (map == LEVEL1)
+			{
+				if (entity.bluePrint.entity[i].type == 1)
+				{
+					if (data->secondaryUnlock & 1)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->secondaryUnlock++;
+					}
+				}
+			}
+			else if (map == LEVEL2)
+			{
+				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
+				{
+					AddIntToSave(CURRENT_SCORE, 2500);
+				}
+				else if (entity.bluePrint.entity[i].type == 2)
+				{
+					AddIntToSave(CURRENT_SCORE, 5000);
+				}
+				else if (entity.bluePrint.entity[i].type == 3)
+				{
+					if (data->weaponUnlock & 2)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->weaponUnlock += 2;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 4)
+				{
+					AddIntToSave(CURRENT_SCORE, 1000);
+				}
+				else if (entity.bluePrint.entity[i].type == 6)
+				{
+					if (data->weaponUnlock & 4)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->weaponUnlock += 4;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 7)
+				{
+					if (data->secondaryUnlock & 2)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->secondaryUnlock += 2;
+					}
+				}
+			}
+
+			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
+			entity.bluePrint.count--;
+			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
+			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+		}
+	}
+
+	sfFloatRect rect = { 0 };
+	for (int i = 0; i < entity.jetSteam.count; i++)
+	{
+		if (entity.jetSteam.entity[i].cooldown < 0.f)
+		{
+			if (UpdateAnimationAndGiveIfStop(entity.jetSteam.entity[i].sprite, &entity.jetSteam.entity[i].animation, _dt))
+			{
+				sfSprite_setTextureRect(entity.jetSteam.entity[i].sprite, entity.jetSteam.entity[i].animation.rectActualy);
+				entity.jetSteam.entity[i].cooldown = 5.f;
+			}
+			else
+			{
+				rect = sfSprite_getGlobalBounds(entity.jetSteam.entity[i].sprite);
+				if (sfFloatRect_intersects(&playerRect, &rect, NULL))
+				{
+					SetPlayerVelocity((sfVector2f) { GetPlayerVelocity().x, -3.5f });
+				}
+			}
+		}
+		else
+		{
+			entity.jetSteam.entity[i].cooldown -= _dt;
+		}
+	}
 }
 
 void AddBox(sfVector2f _position)
 {
 	entity.boxData.entity = Realloc(entity.boxData.entity, (size_t)(entity.boxData.count + 1) * sizeof(BoxEntity));
-	entity.boxData.entity[entity.boxData.count].hitbox = (sfFloatRect){ _position.x, _position.y, 16.f, 16.f };
-	entity.boxData.entity[entity.boxData.count].sprite = CreateSprite(entity.boxData.texture, _position, 1.f, 50.f);
+	entity.boxData.entity[entity.boxData.count] = (BoxEntity){ CreateSprite(GetAsset("Assets/Sprites/Box.png"), _position, 1.f, 50.f), (sfFloatRect) { _position.x, _position.y, 16.f, 16.f } };
 	entity.boxData.count++;
 }
 
 void AddConveyor(sfVector2f _position)
 {
 	entity.conveyorData.entity = Realloc(entity.conveyorData.entity, (size_t)(entity.conveyorData.count + 1) * sizeof(ConveyorEntity));
-	entity.conveyorData.entity[entity.conveyorData.count].sprite = CreateSprite(entity.conveyorData.texture, _position, 1.f, 50.f);
+	entity.conveyorData.entity[entity.conveyorData.count] = (ConveyorEntity){ CreateSprite(GetAsset("Assets/Sprites/conveyor.png"), _position, 1.f, 50.f), (Animation) { (sfIntRect) { 0,0,16,16 } ,sfTrue, 4, 0.1f, 0.f } };
 	entity.conveyorData.count++;
 }
 
 void AddBluePrint(InfoZone* _infoZone)
 {
-	entity.bluePrintData.entity = Realloc(entity.bluePrintData.entity, (size_t)(entity.bluePrintData.count + 1) * sizeof(BluePrintEntity));
-	entity.bluePrintData.entity[entity.bluePrintData.count].sprite = CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f);
-	entity.bluePrintData.entity[entity.bluePrintData.count].type = _infoZone->name[0] - '0';
-	entity.bluePrintData.count++;
+	entity.bluePrint.entity = Realloc(entity.bluePrint.entity, (size_t)(entity.bluePrint.count + 1) * sizeof(BluePrintEntity));
+	entity.bluePrint.entity[entity.bluePrint.count] = (BluePrintEntity){ CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f), _infoZone->name[0] - '0' };
+	entity.bluePrint.count++;
+}
+
+void AddJetSteam(InfoZone* _infoZone)
+{
+	entity.jetSteam.entity = Realloc(entity.jetSteam.entity, (size_t)(entity.jetSteam.count + 1) * sizeof(JetSteamEntity));
+	entity.jetSteam.entity[entity.jetSteam.count] = (JetSteamEntity){ CreateSprite(GetAsset("Assets/Sprites/jetStream.png"),(sfVector2f) { _infoZone->hitbox.left,_infoZone->hitbox.top}, 1.f, 50.f), (Animation) {(sfIntRect){ 0, 0,16, 32} , sfFalse, 4, 1.f, 0.f }, 0.f };
+	entity.jetSteam.count++;
 }
 
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)

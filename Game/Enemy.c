@@ -428,7 +428,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 
 		for (int i = 0; i < ALEATORY; i++)
 		{
-			FreeGrid(enemy.tableau.grid[_enemy->type]);
+			FreeGrid(enemy.tableau.grid[i]);
 			enemy.tableau.grid[i] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		}
 		FreeGrid(enemy.tableau.collision);
