@@ -33,6 +33,7 @@ typedef struct EnergyPlayerStruct
 typedef struct Player
 {
 	sfSprite* sprite;
+	sfSound* soundWalk;
 	sfRectangleShape* collision;
 
 	Weapon weapon;

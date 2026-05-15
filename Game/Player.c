@@ -415,11 +415,11 @@ void UpdateAnimation(float _dt)
 			{
 				if (!player.running.timeActualy)
 				{
-					PlaySound(CATEGORY_PLAYER, PLAYER_WALK);
+					player.soundWalk = PlaySound(CATEGORY_PLAYER, PLAYER_WALK);
 				}
 				else
 				{
-					StopSound(CATEGORY_PLAYER, PLAYER_WALK);
+					StopSound(player.soundWalk);
 				}
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
 			}
