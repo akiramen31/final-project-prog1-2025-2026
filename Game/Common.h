@@ -9,9 +9,6 @@
 #include "SFML/Graphics.h"
 #include "SFML/Audio.h"
 
-#include "Backup.h"
-#include "EntityManager.h"
-
 #define GAME_SCALE 1
 #define GAME_VOLUME 10.f
 #define SCREEN_WIDTH 1920
@@ -168,6 +165,8 @@ void FusionString(char* _buffer, int _count, char** _strings);
 void TransformIntToString(char* _buffer, int _value);
 int GetSizeString(char* _string);
 sfBool UpdateTextHighlightTextColor(sfText* _text, sfColor _base, sfColor _highlight, sfVector2f _posMouse);
+
+#include "Backup.h"
 #include "EntityManager.h"
 #include "Map.h"
 

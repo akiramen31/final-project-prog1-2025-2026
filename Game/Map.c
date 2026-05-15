@@ -6,12 +6,12 @@
 #include "Entity.h"
 #include "Elevator.h"
 #include "Camera.h"
-#include "JetSteam.h"
 
 Map map;
 void LoadMapData(CjsonB* _cjson);
 void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjsonB* _object, int _objectCount);
-void SetPositionEntity(InfoZone* _point, int _count);
+void SetPositionEntityPoint(InfoZone* _point, int _count);
+void SetPositionEntityTrigger(InfoZone* _trigger, int _count);
 
 void LoadMap()
 {
@@ -23,7 +23,7 @@ void LoadMap()
 	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
 
 	int val = 169;
-	sfSprite_setColor(map.background, (sfColor) {val, val, val, 255});
+	sfSprite_setColor(map.background, (sfColor) { val, val, val, 255 });
 
 	LoadEntity();
 	SetCameraZoom(CAMERA_DEFAULT_ZOOM);
@@ -64,15 +64,10 @@ void LoadMap()
 	}
 	LoadEnemy();
 
-	LoadJetSteam();
 	LoadElevator();
 	ReloadEntity();
-	SetPositionEntity(map.data.point, map.data.pointCount);
-}
-
-void UpdateMap(float _dt)
-{
-	UpdateJetSteam(_dt);
+	SetPositionEntityPoint(map.data.point, map.data.pointCount);
+	SetPositionEntityTrigger(map.data.triger, map.data.trigerCount);
 }
 
 void SetCurrentMap(MapState _map)
@@ -110,10 +105,6 @@ void LoadMapData(CjsonB* _cjson)
 		{
 			LoadObjectMap(&map.data.passThrough, &map.data.PassThroughCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
 		}
-		else if (StringCompare(_cjson->layers[i].name, "Jet"))
-		{
-			LoadObjectMap(&map.data.jet, &map.data.jetCount, _cjson->layers[i].objects, _cjson->layers[i].objectsCount);
-		}
 		else if (_cjson->layers[i].data && !(map.data.size.x + map.data.size.y))
 		{
 			map.data.size = (sfVector2u){ _cjson->layers[i].width, _cjson->layers[i].height };
@@ -145,7 +136,7 @@ void LoadObjectMap(InfoZone** _infoZoneExit, int* _infoZoneCountExit, ObjectCjso
 	}
 }
 
-void SetPositionEntity(InfoZone* _point, int _count)
+void SetPositionEntityPoint(InfoZone* _point, int _count)
 {
 	for (int i = 0; i < _count; i++)
 	{
@@ -188,6 +179,17 @@ void SetPositionEntity(InfoZone* _point, int _count)
 		else if (StringCompare(_point[i].type, "TpPlayer"))
 		{
 			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
+	}
+}
+
+void SetPositionEntityTrigger(InfoZone* _trigger, int _count)
+{
+	for (int i = 0; i < _count; i++)
+	{
+		if (StringCompare(_trigger[i].type, "Jet"))
+		{
+			AddJetSteam(&_trigger[i]);
 		}
 	}
 }
