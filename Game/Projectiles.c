@@ -19,6 +19,7 @@ BossMissile bossMissileList[MAX_BOSS_MISSILE];
 DangerZone dangerZoneList[MAX_BOSS_MISSILE];
 Explosion* explosionList = NULL;
 UnhiddingExplosion unhiddingExplosion;
+UnhiddingBomb unhiddingBomb;
 Grenade* grenadeList = NULL;
 Animation explosionAnimation;
 
@@ -44,7 +45,7 @@ void LoadProjectiles(float _groundlevel)
 	groundLevel = _groundlevel;
 	LoadGrenade();
 	LoadSecondary();
-	LoadBossMissile();
+	LoadBossProjectiles();
 	LoadExplosion();
 	LoadUnhiddingExplosion();
 }
@@ -78,11 +79,15 @@ void LoadSecondary(void)
 		droneList[i].isAlive = sfFalse;
 		droneList[i].ambientSound = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
 	}
-	LoadBossMissile();
 }
 
-void LoadBossMissile(void)
+void LoadBossProjectiles(void)
 {
+	unhiddingBomb.sprite = CreateSprite(GetAsset("Assets/Sprites/UnlocatingBomb_boss"), (sfVector2f) { 0.f, 0.f }, 1.f, 16.f);
+	SetSpriteOriginFoot(unhiddingBomb.sprite);
+	unhiddingBomb.droptiming = 2.f;
+	unhiddingBomb.lifetime = 2.f;
+
 	sfTexture* bossDroneTexture = GetAsset("Assets/Sprites/tank_ballistic_missile.png");
 	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
 	{
@@ -619,6 +624,11 @@ void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade
 	grenadeCount++;
 }
 
+void SpawnUnhiddingBomb(sfVector2f _spawnZone)
+{
+	sfSprite_setPosition(unhiddingBomb.sprite, _spawnZone);
+}
+
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
 {
 	Explosion* temp = Realloc(explosionList, (size_t)(explosionCount + 1) * sizeof(Explosion));
@@ -785,6 +795,23 @@ void UpdateGrenade(float _dt)
 			continue;
 		}
 		sfSprite_move(grenadeList[i].sprite, (sfVector2f) { grenadeList[i].velocity.x* _dt, grenadeList[i].velocity.y* _dt });
+	}
+}
+
+void UpdateUnhiddingBomb(float _dt)
+{
+	if (!(sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f) && !(sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f))
+	{
+		if (unhiddingBomb.isGrounded)
+		{
+			unhiddingBomb.lifetime -= _dt;
+			if (unhiddingBomb.lifetime < 0.f)
+			{
+				SpawnUnhiddingExplosion(sfSprite_getPosition(unhiddingBomb.sprite));
+				sfSprite_setPosition(unhiddingBomb.sprite, (sfVector2f) { 0.f, 0.f });
+				unhiddingBomb.isGrounded = sfFalse;
+			}
+		}
 	}
 }
 
