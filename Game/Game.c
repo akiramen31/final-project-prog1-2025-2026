@@ -47,7 +47,7 @@ void LoadGame(void)
 	switch (GetCurrentMap())
 	{
 	case 0:
-		game.timerDurationStartLevel = 2.5f;
+		game.timerDurationStartLevel = 2.9f;
 		break;
 	case 1:
 	case 2:
