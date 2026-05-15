@@ -38,14 +38,15 @@
             ],
             "expandedObjectLayers": [
                 32,
+                31,
                 39,
                 37
             ],
-            "scale": 1,
+            "scale": 0.0625,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 9755.5,
-                "y": 635
+                "x": 8440,
+                "y": 2176
             }
         },
         "Level1_2.tmx": {
