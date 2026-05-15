@@ -83,10 +83,11 @@ void LoadSecondary(void)
 
 void LoadBossProjectiles(void)
 {
-	unhiddingBomb.sprite = CreateSprite(GetAsset("Assets/Sprites/UnlocatingBomb_boss"), (sfVector2f) { 0.f, 0.f }, 1.f, 16.f);
+	unhiddingBomb.sprite = CreateSprite(GetAsset("Assets/Sprites/UnlocatingBomb_boss.png"), (sfVector2f) { 0.f, 0.f }, 1.f, 16.f);
 	SetSpriteOriginFoot(unhiddingBomb.sprite);
-	unhiddingBomb.droptiming = 2.f;
-	unhiddingBomb.lifetime = 2.f;
+	unhiddingBomb.lifetime = UNHIDDING_TIMER;
+	unhiddingBomb.velocity.y = 0.f;
+	unhiddingBomb.isGrounded = sfFalse;
 
 	sfTexture* bossDroneTexture = GetAsset("Assets/Sprites/tank_ballistic_missile.png");
 	for (unsigned i = 0; i < MAX_BOSS_MISSILE; i++)
@@ -129,14 +130,14 @@ void LoadExplosion(void)
 void LoadUnhiddingExplosion(void)
 {
 	unhiddingExplosion.sprite = CreateSprite(GetAsset("Assets/Sprites/unhidding_explosion.png"), (sfVector2f) { 0, 0 }, 1.f, 0.01f);
-	sfSprite_setTextureRect(unhiddingExplosion.sprite, (sfIntRect) {0, 0, 512, 16});
-	SetSpriteOriginFoot(unhiddingExplosion.sprite);
-	unhiddingExplosion.isOn;
+	unhiddingExplosion.isOn = sfFalse;
 	unhiddingExplosion.unhiddingExplosionAnim.rectActualy = (sfIntRect){ 0,0,512,16 };
 	unhiddingExplosion.unhiddingExplosionAnim.frameCount = 4;
 	unhiddingExplosion.unhiddingExplosionAnim.frameDuration = EXPLOSION_FRAME_DURATION;
 	unhiddingExplosion.unhiddingExplosionAnim.isLooping = sfFalse;
 	unhiddingExplosion.unhiddingExplosionAnim.timeActualy = 0;
+	sfSprite_setTextureRect(unhiddingExplosion.sprite, unhiddingExplosion.unhiddingExplosionAnim.rectActualy);
+	SetSpriteOriginFoot(unhiddingExplosion.sprite);
 }
 
 void UpdateProjectiles(sfVector2f _posAim, float _dt)
@@ -204,6 +205,7 @@ void UpdateProjectiles(sfVector2f _posAim, float _dt)
 	UpdateSecondary(_posAim, _dt);
 	UpdateGrenade(_dt);
 	UpdateExplosion(_dt);
+	UpdateUnhiddingBomb(_dt);
 	UpdateUnhiddingExplosion(_dt);
 }
 
@@ -614,7 +616,7 @@ void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade
 	grenadeList = temp;
 	temp = NULL;
 	Grenade newGrenade = { 0 };
-	
+
 	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, _sizeGrenade, 16.f);
 	newGrenade.lifetime = GRENADE_LIFETIME;
 	newGrenade.velocity.y = GRENADE_FALL_SPEED;
@@ -627,6 +629,7 @@ void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade
 void SpawnUnhiddingBomb(sfVector2f _spawnZone)
 {
 	sfSprite_setPosition(unhiddingBomb.sprite, _spawnZone);
+	unhiddingBomb.velocity.y = UNHIDDING_FALL_SPEED;
 }
 
 void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
@@ -658,7 +661,14 @@ void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn)
 	{
 		return;
 	}
-	sfSprite_setPosition(unhiddingExplosion.sprite, _explosionSpawn);
+	if (_explosionSpawn.x >= ARENA2_CENTER)
+	{
+		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { ARENA2_LIMITE_BOMBING_RIGHT, _explosionSpawn.y });
+	}
+	else
+	{
+		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { ARENA2_LIMITE_BOMBING_LEFT, _explosionSpawn.y });
+	}
 	unhiddingExplosion.isOn = sfTrue;
 	TestCollisionUnhiddingExplosion();
 }
@@ -762,10 +772,13 @@ void UpdateExplosion(float _dt)
 
 void UpdateUnhiddingExplosion(float _dt)
 {
-	if (UpdateAnimationAndGiveIfStop(unhiddingExplosion.sprite, &unhiddingExplosion.unhiddingExplosionAnim, _dt))
+	if (unhiddingExplosion.isOn)
 	{
-		unhiddingExplosion.isOn = sfFalse;
-		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { 0, 0 });
+		if (UpdateAnimationAndGiveIfStop(unhiddingExplosion.sprite, &unhiddingExplosion.unhiddingExplosionAnim, _dt))
+		{
+			unhiddingExplosion.isOn = sfFalse;
+			sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { 0, 0 });
+		}
 	}
 }
 
@@ -807,9 +820,27 @@ void UpdateUnhiddingBomb(float _dt)
 			unhiddingBomb.lifetime -= _dt;
 			if (unhiddingBomb.lifetime < 0.f)
 			{
-				SpawnUnhiddingExplosion(sfSprite_getPosition(unhiddingBomb.sprite));
+ 				SpawnUnhiddingExplosion(sfSprite_getPosition(unhiddingBomb.sprite));
 				sfSprite_setPosition(unhiddingBomb.sprite, (sfVector2f) { 0.f, 0.f });
 				unhiddingBomb.isGrounded = sfFalse;
+				unhiddingBomb.lifetime = UNHIDDING_TIMER;
+				return;
+			}
+		}
+		else
+		{
+			sfSprite_move(unhiddingBomb.sprite, (sfVector2f) { 0.f, unhiddingBomb.velocity.y * _dt });
+			sfFloatRect hitboxUnhiddingBomb = sfSprite_getGlobalBounds(unhiddingBomb.sprite);
+			sfVector2f reactionPassThrough = CollisionPassThrough(hitboxUnhiddingBomb);
+			sfVector2f reactionWall = Colision(hitboxUnhiddingBomb, AXIS_BOTH);
+			sfVector2f reactionBox = ColisionBox(hitboxUnhiddingBomb, sfFalse, AXIS_BOTH);
+			reactionWall.y += reactionPassThrough.y + reactionBox.y;
+			if (reactionWall.y)
+			{
+				sfSprite_move(unhiddingBomb.sprite, reactionWall);
+				unhiddingBomb.velocity.y = 0.f;
+				unhiddingBomb.isGrounded = sfTrue;
+				return;
 			}
 		}
 	}
@@ -905,6 +936,18 @@ void CheckCollisionDronesList(void)
 	}
 }
 
+sfBool CheckIfUnhiddingBombBlow(void)
+{
+	if (!(sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f) && !(sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f))
+	{
+		return sfFalse;
+	}
+	else
+	{
+		return sfTrue;
+	}
+}
+
 void TestCollisionExplosionList(unsigned _index, float _range)
 {
 	sfFloatRect hitboxExplosion = { 0 };
@@ -912,19 +955,15 @@ void TestCollisionExplosionList(unsigned _index, float _range)
 	hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
 	hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
 	hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
-	sfVector2f reaction = ColisionBox(hitboxExplosion, sfTrue, AXIS_BOTH);
-	if (reaction.x != 0 || reaction.y != 0)
+	if (explosionList[_index].isAlly)
 	{
-		if (explosionList[_index].isAlly)
-		{
-			HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY);
-		}
-		else
-		{
-			ColisionWithPlayer(hitboxExplosion, sfTrue);
-		}
-		HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
+		HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY);
 	}
+	else
+	{
+		ColisionWithPlayer(hitboxExplosion, sfTrue);
+	}
+	HitBoss(BOSS_SELF_DAMAGE, hitboxExplosion, HEAVY);
 }
 
 void TestCollisionUnhiddingExplosion(void)
