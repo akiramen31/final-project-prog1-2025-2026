@@ -209,7 +209,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 					}
 					else if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
 					{
- 						boss.boss2->boss2Reaction = BOSS2_BOMBING;
+						boss.boss2->boss2Reaction = BOSS2_BOMBING;
 						boss.boss2->reactionTimer = ((2.f - boss.boss2->playerPositionToBoss2) * BOSS2_SWITCH_MODE_TIMER) + 1.f;
 					}
 				}
@@ -469,6 +469,7 @@ sfBool DamageBoss(float _damage)
 		{
 			if (boss.currentBoss == 1)
 			{
+				AddIntToSave(CURRENT_SCORE, 5000);
 				DestroyBoss(1);
 			}
 		}
@@ -480,6 +481,7 @@ sfBool DamageBoss(float _damage)
 		{
 			if (boss.currentBoss == 2)
 			{
+				AddIntToSave(CURRENT_SCORE, 5000);
 				DestroyBoss(2);
 			}
 		}
