@@ -150,6 +150,8 @@ void UpdatePositionCameraLevel1(float _dt)
 			switch (camera.positionName)
 			{
 			case 1:
+			case 6:
+			case 7:
 				camera.newZoom = 0.2f;
 				pos.x = area[camera.index].hitbox.left + area[camera.index].hitbox.width / 2;
 				pos.y = area[camera.index].hitbox.top + area[camera.index].hitbox.height / 2;
