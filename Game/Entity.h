@@ -16,14 +16,9 @@ typedef struct BoxData
 	sfSound* breakSound;
 }BoxData;
 
-typedef struct ConveyorEntity
-{
-	sfSprite* sprite;
-}ConveyorEntity;
-
 typedef struct ConveyorData
 {
-	ConveyorEntity* entity;
+	sfSprite** entity;
 	Animation animation;
 	unsigned count;
 }ConveyorData;
@@ -34,11 +29,11 @@ typedef struct BluePrintEntity
 	int type;
 }BluePrintEntity;
 
-typedef struct BluePrintData
+typedef struct BluePrint
 {
 	BluePrintEntity* entity;
 	int count;
-}BluePrintData;
+}BluePrint;
 
 typedef struct JetSteamEntity
 {
