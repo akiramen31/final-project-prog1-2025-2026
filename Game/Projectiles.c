@@ -77,7 +77,7 @@ void LoadSecondary(void)
 		droneList[i].lifetime = 0;
 		droneList[i].rotation = 0;
 		droneList[i].isAlive = sfFalse;
-		droneList[i].ambientSound = CreateMusic("Assets/Musics/drone_sound.ogg", 15.f, sfFalse);
+		droneList[i].ambientSound = CreateMusic("Assets/Sounds/drone_sound.ogg", 15.f, sfFalse);
 	}
 }
 

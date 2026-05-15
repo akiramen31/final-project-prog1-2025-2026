@@ -9,7 +9,7 @@ void LoadEntity(void)
 {
 	entity = (Entity){ 0 };
 	entity.boxData.texture = GetAsset("Assets/Sprites/Box.png");
-	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
+	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Sounds/box_break.ogg"), 0.1f, sfFalse);
 
 	entity.conveyorData.texture = GetAsset("Assets/Sprites/conveyor.png");
 	entity.conveyorData.animation.frameCount = 4;
