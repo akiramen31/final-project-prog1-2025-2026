@@ -3,10 +3,9 @@
 
 GameOver gameOver;
 
-int live;
-int score = 50000;
+int score = 5000;
 int tempScore = 0;
-int highScore = 100000;
+int highScore = 10000;
 int tempHighScore = 0;
 
 void KeyPressedGameOver(sfEvent* _event);
@@ -21,26 +20,46 @@ void LoadGameOver(void)
 
 	sfFont* font = GetAsset(FONT);
 
-	//score = GetIntFromSave(CURRENT_SCORE);
+	int live = GetPlayerLife();
 
-	//switch (GetCurrentMap())
-	//{
-	//case LEVEL1:
-	//	highScore = GetIntFromSave(HIGH_SCORE_1);
-	//	break;
-	//case LEVEL2:
-	//	highScore = GetIntFromSave(HIGH_SCORE_2);
-	//	break;
-	//case LEVEL3:
-	//	highScore = GetIntFromSave(HIGH_SCORE_3);
-	//	break;
-	//default:
-	//	break;
-	//}
+	score = GetIntFromSave(CURRENT_SCORE);
 
-	highScore = (score > highScore) ? score : highScore;
+	MapState map = GetCurrentMap();
 
-	live = GetPlayerLife();
+	switch (map)
+	{
+	case LEVEL1:
+		highScore = GetIntFromSave(HIGH_SCORE_1);
+		break;
+	case LEVEL2:
+		highScore = GetIntFromSave(HIGH_SCORE_2);
+		break;
+	case LEVEL3:
+		highScore = GetIntFromSave(HIGH_SCORE_3);
+		break;
+	default:
+		break;
+	}
+
+	if (score > highScore)
+	{
+		highScore = score;
+
+		switch (map)
+		{
+		case LEVEL1:
+			SetIntToSave(HIGH_SCORE_1, highScore);
+			break;
+		case LEVEL2:
+			SetIntToSave(HIGH_SCORE_2, highScore);
+			break;
+		case LEVEL3:
+			SetIntToSave(HIGH_SCORE_3, highScore);
+			break;
+		default:
+			break;
+		}
+	}
 
 #pragma region button
 	for (int i = 0; i < 2; i++)
@@ -66,7 +85,8 @@ void LoadGameOver(void)
 
 		if (GetPlayerLife() > 0)
 		{
-			sfText_setString(gameOver.text, "YOU WENT TO THE NEXT LEVEL");
+			sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
+			sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
 		}
 		else
 		{
@@ -119,31 +139,43 @@ void LoadGameOver(void)
 
 void PollEventGameOver(sfEvent* _event)
 {
-	switch (_event->type)
-	{
-	case sfEvtKeyPressed:
-		KeyPressedGameOver(_event);
-		break;
-	case sfEvtMouseButtonPressed:
-		MouseButtonPressedGameOver(&_event->mouseButton);
-		break;
-	case sfEvtMouseMoved:
-		MouseMovedGameOver(&_event->mouseMove);
-		break;
-	default:
-		break;
-	}
+		switch (_event->type)
+		{
+		case sfEvtKeyPressed:
+			KeyPressedGameOver(_event);
+			break;
+		case sfEvtMouseButtonPressed:
+			MouseButtonPressedGameOver(&_event->mouseButton);
+			break;
+		case sfEvtMouseMoved:
+			MouseMovedGameOver(&_event->mouseMove);
+			break;
+		default:
+			break;
+		}
 }
 
 void KeyPressedGameOver(sfEvent* _event)
 {
+	if (tempHighScore == highScore && tempScore == score)
+	{
+		switch (_event->key.code)
+		{
+		case sfKeyEscape:
+			SetGameState(MENU);
+			return;
+		case sfKeyEnter:
+			SetGameState(GAME);
+			return;
+		default:
+			break;
+		}
+	}
 	switch (_event->key.code)
 	{
-	case sfKeyEscape:
-		SetGameState(MENU);
-		return;
-	case sfKeyEnter:
-		SetGameState(GAME);
+	case sfKeySpace:
+		tempHighScore = highScore;
+		tempScore = score;
 		return;
 	default:
 		break;

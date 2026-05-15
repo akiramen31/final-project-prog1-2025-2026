@@ -205,6 +205,9 @@ void KeyPressedMenu(sfEvent* _event)
 
 		}
 		return;
+	case sfKeyEnter:
+		SetGameState(GAME_OVER);
+		break;
 	default:
 		break;
 	}
