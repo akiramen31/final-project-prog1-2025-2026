@@ -3,6 +3,8 @@
 
 Entity entity;
 
+UpdateBluePrint(float _dt);
+
 void LoadEntity(void)
 {
 	entity = (Entity){ 0 };
@@ -18,83 +20,7 @@ void UpdateEntity(float _dt)
 		UpdateAnimationAndGiveIfStop(entity.conveyorData.entity[i].sprite, &entity.conveyorData.entity[i].animation, _dt);
 	}
 
-	sfFloatRect playerRect = GetPlayerRect();
-	for (int i = 0; i < entity.bluePrint.count; i++)
-	{
-		sfFloatRect rect = sfSprite_getGlobalBounds(entity.bluePrint.entity[i].sprite);
-		if (sfFloatRect_intersects(&rect, &playerRect, NULL))
-		{
-			MapState map = GetCurrentMap();
-			GameData* data = GetGameData();
-			if (map == LEVEL1)
-			{
-				if (entity.bluePrint.entity[i].type == 1)
-				{
-					if (data->secondaryUnlock & 1)
-					{
-						data->score2 += 2500;
-					}
-					else
-					{
-						data->secondaryUnlock++;
-					}
-				}
-			}
-			else if (map == LEVEL2)
-			{
-				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
-				{
-					data->score2 += 2500;
-				}
-				else if (entity.bluePrint.entity[i].type == 2)
-				{
-					data->score2 += 5000;
-				}
-				else if (entity.bluePrint.entity[i].type == 3)
-				{
-					if (data->weaponUnlock & 2)
-					{
-						data->score2 += 2500;
-					}
-					else
-					{
-						data->weaponUnlock += 2;
-					}
-				}
-				else if (entity.bluePrint.entity[i].type == 4)
-				{
-					data->score2 += 1000;
-				}
-				else if (entity.bluePrint.entity[i].type == 6)
-				{
-					if (data->weaponUnlock & 4)
-					{
-						data->score2 += 2500;
-					}
-					else
-					{
-						data->weaponUnlock += 4;
-					}
-				}
-				else if (entity.bluePrint.entity[i].type == 7)
-				{
-					if (data->secondaryUnlock & 2)
-					{
-						data->score2 += 2500;
-					}
-					else
-					{
-						data->secondaryUnlock += 2;
-					}
-				}
-			}
-
-			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
-			entity.bluePrint.count--;
-			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
-			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
-		}
-	}
+	UpdateBluePrint(_dt);
 }
 
 void AddBox(sfVector2f _position)
@@ -203,4 +129,85 @@ void ReloadEntity(void)
 		DestroyVisualEntity(entity.conveyorData.entity[i].sprite);
 	}
 	entity.conveyorData.count = 0;
+}
+
+UpdateBluePrint(float _dt)
+{
+	sfFloatRect playerRect = GetPlayerRect();
+	for (int i = 0; i < entity.bluePrint.count; i++)
+	{
+		sfFloatRect rect = sfSprite_getGlobalBounds(entity.bluePrint.entity[i].sprite);
+		if (sfFloatRect_intersects(&rect, &playerRect, NULL))
+		{
+			MapState map = GetCurrentMap();
+			GameData* data = GetGameData();
+			if (map == LEVEL1)
+			{
+				if (entity.bluePrint.entity[i].type == 1)
+				{
+					if (data->secondaryUnlock & 1)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->secondaryUnlock++;
+					}
+				}
+			}
+			else if (map == LEVEL2)
+			{
+				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
+				{
+					data->score2 += 2500;
+				}
+				else if (entity.bluePrint.entity[i].type == 2)
+				{
+					data->score2 += 5000;
+				}
+				else if (entity.bluePrint.entity[i].type == 3)
+				{
+					if (data->weaponUnlock & 2)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->weaponUnlock += 2;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 4)
+				{
+					data->score2 += 1000;
+				}
+				else if (entity.bluePrint.entity[i].type == 6)
+				{
+					if (data->weaponUnlock & 4)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->weaponUnlock += 4;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 7)
+				{
+					if (data->secondaryUnlock & 2)
+					{
+						data->score2 += 2500;
+					}
+					else
+					{
+						data->secondaryUnlock += 2;
+					}
+				}
+			}
+
+			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
+			entity.bluePrint.count--;
+			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
+			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+		}
+	}
 }
