@@ -160,6 +160,10 @@ void DestroySave(void)
 		{
 			backup.gameSave.name[i] = backup.gameSave.name[i + 1];
 		}
+		if (backup.gameSave.actualy == backup.gameSave.count)
+		{
+			backup.gameSave.actualy = -1;
+		}
 	}
 }
 void SaveGameData(void)
@@ -223,6 +227,7 @@ void AddGameSave(void)
 	backup.gameSave.dataActualy = (GameData){ 0 };
 	backup.gameSave.dataActualy.levelUnlock = 1;
 	backup.gameSave.dataActualy.weaponUnlock = 1;
+	backup.gameSave.dataActualy.secondaryUnlock = 0;
 	char bigBuffer[40] = { 0 };
 	char* temp[2] = { "Saves/" , buffer };
 	FusionString(bigBuffer, 2, temp);

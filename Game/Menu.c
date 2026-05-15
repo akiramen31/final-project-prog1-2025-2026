@@ -341,15 +341,10 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		switch (menu.state)
 		{
 		case PLAY:
-		{
-			int i = MouseButtonPressedLoadGameSave(_mouseButtonEvent);
-			if (i)
+			if (MouseButtonPressedLoadGameSave(_mouseButtonEvent))
 			{
-				SetIntToSave(UNLOCKED_LEVEL, i);
-				SetIntToSave(UNLOCKED_WEAPON, i);
 				SetMenuState(MAP);
 			}
-		}
 			break;
 		case SETTINGS:
 			for (int i = 0; i < 4; i++)
@@ -795,8 +790,7 @@ void SetMenuState(MenuState _state)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
 				}
-				int unlockedLevel = GetIntFromSave(UNLOCKED_LEVEL);
-				if ((unlockedLevel % ((int)pow(10, i + 1)) - unlockedLevel % (int)(pow(10, i))) / (int)pow(10, i))
+				if (GetGameData()->levelUnlock > i)
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
 					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[3 * i]);
@@ -828,8 +822,8 @@ void SetMenuState(MenuState _state)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
 				}
-				int unlockedWeapon = GetIntFromSave(UNLOCKED_WEAPON);
-				if ((unlockedWeapon % ((int)pow(10, i + 1)) - unlockedWeapon % (int)(pow(10, i))) / (int)pow(10, i))
+				int unlock = GetGameData()->weaponUnlock;
+				if ((i != 2 && GetGameData()->weaponUnlock & (i + 1)) || (i == 2 && GetGameData()->weaponUnlock & 4))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
 					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[1 + (3 * i)]);
@@ -862,8 +856,8 @@ void SetMenuState(MenuState _state)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
 				}
-				int unlockedSecondary = GetIntFromSave(UNLOCKED_SECONDARY);
-				if ((unlockedSecondary % ((int)pow(10, i + 1)) - unlockedSecondary % (int)(pow(10, i))) / (int)pow(10, i))
+				int unlock = GetGameData()->secondaryUnlock;
+				if (GetGameData()->secondaryUnlock & (i + 1) || (i == 3 && GetGameData()->secondaryUnlock & 4))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
 					sfSprite_setTextureRect(menu.selectionMenu.generalIcon[i], menu.selectionMenu.textureRect[9 + (i * 1)]);
