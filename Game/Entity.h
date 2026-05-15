@@ -14,7 +14,6 @@ typedef struct BoxData
 	BoxEntity* entity;
 	unsigned count;
 	sfTexture* texture;
-	sfSound* breakSound;
 }BoxData;
 
 typedef struct ConveyorEntity

@@ -24,7 +24,6 @@ void LoadGame(void)
 	LoadCamera();
 	LoadParallax();
 	LoadPlayer();
-	LoadPlayer();
 	LoadMap();
 	SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
@@ -32,6 +31,7 @@ void LoadGame(void)
 	LoadBossBar(GetBossLifeAdress(), GetBossMaxLife());
 	//LoadGUI();
 	LoadWeapons();
+	LoadSounds();
 
 	TpPlayerToSpawn();
 

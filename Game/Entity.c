@@ -9,7 +9,8 @@ void LoadEntity(void)
 {
 	entity = (Entity){ 0 };
 	entity.boxData.texture = GetAsset("Assets/Sprites/Box.png");
-	entity.boxData.breakSound = CreateSound(GetAsset("Assets/Musics/box_break.ogg"), 0.1f, sfFalse);
+	entity.conveyorData.count = 0;
+	entity.conveyorData.entity = Calloc(1, sizeof(BoxEntity));
 	entity.conveyorData.texture = GetAsset("Assets/Sprites/conveyor.png");
 }
 
@@ -65,7 +66,7 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 		{
 			if (_destroy)
 			{
-				sfSound_play(entity.boxData.breakSound);
+				PlaySound(CATEGORY_GENERAL,GENERAL_BOX);
 				entity.boxData.count--;
 				DestroyVisualEntity(entity.boxData.entity[i].sprite);
 				if (entity.boxData.count)

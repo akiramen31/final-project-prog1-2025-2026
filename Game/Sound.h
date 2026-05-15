@@ -3,6 +3,8 @@
 
 #include "Common.h"
 
+#define MAX_SOUNDS 30
+
 typedef enum SoundCategory
 {
 	CATEGORY_PLAYER,
@@ -18,6 +20,7 @@ typedef enum PlayerSound
 {
 	PLAYER_DASH,
 	PLAYER_JUMP,
+	PLAYER_WALK,
 	PLAYER_LAND,
 	PLAYER_MELEE,
 	PLAYER_HURT,
@@ -58,27 +61,36 @@ typedef enum WeaponSound
 typedef enum SecondarySound
 {
 	DRONE_PASSIVE,
-	COLDBREATH,
+	COLDBREATH_SHOOT,
 	SECONDARY_SOUND_COUNT
 }SecondarySound;
 
 typedef enum GeneralSound
 {
 	GENERAL_EXPLOSION,
+	GENERAL_BOX,
 	GENERAL_SOUND_COUNT
 }GeneralSound;
 
+typedef struct BuffersList
+{
+	sfSoundBuffer* player[PLAYER_SOUND_COUNT];
+	sfSoundBuffer* ennemy[ENNEMY_SOUND_COUNT];
+	sfSoundBuffer* boss[BOSS_SOUND_COUNT];
+	sfSoundBuffer* weapon[WEAPON_SOUND_COUNT];
+	sfSoundBuffer* secondary[SECONDARY_SOUND_COUNT];
+	sfSoundBuffer* general[GENERAL_SOUND_COUNT];
+}BuffersList;
+
 typedef struct Sounds
 {
-	sfSound* player[PLAYER_SOUND_COUNT];
-	sfSound* ennemy[ENNEMY_SOUND_COUNT];
-	sfSound* boss[BOSS_SOUND_COUNT];
-	sfSound* weapon[WEAPON_SOUND_COUNT];
-	sfSound* secondary[SECONDARY_SOUND_COUNT];
-	sfSound* general[GENERAL_SOUND_COUNT] ;
+	sfSound* buffer[MAX_SOUNDS];
+	int currentPlayingCount;
 }Sounds;
 
 void LoadSounds(void);
 void PlaySound(SoundCategory _category, int _index);
+void StopSound(SoundCategory _category, int _index);
+void CleanUpFinishedSounds(void);
 
 #endif // !SOUND_H

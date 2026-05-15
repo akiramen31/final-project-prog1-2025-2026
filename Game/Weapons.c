@@ -9,7 +9,11 @@ void SetWeapon(WeaponType _type)
 
 void LoadWeapons(void)
 {
+	WeaponType temp = weapon.weaponType;
+	SecondaryType temp2 = weapon.secondaryData.secondaryType;
 	weapon = (Weapon){ 0 };
+	weapon.weaponType = temp;
+	weapon.secondaryData.secondaryType = temp2;
 	sfTexture* textureWeapon = GetAsset("Assets/Sprites/raygun.png");
 	weapon.railGun.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });

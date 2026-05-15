@@ -1,37 +1,121 @@
 #include "Sound.h"
 
-Sounds soundList;
+BuffersList soundList;
+Sounds sounds;
 
 void LoadSounds()
 {
-	soundList.boss[BOSS_DAMAGE];
-	soundList.boss[BOSS_MOVE];
-	soundList.boss[BOSS_SHOOT_MISSILE];
-	soundList.boss[BOSS_MISSILE_EXPLODE];
-	soundList.ennemy[ENNEMY_SHOOT];
-	soundList.ennemy[ENNEMY_HURT_LIGHT];
-	soundList.ennemy[ENNEMY_HURT_MEDIUM];
-	soundList.ennemy[ENNEMY_HURT_HEAVY];
-	soundList.general[GENERAL_EXPLOSION];
+	soundList.player[PLAYER_DASH] = GetAsset("Assets/Sounds/dash.ogg");
+	soundList.player[PLAYER_LAND] = GetAsset("Assets/Sounds/land.ogg");
+	soundList.player[PLAYER_WALK] = GetAsset("Assets/Sounds/land.ogg");
+	//soundList.boss[BOSS_DAMAGE];
+	soundList.boss[BOSS_MOVE] = GetAsset("Assets/Sounds/tracks_move.ogg");
+	soundList.boss[BOSS_SHOOT_MISSILE] = GetAsset("Assets/Sounds/missile_launch.ogg");
+	//soundList.ennemy[ENNEMY_SHOOT] = ;
+	//soundList.ennemy[ENNEMY_HURT_LIGHT];
+	soundList.ennemy[ENNEMY_HURT_MEDIUM] = GetAsset("Assets/Sounds/medium_armor.ogg");
+	soundList.ennemy[ENNEMY_HURT_HEAVY] = GetAsset("Assets/Sounds/heavy_armor.ogg");
+	soundList.general[GENERAL_EXPLOSION] = GetAsset("Assets/Sounds/explosion.ogg");
+	sounds.currentPlayingCount = 0;	
 }
 
-void PlaySound(SoundCategory _category, int _index)
+sfSound* PlaySound(SoundCategory _category, int _index)
 {
-	switch (_category)
+	if (sounds.currentPlayingCount <= MAX_SOUNDS)
 	{
-	case CATEGORY_PLAYER:
-		break;
-	case CATEGORY_ENNEMY:
-		break;
-	case CATEGORY_BOSS:
-		break;
-	case CATEGORY_WEAPON:
-		break;
-	case CATEGORY_SECONDARY:
-		break;
-	case CATEGORY_GENERAL:
-		break;
-	default:
-		break;
+		sounds.currentPlayingCount = +1;
+		switch (_category)
+		{
+		case CATEGORY_PLAYER:
+			if (_index < PLAYER_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.player[_index], GAME_VOLUME, sfTrue);
+				if (_index == PLAYER_JUMP)
+				{
+					sfSound_setLoop(sounds.buffer[sounds.currentPlayingCount], sfTrue);
+				}
+				return sounds.buffer[sounds.currentPlayingCount];
+			}
+			else
+			{
+				return;
+			}
+			break;
+		case CATEGORY_ENNEMY:
+			if (_index < PLAYER_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.ennemy[_index], GAME_VOLUME, sfTrue);
+			}
+			else
+			{
+				return;
+			}
+			return sounds.buffer[sounds.currentPlayingCount];
+			break;
+		case CATEGORY_BOSS:
+			if (_index < PLAYER_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.boss[_index], GAME_VOLUME, sfTrue);
+			}
+			else
+			{
+				return;
+			}
+			return sounds.buffer[sounds.currentPlayingCount];
+			break;
+		case CATEGORY_WEAPON:
+			if (_index < PLAYER_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.weapon[_index], GAME_VOLUME, sfTrue);
+			}
+			else
+			{
+				return;
+			}
+			return sounds.buffer[sounds.currentPlayingCount];
+			break;
+		case CATEGORY_SECONDARY:
+			if (_index < SECONDARY_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.secondary[_index], GAME_VOLUME, sfTrue);
+			}
+			else
+			{
+				return;
+			}
+			return sounds.buffer[sounds.currentPlayingCount];
+			break;
+		case CATEGORY_GENERAL:
+			if (_index < GENERAL_SOUND_COUNT)
+			{
+				sounds.buffer[sounds.currentPlayingCount] = CreateSound(soundList.general[_index], GAME_VOLUME, sfTrue);
+			}
+			else
+			{
+				return;
+			}
+			return sounds.buffer[sounds.currentPlayingCount];
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void CleanUpFinishedSounds(void)
+{
+	for (int i = 0; i < sounds.currentPlayingCount; i++)
+	{
+		if (sfSound_getStatus(sounds.buffer[i]) == sfStopped)
+		{
+			sfSound_destroy(sounds.buffer[i]);
+			sfSound* temp;
+			for (int j = i + 1; j < sounds.currentPlayingCount; j++)
+			{
+				temp = sounds.buffer[j+1];
+				sounds.buffer[j] = temp;
+			}
+			sounds.currentPlayingCount -= 1;
+		}
 	}
 }

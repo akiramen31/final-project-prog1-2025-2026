@@ -62,12 +62,6 @@ typedef struct Player
 	Animation jumping;
 	Animation idling;
 	Animation dashing;
-
-	sfSound* walkSound;
-	sfSound* jumpSound;
-	sfSound* hitSound;
-	sfSound* cutSound;
-	sfSound* shootSound;
 }Player;
 
 void LoadPlayer(void);

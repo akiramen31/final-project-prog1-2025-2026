@@ -82,12 +82,6 @@ void LoadPlayer(void)
 	player.ener.energyRegen = 10;
 	player.ener.energyRegenCooldown = 0.5f;
 	player.ener.dashConsuption = 5.f;
-
-	player.walkSound = CreateSound(GetAsset("Assets/Musics/walk.ogg"), 0.5f, sfFalse);
-	player.jumpSound = CreateSound(GetAsset("Assets/Musics/lumora_studios-pixel-jump-319167.ogg"), 0.25f, sfFalse);
-	player.hitSound = CreateSound(GetAsset("Assets/Musics/sumaga123-metallic-thud-447690.ogg"), 0.5f, sfFalse);
-	player.cutSound = CreateSound(GetAsset("Assets/Musics/alexis_gaming_cam-katana-370403.ogg"), 0.2f, sfFalse);
-	player.shootSound = CreateSound(GetAsset("Assets/Musics/universfield-gunshot-352466.ogg"), 0.5f, sfFalse);
 }
 
 void UpdatePlayer(sfBool _intro, float _dt)
@@ -255,7 +249,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 			{
 				if (IfControlKeyPressed(KEY_JUMP) && !_intro)
 				{
-					sfSound_play(player.jumpSound);
+					PlaySound(CATEGORY_PLAYER, PLAYER_JUMP);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
 					timerFaling += PLAYER_JUMP_FORGIVE;
@@ -419,9 +413,13 @@ void UpdateAnimation(float _dt)
 		{
 			if (player.velocity.x != 0)
 			{
-				if (!player.running.timeActualy && sfSound_getStatus(player.walkSound) != sfPlaying)
+				if (!player.running.timeActualy)
 				{
-					sfSound_play(player.walkSound);
+					PlaySound(CATEGORY_PLAYER, PLAYER_WALK);
+				}
+				else
+				{
+					StopSound(CATEGORY_PLAYER, PLAYER_WALK);
 				}
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
 			}
@@ -483,7 +481,7 @@ void DamagePlayer(int _damage)
 		{
 			if (timerDash >= PLAYER_DASH_COOLDOWN && timerlastDamageReceive >= PLAYER_DAMAGE_IMUNITY_DURATION)
 			{
-				sfSound_play(player.hitSound);
+				PlaySound(CATEGORY_PLAYER, PLAYER_HURT);
 				player.life -= _damage;
 				timerlastDamageReceive = 0;
 			}
@@ -621,7 +619,6 @@ void UpdateFireControlRailgun(void)
 {
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
-		sfSound_play(player.shootSound);
 		UseWeaponRailgun(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
@@ -630,7 +627,6 @@ void UpdateFireControlMisteal(void)
 {
 	if (GetBulletCount() < MISTEAL_ALLY_MAX)
 	{
-		sfSound_play(player.shootSound);
 		UseWeaponMisteal(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
 	}
 }
@@ -641,7 +637,6 @@ void UpdateFireControlSteamAxe(float _dt)
 	{
 		if (player.canShoot)
 		{
-			sfSound_play(player.cutSound);
 			player.pressTime += _dt;
 		}
 	}
