@@ -30,8 +30,22 @@ typedef struct ConveyorData
 	sfTexture* texture;
 }ConveyorData;
 
+typedef struct BluePrintEntity
+{
+	sfSprite* sprite;
+	int type;
+}BluePrintEntity;
+
+typedef struct BluePrint
+{
+	BluePrintEntity* entity;
+	sfTexture* texture;
+	int count;
+}BluePrint;
+
 typedef struct Entity
 {
+	BluePrint bluePrint;
 	BoxData boxData;
 	ConveyorData conveyorData;
 }Entity;

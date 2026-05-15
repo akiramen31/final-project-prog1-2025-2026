@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup.h" />
+    <ClInclude Include="BluePrint.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameOver.h" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Backup.c" />
+    <ClCompile Include="BluePrint.c" />
     <ClCompile Include="Boss.c" />
     <ClCompile Include="Entity.c" />
     <ClCompile Include="GameOver.c" />
