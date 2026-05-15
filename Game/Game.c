@@ -11,6 +11,7 @@
 #include "Projectiles.h"
 
 void KeyPressedGame(sfKeyEvent* _keyEvent);
+sfBool CheckPlayerEndLevel(void);
 
 Game game;
 
@@ -47,7 +48,7 @@ void LoadGame(void)
 	switch (GetCurrentMap())
 	{
 	case 0:
-		game.timerDurationStartLevel = 2.9f;
+		game.timerDurationStartLevel = 3.f;
 		break;
 	case 1:
 	case 2:
@@ -143,7 +144,7 @@ void KeyPressedGame(sfKeyEvent* _keyEvent)
 		case sfKeyF7:
 			TpPlayerBoss();
 			break;
-		case sfKeyF12:
+		case sfKeyF11:
 			KillPlayer();
 			break;
 		default:
@@ -180,6 +181,14 @@ void UpdateGame(float _dt)
 				MovePlayer(UpdateElevator(GetPlayerRect(), GetPlayerPosition(), _dt));
 
 				UpdateEntity(_dt);
+
+				//if (!IsBossActive())
+				{
+					if (CheckPlayerEndLevel())
+					{
+						SetGameState(GAME_OVER);
+					}
+				}
 			}
 			else
 			{
@@ -240,4 +249,26 @@ void UpdateGame(float _dt)
 	{
 		//UpdateGUI(_dt);
 	}
+}
+
+sfBool CheckPlayerEndLevel(void)
+{
+	InfoZone* zone = GetInfoZoneTriger(GetPlayerRect());
+	int num = GetTrigerCount();
+
+	if (zone != 0)
+	{
+		for (int i = 0; i < num; i++)
+		{
+			if (IsPointInFloatRect(GetPlayerCenterPosition(), &zone[i].hitbox))
+			{
+				if (StringCompare(zone[i].type, "EndLevel"))
+				{
+					return sfTrue;
+				}
+			}
+		}
+	}
+
+	return sfFalse;
 }

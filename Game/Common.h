@@ -169,7 +169,7 @@ void FusionString(char* _buffer, int _count, char** _strings);
 void TransformIntToString(char* _buffer, int _value);
 int GetSizeString(char* _string);
 sfBool UpdateTextHighlightTextColor(sfText* _text, sfColor _base, sfColor _highlight, sfVector2f _posMouse);
-#include "EntityManager.h"
+
 #include "Map.h"
 
 #endif // !COMMON_H

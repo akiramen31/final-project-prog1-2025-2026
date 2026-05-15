@@ -19,12 +19,12 @@ typedef struct BoxData
 typedef struct ConveyorEntity
 {
 	sfSprite* sprite;
-	Animation animation;
 }ConveyorEntity;
 
 typedef struct ConveyorData
 {
 	ConveyorEntity* entity;
+	Animation animation;
 	unsigned count;
 	sfTexture* texture;
 }ConveyorData;
@@ -35,16 +35,16 @@ typedef struct BluePrintEntity
 	int type;
 }BluePrintEntity;
 
-typedef struct BluePrint
+typedef struct BluePrintData
 {
 	BluePrintEntity* entity;
 	sfTexture* texture;
 	int count;
-}BluePrint;
+}BluePrintData;
 
 typedef struct Entity
 {
-	BluePrint bluePrint;
+	BluePrintData bluePrintData;
 	BoxData boxData;
 	ConveyorData conveyorData;
 }Entity;
