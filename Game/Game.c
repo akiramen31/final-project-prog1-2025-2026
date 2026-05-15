@@ -162,7 +162,7 @@ void UpdateGame(float _dt)
 			{
 				if (GetPlayerLife() <= 0)
 				{
-					SetGameState(GAME);
+					SetGameState(GAME_OVER);
 					return;
 				}
 

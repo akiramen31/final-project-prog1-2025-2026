@@ -183,7 +183,7 @@ void LoadElevatorLevel1(void)
 		elevatorList[i].numberLevel = 2;
 		elevatorList[i].posYlevel[0] = 752.f + DECAL;
 		elevatorList[i].posYlevel[1] = 272.f + DECAL;
-		elevatorList[i].actualLevel = 1;
+		elevatorList[i].actualLevel = i;
 	}
 
 	sfRectangleShape_setPosition(elevatorList[0].hitbox[0], (sfVector2f) { 1248, elevatorList[0].posYlevel[1] });

@@ -29,14 +29,14 @@ void LoadEntityManager(void)
 
 void LoadGeneralAsset(void)
 {
-	void* ptr = GetAsset("Assets/Fonts/Daydream.otf");
+	void* ptr = GetAsset(FONT);
 	entityManager.generalAssetCount = entityManager.assetCount;
 }
 
 void Draw(void)
 {
-	sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
-	//sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
+	//sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
+	sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
 
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
@@ -228,6 +228,7 @@ void CleanupLocal(void)
 	{
 		free(entityManager.callocList[i]);
 	}
+	entityManager.callocList = realloc(entityManager.callocList, sizeof(void*));
 	entityManager.callocListCount = 0;
 }
 
@@ -694,17 +695,15 @@ void* Calloc(size_t _count, size_t _size)
 void* Realloc(void* _block, size_t _size)
 {
 	void* temp = realloc(_block, _size);
-	if (!temp)
+	if (temp)
 	{
-		exit(EXIT_FAILURE);
-	}
-
-	for (int i = 0; i < entityManager.callocListCount; i++)
-	{
-		if (entityManager.callocList[i] == _block)
+		for (int i = 0; i < entityManager.callocListCount; i++)
 		{
-			entityManager.callocList[i] = temp;
-			return temp;
+			if (entityManager.callocList[i] == _block)
+			{
+				entityManager.callocList[i] = temp;
+				return temp;
+			}
 		}
 	}
 	return temp;
@@ -714,20 +713,22 @@ void Free(void* _ptr)
 {
 	if (_ptr)
 	{
+		free(_ptr);
 		for (int i = 0; i < entityManager.callocListCount; i++)
 		{
 			if (_ptr == entityManager.callocList[i])
 			{
-				free(_ptr);
-
 				entityManager.callocListCount--;
 				entityManager.callocList[i] = entityManager.callocList[entityManager.callocListCount];
-				void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
-				if (!temp)
+				if (entityManager.callocListCount)
 				{
-					return;
+					void** temp = realloc(entityManager.callocList, entityManager.callocListCount * sizeof(SoundEntity));
+					if (!temp)
+					{
+						return;
+					}
+					entityManager.callocList = temp;
 				}
-				entityManager.callocList = temp;
 				return;
 			}
 		}

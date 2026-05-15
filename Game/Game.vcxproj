@@ -24,6 +24,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="JetSteam.h" />
+    <ClInclude Include="LoadGameSave.h" />
     <ClInclude Include="Projectiles.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CjsonB.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="StartGame.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="HUD.h" />
@@ -47,6 +49,7 @@
     <ClCompile Include="Entity.c" />
     <ClCompile Include="GameOver.c" />
     <ClCompile Include="JetSteam.c" />
+    <ClCompile Include="LoadGameSave.c" />
     <ClCompile Include="Projectiles.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="CjsonB.c" />
@@ -55,6 +58,7 @@
     <ClCompile Include="Enemy.c" />
     <ClCompile Include="EntityManager.c" />
     <ClCompile Include="Game.c" />
+    <ClCompile Include="Sound.c" />
     <ClCompile Include="StartGame.c" />
     <ClCompile Include="GUI.c" />
     <ClCompile Include="HUD.c" />

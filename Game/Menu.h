@@ -4,6 +4,7 @@
 #include "Common.h"
 
 #define NB_INFO_BUTTONS 6
+#define CREDIT_COUNT 5
 #define KEY_COUNT 8
 #define MAX_INFO 6
 #define MUSIC_COUNT 5
@@ -43,7 +44,7 @@ typedef struct MainMenu
 	sfTexture* textBox[2];
 	sfSprite* infoBox;
 	sfSprite* logo[2];
-	sfText* topButtons[5];
+	sfText* topButtons[4];
 	sfText* infoDisplay[6];
 	sfText* keyType[KEY_COUNT];
 	sfText* key[KEY_COUNT];
@@ -59,6 +60,10 @@ typedef struct SelectionMenu
 	sfIntRect textureRect[RECT_COUNT];
 	int selectedOption;
 	sfText* bottomText[2];
+	sfText* descriptionText;
+	char* mapDesc[MAP_COUNT];
+	char* weaponDesc[WEAPON_COUNT];
+	char* secondaryDesc[SECONDARY_COUNT];
 }SelectionMenu;
 
 typedef struct Menu

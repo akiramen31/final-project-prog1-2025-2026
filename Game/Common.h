@@ -22,6 +22,8 @@
 #define PLAYER_COLLISION_HEIGHT 30
 #define WEAPON_ORIGIN PLAYER_COLLISION_HEIGHT * 0.75f - 1.0f
 
+#define FONT "Assets/Fonts/GallaeciaForte.ttf"
+
 #define BPP 32
 
 #define MAP_COUNT 3
@@ -44,6 +46,8 @@
 #define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
 #define FREEZE_TIMER 4.f
 #define FREEZE_DMG -1.f
+
+#define COLOR_ORANGE (sfColor){ 255, 165, 0 , 255 }
 
 #define G 5.81f
 //#define G 9.81f
@@ -150,7 +154,7 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animati
 sfBool UpdateAdvencedAnimationAndGiveIfStop(sfSprite* const _sprite, AdvencedAnimation* const _animation, const float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddle(sfSprite* _sprite);
-void CopyStingToBuffer(char* _buffer, char* _string);
+void CopyStringToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void FreeGrid(void** grid);
@@ -160,7 +164,10 @@ float MoveTowardsAngle(float _current, float _target, float _speed, float _dt);
 sfBool VerificationEntityIsNotInMap(sfFloatRect _rect);
 void ScaleImage(sfImage** _image, int _scale);
 sfBool IsPointInFloatRect(sfVector2f _pos, sfFloatRect* _rect);
-
+void FusionString(char* _buffer, int _count, char** _strings);
+void TransformIntToString(char* _buffer, int _value);
+int GetSizeString(char* _string);
+sfBool UpdateTextHighlightTextColor(sfText* _text, sfColor _base, sfColor _highlight, sfVector2f _posMouse);
 #include "EntityManager.h"
 #include "Map.h"
 

@@ -42,11 +42,35 @@ typedef enum IntSave
 
 }IntSave;
 
-typedef struct Backup
+typedef struct GameData
+{
+	int levelUnlock;
+	int weaponUnlock;
+	int score1;
+	int score2;
+	int score3;
+}GameData;
+
+typedef struct GameSave
+{
+	char** name;
+	int count;
+
+	GameData dataActualy;
+	int actualy;
+}GameSave;
+
+typedef struct Parametre
 {
 	float valueFloat[FLOAT_COUNT];
 	char valueKey[KEY_COUNT];
 	int valueInt[INT_COUNT];
+}Parametre;
+
+typedef struct Backup
+{
+	Parametre parametre;
+	GameSave gameSave;
 }Backup;
 
 void LoadBackup(void);
@@ -66,6 +90,12 @@ int GetIntFromSave(IntSave _index);
 void SetIntToSave(IntSave _index, int _value);
 void AddIntToSave(IntSave _index, int _value);
 
-void SetSaveTemp(const void* _buffer, size_t _size, size_t _count);
-void GetSaveTemp(void* _buffer, size_t _size, size_t _count);
+void LoadGameData(int _index);
+GameSave* GetGameSave(void);
+GameData* GetGameData(void);
+void RenameSave(char* _new);
+void SaveGameData(void);
+void DestroySave(void);
+void AddGameSave(void);
+char CheckIfSaveExist(char* _newName);
 #endif // !BACKUP_H
