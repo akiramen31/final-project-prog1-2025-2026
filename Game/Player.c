@@ -10,6 +10,7 @@ float timerDash = 0;
 float timerFaling = 0;
 float timerLastEnergyConso = 0;
 float timerlastDamageReceive = PLAYER_DAMAGE_IMUNITY_DURATION;
+float timerHit = 0;
 
 sfBool playerInvicible = sfFalse;
 
@@ -71,6 +72,10 @@ void LoadPlayer(void)
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
+
+	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 16, 8 }, sfTransparent, sfRed, 40.f);
+	timerHit = PLAYER_HIT_COOLDOWN;
+
 	posFly.x = 100;
 	posFly.y = 32;
 
@@ -87,7 +92,7 @@ void LoadPlayer(void)
 void UpdatePlayer(sfBool _intro, float _dt)
 {
 	player.weapon = GetWeapon();
-	
+
 	if (!_intro)
 	{
 		UpdateWeaponPlayer(_dt);
@@ -131,8 +136,56 @@ void UpdatePlayer(sfBool _intro, float _dt)
 
 	MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 
+	if (timerHit > PLAYER_HIT_COOLDOWN)
+	{
+		if (IfControlKeyPressed(KEY_HIT))
+		{
+			timerHit = 0;
+			player.hitBoss = sfFalse;
+			player.hitEnemy = sfFalse;
+
+			if (player.weapon.isRight)
+			{
+				sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { 1, 1 });
+			}
+			else
+			{
+				sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { -1, 1 });
+			}
+		}
+		else
+		{
+			sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { 0, 0 });
+		}
+	}
+	if (timerHit <= PLAYER_HIT_COOLDOWN)
+	{
+		timerHit += _dt;
+	}
+
+	if (timerHit <= PLAYER_HIT_DURATION)
+	{
+		sfVector2f posPlayer = GetPlayerPosition();
+		posPlayer.y -= WEAPON_ORIGIN;
+		sfRectangleShape_setPosition(player.hitCollisionSize, posPlayer);
+
+		sfFloatRect rect = sfRectangleShape_getGlobalBounds(player.hitCollisionSize);
+		ColisionBox(rect,sfTrue,AXIS_BOTH);
+		ColisionElevatorButon(rect);
+		if (HitBoss(PLAYER_HIT_DAMAGE, rect, MEDIUM) && !player.hitBoss)
+		{
+			player.hitBoss = sfTrue;
+		}
+		if (HitEnemy(PLAYER_HIT_DAMAGE, rect, MEDIUM) && !player.hitEnemy)
+		{
+			player.hitEnemy = sfTrue;
+		}
+	}
+
+
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
+		KillPlayer();
 		SetPlayerPosition(player.spawn);
 	}
 
@@ -301,7 +354,7 @@ void ColisionMapPlayer(float _dt)
 
 	reactionY.y += ColisionBox(GetPlayerRect(), sfFalse, AXIS_Y).y;
 	reactionY.y += ColisionElevator(GetPlayerRect(), AXIS_Y).y;
-	reactionY.y += ColisionBossplayer(GetPlayerRect(),AXIS_Y).y;
+	reactionY.y += ColisionBossplayer(GetPlayerRect(), AXIS_Y).y;
 
 	if (reactionPassThrough.y < 0)
 	{
@@ -598,7 +651,7 @@ void UpdateFireControl(float _dt)
 	if (DEV_WEAPON)
 	{
 		static sfBool k_wasPressed = sfFalse;
-		
+
 
 		if (sfKeyboard_isKeyPressed(sfKeyK))
 		{

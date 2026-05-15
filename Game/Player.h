@@ -16,6 +16,10 @@
 
 #define PLAYER_JUMP_FORGIVE 0.1f
 
+#define PLAYER_HIT_COOLDOWN 0.5f
+#define PLAYER_HIT_DURATION 0.5f
+#define PLAYER_HIT_DAMAGE 10.f
+
 #define PLAYER_DAMAGE_IMUNITY_DURATION 2.f
 
 #define PLAYER_MAX_HEALTH 10
@@ -36,6 +40,10 @@ typedef struct Player
 	sfRectangleShape* collision;
 
 	Weapon weapon;
+
+	sfRectangleShape* hitCollisionSize;
+	sfBool hitBoss;
+	sfBool hitEnemy;
 
 	int life;
 	int lifeMax;
