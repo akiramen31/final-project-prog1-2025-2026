@@ -171,7 +171,6 @@ void UpdateGame(float _dt)
 				{
 					UpdateBoss(GetPlayerPosition(), _dt);
 				}
-				UpdateMap(_dt);
 
 				UpdatePlayer(sfFalse, _dt);
 				UpdateEnemy(_dt);
@@ -206,7 +205,6 @@ void UpdateGame(float _dt)
 
 		if (game.timerStartLevel < game.timerDurationStartLevel)
 		{
-			UpdateMap(_dt);
 			UpdatePlayer(sfTrue, _dt);
 
 			sfVector2f pos = GetPlayerCenterPosition();

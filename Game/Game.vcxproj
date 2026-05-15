@@ -23,7 +23,6 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="JetSteam.h" />
     <ClInclude Include="LoadGameSave.h" />
     <ClInclude Include="Projectiles.h" />
     <ClInclude Include="Camera.h" />
@@ -48,7 +47,6 @@
     <ClCompile Include="Boss.c" />
     <ClCompile Include="Entity.c" />
     <ClCompile Include="GameOver.c" />
-    <ClCompile Include="JetSteam.c" />
     <ClCompile Include="LoadGameSave.c" />
     <ClCompile Include="Projectiles.c" />
     <ClCompile Include="Camera.c" />

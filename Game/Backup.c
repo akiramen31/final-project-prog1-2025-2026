@@ -16,29 +16,6 @@ void LoadBackup(void)
 		backup.parametre.valueFloat[LIGHT_LEVEL] = 1.f;
 	}
 	fclose(file);
-
-	backup.gameSave.name = Calloc(1, sizeof(char*));
-	WIN32_FIND_DATAA entry = { 0 };
-	backup.gameSave.count = 0;
-	HANDLE h = FindFirstFileA("Saves.\\*", &entry);
-	if (h != -1)
-	{
-		do {
-			if (!(entry.cFileName[0] == '.' && (entry.cFileName[1] == '\0' || (entry.cFileName[1] == '.' && entry.cFileName[2] == '\0'))) && entry.dwFileAttributes == 32)
-			{
-				backup.gameSave.name = Realloc(backup.gameSave.name, (size_t)(backup.gameSave.count + 1) * sizeof(char*));
-				int i = 0;
-				while (entry.cFileName[i])
-				{
-					i++;
-				}
-				backup.gameSave.name[backup.gameSave.count] = StringCopy(entry.cFileName);
-				backup.gameSave.count++;
-			}
-		} while (FindNextFileA(h, &entry));
-		FindClose(h);
-	}
-	backup.gameSave.actualy = -1;
 }
 
 void SaveBackup(void)
@@ -122,6 +99,12 @@ void LoadGameData(int _index)
 			fread(&backup.gameSave.dataActualy, sizeof(GameData), 1, file);
 			fclose(file);
 		}
+		int i = 0;
+		while (backup.gameSave.name[_index][i])
+		{
+			backup.gameSave.nameActualy[i] = backup.gameSave.name[_index][i];
+			i++;
+		}
 		backup.gameSave.actualy = _index;
 	}
 }
@@ -137,13 +120,19 @@ void RenameSave(char* _newName)
 {
 	char buffer[40] = { 0 };
 	char buffer2[40] = { 0 };
-	char* temp[2] = { "Saves/" , backup.gameSave.name[backup.gameSave.actualy] };
+	char* temp[2] = { "Saves/" , backup.gameSave.nameActualy };
 	char* temp2[2] = { "Saves/" , _newName };
 	FusionString(buffer, 2, temp);
 	FusionString(buffer2, 2, temp2);
 	int i = rename(buffer, buffer2);
 	Free(backup.gameSave.name[backup.gameSave.actualy]);
-	backup.gameSave.name[backup.gameSave.actualy] = StringCopy(_newName);
+	backup.gameSave.name[backup.gameSave.actualy] = StringCopy(_newName); 
+	i = 0;
+	while (_newName[i])
+	{
+		backup.gameSave.nameActualy[i] = _newName[i];
+		i++;
+	}
 }
 void DestroySave(void)
 {
@@ -160,7 +149,7 @@ void DestroySave(void)
 		{
 			backup.gameSave.name[i] = backup.gameSave.name[i + 1];
 		}
-		if (backup.gameSave.actualy == backup.gameSave.count)
+		if (!(backup.gameSave.actualy < backup.gameSave.count))
 		{
 			backup.gameSave.actualy = -1;
 		}
@@ -171,7 +160,7 @@ void SaveGameData(void)
 	if (backup.gameSave.actualy != -1)
 	{
 		char buffer[40] = { 0 };
-		char* temp[2] = { "Saves/" , backup.gameSave.name[backup.gameSave.actualy] };
+		char* temp[2] = { "Saves/" ,backup.gameSave.nameActualy };
 		FusionString(buffer, 2, temp);
 		FILE* file = fopen(buffer, "w");
 		if (file)
@@ -224,10 +213,7 @@ void AddGameSave(void)
 	backup.gameSave.name[backup.gameSave.count] = StringCopy(buffer);
 	backup.gameSave.actualy = backup.gameSave.count;
 	backup.gameSave.count++;
-	backup.gameSave.dataActualy = (GameData){ 0 };
-	backup.gameSave.dataActualy.levelUnlock = 1;
-	backup.gameSave.dataActualy.weaponUnlock = 1;
-	backup.gameSave.dataActualy.secondaryUnlock = 0;
+	backup.gameSave.dataActualy = (GameData){ 1, 1 };
 	char bigBuffer[40] = { 0 };
 	char* temp[2] = { "Saves/" , buffer };
 	FusionString(bigBuffer, 2, temp);
@@ -236,8 +222,13 @@ void AddGameSave(void)
 	{
 		fclose(file);
 	}
+	int i = 0;
+	while (buffer[i])
+	{
+		backup.gameSave.nameActualy[i] = buffer[i];
+		i++;
+	}
 }
-
 char CheckIfSaveExist(char* _newName)
 {
 	for (int i = 0; i < backup.gameSave.count; i++)
@@ -248,4 +239,29 @@ char CheckIfSaveExist(char* _newName)
 		}
 	}
 	return 0;
+}
+void RechargeSaves(void)
+{
+	backup.gameSave.name = Calloc(1, sizeof(char*));
+	WIN32_FIND_DATAA entry = { 0 };
+	backup.gameSave.count = 0;
+	HANDLE h = FindFirstFileA("Saves.\\*", &entry);
+	if (h != -1)
+	{
+		do {
+			if (!(entry.cFileName[0] == '.' && (entry.cFileName[1] == '\0' || (entry.cFileName[1] == '.' && entry.cFileName[2] == '\0'))) && entry.dwFileAttributes == 32)
+			{
+				backup.gameSave.name = Realloc(backup.gameSave.name, (size_t)(backup.gameSave.count + 1) * sizeof(char*));
+				int i = 0;
+				while (entry.cFileName[i])
+				{
+					i++;
+				}
+				backup.gameSave.name[backup.gameSave.count] = StringCopy(entry.cFileName);
+				backup.gameSave.count++;
+			}
+		} while (FindNextFileA(h, &entry));
+		FindClose(h);
+	}
+	backup.gameSave.actualy = -1;
 }

@@ -84,13 +84,14 @@ typedef struct BuffersList
 
 typedef struct Sounds
 {
-	sfSound* buffer[MAX_SOUNDS];
+	sfSound* sound[MAX_SOUNDS];
+	sfSoundBuffer* buffer[SOUND_CATEGORY_COUNT][WEAPON_SOUND_COUNT];
 	int currentPlayingCount;
 }Sounds;
 
 void LoadSounds(void);
-void PlaySound(SoundCategory _category, int _index);
-void StopSound(SoundCategory _category, int _index);
+void StopSound(sfSound* _sound);
+sfSound* PlaySound(SoundCategory _category, int _index);
 void CleanUpFinishedSounds(void);
 
 #endif // !SOUND_H

@@ -27,9 +27,6 @@ typedef struct MapData
 	InfoZone* point;
 	int pointCount;
 
-	InfoZone* jet;
-	int jetCount;
-
 	sfVector2u size;
 	sfVector2f caseSize;
 	unsigned** caseImage;
@@ -52,7 +49,6 @@ typedef struct Map
 }Map;
 
 void LoadMap(void);
-void UpdateMap(float _dt);
 void SetCurrentMap(MapState _map);
 MapState GetCurrentMap(void);
 

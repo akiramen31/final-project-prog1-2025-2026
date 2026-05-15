@@ -8,7 +8,13 @@ LoadGameSave data;
 void LoadLoadGameSave(sfFont* _font)
 {
 	data = (LoadGameSave){ 0 };
+	RechargeSaves();
 	GameSave* gameSave = GetGameSave();
+
+	for (int i = 0; i < gameSave->count; i++)
+	{
+		printf("%s\n",gameSave->name[i]);
+	}
 
 	for (int i = 0; i < NB_SAVE; i++)
 	{
@@ -50,19 +56,19 @@ void KeyPressedLoadGameSave(sfEvent* _event)
 	{
 		char buffer[11] = { 0 };
 		char caractere = GetCaractere(_event->key.code);
-		char* nameAct = sfText_getString(data.name);
-		int size = GetSizeString(nameAct);
+		GameSave* gameSave = GetGameSave();
+		char* actual = sfText_getString(data.name);
+		int size = GetSizeString(actual);
 		if (_event->key.code == sfKeyEnter)
 		{
-			if (GetSizeString(nameAct) && CompareColor(sfRectangleShape_getFillColor(data.rect), sfGreen))
+			if (GetSizeString(actual) && CompareColor(sfRectangleShape_getFillColor(data.rect), sfGreen))
 			{
-				RenameSave(nameAct);
+				RenameSave(actual);
 				ReloadLoadGameSave();
 			}
 			else
 			{
-				GameSave* gameSave = GetGameSave();
-				sfText_setString(data.name, gameSave->name[gameSave->actualy]);
+				sfText_setString(data.name, gameSave->nameActualy);
 				ReloadLoadGameSave();
 			}
 			data.nameTrigger = 0;
@@ -71,9 +77,9 @@ void KeyPressedLoadGameSave(sfEvent* _event)
 		else if (caractere)
 		{
 			int i = 0;
-			while (nameAct[i])
+			while (actual[i])
 			{
-				buffer[i] = nameAct[i];
+				buffer[i] = actual[i];
 				i++;
 			}
 
@@ -87,7 +93,6 @@ void KeyPressedLoadGameSave(sfEvent* _event)
 				buffer[size - 1] = 0;
 				sfText_setString(data.name, buffer);
 			}
-			GameSave* gameSave = GetGameSave();
 			if ((StringCompare(buffer, gameSave->name[gameSave->actualy]) || !CheckIfSaveExist(buffer)) && GetSizeString(buffer))
 			{
 				sfRectangleShape_setFillColor(data.rect, sfGreen);
@@ -110,6 +115,7 @@ int MouseButtonPressedLoadGameSave(sfMouseButtonEvent* _mouseButtonEvent)
 		sfFloatRect rect = sfRectangleShape_getGlobalBounds(data.rect);
 		if (rect.left < _mouseButtonEvent->x && rect.left + rect.width > _mouseButtonEvent->x && rect.top < _mouseButtonEvent->y && rect.top + rect.height > _mouseButtonEvent->y)
 		{
+			sfRectangleShape_setFillColor(data.rect, sfGreen);
 			data.nameTrigger = 1;
 		}
 		else
@@ -142,10 +148,11 @@ int MouseButtonPressedLoadGameSave(sfMouseButtonEvent* _mouseButtonEvent)
 		if (gameSave->actualy == -1)
 		{
 			AddGameSave();
+#ifdef DEV_MODE
 			gameSave->dataActualy.levelUnlock = 3;
 			gameSave->dataActualy.weaponUnlock = 7;
 			gameSave->dataActualy.secondaryUnlock = 7;
-			SaveGameData();
+#endif
 			ReloadLoadGameSave();
 			return 1;
 		}
@@ -267,21 +274,16 @@ void ReloadLoadGameSave(void)
 
 	char bufferNb[11] = { 0 };
 	char buffer[30] = { 0 };
-	char* temp[2] = { "Lever 1: ", bufferNb };
+	char* bufferL[LEVEL_TEST] = { "Lever 1: " , "Lever 2: " , "Lever 3: " };
+	char* temp[2] = { bufferL[0], bufferNb};
 
-	TransformIntToString(bufferNb, gameSave->dataActualy.score1);
-	FusionString(buffer, 2, temp);
-	sfText_setString(data.score[0], buffer);
-
-	temp[0] = "Lever 2: ";
-	TransformIntToString(bufferNb, gameSave->dataActualy.score2);
-	FusionString(buffer, 2, temp);
-	sfText_setString(data.score[1], buffer);
-
-	temp[0] = "Lever 3: ";
-	TransformIntToString(bufferNb, gameSave->dataActualy.score3);
-	FusionString(buffer, 2, temp);
-	sfText_setString(data.score[2], buffer);
+	for (int i = 0; i < LEVEL_TEST; i++)
+	{
+		temp[0] = bufferL[i];
+		TransformIntToString(bufferNb, gameSave->dataActualy.score[i]);
+		FusionString(buffer, 2, temp);
+		sfText_setString(data.score[i], buffer);
+	}
 
 	temp[0] = "Unlocked: ";
 	TransformIntToString(bufferNb, gameSave->dataActualy.levelUnlock);

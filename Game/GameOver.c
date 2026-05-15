@@ -23,43 +23,17 @@ void LoadGameOver(void)
 	int live = GetPlayerLife();
 
 	score = GetIntFromSave(CURRENT_SCORE);
-
 	MapState map = GetCurrentMap();
-
-	switch (map)
+	GameData* gameData = GetGameData();
+	if (highScore < gameData->score[map])
 	{
-	case LEVEL1:
-		highScore = GetIntFromSave(HIGH_SCORE_1);
-		break;
-	case LEVEL2:
-		highScore = GetIntFromSave(HIGH_SCORE_2);
-		break;
-	case LEVEL3:
-		highScore = GetIntFromSave(HIGH_SCORE_3);
-		break;
-	default:
-		break;
+		highScore = gameData->score[map] = score;
 	}
-
-	if (score > highScore)
+	else
 	{
-		highScore = score;
-
-		switch (map)
-		{
-		case LEVEL1:
-			SetIntToSave(HIGH_SCORE_1, highScore);
-			break;
-		case LEVEL2:
-			SetIntToSave(HIGH_SCORE_2, highScore);
-			break;
-		case LEVEL3:
-			SetIntToSave(HIGH_SCORE_3, highScore);
-			break;
-		default:
-			break;
-		}
+		highScore = gameData->score[map];
 	}
+	SaveGameData();
 
 #pragma region button
 	for (int i = 0; i < 2; i++)

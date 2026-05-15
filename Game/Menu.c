@@ -135,24 +135,6 @@ void LoadMenu(void)
 	sfText_setString(menu.selectionMenu.bottomText[0], "next");
 	sfText_setString(menu.selectionMenu.bottomText[1], "back");
 
-	if (DEV_MODE)
-	{
-		SetIntToSave(UNLOCKED_LEVEL, 0);
-		SetIntToSave(UNLOCKED_WEAPON, 0);
-		SetIntToSave(UNLOCKED_SECONDARY, 0);
-		for (int i = 0; i < 3; i++)
-		{
-			AddIntToSave(UNLOCKED_LEVEL, pow(10, i));
-		}
-		for (int i = 0; i < WEAPON_COUNT; i++)
-		{
-			AddIntToSave(UNLOCKED_WEAPON, pow(10, i));
-		}
-		for (int i = 0; i < SECONDARY_COUNT; i++)
-		{
-			AddIntToSave(UNLOCKED_SECONDARY, pow(10, i));
-		}
-	}
 	SetCurrentMap(-1);
 	SetWeapon(-1);
 	SetSecondaryType(-1);
@@ -204,9 +186,9 @@ void KeyPressedMenu(sfEvent* _event)
 
 		}
 		return;
-	case sfKeyEnter:
-		SetGameState(GAME_OVER);
-		break;
+	//case sfKeyEnter:
+	//	SetGameState(GAME_OVER);
+	//	break;
 	default:
 		break;
 	}
@@ -458,7 +440,7 @@ void MouseMovedMenu(sfMouseMoveEvent* _mouseMovedEvent)
 	sfFloatRect hitbox;
 	if (menu.state < 5)
 	{
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			UpdateTextHighlightTextColor(menu.mainMenu.topButtons[i], menu.textColor, menu.highlightTextColor, posMouse);
 		}
