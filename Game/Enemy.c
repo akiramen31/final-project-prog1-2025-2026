@@ -93,7 +93,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
 			{
 				enemy.entity[_i].shootTimer = 0;
-				SpawnGrenade(GetPositionEnemy(_i), (float){enemy.entity[_i].type % GROUND_HEAVY}, (float) { enemy.entity[_i].type% GROUND_HEAVY });
+				SpawnGrenade(GetPositionEnemy(_i), (float) { enemy.entity[_i].type% GROUND_HEAVY }, (float) { enemy.entity[_i].type% GROUND_HEAVY });
 			}
 		}
 		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
@@ -911,7 +911,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 		for (int i = 0; i < ALEATORY; i++)
 		{
-			FreeGrid(enemy.tableau.grid[_enemy->type]);
+			FreeGrid(enemy.tableau.grid[i]);
 			enemy.tableau.grid[i] = CreateGrid(gridSize.x, gridSize.y, sizeof(Case2));
 		}
 		FreeGrid(enemy.tableau.collision);
@@ -958,7 +958,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 	bouns.left -= _enemy->region.left;
 	bouns.top -= _enemy->region.top + 1;
 	sfIntRect bounsEnemy = FloatRectIntoIntRectByCase(bouns);
-	bounsEnemy.top -=1;
+	bounsEnemy.top -= 1;
 	_cible.left -= _enemy->region.left;
 	_cible.top -= _enemy->region.top + 1;
 	sfIntRect bounsCible = FloatRectIntoIntRectByCase(_cible);
@@ -1178,13 +1178,14 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
-	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0)
+	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0 && bounsEnemy.top>0)
 	{
 		bounsEnemy.top -= 1;
 	}
 	switch (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction)
 	{
 	case EMPTY_DIRECTION:
+		actionDemander.bas = sfTrue;
 		break;
 	case DOWN_LEFT:
 		actionDemander.gauche = sfTrue;
