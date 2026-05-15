@@ -61,10 +61,9 @@ void LoadMenu(void)
 	//Musics
 	float volume = 0.5f;
 	menu.musics[0] = CreateMusic("Assets/Musics/luis_humanoide-clockwork-adventure-steampunk-music-no-melody-288522.wav", volume, sfFalse);
-	menu.musics[1] = CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", volume, sfFalse);
-	menu.musics[2] = CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", volume, sfFalse);
-	menu.musics[3] = CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", volume, sfFalse);
-	menu.musics[4] = CreateMusic("Assets/Musics/1917_Over_There.ogg", volume, sfFalse);
+	menu.musics[1] = CreateMusic("Assets/Musics/luis_humanoide-against-the-clock-steampunk-victorian-music-292800_1.wav", volume, sfFalse);
+	menu.musics[2] = CreateMusic("Assets/Musics/luis_humanoide-steampunk-adventure-scherzo-with-sounds-316269_1.wav", volume, sfFalse);
+	menu.musics[3] = CreateMusic("Assets/Musics/luis_humanoide-steampunk-victorian-orchestra-183196_1.wav", volume, sfFalse);
 	sfMusic_play(menu.musics[GetIntFromSave(CURRENT_MUSIC)]);
 
 	//Texts

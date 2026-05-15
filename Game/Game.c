@@ -64,16 +64,16 @@ void LoadGame(void)
 		game.cameraCenter = CreateCircleShape((sfFloatRect) { 0, 0, 2, 2 }, sfRed, sfBlue, 1.f);
 	}
 
-	switch (GetIntFromSave(CURRENT_MUSIC))
+	switch (GetCurrentMap())
 	{
 	case 0:
-		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.1f, sfTrue);
+		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_1_Cog.wav", 0.1f, sfTrue), sfTrue);
 		break;
 	case 1:
-		CreateMusic("Assets/Musics/1914_United_Forces_March.ogg", 0.1f, sfTrue);
+		sfMusic_setLoop(CreateMusic("Assets/Musics/Niveau_2_Cog.wav", 0.1f, sfTrue), sfTrue);
 		break;
 	case 2:
-		CreateMusic("Assets/Musics/1915_Dont_Bite_The_Hand_Thats_Feeding_You.ogg", 0.1f, sfTrue);
+		CreateMusic("Assets/Musics/1914_Its_A_Long_Way_To_Tipperary.ogg", 0.1f, sfTrue);
 		break;
 	case 3:
 		CreateMusic("Assets/Musics/1917_Oh_Johnny,_Oh_Johnny,_Oh.ogg", 0.1f, sfTrue);

@@ -7,7 +7,7 @@
 #define CREDIT_COUNT 5
 #define KEY_COUNT 8
 #define MAX_INFO 6
-#define MUSIC_COUNT 5
+#define MUSIC_COUNT 4
 
 typedef enum MenuState
 {
