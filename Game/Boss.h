@@ -161,6 +161,12 @@ typedef struct Boss2
 	sfVector2f velocity;
 	sfVector2f aimDestination;
 	sfBool bombOut;
+
+	int chimneyST;
+	int chimneyTL;
+	int chimneyTR;
+	int chimneyBL;
+	int chimneyBR;
 }Boss2;
 
 typedef struct Boss
@@ -188,6 +194,7 @@ sfBool DamageBoss(float _damage);
 void BossShoot(sfVector2f _posPlayer, float _dt);
 
 void DestroyBoss(int _boss);
+void DestroyChimney(int _index);
 
 float GetBossLife(void);
 float* GetBossLifeAdress(void);
