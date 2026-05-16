@@ -42,11 +42,11 @@
                 32,
                 39
             ],
-            "scale": 1.5,
+            "scale": 3,
             "selectedLayer": 9,
             "viewCenter": {
-                "x": 6585.666666666666,
-                "y": 682.3333333333333
+                "x": 6231.833333333333,
+                "y": 698.8333333333333
             }
         },
         "Level1_2.tmx": {
@@ -80,11 +80,11 @@
                 7,
                 8
             ],
-            "scale": 0.25,
-            "selectedLayer": 8,
+            "scale": 0.125,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 2118,
-                "y": 1258
+                "x": 820,
+                "y": -1284
             }
         },
         "Level3.tmx": {
@@ -116,7 +116,7 @@
         },
         "Tilesets/FullTiles.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 2,
+            "scaleInDock": 1.5,
             "scaleInEditor": 3
         },
         "Tilesets/LevelTest.json": {
