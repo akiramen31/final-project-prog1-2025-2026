@@ -69,6 +69,7 @@ typedef struct Player
 
 	Animation running;
 	Animation jumping;
+	Animation falling;
 	Animation idling;
 	Animation dashing;
 }Player;
