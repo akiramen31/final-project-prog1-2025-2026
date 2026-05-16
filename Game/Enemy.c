@@ -35,14 +35,11 @@ void LoadEnemy(void)
 void UpdateEnemy(float _dt)
 {
 	enemy.activeCount = 0;
-	sfVector2f playerPos = GetPlayerPosition();
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-		if (enemy.entity[i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[i].region.left + TILE_SIZE + enemy.entity[i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[i].region.top + enemy.entity[i].region.height - TILE_SIZE >= playerPos.y)
-		{
-			UpdateEnemyI(_dt, i);
-			enemy.activeCount++;
-		}
+
+		UpdateEnemyI(_dt, i);
+		enemy.activeCount++;
 	}
 
 	for (char i = 0; i < ALEATORY; i++)
@@ -72,8 +69,6 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			enemy.entity[_i].freezeTimer = 0;
 		}
 	}
-
-	enemy.entity[_i].aStarTimer += _dt;
 	enemy.entity[_i].shootTimer += _dt;
 	if (enemy.entity[_i].energy < enemy.dataByType[enemy.entity[_i].type].energyMax)
 	{
@@ -84,97 +79,71 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		enemy.entity[_i].energy = enemy.dataByType[enemy.entity[_i].type].energyMax;
 	}
 
-
-	if (enemy.entity[_i].type < GROUND_HEAVY)
+	sfVector2f playerPos = GetPlayerPosition();
+	if (enemy.entity[_i].region.left + TILE_SIZE <= playerPos.x && enemy.entity[_i].region.left + TILE_SIZE + enemy.entity[_i].region.width - TILE_SIZE * 2 >= playerPos.x && enemy.entity[_i].region.top + TILE_SIZE <= playerPos.y && enemy.entity[_i].region.top + enemy.entity[_i].region.height - TILE_SIZE >= playerPos.y)
 	{
-
-		if (PlayerVisibility(_i))
+		enemy.entity[_i].aStarTimer += _dt;
+		if (enemy.entity[_i].type < GROUND_HEAVY)
 		{
-			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+			if (playerPos.x < rectEnemy.left + rectEnemy.width && playerPos.x > rectEnemy.left)
 			{
-				enemy.entity[_i].shootTimer = 0;
-				SpawnGrenade(GetPositionEnemy(_i), (float) { enemy.entity[_i].type% GROUND_HEAVY }, (float) { enemy.entity[_i].type% GROUND_HEAVY });
+				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+				{
+					enemy.entity[_i].shootTimer = 0;
+					SpawnGrenade(GetPositionEnemy(_i), (float) { enemy.entity[_i].type% GROUND_HEAVY }, (float) { enemy.entity[_i].type% GROUND_HEAVY });
+				}
+				enemy.entity[_i].action = (ActionDemander){ 0, 0, enemy.entity[_i].action.saut, 0 };
+			}
+			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+			{
+				enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
+				enemy.entity[_i].aStarTimer = 0;
 			}
 		}
-		if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+		else if (enemy.entity[_i].type < SOLDIER_SMALL)
 		{
-			enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
-			enemy.entity[_i].aStarTimer = 0;
-		}
-	}
-	else if (enemy.entity[_i].type < SOLDIER_SMALL)
-	{
-		sfFloatRect rectPlayer = GetPlayerRect();
-		sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-		if (sfFloatRect_intersects(&rectPlayer, &rectEnemy, NULL))
-		{
-			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			sfFloatRect rectPlayer = GetPlayerRect();
+			sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+			if (sfFloatRect_intersects(&rectPlayer, &rectEnemy, NULL))
 			{
-				enemy.entity[_i].shootTimer = 0;
-				shootPlayer(_i);
+				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+				{
+					enemy.entity[_i].shootTimer = 0;
+					shootPlayer(_i);
+				}
+				enemy.entity[_i].action = (ActionDemander){ 0 };
 			}
-			enemy.entity[_i].action = (ActionDemander){ 0 };
-		}
-		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
-		{
-			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
-			enemy.entity[_i].aStarTimer = 0;
-		}
-	}
-	else if (enemy.entity[_i].type < ALEATORY)
-	{
-		if (PlayerVisibility(_i))
-		{
-			if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 			{
-				enemy.entity[_i].shootTimer = 0;
-				shootPlayer(_i);
+				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
+				enemy.entity[_i].aStarTimer = 0;
 			}
-			enemy.entity[_i].action = (ActionDemander){ 0 };
 		}
-		else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+		else if (enemy.entity[_i].type < ALEATORY)
 		{
-			enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
-			enemy.entity[_i].aStarTimer = 0;
+			if (PlayerVisibility(_i))
+			{
+				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+				{
+					enemy.entity[_i].shootTimer = 0;
+					shootPlayer(_i);
+				}
+				enemy.entity[_i].action = (ActionDemander){ 0 };
+			}
+			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
+			{
+				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
+				enemy.entity[_i].aStarTimer = 0;
+			}
 		}
+		CalculMoveEnemy(_dt, _i);
 	}
-	CalculMoveEnemy(_dt, _i);
+	if (enemy.entity[_i].type > DRONE_SMALL_LARGE)
+	{
+		enemy.entity[_i].velocity.y += G * _dt;
+	}
 	UpdateColisionEnemy(_i);
-}
-
-void UpdateColisionEnemy(unsigned _i)
-{
-	sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-	sfFloatRect realRegion = { enemy.entity[_i].region.left + TILE_SIZE ,enemy.entity[_i].region.top + TILE_SIZE , enemy.entity[_i].region.width - TILE_SIZE * 2, enemy.entity[_i].region.height - TILE_SIZE * 2 };
-
-	sfVector2f collision = Colision(sfSprite_getGlobalBounds(enemy.entity[_i].sprite), AXIS_BOTH);
-	collision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[_i].sprite)).y;
-	sfSprite_move(enemy.entity[_i].sprite, collision);
-	if (collision.x)
-	{
-		enemy.entity[_i].velocity.x = 0;
-	}
-	if (collision.y)
-	{
-		enemy.entity[_i].velocity.y = 0;
-	}
-
-	if (realRegion.left > enemyRect.left)
-	{
-		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
-	}
-	else if (realRegion.left + realRegion.width < (enemyRect.left + enemyRect.width))
-	{
-		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
-	}
-	if (realRegion.top > enemyRect.top)
-	{
-		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
-	}
-	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
-	{
-		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
-	}
 }
 
 void CalculMoveEnemy(float _dt, unsigned _i)
@@ -242,7 +211,6 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 				enemy.entity[_i].energy -= enemy.dataByType[enemy.entity[_i].type].consomation * _dt;
 			}
 		}
-		enemy.entity[_i].velocity.y += G * _dt;
 
 		if (enemy.entity[_i].velocity.y > enemy.dataByType[enemy.entity[_i].type].jumForce)
 		{
@@ -250,6 +218,41 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 		}
 	}
 	sfSprite_move(enemy.entity[_i].sprite, enemy.entity[_i].velocity);
+}
+
+void UpdateColisionEnemy(unsigned _i)
+{
+	sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+	sfFloatRect realRegion = { enemy.entity[_i].region.left + TILE_SIZE ,enemy.entity[_i].region.top + TILE_SIZE , enemy.entity[_i].region.width - TILE_SIZE * 2, enemy.entity[_i].region.height - TILE_SIZE * 2 };
+
+	sfVector2f collision = Colision(sfSprite_getGlobalBounds(enemy.entity[_i].sprite), AXIS_BOTH);
+	collision.y += CollisionPassThrough(sfSprite_getGlobalBounds(enemy.entity[_i].sprite)).y;
+	sfSprite_move(enemy.entity[_i].sprite, collision);
+	if (collision.x)
+	{
+		enemy.entity[_i].velocity.x = 0;
+	}
+	if (collision.y)
+	{
+		enemy.entity[_i].velocity.y = 0;
+	}
+
+	if (realRegion.left > enemyRect.left)
+	{
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
+	}
+	else if (realRegion.left + realRegion.width < (enemyRect.left + enemyRect.width))
+	{
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
+	}
+	if (realRegion.top > enemyRect.top)
+	{
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
+	}
+	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
+	{
+		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
+	}
 }
 
 sfBool PlayerVisibility(unsigned _i)
@@ -287,8 +290,6 @@ void shootPlayer(unsigned _i)
 
 void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 {
-	_type = DRONE_SMALL_LARGE;
-
 	_region.left -= TILE_SIZE;
 	_region.top -= TILE_SIZE;
 	_region.width += TILE_SIZE * 2;
@@ -361,7 +362,7 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR )
+			if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR)
 			{
 				PlaySound(ENNEMY_HURT_MEDIUM);
 			}
@@ -1186,7 +1187,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
-	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0 && bounsEnemy.top>0)
+	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0 && bounsEnemy.top > 0)
 	{
 		bounsEnemy.top -= 1;
 	}

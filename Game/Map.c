@@ -65,7 +65,6 @@ void LoadMap()
 	LoadEnemy();
 
 	LoadElevator();
-	ReloadEntity();
 	SetPositionEntityPoint(map.data.point, map.data.pointCount);
 	SetPositionEntityTrigger(map.data.triger, map.data.trigerCount);
 }
@@ -172,6 +171,10 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		{
 			AddBluePrint(&_point[i]);
 		}
+		else if (StringCompare(_point[i].type, "Press"))
+		{
+			AddPress((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
+		}
 		else if (StringCompare(_point[i].type, "SpawnPlayer"))
 		{
 			SetSpawnPlayer((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
@@ -180,6 +183,8 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		{
 			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
+
+		
 	}
 }
 
