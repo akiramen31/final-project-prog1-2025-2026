@@ -116,10 +116,16 @@ typedef enum SoundIndex
 	SOUND_INDEX_COUNT,
 }SoundIndex;
 
+typedef struct SoundBufferAndVlolume
+{
+	sfSoundBuffer* buffer;
+	float volume;
+}SoundBufferAndVlolume;
+
 typedef struct Sounds
 {
 	sfSound* sound[MAX_SOUNDS];
-	sfSoundBuffer* buffer[SOUND_INDEX_COUNT];
+	SoundBufferAndVlolume buffer[SOUND_INDEX_COUNT];
 	int currentPlayingCount;
 }Sounds;
 

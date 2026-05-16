@@ -37,9 +37,7 @@ void UpdateEnemy(float _dt)
 	enemy.activeCount = 0;
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
-
 		UpdateEnemyI(_dt, i);
-		enemy.activeCount++;
 	}
 
 	for (char i = 0; i < ALEATORY; i++)
@@ -134,6 +132,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 		}
 		CalculMoveEnemy(_dt, _i);
+		enemy.activeCount++;
 	}
 	if (enemy.entity[_i].type > DRONE_SMALL_LARGE)
 	{
@@ -284,7 +283,7 @@ void shootPlayer(unsigned _i)
 	AddBullet(posGun, posTarget, type);
 }
 
-void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 {
 	_region.left -= TILE_SIZE;
 	_region.top -= TILE_SIZE;
@@ -295,8 +294,9 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 		_type = rand() % ALEATORY;
 	}
 
+	sfSprite* sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f);
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count] = (EnemyEntity){ CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f), _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 
 #if DEV_PRINT_ERROR
 	sfFloatRect rect = sfShape_getLocalBounds(enemy.entity[enemy.count].sprite);
@@ -358,16 +358,19 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR)
-			{
-				PlaySound(ENNEMY_HURT_MEDIUM);
-			}
-			else if (enemy.dataByType[enemy.entity[i].type].armure == HEAVY_ARMOR)
-			{
-				PlaySound(ENNEMY_HURT_HEAVY);
-			}
 			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
-			return HitEnemyI(i, touch, _degat, _type);
+			if (HitEnemyI(i, touch, _degat, _type))
+			{
+				if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR)
+				{
+					PlaySound(ENNEMY_HURT_MEDIUM);
+				}
+				else if (enemy.dataByType[enemy.entity[i].type].armure == HEAVY_ARMOR)
+				{
+					PlaySound(ENNEMY_HURT_HEAVY);
+				}
+				return sfTrue;
+			}
 		}
 	}
 	return sfFalse;
