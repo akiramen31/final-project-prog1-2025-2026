@@ -18,6 +18,33 @@ void LoadGameOver(void)
 	SetViewZoom(1.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 
+	gameOver.backgroundAnim = CreateSprite(GetAsset("Assets/Sprites/game_over_background.png"), (sfVector2f) { 0 }, 8.f, 1000);
+	gameOver.frameTime[0] = 1.f;
+	gameOver.frameTime[1] = 0.2f;
+	gameOver.frameTime[2] = 0.1f;
+	gameOver.frameTime[3] = 0.15f;
+	gameOver.frameTime[4] = 0.5f;
+	gameOver.frameTime[5] = 0.15f;
+	gameOver.frameTime[6] = 0.1f;
+	gameOver.frameTime[7] = 0.15f;
+	gameOver.frameTime[8] = 0.1f;
+	gameOver.frameTime[9] = 0.15f;
+	gameOver.frameTime[10] = 0.7f;
+	gameOver.frameTime[11] = 0.2f;
+	gameOver.frameTime[12] = 0.15f;
+	gameOver.frameTime[13] = 0.1f;
+	gameOver.frameTime[14] = 0.4f;
+	gameOver.frameTime[15] = 0.1f;
+	gameOver.frameTime[16] = 0.6f;
+	gameOver.frameTime[17] = 0.1f;
+	gameOver.frameTime[18] = 0.15f;
+	gameOver.frameTime[19] = 0.2f;
+	for (int i = 0; i < ANIM_FRAME_COUNT; i++)
+	{
+		gameOver.frameRect[i] = (sfIntRect){0,135*i,240,135};
+	}
+	gameOver.currentFrame = 0;
+
 	sfFont* font = GetAsset(FONT);
 
 	int live = GetPlayerLife();
@@ -38,7 +65,7 @@ void LoadGameOver(void)
 #pragma region button
 	for (int i = 0; i < 2; i++)
 	{
-		gameOver.button[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 3 * (i + 1), SCREEN_HEIGHT / 3 * 2 }, 1.f, 10);
+		gameOver.button[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 8 * ((i * 6) + 1), (SCREEN_HEIGHT / 8)*3  }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.button[i], 60);
 		sfText_setColor(gameOver.button[i], (sfColor) { 255, 165, 0, 255 });
 	}
@@ -54,7 +81,7 @@ void LoadGameOver(void)
 #pragma endregion
 
 	{
-		gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 }, 1.f, 10);
+		gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT /8)*5 }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.text, 60);
 
 		if (GetPlayerLife() > 0)
@@ -73,11 +100,11 @@ void LoadGameOver(void)
 	}
 
 #pragma region score
-	int decal = 50;
+	int decal = 60;
 
 	for (int i = 0; i < 2; i++)
 	{
-		gameOver.score[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2 - decal, SCREEN_HEIGHT / 6 * (1 + i) }, 1.f, 10);
+		gameOver.score[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2 - decal, SCREEN_HEIGHT / 10 * (1 + i) }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.score[i], 60);
 	}
 
@@ -93,7 +120,7 @@ void LoadGameOver(void)
 
 	for (int i = 2; i < 4; i++)
 	{
-		gameOver.score[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2 + decal, SCREEN_HEIGHT / 6 * (i - 1) }, 1.f, 10);
+		gameOver.score[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2 + decal, SCREEN_HEIGHT / 10 * (i - 1) }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.score[i], 60);
 	}
 
@@ -199,7 +226,6 @@ void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent)
 	}
 }
 
-
 void UpdateGameOver(float _dt)
 {
 	tempScore += RAND_RANGE(1, 100);
@@ -213,4 +239,20 @@ void UpdateGameOver(float _dt)
 	sfText_setString(gameOver.score[2], text);
 	sprintf_s(text, sizeof(text), "%07d", tempHighScore);
 	sfText_setString(gameOver.score[3], text);
+
+	gameOver.timerAnim += _dt;
+
+	if (gameOver.timerAnim >= gameOver.frameTime[gameOver.currentFrame])
+	{
+		gameOver.timerAnim = 0;
+		if (gameOver.currentFrame ==19)
+		{
+			gameOver.currentFrame = 0;
+		}
+		else
+		{
+			gameOver.currentFrame++;
+		}
+		sfSprite_setTextureRect(gameOver.backgroundAnim, gameOver.frameRect[gameOver.currentFrame]);
+	}
 }

@@ -242,7 +242,7 @@ void CreateElevator(void)
 		if (elevatorList[i].hitbox[0] == NULL)
 		{
 			sfFloatRect rect = { 0,0,64,16 };
-			elevatorList[i].hitbox[0] = CreateRectangleShape(rect, sfTransparent, sfRed, 70.f);
+			elevatorList[i].hitbox[0] = CreateRectangleShape(rect, sfTransparent, sfTransparent, 70.f);
 		}
 
 		for (int j = 1; j < 3; j++)
@@ -250,7 +250,8 @@ void CreateElevator(void)
 			if (elevatorList[i].hitbox[j] == NULL)
 			{
 				sfFloatRect rect = { 0,0,16,16 };
-				elevatorList[i].hitbox[j] = CreateRectangleShape(rect, sfTransparent, sfBlue, 70.f);
+				elevatorList[i].hitbox[j] = CreateRectangleShape(rect, sfTransparent, sfTransparent, 70.f);
+				sfRectangleShape_setOutlineThickness(elevatorList[i].hitbox[j], 0);
 			}
 		}
 
