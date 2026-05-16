@@ -7,41 +7,41 @@ void LoadSounds()
 {
 	sounds = (Sounds){ 0 };
 
-	sounds.buffer[PLAYER_DASH] = GetAsset("Assets/Sounds/dash.ogg");
-	sounds.buffer[PLAYER_JUMP] = GetAsset("Assets/Sounds/jump.ogg");
-	sounds.buffer[PLAYER_WALK] = GetAsset("Assets/Sounds/walk.ogg");
-	sounds.buffer[PLAYER_LAND] = GetAsset("Assets/Sounds/land.ogg");
+	sounds.buffer[PLAYER_DASH] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/dash.ogg"), 0.3f };
+	sounds.buffer[PLAYER_JUMP] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/jump.ogg"), 0.1f };
+	sounds.buffer[PLAYER_WALK] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/walk.ogg"), 10.f };
+	sounds.buffer[PLAYER_LAND] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/land.ogg"), 10.f };
 	//sounds.buffer[PLAYER_MELEE] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[PLAYER_HURT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[ENNEMY_HURT_LIGHT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[ENNEMY_HURT_MEDIUM] = GetAsset("Assets/Sounds/medium_armor.ogg");
-	sounds.buffer[ENNEMY_HURT_HEAVY] = GetAsset("Assets/Sounds/high_armor_hit.ogg");
+	sounds.buffer[ENNEMY_HURT_MEDIUM] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/medium_armor.ogg"), 1.f };
+	sounds.buffer[ENNEMY_HURT_HEAVY] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/high_armor_hit.ogg"), 1.f };
 	//sounds.buffer[ENNEMY_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[BOSS_DAMAGE] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[BOSS_MOVE] = GetAsset("Assets/Sounds/tracks_move.ogg");
-	sounds.buffer[BOSS_SHOOT_MISSILE] = GetAsset("Assets/Sounds/missile_launch.ogg");
+	sounds.buffer[BOSS_MOVE] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f };
+	sounds.buffer[BOSS_SHOOT_MISSILE] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/missile_launch.ogg"), 1.f };
 	//sounds.buffer[BOSS_MISSILE_EXPLODE] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[WEAPON_RAYGUN_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[WEAPON_RAYGUN_HIT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[WEAPON_MISTEEL_NO_AMMO] = GetAsset("Assets/Sounds/mi-steel_no_ammo.ogg");
-	sounds.buffer[WEAPON_MISTEEL_RELOAD] = GetAsset("Assets/Sounds/mi-steel_reload.ogg");
+	sounds.buffer[WEAPON_MISTEEL_NO_AMMO] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/mi-steel_no_ammo.ogg"), 1.f };
+	sounds.buffer[WEAPON_MISTEEL_RELOAD] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/mi-steel_reload.ogg"), 1.f };
 	//sounds.buffer[WEAPON_MISTEEL_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[WEAPON_AXE_MISS] = GetAsset("Assets/Sounds/axe_miss.ogg");
-	sounds.buffer[WEAPON_AXE_SMALL] = GetAsset("Assets/Sounds/axe_hit.ogg");
-	sounds.buffer[WEAPON_AXE_MEDIUM] = GetAsset("Assets/Sounds/axe_hit.ogg");
-	sounds.buffer[WEAPON_AXE_LONG] = GetAsset("Assets/Sounds/axe_hit.ogg");
-	sounds.buffer[DRONE_PASSIVE] = GetAsset("Assets/Sounds/drone_sound.ogg");
+	sounds.buffer[WEAPON_AXE_MISS] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/axe_miss.ogg"), 1.f };
+	sounds.buffer[WEAPON_AXE_SMALL] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
+	sounds.buffer[WEAPON_AXE_MEDIUM] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
+	sounds.buffer[WEAPON_AXE_LONG] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
+	sounds.buffer[DRONE_PASSIVE] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/drone_sound.ogg"), 1.f };
 	//sounds.buffer[COLDBREATH_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[GENERAL_EXPLOSION] = GetAsset("Assets/Sounds/explosion.ogg");
+	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVlolume){ GetAsset("Assets/Sounds/explosion.ogg"), 1.f };
 	//sounds.buffer[GENERAL_BOX] = GetAsset("Assets/Sounds/land.ogg");
 }
 sfSound* PlaySound(SoundIndex _index)
 {
-	if (sounds.currentPlayingCount < MAX_SOUNDS && _index < SOUND_INDEX_COUNT && sounds.buffer[_index])
+	if (sounds.currentPlayingCount < MAX_SOUNDS && _index < SOUND_INDEX_COUNT && sounds.buffer[_index].buffer && _index >= 0)
 	{
-		sounds.sound[sounds.currentPlayingCount] = CreateSound(sounds.buffer[_index], 10000000000000000.f, sfTrue);
+		sounds.sound[sounds.currentPlayingCount] = CreateSound(sounds.buffer[_index].buffer, sounds.buffer[_index].volume, sfTrue);
 		sounds.currentPlayingCount++;
-		return sounds.buffer[sounds.currentPlayingCount - 1];
+		return sounds.sound[sounds.currentPlayingCount - 1];
 	}
 }
 

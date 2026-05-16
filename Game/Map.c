@@ -153,17 +153,11 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
-			if (DEV_ENEMY)
+			for (int j = 0; j < map.data.trigerCount; j++)
 			{
-				for (int j = 0; j < map.data.trigerCount; j++)
+				if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
 				{
-					if (sfFloatRect_contains(&map.data.triger[j].hitbox, map.data.point[i].hitbox.left, map.data.point[i].hitbox.top))
-					{
-						int camName = 0;
-						sscanf_s(_point[i].name, "%d", &camName);
-						camName--;
-						AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, camName, map.data.triger[j].hitbox);
-					}
+					AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, _point[i].name[0] - '0', map.data.triger[j].hitbox);
 				}
 			}
 		}
@@ -184,7 +178,7 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
 
-		
+
 	}
 }
 

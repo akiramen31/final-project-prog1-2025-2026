@@ -11,11 +11,6 @@ void LoadLoadGameSave(sfFont* _font)
 	RechargeSaves();
 	GameSave* gameSave = GetGameSave();
 
-	for (int i = 0; i < gameSave->count; i++)
-	{
-		printf("%s\n",gameSave->name[i]);
-	}
-
 	for (int i = 0; i < NB_SAVE; i++)
 	{
 		data.save[i] = CreateText(_font, (sfVector2f) { 500, 400 + i * 50 }, 50.f, 1.f);
