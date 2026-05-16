@@ -58,6 +58,11 @@ void LoadPlayer(void)
 	player.jumping.isLooping = sfTrue;
 	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
 
+	player.jumping.frameCount = 4;
+	player.jumping.frameDuration = 0.1f;
+	player.jumping.isLooping = sfTrue;
+	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
+
 	player.idling.frameCount = 4;
 	player.idling.frameDuration = 0.2f;
 	player.idling.isLooping = sfTrue;
@@ -482,9 +487,13 @@ void UpdateAnimation(float _dt)
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.idling, _dt);
 			}
 		}
-		else if (player.velocity.y != 0)
+		else if (player.velocity.y < 0)
 		{
 			UpdateAnimationAndGiveIfStop(player.sprite, &player.jumping, _dt);
+		}
+		else if (player.velocity.y > 0)
+		{
+			UpdateAnimationAndGiveIfStop(player.sprite, &player.falling, _dt);
 		}
 
 	}
