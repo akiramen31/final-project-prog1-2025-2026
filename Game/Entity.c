@@ -101,6 +101,7 @@ void UpdateEntity(float _dt)
 
 	sfFloatRect rect = { 0 };
 	sfFloatRect playerRect = GetPlayerRect();
+	sfFloatRect reaction = { 0 };
 	for (int i = 0; i < entity.jetSteam.count; i++)
 	{
 		if (entity.jetSteam.entity[i].cooldown < 0.f)
@@ -130,17 +131,34 @@ void UpdateEntity(float _dt)
 		entity.press.entity[i].timer += _dt;
 		if (entity.press.entity[i].timer > 6.f)
 		{
-			entity.press.entity[i].timer = 1.f;
+			entity.press.entity[i].timer = -0.5f;
 		}
-
-		sfVector2u size = sfTexture_getSize(sfShape_getTexture(entity.press.entity[i].sprite));
+		rect = sfSprite_getGlobalBounds(entity.press.entity[i].sprite);
+		sfVector2u size = sfTexture_getSize(sfSprite_getTexture(entity.press.entity[i].sprite));
 		if (entity.press.entity[i].timer < 0.f)
 		{
-			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)((entity.press.entity[i].timer + 1.f) * size.y), size.x, (int)(size.y - ((entity.press.entity[i].timer + 1.f) * size.y)) });
+			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)(size.y - (1.f + entity.press.entity[i].timer) * size.y), size.x, (int)((1.f + entity.press.entity[i].timer) * size.y) });
+			if (rect.left < playerRect.left && rect.left + rect.width > playerRect.left + playerRect.width && rect.top + rect.height > playerRect.top && rect.top < playerRect.top + playerRect.height)
+			{
+				DamagePlayer(1);
+				continue;
+			}
 		}
-		else
+		else if (entity.press.entity[i].timer < 3.f)
 		{
-			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)(size.y / (entity.press.entity[i].timer + 1.f)), size.x, (int)(size.y - (size.y / (entity.press.entity[i].timer + 1.f))) });
+			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)(size.y - (6.f - entity.press.entity[i].timer) / 6 * size.y), size.x, (int)((6.f - entity.press.entity[i].timer) / 6 * size.y) });
+		}
+		
+		if (sfFloatRect_intersects(&rect, &playerRect, &reaction))
+		{
+			if (reaction.left + reaction.width / 2 < playerRect.left + playerRect.width / 2)
+			{
+				MovePlayer((sfVector2f) { rect.left + rect.width - playerRect.left, 0.f});
+			}
+			else
+			{
+				MovePlayer((sfVector2f) { rect.left - playerRect.left - playerRect.width, 0.f });
+			}
 		}
 	}
 }
