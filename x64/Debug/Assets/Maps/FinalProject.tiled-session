@@ -37,16 +37,16 @@
                 44
             ],
             "expandedObjectLayers": [
-                32,
                 31,
-                39,
-                37
+                37,
+                32,
+                39
             ],
-            "scale": 0.0625,
-            "selectedLayer": 10,
+            "scale": 1.5,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 56,
-                "y": -1712
+                "x": 6585.666666666666,
+                "y": 682.3333333333333
             }
         },
         "Level1_2.tmx": {
@@ -74,25 +74,25 @@
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
+                5,
+                6,
                 9,
                 7,
-                5,
-                8,
-                6
+                8
             ],
             "scale": 0.25,
             "selectedLayer": 8,
             "viewCenter": {
-                "x": 2682,
-                "y": 1268
+                "x": 2118,
+                "y": 1258
             }
         },
         "Level3.tmx": {
             "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 545.4545454545455,
-                "y": 640.909090909091
+                "x": 543.9393939393938,
+                "y": 640.9090909090909
             }
         },
         "LevelTest.tmx": {
@@ -107,11 +107,11 @@
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 2,
+            "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 248,
-                "y": 296.25
+                "x": 209.66666666666666,
+                "y": 555
             }
         },
         "Tilesets/FullTiles.tsx": {
@@ -153,7 +153,7 @@
             "scaleInEditor": 16
         }
     },
-    "last.exportedFilePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
+    "last.exportedFilePath": "D:/Github/final-project-prog1-2025-2026/x64/Debug/Assets/Maps",
     "last.imagePath": "D:/GitHub/final-project-prog1-2025-2026/x64/Debug/Assets/Maps/Tilesets",
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
