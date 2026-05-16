@@ -124,6 +124,25 @@ void UpdateEntity(float _dt)
 			entity.jetSteam.entity[i].cooldown -= _dt;
 		}
 	}
+
+	for (int i = 0; i < entity.press.count; i++)
+	{
+		entity.press.entity[i].timer += _dt;
+		if (entity.press.entity[i].timer > 6.f)
+		{
+			entity.press.entity[i].timer = 1.f;
+		}
+
+		sfVector2u size = sfTexture_getSize(sfShape_getTexture(entity.press.entity[i].sprite));
+		if (entity.press.entity[i].timer < 0.f)
+		{
+			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)((entity.press.entity[i].timer + 1.f) * size.y), size.x, (int)(size.y - ((entity.press.entity[i].timer + 1.f) * size.y)) });
+		}
+		else
+		{
+			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)(size.y / (entity.press.entity[i].timer + 1.f)), size.x, (int)(size.y - (size.y / (entity.press.entity[i].timer + 1.f))) });
+		}
+	}
 }
 
 void AddBox(sfVector2f _position)
@@ -152,6 +171,13 @@ void AddJetSteam(InfoZone* _infoZone)
 	entity.jetSteam.entity = Realloc(entity.jetSteam.entity, (size_t)(entity.jetSteam.count + 1) * sizeof(JetSteamEntity));
 	entity.jetSteam.entity[entity.jetSteam.count] = (JetSteamEntity){ CreateSprite(GetAsset("Assets/Sprites/jetStream.png"),(sfVector2f) { _infoZone->hitbox.left,_infoZone->hitbox.top }, 1.f, 50.f), (Animation) { (sfIntRect) { 0, 0,16, 32 } , sfFalse, 4, 1.f, 0.f }, 0.f };
 	entity.jetSteam.count++;
+}
+
+void AddPress(sfVector2f _position)
+{
+	entity.press.entity = Realloc(entity.press.entity, (size_t)(entity.press.count + 1) * sizeof(PressEntity));
+	entity.press.entity[entity.press.count] = (PressEntity){ CreateSprite(GetAsset("Assets/Sprites/press.png"),_position, 1.f, 1.f), (rand() % 30000) / 30000.f * 6.f };
+	entity.press.count++;
 }
 
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
@@ -216,19 +242,4 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 		}
 	}
 	return vectorMove;
-}
-
-void ReloadEntity(void)
-{
-	for (unsigned i = 0; i < entity.boxData.count; i++)
-	{
-		DestroyVisualEntity(entity.boxData.entity[i].sprite);
-	}
-	entity.boxData.count = 0;
-
-	for (unsigned i = 0; i < entity.conveyorData.count; i++)
-	{
-		DestroyVisualEntity(entity.conveyorData.entity[i]);
-	}
-	entity.conveyorData.count = 0;
 }

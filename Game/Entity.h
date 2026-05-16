@@ -48,8 +48,21 @@ typedef struct JetSteam
 	unsigned count;
 }JetSteam;
 
+typedef struct PressEntity
+{
+	sfSprite* sprite;
+	float timer;
+}PressEntity;
+
+typedef struct Press
+{
+	PressEntity* entity;
+	int count;
+}Press;
+
 typedef struct Entity
 {
+	Press press;
 	JetSteam jetSteam;
 	BluePrint bluePrint;
 	BoxData boxData;
@@ -63,6 +76,6 @@ void AddBox(sfVector2f _position);
 void AddConveyor(sfVector2f _position);
 void AddBluePrint(InfoZone* _infoZone);
 void AddJetSteam(InfoZone* _infoZone);
+void AddPress(sfVector2f _position);
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
-void ReloadEntity(void);
 #endif //ENTITY_H
