@@ -18,7 +18,7 @@ void LoadWeapons(void)
 	weapon.railGun.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });
 
-	textureWeapon = GetAsset("Assets/Sprites/axe_placeholder.png");
+	textureWeapon = GetAsset("Assets/Sprites/axe.png");
 	weapon.steamAxe.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.steamAxe.sprite, (sfVector2f) { 1, 1 });
 
