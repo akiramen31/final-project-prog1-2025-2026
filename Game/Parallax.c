@@ -27,7 +27,7 @@ void LoadParallax()
 		sfSprite_setTextureRect(parallax.layer[i], (sfIntRect) {parallax.offsetX[i], parallax.offsetY[i], 384+parallax.offsetX[i], 216 + parallax.offsetY[i]});
 		sfSprite_setOrigin(parallax.layer[i], (sfVector2f) { 384 / 2, 216 / 2 });
 		sfSprite_setPosition(parallax.layer[i], GetViewPosition());
-		sfSprite_setColor(parallax.layer[i], sfColor_fromRGB(120 + 60 * i, 120 + 60 * i, 120+60*i));
+		sfSprite_setColor(parallax.layer[i], sfColor_fromRGB(100 + 20 * i, 100 + 20 * i, 100 +20*i));
 	}
 }
 

@@ -326,6 +326,7 @@ sfBool HitBoss(float _damage, sfFloatRect _hitbox, AttackType _attackType)
 					}
 				}
 			}
+			break;
 		case 2:
 			for (unsigned i = 0; i < 14; i++)
 			{

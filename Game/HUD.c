@@ -27,7 +27,7 @@ void LoadBossBar(float* _bossHpAdr, float _maxHealth)
 void UpdateHUD(float _dt)
 {
 	//Gauge
-	int row = (GetPlayerEnergyInfo(ENERGY) / GetPlayerEnergyInfo(ENERGY_MAX)) * 15;
+	int row = (GetPlayerEnergyInfo(ENERGY) / GetPlayerEnergyInfo(ENERGY_MAX)) * 16;
 	if (row < 0)
 	{
 		row = 0;

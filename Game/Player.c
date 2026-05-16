@@ -53,15 +53,15 @@ void LoadPlayer(void)
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
 
-	player.jumping.frameCount = 4;
-	player.jumping.frameDuration = 0.1f;
+	player.jumping.frameCount = 2;
+	player.jumping.frameDuration = 0.2f;
 	player.jumping.isLooping = sfTrue;
 	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
 
-	player.jumping.frameCount = 4;
-	player.jumping.frameDuration = 0.1f;
-	player.jumping.isLooping = sfTrue;
-	player.jumping.rectActualy = (sfIntRect){ 0,32,32,32 };
+	player.falling.frameCount = 2;
+	player.falling.frameDuration = 0.3f;
+	player.falling.isLooping = sfTrue;
+	player.falling.rectActualy = (sfIntRect){ 32,32,32,32 };
 
 	player.idling.frameCount = 4;
 	player.idling.frameDuration = 0.2f;
