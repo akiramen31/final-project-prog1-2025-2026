@@ -107,11 +107,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
 			if (sfFloatRect_intersects(&rectPlayer, &rectEnemy, NULL))
 			{
-				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
-				{
-					enemy.entity[_i].shootTimer = 0;
-					shootPlayer(_i);
-				}
+				DamagePlayer(1);
 				enemy.entity[_i].action = (ActionDemander){ 0 };
 			}
 			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
@@ -294,7 +290,7 @@ void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region)
 	_region.top -= TILE_SIZE;
 	_region.width += TILE_SIZE * 2;
 	_region.height += TILE_SIZE * 2;
-	if (_type >= ALEATORY)
+	if (_type >= ALEATORY || _type < 0)
 	{
 		_type = rand() % ALEATORY;
 	}
