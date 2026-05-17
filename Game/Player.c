@@ -61,7 +61,7 @@ void LoadPlayer(void)
 	player.falling.frameCount = 2;
 	player.falling.frameDuration = 0.3f;
 	player.falling.isLooping = sfTrue;
-	player.falling.rectActualy = (sfIntRect){ 32,32,32,32 };
+	player.falling.rectActualy = (sfIntRect){ 64,32,32,32 };
 
 	player.idling.frameCount = 4;
 	player.idling.frameDuration = 0.2f;
@@ -129,17 +129,16 @@ void UpdatePlayer(sfBool _intro, float _dt)
 			posFly.y -= flySpeed * _dt;
 		}
 		sfRectangleShape_setPosition(player.collision, posFly);
+		sfSprite_setScale(player.sprite, (sfVector2f) { 0 });
 	}
 	else
 	{
 		MoveZonePlayer(_dt);
 		UpdateMovePlayer(_intro, _dt);
 		UpdateLockPlayerInRoomIfEnemyAlive();
+		UpdateAnimation(_dt);
+		MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 	}
-
-	UpdateAnimation(_dt);
-
-	MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 
 	if (timerHit > PLAYER_HIT_COOLDOWN)
 	{

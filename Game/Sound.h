@@ -120,12 +120,12 @@ typedef struct SoundBufferAndVlolume
 {
 	sfSoundBuffer* buffer;
 	float volume;
-}SoundBufferAndVlolume;
+}SoundBufferAndVolume;
 
 typedef struct Sounds
 {
 	sfSound* sound[MAX_SOUNDS];
-	SoundBufferAndVlolume buffer[SOUND_INDEX_COUNT];
+	SoundBufferAndVolume buffer[SOUND_INDEX_COUNT];
 	int currentPlayingCount;
 }Sounds;
 
