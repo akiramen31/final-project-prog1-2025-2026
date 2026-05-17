@@ -37,16 +37,16 @@
                 44
             ],
             "expandedObjectLayers": [
-                31,
                 37,
+                39,
                 32,
-                39
+                31
             ],
-            "scale": 3,
-            "selectedLayer": 9,
+            "scale": 0.25,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 6231.833333333333,
-                "y": 698.8333333333333
+                "x": 6606,
+                "y": 726
             }
         },
         "Level1_2.tmx": {
@@ -74,24 +74,24 @@
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
-                5,
+                8,
                 6,
-                9,
                 7,
-                8
+                5,
+                9
             ],
-            "scale": 0.125,
+            "scale": 0.5,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 820,
-                "y": -1284
+                "x": 3877,
+                "y": 461
             }
         },
         "Level3.tmx": {
             "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 543.9393939393938,
+                "x": 698.4848484848485,
                 "y": 640.9090909090909
             }
         },
@@ -107,16 +107,16 @@
             }
         },
         "Tilesets/AutoTileRules.tmx": {
-            "scale": 1.5,
+            "scale": 5.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 209.66666666666666,
-                "y": 555
+                "x": 26.63636363636364,
+                "y": 580.8181818181818
             }
         },
         "Tilesets/FullTiles.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1.5,
+            "scaleInDock": 2,
             "scaleInEditor": 3
         },
         "Tilesets/LevelTest.json": {
