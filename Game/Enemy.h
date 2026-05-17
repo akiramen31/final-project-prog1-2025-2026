@@ -95,7 +95,7 @@ typedef struct Enemy
 
 void LoadEnemy(void);
 void UpdateEnemy(float _dt);
-void AddEnemy(sfVector2f _position, enum EnemyType _type, sfFloatRect _region);;
+void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region);
 sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _attaque);
 sfVector2f GetPositionEnemy(unsigned _index);
 sfFloatRect GetBounsEnemy(unsigned _index);
