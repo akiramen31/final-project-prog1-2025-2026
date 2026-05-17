@@ -30,6 +30,27 @@ void LoadEnemy(void)
 	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 5.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 50 };
 	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 100 };
 	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f,200 };
+
+#if DEV_PRINT_ERROR
+	for (int i = 0; i < ALEATORY / GROUND_HEAVY; i++)
+	{
+		sfVector2u size = sfTexture_getSize(enemy.dataByType[i * 3].texture);
+		if (size.x > 14 || size.y > 14)
+		{
+			printf("bad size %d\n", i * 3);
+		}
+		size = sfTexture_getSize(enemy.dataByType[i * 3 + 1].texture);
+		if (size.x > 30 || size.y > 14)
+		{
+			printf("bad size %d\n", i * 3 + 1);
+		}
+		size = sfTexture_getSize(enemy.dataByType[i * 3 + 2].texture);
+		if (size.x > 46 || size.y > 30)
+		{
+			printf("bad size %d\n", i * 3 + 2);
+		}
+	}
+#endif
 }
 
 void UpdateEnemy(float _dt)
@@ -95,6 +116,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 			{
+				UpdateColisionEnemy(_i);
 				enemy.entity[_i].action = AStar3(&enemy.entity[_i], GetPlayerRect());
 				enemy.entity[_i].aStarTimer = 0;
 			}
@@ -110,6 +132,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 			{
+				UpdateColisionEnemy(_i);
 				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
 				enemy.entity[_i].aStarTimer = 0;
 			}
@@ -127,6 +150,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			}
 			else if (enemy.entity[_i].aStarTimer >= TIMER_ASTAR)
 			{
+				UpdateColisionEnemy(_i);
 				enemy.entity[_i].action = AStar2(&enemy.entity[_i], GetPlayerRect());
 				enemy.entity[_i].aStarTimer = 0;
 			}
@@ -227,26 +251,30 @@ void UpdateColisionEnemy(unsigned _i)
 	{
 		enemy.entity[_i].velocity.x = 0;
 	}
-	if (collision.y)
-	{
-		enemy.entity[_i].velocity.y = 0;
-	}
-
-	if (realRegion.left > enemyRect.left)
+	else if (realRegion.left > enemyRect.left)
 	{
 		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { realRegion.left - enemyRect.left, 0 });
+		enemy.entity[_i].velocity.x = 0;
 	}
 	else if (realRegion.left + realRegion.width < (enemyRect.left + enemyRect.width))
 	{
 		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { (realRegion.left + realRegion.width) - (enemyRect.left + enemyRect.width), 0 });
+		enemy.entity[_i].velocity.x = 0;
 	}
-	if (realRegion.top > enemyRect.top)
+
+	if (collision.y)
+	{
+		enemy.entity[_i].velocity.y = 0;
+	}
+	else if (realRegion.top > enemyRect.top)
 	{
 		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, realRegion.top - enemyRect.top });
+		enemy.entity[_i].velocity.y = 0;
 	}
 	else if (realRegion.top + realRegion.height < enemyRect.top + enemyRect.height)
 	{
 		sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { 0, (realRegion.top + realRegion.height) - (enemyRect.top + enemyRect.height) });
+		enemy.entity[_i].velocity.y = 0;
 	}
 }
 
@@ -293,18 +321,9 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	{
 		_type = rand() % ALEATORY;
 	}
-
 	sfSprite* sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f);
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
 	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
-
-#if DEV_PRINT_ERROR
-	sfFloatRect rect = sfShape_getLocalBounds(enemy.entity[enemy.count].sprite);
-	if (enemy.entity[enemy.count].type % GROUND_HEAVY == 0 && (rect.width > 14 || rect.height > 14) || enemy.entity[enemy.count].type % GROUND_HEAVY == 1 && (rect.width > 14 || rect.height > 30) || enemy.entity[enemy.count].type % GROUND_HEAVY == 1 && (rect.width > 30 || rect.height > 46))
-	{
-		printf("\nMauvaise taille sprite %d\n", _type);
-	}
-#endif
 
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
@@ -964,11 +983,11 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
 	bouns.left -= _enemy->region.left;
-	bouns.top -= _enemy->region.top + 1;
+	bouns.top -= _enemy->region.top;
 	sfIntRect bounsEnemy = FloatRectIntoIntRectByCase(bouns);
 	bounsEnemy.top -= 1;
 	_cible.left -= _enemy->region.left;
-	_cible.top -= _enemy->region.top + 1;
+	_cible.top -= _enemy->region.top;
 	sfIntRect bounsCible = FloatRectIntoIntRectByCase(_cible);
 	// problème colision plafon
 	while (bounsCible.top + bounsEnemy.height < 1)
@@ -1186,7 +1205,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 
 	ActionDemander actionDemander = { 0 };
 
-	if (enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0 && bounsEnemy.top > 0)
+	if (bounsEnemy.top > 0 && enemy.tableau.grid[_enemy->type][bounsEnemy.top][bounsEnemy.left].direction == 0)
 	{
 		bounsEnemy.top -= 1;
 	}
