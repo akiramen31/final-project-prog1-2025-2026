@@ -90,7 +90,7 @@ void LoadMenu(void)
 	char* bufferKeyType[KEY_COUNT] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < KEY_COUNT; i++)
 	{
-		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450 , 342 + 55 * (float)i }, textSizeSmall, 5.f);
+		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, textSizeSmall, 5.f);
 		menu.mainMenu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, textSizeSmall, 5.f);
 		sfText_setString(menu.mainMenu.keyType[i], bufferKeyType[i]);
 		sfText_setColor(menu.mainMenu.keyType[i], menu.textColor);
@@ -186,9 +186,9 @@ void KeyPressedMenu(sfEvent* _event)
 
 		}
 		return;
-	//case sfKeyEnter:
-	//	SetGameState(GAME_OVER);
-	//	break;
+		//case sfKeyEnter:
+		//	SetGameState(GAME_OVER);
+		//	break;
 	default:
 		break;
 	}
@@ -387,7 +387,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				if (CompareIntRect(temp, menu.selectionMenu.textureRect[HIGHLIGHT]))
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
-					SetWeapon(i);
+					SetWeapon(i + 1);
 					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
 					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.weaponDesc[i]);
 					for (int j = 0; j < WEAPON_COUNT; j++)
@@ -401,6 +401,11 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 						}
 					}
 				}
+				else if (CompareIntRect(temp, menu.selectionMenu.textureRect[SELECT]))
+				{
+					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
+					SetWeapon(0);
+				}
 			}
 			break;
 		case BONUS:
@@ -410,7 +415,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				if (CompareIntRect(temp, menu.selectionMenu.textureRect[HIGHLIGHT]))
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
-					SetSecondaryType(i+1);
+					SetSecondaryType(i + 1);
 					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
 					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.secondaryDesc[i]);
 					for (int j = 0; j < SECONDARY_COUNT; j++)
@@ -423,6 +428,11 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 							}
 						}
 					}
+				}
+				else if (CompareIntRect(temp, menu.selectionMenu.textureRect[SELECT]))
+				{
+					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
+					SetSecondaryType(0);
 				}
 			}
 			break;
@@ -751,7 +761,7 @@ void SetMenuState(MenuState _state)
 		menu.state = _state;
 		switch (menu.state)
 		{
-		case MAP:;
+		case MAP:
 			sfSprite_setTextureRect(menu.selectionMenu.categoryButton[0], (sfIntRect) { 36, 0, 18, 18 });
 			sfSprite_setTextureRect(menu.selectionMenu.categoryIcon[0], (sfIntRect) { 0, 0, 16, 16 });
 			for (int i = 0; i < MAP_COUNT; i++)
@@ -799,7 +809,6 @@ void SetMenuState(MenuState _state)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
 				}
-				int unlock = GetGameData()->weaponUnlock;
 				if ((i != 2 && GetGameData()->weaponUnlock & (i + 1)) || (i == 2 && GetGameData()->weaponUnlock & 4))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
@@ -833,7 +842,6 @@ void SetMenuState(MenuState _state)
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[UNSELECT]);
 				}
-				int unlock = GetGameData()->secondaryUnlock;
 				if (GetGameData()->secondaryUnlock & (i + 1) || (i == 3 && GetGameData()->secondaryUnlock & 4))
 				{
 					sfSprite_setScale(menu.selectionMenu.generalIcon[i], visibleSprite);
