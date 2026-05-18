@@ -14,8 +14,8 @@ void LoadSounds()
 	//sounds.buffer[PLAYER_MELEE] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[PLAYER_HURT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[ENNEMY_HURT_LIGHT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[ENNEMY_HURT_MEDIUM] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/medium_armor.ogg"), 1.f };
-	sounds.buffer[ENNEMY_HURT_HEAVY] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/high_armor_hit.ogg"), 1.f };
+	sounds.buffer[ENNEMY_HURT_MEDIUM] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/medium_armor.ogg"), 0.25f };
+	sounds.buffer[ENNEMY_HURT_HEAVY] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/high_armor_hit.ogg"), 0.25f };
 	//sounds.buffer[ENNEMY_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[BOSS_DAMAGE] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[BOSS_MOVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f };
@@ -32,7 +32,7 @@ void LoadSounds()
 	sounds.buffer[WEAPON_AXE_LONG] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
 	sounds.buffer[DRONE_PASSIVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/drone_sound.ogg"), 1.f };
 	//sounds.buffer[COLDBREATH_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/explosion.ogg"), 1.f };
+	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/explosion.ogg"), 0.25f };
 	sounds.buffer[GENERAL_BOX] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/box_break.ogg"), 0.125f };
 }
 

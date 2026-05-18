@@ -17,17 +17,17 @@
 
 typedef enum SecondaryType
 {
-	NONESEC,
+	NO_SECONDARY,
 	DRONE,
 	COLDBREATH
 }SecondaryType;
 
-typedef enum WeaponType 
+typedef enum WeaponType
 {
+	NO_WEAPON,
 	RAILGUN,
 	STEAMAXE,
-	MISTEAL,
-	OTHER
+	MISTEEL
 }WeaponType;
 
 typedef struct RailGun
@@ -74,7 +74,6 @@ void SetSecondaryType(SecondaryType _type);
 void SetWeapon(WeaponType _type);
 void LoadWeapons(void);
 void LoadSecondary(void);
-void UpdateWeapons(float _dt);
 void UpdateSecondary(sfVector2f _posAim, float _dt);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
@@ -85,7 +84,9 @@ void ChangeAttackType(AttackType _attackType);
 
 Weapon GetWeapon(void);
 
+#if DEV_WEAPON
 void SwitchGunDevMode(void);
 void SwitchSecondaryDevMode(void);
+#endif
 
 #endif // !WEAPONS_H

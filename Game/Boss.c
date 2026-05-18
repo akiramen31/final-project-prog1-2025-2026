@@ -275,6 +275,7 @@ void MoveBoss(sfVector2f _move)
 		}
 		break;
 	case 2:
+		PlaySound(BOSS_MOVE);
 		for (int i = 0; i < PART_COUNT_BOSS2; i++)
 		{
 			sfSprite_move(boss.boss2->sprites[i], _move);

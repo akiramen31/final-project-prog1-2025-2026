@@ -148,7 +148,10 @@ void UpdatePlayer(sfBool _intro, float _dt)
 		UpdateMovePlayer(_intro, _dt);
 		UpdateLockPlayerInRoomIfEnemyAlive();
 		UpdateAnimation(_dt);
+		if (GetWeapon().weaponType !=NO_WEAPON)
+		{
 		MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
+		}
 	}
 
 	if (timerHit > PLAYER_HIT_COOLDOWN)
@@ -615,7 +618,7 @@ void UpdateCooldown(float _dt)
 				player.weapon.steamAxe.attackType = NOATTACK;
 				player.cooldown += 1.f / FIRE_RATE_STEAMAXE;
 				break;
-			case MISTEAL:
+			case MISTEEL:
 				player.cooldown += 1.f / FIRE_RATE_MISTEAL;
 				break;
 			default:
@@ -645,7 +648,7 @@ void UpdateFireControl(float _dt)
 	{
 		UpdateFireControlSteamAxe(_dt);
 	}
-	if (player.weapon.weaponType == MISTEAL)
+	else if (player.weapon.weaponType == MISTEEL)
 	{
 		if (IfControlKeyPressed(KEY_GUN))
 		{
@@ -671,7 +674,7 @@ void UpdateFireControl(float _dt)
 
 				}
 			}
-			if (player.weapon.secondaryData.secondaryType == COLDBREATH)
+			else if (player.weapon.secondaryData.secondaryType == COLDBREATH)
 			{
 				if (player.ener.energy > 40.f)
 				{
