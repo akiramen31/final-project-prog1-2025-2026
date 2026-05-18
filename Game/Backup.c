@@ -1,10 +1,13 @@
 #include "Backup.h"
 #include <windows.h>
+#include <sys/stat.h>
+#include <direct.h>
 
 Backup backup;
 
 void LoadBackup(void)
 {
+	backup = (Backup){ 0 };
 	FILE* file = fopen("Game.sav", "r");
 	if (!file)
 	{
@@ -16,6 +19,22 @@ void LoadBackup(void)
 		backup.parametre.valueFloat[LIGHT_LEVEL] = 1.f;
 	}
 	fclose(file);
+
+	for (int i = 0; i < KEY_COUNT; i++)
+	{
+		if (backup.parametre.valueKey[i])
+		{
+			return;
+		}
+	}
+	backup.parametre.valueKey[KEY_JUMP] = sfKeySpace;
+	backup.parametre.valueKey[KEY_DOWN] = sfKeyS;
+	backup.parametre.valueKey[KEY_RIGHT] = sfKeyD;
+	backup.parametre.valueKey[KEY_LEFT] = sfKeyQ;
+	backup.parametre.valueKey[KEY_GUN] = sfMouseLeft + sfKeyCount;
+	backup.parametre.valueKey[KEY_DASH] = sfMouseRight + sfKeyCount;
+	backup.parametre.valueKey[KEY_HIT] = sfKeyNum1;
+	backup.parametre.valueKey[KEY_SECOND] = sfKeyNum2;
 }
 
 void SaveBackup(void)
@@ -96,7 +115,7 @@ void LoadGameData(int _index)
 		FILE* file = fopen(buffer, "r");
 		if (file)
 		{
-			fread(&backup.gameSave.dataActualy, sizeof(GameData), 1, file);
+			fread(&backup.gameSave.dataActualy, sizeof(GameData), 4, file);
 			fclose(file);
 		}
 		int i = 0;
@@ -126,7 +145,7 @@ void RenameSave(char* _newName)
 	FusionString(buffer2, 2, temp2);
 	int i = rename(buffer, buffer2);
 	Free(backup.gameSave.name[backup.gameSave.actualy]);
-	backup.gameSave.name[backup.gameSave.actualy] = StringCopy(_newName); 
+	backup.gameSave.name[backup.gameSave.actualy] = StringCopy(_newName);
 	i = 0;
 	while (_newName[i])
 	{
@@ -160,15 +179,14 @@ void SaveGameData(void)
 {
 	if (backup.gameSave.actualy != -1)
 	{
-		int tempI = backup.gameSave.actualy;
 		RechargeSaves();
 		char buffer[40] = { 0 };
-		char* temp[2] = { "Saves/" ,backup.gameSave.name[tempI]};
+		char* temp[2] = { "Saves/" ,backup.gameSave.nameActualy };
 		FusionString(buffer, 2, temp);
-		FILE* file = fopen(buffer, "w");
+		FILE* file = fopen(buffer, "w+");
 		if (file)
 		{
-			fwrite(&backup.gameSave.dataActualy, sizeof(GameData), 1, file);
+			fwrite(&backup.gameSave.dataActualy, sizeof(GameData), 4, file);
 			fclose(file);
 		}
 	}
@@ -245,6 +263,12 @@ char CheckIfSaveExist(char* _newName)
 }
 void RechargeSaves(void)
 {
+	struct stat st;
+	if (stat("Saves", &st) == -1)
+	{
+		_mkdir("Saves");
+	}
+
 	backup.gameSave.name = Calloc(1, sizeof(char*));
 	WIN32_FIND_DATAA entry = { 0 };
 	backup.gameSave.count = 0;

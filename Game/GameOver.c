@@ -3,9 +3,9 @@
 
 GameOver gameOver;
 
-int score = 5000;
+int score = 0;
 int tempScore = 0;
-int highScore = 10000;
+int highScore = 0;
 int tempHighScore = 0;
 
 void KeyPressedGameOver(sfEvent* _event);
@@ -52,14 +52,17 @@ void LoadGameOver(void)
 	score = GetIntFromSave(CURRENT_SCORE);
 	MapState map = GetCurrentMap();
 	GameData* gameData = GetGameData();
-	if (highScore < gameData->score[map])
+
+	if (gameData->score[map] < score)
 	{
-		highScore = gameData->score[map] = score;
+		gameData->score[map] = score;
+		highScore = score;
 	}
 	else
 	{
 		highScore = gameData->score[map];
 	}
+
 	if (gameData->levelUnlock == map + 1)
 	{
 		gameData->levelUnlock++;

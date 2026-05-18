@@ -32,9 +32,9 @@ void LoadLoadGameSave(sfFont* _font)
 	data.rect = CreateRectangleShape((sfFloatRect) { 40, 350, 400, 50 }, sfTransparent, sfWhite, 2.f);
 	data.unlocker = CreateText(_font, (sfVector2f) { 40, 600 }, 50.f, 1.f);
 
-	sfText_setString(data.score[0], "Lever 1: ");
-	sfText_setString(data.score[1], "Lever 2: ");
-	sfText_setString(data.score[2], "Lever 3: ");
+	sfText_setString(data.score[0], "Level 1: ");
+	sfText_setString(data.score[1], "Level 2: ");
+	sfText_setString(data.score[2], "Level 3: ");
 	sfText_setString(data.back, "back");
 	sfText_setString(data.next, "next");
 	sfText_setString(data.newGame, "New");
@@ -268,7 +268,7 @@ void ReloadLoadGameSave(void)
 
 	char bufferNb[11] = { 0 };
 	char buffer[30] = { 0 };
-	char* bufferL[LEVEL_TEST] = { "Lever 1: " , "Lever 2: " , "Lever 3: " };
+	char* bufferL[LEVEL_TEST] = { "Level 1: " , "Level 2: " , "Level 3: " };
 	char* temp[2] = { bufferL[0], bufferNb};
 
 	for (int i = 0; i < LEVEL_TEST; i++)
