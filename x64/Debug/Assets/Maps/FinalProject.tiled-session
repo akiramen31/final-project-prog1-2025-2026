@@ -78,11 +78,11 @@
                 8,
                 7
             ],
-            "scale": 0.125,
+            "scale": 0.25,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 2412,
-                "y": 2160
+                "x": 1742,
+                "y": 1272
             }
         },
         "Level3.tmx": {

@@ -36,6 +36,8 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void);
 
 sfVector2f posFly;
 
+sfRectangleShape* lockZone;
+
 void LoadPlayer(void)
 {
 	player = (Player){ 0 };
@@ -50,7 +52,8 @@ void LoadPlayer(void)
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
 
-	//sfRectangleShape_setOrigin(player.punch, (sfVector2f) { 0, 8 });
+	lockZone = CreateRectangleShape((sfFloatRect) { 0 }, sfTransparent, (sfColor) { 203, 115, 51, 255 }, 60.f);
+	sfRectangleShape_setOutlineThickness(lockZone, 8.f);
 
 	player.running.frameCount = 8;
 	player.running.frameDuration = 0.1f;
@@ -243,6 +246,14 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 				{
 					if (GetEnemyZone() > 0 || IsBossActive())
 					{
+						//int width = area[i].hitbox.width / TILE_SIZE;
+						//int height = area[i].hitbox.height / TILE_SIZE;
+
+						sfRectangleShape_setScale(lockZone, (sfVector2f) { 1, 1 });
+						sfRectangleShape_setSize(lockZone, (sfVector2f) { area[i].hitbox.width, area[i].hitbox.height });
+						sfRectangleShape_setPosition(lockZone, (sfVector2f) { area[i].hitbox.left, area[i].hitbox.top });
+
+
 						sfFloatRect velocity = GetPlayerRect();
 						velocity.width -= areaReaction.width;
 						velocity.height -= areaReaction.height;
@@ -264,6 +275,10 @@ void UpdateLockPlayerInRoomIfEnemyAlive(void)
 						{
 							MovePlayer((sfVector2f) { 0, -velocity.height });
 						}
+					}
+					else
+					{
+						sfRectangleShape_setScale(lockZone, (sfVector2f) { 0, 0 });
 					}
 				}
 			}

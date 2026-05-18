@@ -19,8 +19,8 @@ void LoadMap()
 	map = (Map){ 0 };
 	map.state = temp;
 
-	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 70.f);
-	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 100.f);
+	map.foreground = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 50.f);
+	map.background = CreateSprite(NULL, (sfVector2f) { 0 }, 1.f, 90.f);
 
 	int val = 169;
 	sfSprite_setColor(map.background, (sfColor) { val, val, val, 255 });
