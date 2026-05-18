@@ -17,8 +17,8 @@ void LoadHUD()
 
 void LoadBossBar(float* _bossHpAdr, float _maxHealth)
 {
-	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Sprites/boss_lifebar.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
-	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Sprites/boss_life.png"), (sfVector2f) { 768, 50 }, 0.f, -10.f);
+	hud.bossBar.bossLifeContainer = CreateSprite(GetAsset("Assets/Sprites/boss_lifebar.png"), (sfVector2f) { 768, 80 }, 0.f, -10.f);
+	hud.bossBar.bossLifeBar = CreateSprite(GetAsset("Assets/Sprites/boss_life.png"), (sfVector2f) { 768, 80 }, 0.f, -10.f);
 	hud.bossBar.bossLife = _bossHpAdr;
 	hud.bossBar.maxBossLife = _maxHealth;
 }

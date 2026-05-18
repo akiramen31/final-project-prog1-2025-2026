@@ -1,5 +1,6 @@
 #include "GameOver.h"
 #include "Player.h"
+#include "Weapons.h"
 
 GameOver gameOver;
 
@@ -65,7 +66,35 @@ void LoadGameOver(void)
 	}
 	sfFont* font = GetAsset(FONT);
 
-	score = GetIntFromSave(CURRENT_SCORE);
+	float multiplier = 1.f;
+	switch (GetSecondaryType())
+	{
+	case NO_SECONDARY:
+		multiplier += 0.3f;
+		break;
+	case DRONE:
+		break;
+	case COLDBREATH:
+		multiplier += 0.1f;
+		break;
+	}
+	switch (GetWeapon().weaponType)
+	{
+	case NO_WEAPON:
+		multiplier += 0.7f;
+		break;
+	case RAILGUN:
+		multiplier += 0.2;
+		break;
+	case STEAMAXE:
+		multiplier += 0.4f;
+		break;
+	case MISTEEL:
+		break;
+	}
+
+	score = GetIntFromSave(CURRENT_SCORE)*multiplier;
+
 	MapState map = GetCurrentMap();
 	GameData* gameData = GetGameData();
 
@@ -111,7 +140,7 @@ void LoadGameOver(void)
 	}
 	else
 	{
-		sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
+		sfText_setColor(gameOver.text, (sfColor) { 60, 255, 120, 255 });
 		sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
 	}
 	sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);

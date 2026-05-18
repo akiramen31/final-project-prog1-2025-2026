@@ -30,13 +30,6 @@ void LoadWeapons(void)
 	weapon.steamAxe.canHit = sfTrue;
 }
 
-
-void UpdateWeapons(float _dt)
-{
-	UpdateSecondary(GetMousePositionToOrigin(), _dt);
-
-}
-
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking)
 {
 	sfSprite* weaponSprite = { 0 };
@@ -51,7 +44,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 	{
 		weaponSprite = weapon.steamAxe.sprite;
 	}
-	else if (weapon.weaponType == MISTEAL)
+	else if (weapon.weaponType == MISTEEL)
 	{
 		weaponSprite = weapon.miSteal.sprite;
 		_isAttacking = sfFalse;
@@ -133,9 +126,14 @@ Weapon GetWeapon()
 	return weapon;
 }
 
+#if DEV_WEAPON
 void SwitchGunDevMode(void)
 {
-	if (weapon.weaponType == RAILGUN)
+	if (weapon.weaponType == NO_WEAPON)
+	{
+		weapon.weaponType = RAILGUN;
+	}
+	else if (weapon.weaponType == RAILGUN)
 	{
 		sfSprite_setScale(weapon.railGun.sprite, (sfVector2f) { 0, 0 });
 		weapon.weaponType = STEAMAXE;
@@ -143,18 +141,18 @@ void SwitchGunDevMode(void)
 	else if (weapon.weaponType == STEAMAXE)
 	{
 		sfSprite_setScale(weapon.steamAxe.sprite, (sfVector2f) { 0, 0 });
-		weapon.weaponType = MISTEAL;
+		weapon.weaponType = MISTEEL;
 	}
-	else if (weapon.weaponType == MISTEAL)
+	else if (weapon.weaponType == MISTEEL)
 	{
 		sfSprite_setScale(weapon.miSteal.sprite, (sfVector2f) { 0, 0 });
-		weapon.weaponType = RAILGUN;
+		weapon.weaponType = NO_WEAPON;
 	}
 }
 
 void SwitchSecondaryDevMode(void)
 {
-	if (weapon.secondaryData.secondaryType == NONESEC)
+	if (weapon.secondaryData.secondaryType == NO_SECONDARY)
 	{
 		weapon.secondaryData.secondaryType = DRONE;
 	}
@@ -164,9 +162,10 @@ void SwitchSecondaryDevMode(void)
 	}
 	else if (weapon.secondaryData.secondaryType == COLDBREATH)
 	{
-		weapon.secondaryData.secondaryType = NONESEC;
+		weapon.secondaryData.secondaryType = NO_SECONDARY;
 	}
 }
+#endif
 
 
 void ChangeAttackType(AttackType _attackType)
