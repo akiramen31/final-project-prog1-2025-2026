@@ -177,10 +177,10 @@ void AddConveyor(sfVector2f _position)
 	entity.conveyorData.count++;
 }
 
-void AddBluePrint(InfoZone* _infoZone)
+void AddBluePrint(sfVector2f _position, int _type)
 {
 	entity.bluePrint.entity = Realloc(entity.bluePrint.entity, (size_t)(entity.bluePrint.count + 1) * sizeof(BluePrintEntity));
-	entity.bluePrint.entity[entity.bluePrint.count] = (BluePrintEntity){ CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), (sfVector2f) { _infoZone->hitbox.left, _infoZone->hitbox.top }, 1.f, 50.f), _infoZone->name[0] - '0' };
+	entity.bluePrint.entity[entity.bluePrint.count] = (BluePrintEntity){ CreateSprite(GetAsset("Assets/Sprites/BluePrint.png"), _position, 1.f, 50.f), _type };
 	entity.bluePrint.count++;
 }
 

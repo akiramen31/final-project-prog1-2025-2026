@@ -164,7 +164,7 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Bonus"))
 		{
-			AddBluePrint(&_point[i]);
+			AddBluePrint((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top}, _point[i].name[0] - '0');
 		}
 		else if (StringCompare(_point[i].type, "Press"))
 		{

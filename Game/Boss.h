@@ -145,6 +145,7 @@ typedef struct Boss1
 	sfBool boss1Reacting;
 	float runAwayTiming;
 	sfVector2f velocity;
+	sfSound* sound;
 }Boss1;
 
 typedef struct Boss2

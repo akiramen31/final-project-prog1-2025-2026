@@ -74,7 +74,7 @@ void UpdateEntity(float _dt);
 
 void AddBox(sfVector2f _position);
 void AddConveyor(sfVector2f _position);
-void AddBluePrint(InfoZone* _infoZone);
+void AddBluePrint(sfVector2f _position, int _type);
 void AddJetSteam(InfoZone* _infoZone);
 void AddPress(sfVector2f _position);
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
