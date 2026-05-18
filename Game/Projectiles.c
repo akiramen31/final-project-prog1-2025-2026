@@ -366,7 +366,7 @@ void UpdateBossMissile(float _dt)
 	}
 }
 
-void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType)
+void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType, float _scale)
 {
 	if (_shooterType.isAlly && bulletCountAlly >= BULLET_ALLY_MAX)
 	{
@@ -380,11 +380,11 @@ void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shoot
 	Bullet newBullet = { 0 };
 	if (_shooterType.isAlly == sfTrue)
 	{
-		newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, 1.f, 39.f);
+		newBullet.sprite = CreateSprite(bulletTexture, (sfVector2f) { 0, 0 }, _scale, 39.f);
 	}
 	else
 	{
-		newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, 2.f, 0.01f);
+		newBullet.sprite = CreateSprite(bulletBossTexture, (sfVector2f) { 0, 0 }, _scale, 0.01f);
 	}
 	SetSpriteOriginMiddle(newBullet.sprite);
 
