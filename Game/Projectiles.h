@@ -163,7 +163,7 @@ void UpdateUnhiddingBomb(float _dt);
 void UpdateUnhiddingExplosion(float _dt);
 void UpdateGrenade(float _dt);
 
-void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
+void AddBullet(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType, float _scale);
 void AddMisteal(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);
 void AddDrone(sfVector2f _pos, sfBool _isRighted);
 void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _shooterType);

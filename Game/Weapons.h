@@ -17,6 +17,7 @@
 
 typedef enum SecondaryType
 {
+	NONESEC,
 	DRONE,
 	COLDBREATH
 }SecondaryType;
@@ -78,11 +79,13 @@ void UpdateSecondary(sfVector2f _posAim, float _dt);
 void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _isAttacking);
 void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted);
-void SwitchGunDevMode(void);
 void CanHitBoss(sfBool _bool);
 
 void ChangeAttackType(AttackType _attackType);
 
 Weapon GetWeapon(void);
+
+void SwitchGunDevMode(void);
+void SwitchSecondaryDevMode(void);
 
 #endif // !WEAPONS_H

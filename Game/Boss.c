@@ -1159,7 +1159,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 				shooterType.isBoss2 = sfFalse;
 				sfVector2f playerPos = _posPlayer;
 				playerPos.y -= TILE_SIZE;
-				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType);
+				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType, 2.f);
 			}
 			else
 			{
@@ -1208,7 +1208,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{
-					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter, 2.f);
 					boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_SHOOTING * (1.f / boss.boss2->powerMultiplier);
 				}
 			}
@@ -1216,7 +1216,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{
-					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter, 2.f);
 					boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_BOMBING * (1.f / boss.boss2->powerMultiplier);
 				}
 			}
@@ -1224,7 +1224,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{
-					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter);
+					AddBullet(sfSprite_getPosition(boss.boss2->sprites[TURRET_CANNON]), _posPlayer, bossShooter, 2.f);
 					boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_UNHIDDING * (1.f / boss.boss2->powerMultiplier);
 				}
 			}

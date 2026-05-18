@@ -18,9 +18,9 @@ void LoadWeapons(void)
 	weapon.railGun.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });
 
-	textureWeapon = GetAsset("Assets/Sprites/axe.png");
+	textureWeapon = GetAsset("Assets/Sprites/Axe.png");
 	weapon.steamAxe.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
-	sfSprite_setOrigin(weapon.steamAxe.sprite, (sfVector2f) { 1, 1 });
+	sfSprite_setOrigin(weapon.steamAxe.sprite, (sfVector2f) { 5, 6 });
 
 	textureWeapon = GetAsset("Assets/Sprites/mi-steel_launcher.png");
 	weapon.miSteal.sprite = CreateSprite(textureWeapon, (sfVector2f) { 0, 0 }, 1.f, 38);
@@ -111,7 +111,7 @@ void UseWeaponRailgun(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 	shooterType.isAlly = sfTrue;
 	shooterType.isBoss2 = sfFalse;
 	shooterType.weaponPos = WEAPON_ORIGIN;
-	AddBullet(_posShooter, _posTarget, shooterType);
+	AddBullet(_posShooter, _posTarget, shooterType, 1.f);
 }
 
 void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isRighted)
@@ -151,6 +151,23 @@ void SwitchGunDevMode(void)
 		weapon.weaponType = RAILGUN;
 	}
 }
+
+void SwitchSecondaryDevMode(void)
+{
+	if (weapon.secondaryData.secondaryType == NONESEC)
+	{
+		weapon.secondaryData.secondaryType = DRONE;
+	}
+	else if (weapon.secondaryData.secondaryType == DRONE)
+	{
+		weapon.secondaryData.secondaryType = COLDBREATH;
+	}
+	else if (weapon.secondaryData.secondaryType == COLDBREATH)
+	{
+		weapon.secondaryData.secondaryType = NONESEC;
+	}
+}
+
 
 void ChangeAttackType(AttackType _attackType)
 {
