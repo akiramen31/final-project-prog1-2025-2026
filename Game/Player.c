@@ -660,7 +660,7 @@ void UpdateFireControl(float _dt)
 	if (DEV_WEAPON)
 	{
 		static sfBool k_wasPressed = sfFalse;
-
+		static sfBool j_wasPressed = sfFalse;
 
 		if (sfKeyboard_isKeyPressed(sfKeyK))
 		{
@@ -673,6 +673,18 @@ void UpdateFireControl(float _dt)
 		else
 		{
 			k_wasPressed = sfFalse;
+		}
+		if (sfKeyboard_isKeyPressed(sfKeyJ))
+		{
+			if (j_wasPressed == sfFalse)
+			{
+				SwitchSecondaryDevMode();
+				j_wasPressed = sfTrue;
+			}
+		}
+		else
+		{
+			j_wasPressed = sfFalse;
 		}
 	}
 }

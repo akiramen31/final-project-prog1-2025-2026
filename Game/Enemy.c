@@ -308,7 +308,7 @@ void shootPlayer(unsigned _i)
 	type.isAlly = sfFalse;
 	type.bulletType = LIGHT;
 
-	AddBullet(posGun, posTarget, type);
+	AddBullet(posGun, posTarget, type, 1.f);
 }
 
 void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
