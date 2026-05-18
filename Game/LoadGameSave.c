@@ -277,6 +277,12 @@ void ReloadLoadGameSave(void)
 		TransformIntToString(bufferNb, gameSave->dataActualy.score[i]);
 		FusionString(buffer, 2, temp);
 		sfText_setString(data.score[i], buffer);
+		int j = 0;
+		while (buffer[j])
+		{
+			buffer[j] = 0;
+			j++;
+		}
 	}
 
 	temp[0] = "Unlocked: ";

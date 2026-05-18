@@ -15,11 +15,11 @@ void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent);
 void LoadGameOver(void)
 {
 	gameOver = (GameOver){ 0 };
-score = 0;
-tempScore = 0;
-highScore = 0;
-tempHighScore = 0;
-	if (GetPlayerLife()>0)
+	score = 0;
+	tempScore = 0;
+	highScore = 0;
+	tempHighScore = 0;
+	if (GetPlayerLife() > 0)
 	{
 		gameOver.didPlayerLoose = 0;
 	}
@@ -79,11 +79,11 @@ tempHighScore = 0;
 		highScore = gameData->score[map];
 	}
 
-	if (gameData->levelUnlock == map + 1)
+	if (!gameOver.didPlayerLoose && gameData->levelUnlock == map + 1)
 	{
 		gameData->levelUnlock++;
 	}
- 	SaveGameData();
+	SaveGameData();
 
 #pragma region button
 	for (int i = 0; i < 2; i++)
@@ -102,7 +102,7 @@ tempHighScore = 0;
 		sfText_setOrigin(gameOver.button[i], (sfVector2f) { rect.width / 2, rect.height });
 	}
 #pragma endregion
-	gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT /8)*5 }, 1.f, 10);
+	gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 8) * 5 }, 1.f, 10);
 	sfText_setCharacterSize(gameOver.text, 60);
 	if (gameOver.didPlayerLoose)
 	{

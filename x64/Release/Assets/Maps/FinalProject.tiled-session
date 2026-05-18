@@ -42,11 +42,11 @@
                 39,
                 31
             ],
-            "scale": 0.125,
+            "scale": 0.25,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 5780,
-                "y": 720
+                "x": 8622,
+                "y": 56
             }
         },
         "Level1_2.tmx": {
@@ -74,13 +74,15 @@
         },
         "Level2.tmx": {
             "expandedObjectLayers": [
-                8
+                6,
+                8,
+                7
             ],
             "scale": 0.125,
-            "selectedLayer": 1,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 4588,
-                "y": 1648
+                "x": 2412,
+                "y": 2160
             }
         },
         "Level3.tmx": {

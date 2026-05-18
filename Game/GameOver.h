@@ -5,7 +5,7 @@
 
 #define ANIM_FRAME_COUNT 20
 
-typedef struct GameOver
+typedef struct
 {
 	int didPlayerLoose;
 	sfText* button[2];
