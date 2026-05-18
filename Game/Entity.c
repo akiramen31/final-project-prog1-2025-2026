@@ -16,6 +16,10 @@ void LoadEntity(void)
 
 void UpdateEntity(float _dt)
 {
+	sfFloatRect rect = { 0 };
+	sfFloatRect playerRect = GetPlayerRect();
+	sfFloatRect reaction = { 0 };
+
 	if (entity.conveyorData.count > 0)
 	{
 		UpdateAnimationAndGiveIfStop(entity.conveyorData.entity[0], &entity.conveyorData.animation, _dt);
@@ -28,80 +32,81 @@ void UpdateEntity(float _dt)
 
 	for (int i = 0; i < entity.bluePrint.count; i++)
 	{
-		MapState map = GetCurrentMap();
-		GameData* data = GetGameData();
-		if (map == LEVEL1)
+		rect = sfSprite_getGlobalBounds(entity.bluePrint.entity[i].sprite);
+		if (sfFloatRect_intersects(&playerRect, &rect, NULL))
 		{
-			if (entity.bluePrint.entity[i].type == 1)
+			MapState map = GetCurrentMap();
+			GameData* data = GetGameData();
+			if (map == LEVEL1)
 			{
-				if (data->secondaryUnlock & 1)
+				if (entity.bluePrint.entity[i].type == 1)
+				{
+					if (data->secondaryUnlock & 1)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->secondaryUnlock++;
+					}
+				}
+			}
+			else if (map == LEVEL2)
+			{
+				if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
 				{
 					AddIntToSave(CURRENT_SCORE, 2500);
 				}
-				else
+				else if (entity.bluePrint.entity[i].type == 2)
 				{
-					data->secondaryUnlock++;
+					AddIntToSave(CURRENT_SCORE, 5000);
+				}
+				else if (entity.bluePrint.entity[i].type == 3)
+				{
+					if (data->weaponUnlock & 2)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->weaponUnlock += 2;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 4)
+				{
+					AddIntToSave(CURRENT_SCORE, 1000);
+				}
+				else if (entity.bluePrint.entity[i].type == 6)
+				{
+					if (data->weaponUnlock & 4)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->weaponUnlock += 4;
+					}
+				}
+				else if (entity.bluePrint.entity[i].type == 7)
+				{
+					if (data->secondaryUnlock & 2)
+					{
+						AddIntToSave(CURRENT_SCORE, 2500);
+					}
+					else
+					{
+						data->secondaryUnlock += 2;
+					}
 				}
 			}
-		}
-		else if (map == LEVEL2)
-		{
-			if (entity.bluePrint.entity[i].type == 1 || entity.bluePrint.entity[i].type == 5)
-			{
-				AddIntToSave(CURRENT_SCORE, 2500);
-			}
-			else if (entity.bluePrint.entity[i].type == 2)
-			{
-				AddIntToSave(CURRENT_SCORE, 5000);
-			}
-			else if (entity.bluePrint.entity[i].type == 3)
-			{
-				if (data->weaponUnlock & 2)
-				{
-					AddIntToSave(CURRENT_SCORE, 2500);
-				}
-				else
-				{
-					data->weaponUnlock += 2;
-				}
-			}
-			else if (entity.bluePrint.entity[i].type == 4)
-			{
-				AddIntToSave(CURRENT_SCORE, 1000);
-			}
-			else if (entity.bluePrint.entity[i].type == 6)
-			{
-				if (data->weaponUnlock & 4)
-				{
-					AddIntToSave(CURRENT_SCORE, 2500);
-				}
-				else
-				{
-					data->weaponUnlock += 4;
-				}
-			}
-			else if (entity.bluePrint.entity[i].type == 7)
-			{
-				if (data->secondaryUnlock & 2)
-				{
-					AddIntToSave(CURRENT_SCORE, 2500);
-				}
-				else
-				{
-					data->secondaryUnlock += 2;
-				}
-			}
-		}
 
-		DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
-		entity.bluePrint.count--;
-		entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
-		entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+			DestroyVisualEntity(entity.bluePrint.entity[i].sprite);
+			entity.bluePrint.count--;
+			entity.bluePrint.entity[i] = entity.bluePrint.entity[entity.bluePrint.count];
+			entity.bluePrint.entity = Realloc(entity.bluePrint.entity, entity.bluePrint.count * sizeof(BluePrintEntity));
+		}
 	}
 
-	sfFloatRect rect = { 0 };
-	sfFloatRect playerRect = GetPlayerRect();
-	sfFloatRect reaction = { 0 };
 	for (int i = 0; i < entity.jetSteam.count; i++)
 	{
 		if (entity.jetSteam.entity[i].cooldown < 0.f)
@@ -148,12 +153,12 @@ void UpdateEntity(float _dt)
 		{
 			sfSprite_setTextureRect(entity.press.entity[i].sprite, (sfIntRect) { 0, (int)(size.y - (6.f - entity.press.entity[i].timer) / 6 * size.y), size.x, (int)((6.f - entity.press.entity[i].timer) / 6 * size.y) });
 		}
-		
+
 		if (sfFloatRect_intersects(&rect, &playerRect, &reaction))
 		{
 			if (reaction.left + reaction.width / 2 < playerRect.left + playerRect.width / 2)
 			{
-				MovePlayer((sfVector2f) { rect.left + rect.width - playerRect.left, 0.f});
+				MovePlayer((sfVector2f) { rect.left + rect.width - playerRect.left, 0.f });
 			}
 			else
 			{
@@ -173,7 +178,7 @@ void AddBox(sfVector2f _position)
 void AddConveyor(sfVector2f _position)
 {
 	entity.conveyorData.entity = Realloc(entity.conveyorData.entity, (size_t)(entity.conveyorData.count + 1) * sizeof(sfSprite*));
-	entity.conveyorData.entity[entity.conveyorData.count] = (sfSprite*){ CreateSprite(GetAsset("Assets/Sprites/conveyor.png"), _position, 1.f, 50.f)};
+	entity.conveyorData.entity[entity.conveyorData.count] = (sfSprite*){ CreateSprite(GetAsset("Assets/Sprites/conveyor.png"), _position, 1.f, 50.f) };
 	entity.conveyorData.count++;
 }
 
