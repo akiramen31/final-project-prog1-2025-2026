@@ -36,17 +36,11 @@
             "expandedGroupLayers": [
                 44
             ],
-            "expandedObjectLayers": [
-                32,
-                37,
-                39,
-                31
-            ],
-            "scale": 0.25,
-            "selectedLayer": 5,
+            "scale": 0.125,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 8622,
-                "y": 56
+                "x": 6276,
+                "y": 824
             }
         },
         "Level1_2.tmx": {
@@ -78,11 +72,11 @@
                 8,
                 7
             ],
-            "scale": 0.25,
+            "scale": 0.0625,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1742,
-                "y": 1272
+                "x": 5064,
+                "y": 2768
             }
         },
         "Level3.tmx": {
@@ -114,7 +108,7 @@
         },
         "Tilesets/FullTiles.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 2,
+            "scaleInDock": 0.75,
             "scaleInEditor": 5.5
         },
         "Tilesets/LevelTest.json": {
