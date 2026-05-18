@@ -3,9 +3,9 @@
 
 GameOver gameOver;
 
-int score = 5000;
+int score;
 int tempScore = 0;
-int highScore = 10000;
+int highScore;
 int tempHighScore = 0;
 
 void KeyPressedGameOver(sfEvent* _event);
@@ -15,39 +15,51 @@ void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent);
 void LoadGameOver(void)
 {
 	gameOver = (GameOver){ 0 };
+	if (GetPlayerLife()>0)
+	{
+		gameOver.didPlayerLoose = 0;
+	}
+	else
+	{
+		gameOver.didPlayerLoose = 1;
+	}
 	SetViewZoom(1.f);
 	SetViewCenter((sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 });
 
-	gameOver.backgroundAnim = CreateSprite(GetAsset("Assets/Sprites/game_over_background.png"), (sfVector2f) { 0 }, 8.f, 1000);
-	gameOver.frameTime[0] = 1.f;
-	gameOver.frameTime[1] = 0.2f;
-	gameOver.frameTime[2] = 0.1f;
-	gameOver.frameTime[3] = 0.15f;
-	gameOver.frameTime[4] = 0.5f;
-	gameOver.frameTime[5] = 0.15f;
-	gameOver.frameTime[6] = 0.1f;
-	gameOver.frameTime[7] = 0.15f;
-	gameOver.frameTime[8] = 0.1f;
-	gameOver.frameTime[9] = 0.15f;
-	gameOver.frameTime[10] = 0.7f;
-	gameOver.frameTime[11] = 0.2f;
-	gameOver.frameTime[12] = 0.15f;
-	gameOver.frameTime[13] = 0.1f;
-	gameOver.frameTime[14] = 0.4f;
-	gameOver.frameTime[15] = 0.1f;
-	gameOver.frameTime[16] = 0.6f;
-	gameOver.frameTime[17] = 0.1f;
-	gameOver.frameTime[18] = 0.15f;
-	gameOver.frameTime[19] = 0.2f;
-	for (int i = 0; i < ANIM_FRAME_COUNT; i++)
+	if (gameOver.didPlayerLoose)
 	{
-		gameOver.frameRect[i] = (sfIntRect){ 0,135 * i,240,135 };
+		gameOver.background = LoadBackground(GetAsset("Assets/Sprites/game_over_loose.png"), 8.f);
+		gameOver.frameTime[0] = 1.f;
+		gameOver.frameTime[1] = 0.2f;
+		gameOver.frameTime[2] = 0.1f;
+		gameOver.frameTime[3] = 0.15f;
+		gameOver.frameTime[4] = 0.5f;
+		gameOver.frameTime[5] = 0.15f;
+		gameOver.frameTime[6] = 0.1f;
+		gameOver.frameTime[7] = 0.15f;
+		gameOver.frameTime[8] = 0.1f;
+		gameOver.frameTime[9] = 0.15f;
+		gameOver.frameTime[10] = 0.7f;
+		gameOver.frameTime[11] = 0.2f;
+		gameOver.frameTime[12] = 0.15f;
+		gameOver.frameTime[13] = 0.1f;
+		gameOver.frameTime[14] = 0.4f;
+		gameOver.frameTime[15] = 0.1f;
+		gameOver.frameTime[16] = 0.6f;
+		gameOver.frameTime[17] = 0.1f;
+		gameOver.frameTime[18] = 0.15f;
+		gameOver.frameTime[19] = 0.2f;
+		for (int i = 0; i < ANIM_FRAME_COUNT; i++)
+		{
+			gameOver.frameRect[i] = (sfIntRect){ 0,135 * i,240,135 };
+		}
+		gameOver.currentFrame = 0;
 	}
-	gameOver.currentFrame = 0;
-
+	else
+	{
+		gameOver.background = LoadBackground(GetAsset("Assets/Sprites/game_over_win.png"), 8.f);
+	}
 	sfFont* font = GetAsset(FONT);
-
-	int live = GetPlayerLife();
 
 	score = GetIntFromSave(CURRENT_SCORE);
 	MapState map = GetCurrentMap();
@@ -83,23 +95,21 @@ void LoadGameOver(void)
 		sfText_setOrigin(gameOver.button[i], (sfVector2f) { rect.width / 2, rect.height });
 	}
 #pragma endregion
-
-	gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 8) * 5 }, 1.f, 10);
+	gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT /8)*5 }, 1.f, 10);
 	sfText_setCharacterSize(gameOver.text, 60);
-
-	if (GetPlayerLife() > 0)
-	{
-		sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
-		sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
-	}
-	else
+	if (gameOver.didPlayerLoose)
 	{
 		sfText_setColor(gameOver.text, (sfColor) { 114, 28, 29, 255 });
 		sfText_setString(gameOver.text, "YOU DIED");
 	}
-
+	else
+	{
+		sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
+		sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
+	}
 	sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);
 	sfText_setOrigin(gameOver.text, (sfVector2f) { rect.width / 2, rect.height });
+
 
 #pragma region score
 	int decal = 60;
@@ -243,19 +253,21 @@ void UpdateGameOver(float _dt)
 	sprintf_s(text, sizeof(text), "%07d", tempHighScore);
 	sfText_setString(gameOver.score[3], text);
 
-	gameOver.timerAnim += _dt;
-
-	if (gameOver.timerAnim >= gameOver.frameTime[gameOver.currentFrame])
+	if (gameOver.didPlayerLoose)
 	{
-		gameOver.timerAnim = 0;
-		if (gameOver.currentFrame == 19)
+		gameOver.timerAnim += _dt;
+		if (gameOver.timerAnim >= gameOver.frameTime[gameOver.currentFrame])
 		{
-			gameOver.currentFrame = 0;
+			gameOver.timerAnim = 0;
+			if (gameOver.currentFrame == 19)
+			{
+				gameOver.currentFrame = 0;
+			}
+			else
+			{
+				gameOver.currentFrame++;
+			}
+			sfSprite_setTextureRect(gameOver.background, gameOver.frameRect[gameOver.currentFrame]);
 		}
-		else
-		{
-			gameOver.currentFrame++;
-		}
-		sfSprite_setTextureRect(gameOver.backgroundAnim, gameOver.frameRect[gameOver.currentFrame]);
 	}
 }

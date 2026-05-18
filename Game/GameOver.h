@@ -7,10 +7,11 @@
 
 typedef struct GameOver
 {
+	int didPlayerLoose;
 	sfText* button[2];
 	sfText* text;
 	sfText* score[4];
-	sfSprite* backgroundAnim;
+	sfSprite* background;
 	float frameTime[ANIM_FRAME_COUNT];
 	sfIntRect frameRect[ANIM_FRAME_COUNT];
 	int currentFrame;
