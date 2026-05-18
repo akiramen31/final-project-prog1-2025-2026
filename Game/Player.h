@@ -17,7 +17,6 @@
 #define PLAYER_JUMP_FORGIVE 0.1f
 
 #define PLAYER_HIT_COOLDOWN 0.5f
-#define PLAYER_HIT_DURATION 0.5f
 #define PLAYER_HIT_DAMAGE 10.f
 
 #define PLAYER_DAMAGE_IMUNITY_DURATION 2.f
@@ -37,12 +36,14 @@ typedef struct EnergyPlayerStruct
 typedef struct Player
 {
 	sfSprite* sprite;
+	sfSprite* punch;
 	sfSound* soundWalk;
 	sfRectangleShape* collision;
 
 	Weapon weapon;
 
 	sfRectangleShape* hitCollisionSize;
+	Animation punching;
 	sfBool hitBoss;
 	sfBool hitEnemy;
 

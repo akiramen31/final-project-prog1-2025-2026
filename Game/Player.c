@@ -41,12 +41,16 @@ void LoadPlayer(void)
 	player = (Player){ 0 };
 	sfTexture* texture = GetAsset("Assets/Sprites/player_sprite_sheet.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40.f);
+	texture = GetAsset("Assets/Sprites/player_punch.png");
+	player.punch = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40.f);
 	player.direction = sfTrue;
 
 	player.collision = sfRectangleShape_create();
 	sfRectangleShape_setSize(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH, PLAYER_COLLISION_HEIGHT });
 	sfRectangleShape_setPosition(player.collision, (sfVector2f) { 100, 32 });
 	sfRectangleShape_setOrigin(player.collision, (sfVector2f) { PLAYER_COLLISION_WIDTH / 2, PLAYER_COLLISION_HEIGHT });
+
+	//sfRectangleShape_setOrigin(player.punch, (sfVector2f) { 0, 8 });
 
 	player.running.frameCount = 8;
 	player.running.frameDuration = 0.1f;
@@ -78,8 +82,12 @@ void LoadPlayer(void)
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
 
-	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 16, 8 }, sfTransparent, sfRed, 40.f);
+	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 16, 16 }, sfTransparent, sfRed, 40.f);
 	timerHit = PLAYER_HIT_COOLDOWN;
+	player.punching.frameCount = 10;
+	player.punching.frameDuration = PLAYER_HIT_COOLDOWN / player.punching.frameCount;
+	player.punching.isLooping = sfFalse;
+	player.punching.rectActualy = (sfIntRect){ 0,0,16,8 };
 
 	posFly.x = 100;
 	posFly.y = 32;
@@ -151,38 +159,47 @@ void UpdatePlayer(sfBool _intro, float _dt)
 			if (player.weapon.isRight)
 			{
 				sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { 1, 1 });
+				sfSprite_setScale(player.punch, (sfVector2f) { 1, 1 });
 			}
 			else
 			{
 				sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { -1, 1 });
+				sfSprite_setScale(player.punch, (sfVector2f) { -1, 1 });
 			}
 		}
 		else
 		{
 			sfRectangleShape_setScale(player.hitCollisionSize, (sfVector2f) { 0, 0 });
+			sfSprite_setScale(player.punch, (sfVector2f) { 0, 0 });
 		}
 	}
 	if (timerHit <= PLAYER_HIT_COOLDOWN)
 	{
 		timerHit += _dt;
-	}
+		UpdateAnimationAndGiveIfStop(player.punch, &player.punching, _dt);
 
-	if (timerHit <= PLAYER_HIT_DURATION)
-	{
 		sfVector2f posPlayer = GetPlayerPosition();
-		posPlayer.y -= WEAPON_ORIGIN;
+		posPlayer.y -= WEAPON_ORIGIN + 4;
 		sfRectangleShape_setPosition(player.hitCollisionSize, posPlayer);
+		sfSprite_setPosition(player.punch, posPlayer);
 
 		sfFloatRect rect = sfRectangleShape_getGlobalBounds(player.hitCollisionSize);
-		ColisionBox(rect,sfTrue,AXIS_BOTH);
+		ColisionBox(rect, sfTrue, AXIS_BOTH);
 		ColisionElevatorButon(rect);
-		if (HitBoss(PLAYER_HIT_DAMAGE, rect, MEDIUM) && !player.hitBoss)
+
+		if (!player.hitBoss)
 		{
-			player.hitBoss = sfTrue;
+			if (HitBoss(PLAYER_HIT_DAMAGE, rect, MEDIUM))
+			{
+				player.hitBoss = sfTrue;
+			}
 		}
-		if (HitEnemy(PLAYER_HIT_DAMAGE, rect, MEDIUM) && !player.hitEnemy)
+		if (!player.hitEnemy)
 		{
-			player.hitEnemy = sfTrue;
+			if (HitEnemy(PLAYER_HIT_DAMAGE, rect, MEDIUM))
+			{
+				player.hitEnemy = sfTrue;
+			}
 		}
 	}
 
@@ -822,7 +839,7 @@ void UpdateSteamAxe(float _dt)
 			}
 			else if (player.weapon.steamAxe.attackType == MEDIUM)
 			{
-				if(HitEnemy(2.f, axeHitbox, MEDIUM))
+				if (HitEnemy(2.f, axeHitbox, MEDIUM))
 				{
 					PlaySound(WEAPON_AXE_MEDIUM);
 				}
