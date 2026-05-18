@@ -246,7 +246,7 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 			}
 			break;
 		case 2:
-			if (_posPlayer.y < ARENA2_GROUND && _posPlayer.x > ARENA2_ENTRY)
+			if (boss.boss2->hitboxes[0].height != 0 && _posPlayer.y < ARENA2_GROUND && _posPlayer.x > ARENA2_ENTRY)
 			{
 				boss.life = MAX_BOSS2_LIFE;
 			}

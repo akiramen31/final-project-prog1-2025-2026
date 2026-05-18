@@ -410,7 +410,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 				if (CompareIntRect(temp, menu.selectionMenu.textureRect[HIGHLIGHT]))
 				{
 					sfSprite_setTextureRect(menu.selectionMenu.generalButton[i], menu.selectionMenu.textureRect[SELECT]);
-					SetSecondaryType(i);
+					SetSecondaryType(i+1);
 					sfText_setScale(menu.selectionMenu.descriptionText, visibleText);
 					sfText_setString(menu.selectionMenu.descriptionText, menu.selectionMenu.secondaryDesc[i]);
 					for (int j = 0; j < SECONDARY_COUNT; j++)
