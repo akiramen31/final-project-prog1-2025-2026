@@ -9,32 +9,26 @@ void LoadBackup(void)
 {
 	backup = (Backup){ 0 };
 	FILE* file = fopen("Game.sav", "r");
-	if (!file)
+	if (file)
 	{
-		return;
-	}
-	fread(&backup, sizeof(Backup), 1, file);
-	if (backup.parametre.valueFloat[LIGHT_LEVEL] < 0.25f || backup.parametre.valueFloat[LIGHT_LEVEL] > 1.f)
-	{
-		backup.parametre.valueFloat[LIGHT_LEVEL] = 1.f;
-	}
-	fclose(file);
-
-	for (int i = 0; i < KEY_COUNT; i++)
-	{
-		if (backup.parametre.valueKey[i])
+		fread(&backup.parametre, sizeof(Parametre), 1, file);
+		if (backup.parametre.valueFloat[LIGHT_LEVEL] < 0.25f || backup.parametre.valueFloat[LIGHT_LEVEL] > 1.f)
 		{
-			return;
+			backup.parametre.valueFloat[LIGHT_LEVEL] = 1.f;
 		}
+		fclose(file);
 	}
-	backup.parametre.valueKey[KEY_JUMP] = sfKeySpace;
-	backup.parametre.valueKey[KEY_DOWN] = sfKeyS;
-	backup.parametre.valueKey[KEY_RIGHT] = sfKeyD;
-	backup.parametre.valueKey[KEY_LEFT] = sfKeyQ;
-	backup.parametre.valueKey[KEY_GUN] = sfMouseLeft + sfKeyCount;
-	backup.parametre.valueKey[KEY_DASH] = sfMouseRight + sfKeyCount;
-	backup.parametre.valueKey[KEY_HIT] = sfKeyNum1;
-	backup.parametre.valueKey[KEY_SECOND] = sfKeyNum2;
+	else
+	{
+		backup.parametre.valueKey[KEY_JUMP] = sfKeySpace;
+		backup.parametre.valueKey[KEY_DOWN] = sfKeyS;
+		backup.parametre.valueKey[KEY_RIGHT] = sfKeyD;
+		backup.parametre.valueKey[KEY_LEFT] = sfKeyQ;
+		backup.parametre.valueKey[KEY_GUN] = sfMouseLeft + sfKeyCount;
+		backup.parametre.valueKey[KEY_DASH] = sfMouseRight + sfKeyCount;
+		backup.parametre.valueKey[KEY_HIT] = sfKeyNum1;
+		backup.parametre.valueKey[KEY_SECOND] = sfKeyNum2;
+	}
 }
 
 void SaveBackup(void)
@@ -44,7 +38,7 @@ void SaveBackup(void)
 	{
 		return;
 	}
-	fwrite(&backup.parametre, sizeof(Backup), 1, file);
+	fwrite(&backup.parametre, sizeof(Parametre), 1, file);
 	fclose(file);
 }
 
@@ -105,19 +99,24 @@ void AddIntToSave(IntSave _index, int _value)
 	SaveBackup();
 }
 
+
+
 void LoadGameData(int _index)
 {
 	if (_index < backup.gameSave.count)
 	{
 		char buffer[40] = { 0 };
-		char* temp[2] = { "Saves/" , backup.gameSave.name[_index] };
+		char* temp[2] = { "Saves/", backup.gameSave.name[_index] };
 		FusionString(buffer, 2, temp);
-		FILE* file = fopen(buffer, "r");
-		if (file)
+		backup.gameSave.dataActualy = (GameData){ 0 };
+
+		int file = open(buffer, 0);
+		if (file != -1)
 		{
-			fread(&backup.gameSave.dataActualy, sizeof(GameData), 4, file);
-			fclose(file);
+			read(file, &backup.gameSave.dataActualy, sizeof(GameData));
+			close(file);
 		}
+
 		int i = 0;
 		while (backup.gameSave.name[_index][i])
 		{
@@ -177,17 +176,17 @@ void DestroySave(void)
 }
 void SaveGameData(void)
 {
-	if (backup.gameSave.actualy != -1)
+	if (backup.gameSave.nameActualy[0])
 	{
-		RechargeSaves();
 		char buffer[40] = { 0 };
-		char* temp[2] = { "Saves/" ,backup.gameSave.nameActualy };
+		char* temp[2] = { "Saves/", backup.gameSave.nameActualy };
 		FusionString(buffer, 2, temp);
-		FILE* file = fopen(buffer, "w+");
-		if (file)
+
+		int file = open(buffer, 769, 0644);
+		if (file != -1)
 		{
-			fwrite(&backup.gameSave.dataActualy, sizeof(GameData), 4, file);
-			fclose(file);
+			write(file, &backup.gameSave.dataActualy, sizeof(GameData));
+			close(file);
 		}
 	}
 }
@@ -234,14 +233,15 @@ void AddGameSave(void)
 	backup.gameSave.name[backup.gameSave.count] = StringCopy(buffer);
 	backup.gameSave.actualy = backup.gameSave.count;
 	backup.gameSave.count++;
-	backup.gameSave.dataActualy = (GameData){ 1, 1 };
+	backup.gameSave.dataActualy = (GameData){ 1, 1, 0, 0, 0, 0 };
 	char bigBuffer[40] = { 0 };
 	char* temp[2] = { "Saves/" , buffer };
 	FusionString(bigBuffer, 2, temp);
-	FILE* file = fopen(bigBuffer, "w");
-	if (file)
+	int file = open(bigBuffer, 769, 0644);
+	if (file != -1)
 	{
-		fclose(file);
+		write(file, &backup.gameSave.dataActualy, sizeof(GameData));
+		close(file);
 	}
 	int i = 0;
 	while (buffer[i])
