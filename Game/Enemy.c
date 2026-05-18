@@ -110,7 +110,7 @@ void UpdateEnemyI(float _dt, unsigned _i)
 				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
 				{
 					enemy.entity[_i].shootTimer = 0;
-					SpawnGrenade(GetPositionEnemy(_i), (float) { enemy.entity[_i].type% GROUND_HEAVY }, (float) { enemy.entity[_i].type% GROUND_HEAVY });
+					SpawnGrenade(sfSprite_getPosition(enemy.entity[_i].sprite), (rectEnemy.width + rectEnemy.height) / 24.f, (rectEnemy.width + rectEnemy.height) / 24.f * 3);
 				}
 				enemy.entity[_i].action = (ActionDemander){ 0, 0, enemy.entity[_i].action.saut, 0 };
 			}

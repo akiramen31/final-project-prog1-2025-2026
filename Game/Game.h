@@ -4,6 +4,14 @@
 #include "Common.h"
 
 #define PAUSE_ROOM_DURATION 0.25f
+#define PAUSE_BUTTON_COUNT 4
+
+typedef struct
+{
+	sfText* button[PAUSE_BUTTON_COUNT];
+	sfSprite* backgound;
+	char actif;
+}GamePause;
 
 typedef struct
 {
@@ -20,6 +28,8 @@ typedef struct
 	sfBool startIntroIsFinished;
 
 	sfCircleShape* cameraCenter;
+
+	GamePause pause;
 }Game;
 
 void LoadGame(void);
