@@ -89,9 +89,6 @@ void LoadGame(void)
 		break;
 	}
 
-
-
-
 	game.pause.backgound = CreateSprite(GetAsset("Assets/Sprites/starting_menu_text1.png"), (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT }, 6.f, -0.5f);
 	sfSprite_setTextureRect(game.pause.backgound, (sfIntRect) {0, 39, 112, 97 });
 	SetSpriteOriginFoot(game.pause.backgound);

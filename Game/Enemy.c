@@ -12,6 +12,7 @@ int GetNearestEnemy(List* _listeIgnore, sfVector2f _position);
 sfBool PlayerVisibility(unsigned _index);
 void shootPlayer(unsigned _index);
 sfBool HitEnemyI(unsigned _index, sfVector2f _touch, float _degat, AttackType _attaque);
+void DamageEnemyI(unsigned _i, float _degat, AttackType _type);
 
 Enemy enemy;
 
@@ -329,6 +330,35 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	enemy.count++;
 }
 
+void DamageEnemyI(unsigned _i, float _degat, AttackType _type)
+{
+	if (_type == FREEZE)
+	{
+		enemy.entity[_i].freezePower = 2;
+		enemy.entity[_i].freezeTimer = 5;
+	}
+
+	enemy.entity[_i].life -= _degat / (enemy.dataByType[enemy.entity[_i].type].armure + 1);
+	sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 0, 0));
+	enemy.entity[_i].domageTimer = 0.1;
+	if (enemy.entity[_i].life < 0)
+	{
+		AddIntToSave(CURRENT_SCORE, enemy.dataByType[enemy.entity[_i].type].scoreValue);
+		sfFloatRect rect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+		sfVector2f pos = { rect.left + rect.width / 2.f, rect.top + rect.height / 2.f };
+		float range = (rect.width + rect.height) / 4.f;
+		DestroyVisualEntity(enemy.entity[_i].sprite);
+		enemy.count--;
+		enemy.entity[_i] = enemy.entity[enemy.count];
+		if (enemy.count > 0)
+		{
+			enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
+		}
+		SpawnExplosion(pos, sfFalse, range / EXPLOSION_BASIC_RANGE);
+	}
+	return;
+}
+
 sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 {
 	sfTexture* texture = sfSprite_getTexture(enemy.entity[_i].sprite);
@@ -338,30 +368,7 @@ sfBool HitEnemyI(unsigned _i, sfVector2f _touch, float _degat, AttackType _type)
 
 	if (pixelColor.a == 255)
 	{
-		if (_type == FREEZE)
-		{
-			enemy.entity[_i].freezePower = 2;
-			enemy.entity[_i].freezeTimer = 5;
-		}
-
-		enemy.entity[_i].life -= _degat / ((enemy.dataByType[enemy.entity[_i].type].armure + 1) * (_type - FREEZE));
-		sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 0, 0));
-		enemy.entity[_i].domageTimer = 0.1;
-		if (enemy.entity[_i].life < 0)
-		{
-			AddIntToSave(CURRENT_SCORE, enemy.dataByType[enemy.entity[_i].type].scoreValue);
-			sfFloatRect rect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-			sfVector2f pos = { rect.left + rect.width / 2.f, rect.top + rect.height / 2.f };
-			float range = (rect.width + rect.height) / 4.f;
-			DestroyVisualEntity(enemy.entity[_i].sprite);
-			enemy.count--;
-			enemy.entity[_i] = enemy.entity[enemy.count];
-			if (enemy.count > 0)
-			{
-				enemy.entity = Realloc(enemy.entity, enemy.count * sizeof(EnemyEntity));
-			}
-			SpawnExplosion(pos, sfFalse, range / EXPLOSION_BASIC_RANGE);
-		}
+		DamageEnemyI(_i, _degat, _type);
 		return sfTrue;
 	}
 	return sfFalse;
@@ -377,8 +384,9 @@ sfBool HitEnemy(float _degat, sfFloatRect _hitbox, AttackType _type)
 		hitboxEnemy = sfSprite_getGlobalBounds(enemy.entity[i].sprite);
 		if (sfFloatRect_intersects(&_hitbox, &hitboxEnemy, &hitboxTir))
 		{
-			touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
-			if (HitEnemyI(i, touch, _degat, _type))
+			//touch = (sfVector2f){ hitboxTir.left + hitboxTir.width / 2 - hitboxEnemy.left, hitboxTir.top + hitboxTir.height / 2 - hitboxEnemy.top };
+			//if (HitEnemyI(i, touch, _degat, _type))
+			DamageEnemyI(i, _degat, _type);
 			{
 				if (enemy.dataByType[enemy.entity[i].type].armure == MEDIUM_ARMOR)
 				{
@@ -484,7 +492,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		#if 0 DEBUG_MODE_A_STAR
+#if 0 DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -496,7 +504,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
-		#endif
+#endif
 	};
 
 	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
@@ -839,7 +847,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		#if DEBUG_MODE_A_STAR
+#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{
@@ -888,7 +896,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
-		#endif
+#endif
 	}
 
 	ActionDemander actionDemander = { 0 };
@@ -969,7 +977,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		#if 0 DEBUG_MODE_A_STAR
+#if 0 DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -981,7 +989,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
-		#endif
+#endif
 	};
 
 	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
@@ -1155,7 +1163,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		#if DEBUG_MODE_A_STAR
+#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{
@@ -1204,7 +1212,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
-		#endif
+#endif
 	}
 
 	ActionDemander actionDemander = { 0 };
