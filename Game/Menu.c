@@ -108,14 +108,14 @@ void LoadMenu(void)
 	menu.mainMenu.name[3] = "PAGLIAZZO P.";
 	menu.mainMenu.name[4] = "VOLLAIRE A.";
 
-	menu.selectionMenu.mapDesc[0] = "The new cog\non the block\n\nScore=\n\nWalk around the\nfactories and find \nyour way to the docks";
-	menu.selectionMenu.mapDesc[1] = "Henry in the sky\nwith ballons\n\nScore=\n\nNow on a flagship, you\nmust reach the top to\nensure you can leave\nwhen it docks";
+	menu.selectionMenu.mapDesc[0] = "The new cog on the block\n\nHighscore=\n\nWalk 'round the\nfactories and find yer\nway to the docks.";
+	menu.selectionMenu.mapDesc[1] = "Savery in the sky with\nballons\n\nHighscore=\n\nNow on a flagship, ye\nmust reach the top to\nensure ye can leave\nwhen it docks.";
 	menu.selectionMenu.mapDesc[2] = "Unused level\n";
-	menu.selectionMenu.weaponDesc[0] = "Railgun\n\nDamage=\n\nThe gun of the common man,\nshoots high velocity bullets\nthat do some pretty\nreliable damage.";
-	menu.selectionMenu.weaponDesc[1] = "Steam powered axe\n\nDamage=\n\nWith steam propulsion this axe can\ndo powerful hits that sometimes\ntake your arm too far";
-	menu.selectionMenu.weaponDesc[2] = "Mi-steel launcher\n\nDamage=\n\nShoots a half steel beam that\nsticks in walls, should it hit one";
-	menu.selectionMenu.secondaryDesc[0] = "Kamikaze drone\nWhile pretty costly in steam,\nthis drone can reach niches\nand blow them up for ye!";
-	menu.selectionMenu.secondaryDesc[1] = "Coldbreath\nHelp your ennemies \"cool\" down";
+	menu.selectionMenu.weaponDesc[0] = "Railgun\n\nDamage=\n\nThe gun of the common\nman, shoots fast bullets\nthat can take out\nmost foes.";
+	menu.selectionMenu.weaponDesc[1] = "Steam powered axe\n\nDamage=\n\nThanks to steam\npropulsion axes are back\non the menu! With now\nboosted hits it can shred\nall yer foes.";
+	menu.selectionMenu.weaponDesc[2] = "Mi-steel launcher\n\nDamage=\n\nShoots a semi-steel beam\nthat sticks in walls,\nshould it hit one.";
+	menu.selectionMenu.secondaryDesc[0] = "Kamikaze drone\n\nWhile pretty costly in\nsteam, this drone can\nreach niches and blow\nthem up for ye!";
+	menu.selectionMenu.secondaryDesc[1] = "Coldbreath\n\nHelp your ennemies\n\"cool\" down with this\ncold projectile.";
 
 	menu.selectionMenu.descriptionText = CreateText(font, (sfVector2f) { 936, 96 }, textSizeMedium, 5.f);
 
