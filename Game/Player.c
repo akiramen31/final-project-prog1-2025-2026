@@ -280,7 +280,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 
 	if (timerDash >= PLAYER_DASH_DURATION)
 	{
-		player.velocity.x /= 1.5f;
+		player.velocity.x /= 1.8f;
 
 		if (IfControlKeyPressed(KEY_RIGHT) && IfControlKeyPressed(KEY_LEFT))
 		{
