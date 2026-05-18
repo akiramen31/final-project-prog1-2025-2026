@@ -58,6 +58,8 @@ void LoadBoss(int _index, sfVector2f _position)
 		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], 90);
 		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], -90);
 		boss.life = -1;
+		boss.boss1->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
+		sfSound_setLoop(boss.boss1->sound, sfTrue);
 		break;
 	case 2:
 		boss.boss2 = Calloc(1, sizeof(Boss2));
@@ -152,6 +154,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		break;
 	}
 	boss.entity = boss.boss1;
+
 }
 
 void UpdateBoss(sfVector2f _posPlayer, float _dt)
@@ -261,7 +264,6 @@ void MoveBoss(sfVector2f _move)
 	switch (boss.currentBoss)
 	{
 	case 1:
-		PlaySound(BOSS_MOVE);
 		for (int i = 0; i < PART_COUNT_BOSS1; i++)
 		{
 			sfSprite_move(boss.boss1->sprites[i], _move);
@@ -273,6 +275,7 @@ void MoveBoss(sfVector2f _move)
 		}
 		break;
 	case 2:
+		PlaySound(BOSS_MOVE);
 		for (int i = 0; i < PART_COUNT_BOSS2; i++)
 		{
 			sfSprite_move(boss.boss2->sprites[i], _move);
@@ -890,6 +893,17 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 		default:
 			break;
 		}
+		if (boss.boss1->boss1Reacting)
+		{
+			if (sfSound_getStatus(boss.boss1->sound) != sfPlaying)
+			{
+				sfSound_play(boss.boss1->sound);
+			}
+		}
+		else
+		{
+			sfSound_stop(boss.boss1->sound);
+		}
 	}
 	else if (boss.currentBoss == 2)
 	{
@@ -1171,7 +1185,6 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT || boss.boss1->playerPositionToBoss1 == AWAY_LEFT || boss.boss1->playerPositionToBoss1 == AWAY_RIGHT)
 			{
 				boss.boss1->cooldownBallistic += 1.f / BOSS1_FIRERATE_BULLET;
-				PlaySound(BOSS_SHOOT_MISSILE);
 				SpawnBossMissile(sfSprite_getPosition(boss.boss1->sprites[MISSILE_LAUNCHER]), _posPlayer.x);
 			}
 		}

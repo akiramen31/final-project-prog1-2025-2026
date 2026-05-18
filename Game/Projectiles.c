@@ -495,6 +495,7 @@ void SpawnBossMissile(sfVector2f _posShooter, float _destination)
 	{
 		if (bossMissileList[i].bossMissileState == BOSS_MISSILE_OUT)
 		{
+			PlaySound(BOSS_SHOOT_MISSILE);
 			sfSprite_setPosition(bossMissileList[i].sprite, _posShooter);
 			bossMissileList[i].destination = _destination;
 			bossMissileList[i].bossMissileTimer = BOSS_MISSILE_SPAWN_TIME;

@@ -25,6 +25,7 @@ void LoadGame(void)
 
 	SetIntToSave(CURRENT_SCORE, 0);
 
+	LoadSounds();
 	LoadCamera();
 	LoadParallax();
 	LoadPlayer();
@@ -35,7 +36,6 @@ void LoadGame(void)
 	LoadBossBar(GetBossLifeAdress(), GetBossMaxLife());
 	//LoadGUI();
 	LoadWeapons();
-	LoadSounds();
 
 	TpPlayerToSpawn();
 
