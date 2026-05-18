@@ -281,8 +281,6 @@ void SecurityElevator(sfVector2f _posPlayer)
 
 					if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] + length / 2 < _posPlayer.y)
 					{
-						//printf("elevator %d DOWN %d\n", i, val);
-						//val++;
 						elevatorList[i].actualLevel--;
 						sfRectangleShape_setPosition(elevatorList[i].hitbox[0], (sfVector2f) { sfRectangleShape_getPosition(elevatorList[i].hitbox[0]).x, elevatorList[i].posYlevel[elevatorList[i].actualLevel] });
 					}
@@ -296,8 +294,6 @@ void SecurityElevator(sfVector2f _posPlayer)
 
 					if (elevatorList[i].posYlevel[elevatorList[i].actualLevel] + length / 2 > _posPlayer.y)
 					{
-						//printf("elevator %d UP %d\n", i, val);
-						//val++;
 						elevatorList[i].actualLevel++;
 						sfRectangleShape_setPosition(elevatorList[i].hitbox[0], (sfVector2f) { sfRectangleShape_getPosition(elevatorList[i].hitbox[0]).x, elevatorList[i].posYlevel[elevatorList[i].actualLevel] });
 					}

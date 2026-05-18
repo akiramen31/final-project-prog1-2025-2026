@@ -226,7 +226,6 @@ void SetVisibleLoadGameSave(sfBool _visible)
 
 char GetCaractere(sfKeyCode _key)
 {
-	printf("%d", _key);
 	char buffer[14] = { 0 };
 	if (_key >= 0 && _key < 26)
 	{

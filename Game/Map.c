@@ -153,14 +153,12 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		}
 		else if (StringCompare(_point[i].type, "Enemy"))
 		{
-			printf("\n\n%d", i);
 			for (int j = 0; j < map.data.trigerCount; j++)
 			{
 				if (map.data.triger[j].hitbox.left < map.data.point[i].hitbox.left && map.data.triger[j].hitbox.top < map.data.point[i].hitbox.top && map.data.triger[j].hitbox.left + map.data.triger[j].hitbox.width > map.data.point[i].hitbox.left && map.data.triger[j].hitbox.top + map.data.triger[j].hitbox.height > map.data.point[i].hitbox.top)
 				{
 					AddEnemy((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top }, _point[i].name[0] - '0', map.data.triger[j].hitbox);
 					j = map.data.trigerCount;
-					printf("%d", i);
 				}
 			}
 		}

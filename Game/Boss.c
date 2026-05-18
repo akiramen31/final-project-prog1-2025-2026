@@ -60,7 +60,6 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.life = -1;
 		break;
 	case 2:
-		printf("Position du boss : %f et %f", _position.x, _position.y);
 		boss.boss2 = Calloc(1, sizeof(Boss2));
 		if (boss.boss2 != NULL)
 		{

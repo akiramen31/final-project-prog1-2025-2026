@@ -484,7 +484,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		if (0 && DEBUG_MODE_A_STAR)
+		#if 0 DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -496,6 +496,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
+		#endif
 	};
 
 	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
@@ -838,7 +839,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		if (1 && DEBUG_MODE_A_STAR)
+		#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{
@@ -887,6 +888,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
+		#endif
 	}
 
 	ActionDemander actionDemander = { 0 };
@@ -967,7 +969,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-		if (0 && DEBUG_MODE_A_STAR)
+		#if 0 DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -979,6 +981,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
+		#endif
 	};
 
 	sfFloatRect bouns = sfSprite_getGlobalBounds(_enemy->sprite);
@@ -1152,7 +1155,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			RetirerListWait(min);
 		}
-		if (1 && DEBUG_MODE_A_STAR)
+		#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 			{
@@ -1201,6 +1204,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 			printf("\n\n\n");
 		}
+		#endif
 	}
 
 	ActionDemander actionDemander = { 0 };
