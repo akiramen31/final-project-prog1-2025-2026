@@ -61,6 +61,18 @@ void SetSpriteOriginMiddle(sfSprite* _sprite)
 	sfSprite_setOrigin(_sprite, (sfVector2f) { box.width / 2, box.height / 2 });
 }
 
+void SetTextOriginFoot(sfText* _text)
+{
+	sfFloatRect box = sfText_getLocalBounds(_text);
+	sfText_setOrigin(_text, (sfVector2f) { box.width / 2, box.height });
+}
+
+void SetTextOriginMiddle(sfText* _text)
+{
+	sfFloatRect box = sfText_getLocalBounds(_text);
+	sfText_setOrigin(_text, (sfVector2f) { box.width / 2, box.height / 2 });
+}
+
 void CopyStringToBuffer(char* _buffer, char* _string)
 {
 	int i = 0;

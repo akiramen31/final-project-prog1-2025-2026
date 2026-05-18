@@ -151,6 +151,8 @@ sfBool UpdateAnimationAndGiveIfStop(sfSprite* _sprite, Animation* const _animati
 sfBool UpdateAdvencedAnimationAndGiveIfStop(sfSprite* const _sprite, AdvencedAnimation* const _animation, const float _dt);
 void SetSpriteOriginFoot(sfSprite* _sprite);
 void SetSpriteOriginMiddle(sfSprite* _sprite);
+void SetTextOriginFoot(sfText* _text);
+void SetTextOriginMiddle(sfText* _text);
 void CopyStringToBuffer(char* _buffer, char* _string);
 void** CreateGrid(unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);
 void** ReallocGrid(void** _previousGrid, unsigned long _previousColumnCount, unsigned long _previousRowCount, unsigned long _columnCount, unsigned long _rowCount, size_t _typeSize);

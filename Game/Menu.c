@@ -90,8 +90,8 @@ void LoadMenu(void)
 	char* bufferKeyType[KEY_COUNT] = { "Jump" ,"Down","Right", "Left", "Shoot", "Dash", "Melee", "Second" };
 	for (int i = 0; i < KEY_COUNT; i++)
 	{
+		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450 , 342 + 55 * (float)i }, textSizeSmall, 5.f);
 		menu.mainMenu.keyType[i] = CreateText(font, (sfVector2f) { 35, 342 + 55 * (float)i }, textSizeSmall, 5.f);
-		menu.mainMenu.key[i] = CreateText(font, (sfVector2f) { 450, 342 + 55 * (float)i }, textSizeSmall, 5.f);
 		sfText_setString(menu.mainMenu.keyType[i], bufferKeyType[i]);
 		sfText_setColor(menu.mainMenu.keyType[i], menu.textColor);
 		sfText_setColor(menu.mainMenu.key[i], menu.textColor);
@@ -673,13 +673,6 @@ void SetMenuState(MenuState _state)
 			{
 				sfText_setScale(menu.mainMenu.key[i], visibleText);
 				sfText_setScale(menu.mainMenu.keyType[i], visibleText);
-
-				tempPos = (sfVector2f){ 40, 352 };
-				tempPos2 = (sfVector2f){ 512, 352 };
-				tempPos.y += (312 / (KEY_COUNT) * (i));
-				tempPos2.y += tempPos.y;
-				sfText_setPosition(menu.mainMenu.key[i], tempPos);
-				sfText_setPosition(menu.mainMenu.keyType[i], tempPos2);
 			}
 			break;
 		case STARTING_MENU:

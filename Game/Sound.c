@@ -33,7 +33,7 @@ void LoadSounds()
 	sounds.buffer[DRONE_PASSIVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/drone_sound.ogg"), 1.f };
 	//sounds.buffer[COLDBREATH_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/explosion.ogg"), 1.f };
-	//sounds.buffer[GENERAL_BOX] = GetAsset("Assets/Sounds/land.ogg");
+	sounds.buffer[GENERAL_BOX] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/box_break.ogg"), 0.125f };
 }
 sfSound* PlaySound(SoundIndex _index)
 {

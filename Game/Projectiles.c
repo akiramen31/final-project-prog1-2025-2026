@@ -610,13 +610,7 @@ void AddColdBreath(sfVector2f _posShooter, sfVector2f _posTarget, ShooterType _s
 
 void SpawnGrenade(sfVector2f _spawnZone, float _sizeGrenade, float _rangeGrenade)
 {
-	Grenade* temp = Realloc(grenadeList, (size_t)(grenadeCount + 1) * sizeof(Grenade));
-	if (!temp)
-	{
-		return;
-	}
-	grenadeList = temp;
-	temp = NULL;
+	grenadeList = Realloc(grenadeList, (size_t)(grenadeCount + 1) * sizeof(Grenade));
 	Grenade newGrenade = { 0 };
 
 	newGrenade.sprite = CreateSprite(grenadeTexture, _spawnZone, _sizeGrenade, 16.f);

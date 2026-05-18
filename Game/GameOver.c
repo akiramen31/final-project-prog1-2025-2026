@@ -41,7 +41,7 @@ void LoadGameOver(void)
 	gameOver.frameTime[19] = 0.2f;
 	for (int i = 0; i < ANIM_FRAME_COUNT; i++)
 	{
-		gameOver.frameRect[i] = (sfIntRect){0,135*i,240,135};
+		gameOver.frameRect[i] = (sfIntRect){ 0,135 * i,240,135 };
 	}
 	gameOver.currentFrame = 0;
 
@@ -60,12 +60,16 @@ void LoadGameOver(void)
 	{
 		highScore = gameData->score[map];
 	}
-	SaveGameData();
+	if (gameData->levelUnlock == map + 1)
+	{
+		gameData->levelUnlock++;
+	}
+ 	SaveGameData();
 
 #pragma region button
 	for (int i = 0; i < 2; i++)
 	{
-		gameOver.button[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 8 * ((i * 6) + 1), (SCREEN_HEIGHT / 8)*3  }, 1.f, 10);
+		gameOver.button[i] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 8 * ((i * 6) + 1), (SCREEN_HEIGHT / 8) * 3 }, 1.f, 10);
 		sfText_setCharacterSize(gameOver.button[i], 60);
 		sfText_setColor(gameOver.button[i], (sfColor) { 255, 165, 0, 255 });
 	}
@@ -80,24 +84,22 @@ void LoadGameOver(void)
 	}
 #pragma endregion
 
+	gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 8) * 5 }, 1.f, 10);
+	sfText_setCharacterSize(gameOver.text, 60);
+
+	if (GetPlayerLife() > 0)
 	{
-		gameOver.text = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, (SCREEN_HEIGHT /8)*5 }, 1.f, 10);
-		sfText_setCharacterSize(gameOver.text, 60);
-
-		if (GetPlayerLife() > 0)
-		{
-			sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
-			sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
-		}
-		else
-		{
-			sfText_setColor(gameOver.text, (sfColor) { 114, 28, 29, 255 });
-			sfText_setString(gameOver.text, "YOU DIED");
-		}
-
-		sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);
-		sfText_setOrigin(gameOver.text, (sfVector2f) { rect.width / 2, rect.height });
+		sfText_setColor(gameOver.text, (sfColor) { 54, 80, 52, 255 });
+		sfText_setString(gameOver.text, "YOU PASSED TO THE NEXT LEVEL");
 	}
+	else
+	{
+		sfText_setColor(gameOver.text, (sfColor) { 114, 28, 29, 255 });
+		sfText_setString(gameOver.text, "YOU DIED");
+	}
+
+	sfFloatRect rect = sfText_getGlobalBounds(gameOver.text);
+	sfText_setOrigin(gameOver.text, (sfVector2f) { rect.width / 2, rect.height });
 
 #pragma region score
 	int decal = 60;
@@ -140,20 +142,20 @@ void LoadGameOver(void)
 
 void PollEventGameOver(sfEvent* _event)
 {
-		switch (_event->type)
-		{
-		case sfEvtKeyPressed:
-			KeyPressedGameOver(_event);
-			break;
-		case sfEvtMouseButtonPressed:
-			MouseButtonPressedGameOver(&_event->mouseButton);
-			break;
-		case sfEvtMouseMoved:
-			MouseMovedGameOver(&_event->mouseMove);
-			break;
-		default:
-			break;
-		}
+	switch (_event->type)
+	{
+	case sfEvtKeyPressed:
+		KeyPressedGameOver(_event);
+		break;
+	case sfEvtMouseButtonPressed:
+		MouseButtonPressedGameOver(&_event->mouseButton);
+		break;
+	case sfEvtMouseMoved:
+		MouseMovedGameOver(&_event->mouseMove);
+		break;
+	default:
+		break;
+	}
 }
 
 void KeyPressedGameOver(sfEvent* _event)
@@ -192,14 +194,15 @@ void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent)
 		{
 			if (CompareColor(sfText_getColor(gameOver.button[i]), sfWhite))
 			{
-				if (i == 0)
-				{
-					SetGameState(MENU);
-				}
-				else if (i == 1)
+				if (i)
 				{
 					SetGameState(GAME);
 				}
+				else
+				{
+					SetGameState(MENU);
+				}
+				return;
 			}
 		}
 		break;
@@ -245,7 +248,7 @@ void UpdateGameOver(float _dt)
 	if (gameOver.timerAnim >= gameOver.frameTime[gameOver.currentFrame])
 	{
 		gameOver.timerAnim = 0;
-		if (gameOver.currentFrame ==19)
+		if (gameOver.currentFrame == 19)
 		{
 			gameOver.currentFrame = 0;
 		}

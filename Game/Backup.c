@@ -153,14 +153,17 @@ void DestroySave(void)
 		{
 			backup.gameSave.actualy = -1;
 		}
+		backup.gameSave.nameActualy[0] = 0;
 	}
 }
 void SaveGameData(void)
 {
 	if (backup.gameSave.actualy != -1)
 	{
+		int tempI = backup.gameSave.actualy;
+		RechargeSaves();
 		char buffer[40] = { 0 };
-		char* temp[2] = { "Saves/" ,backup.gameSave.nameActualy };
+		char* temp[2] = { "Saves/" ,backup.gameSave.name[tempI]};
 		FusionString(buffer, 2, temp);
 		FILE* file = fopen(buffer, "w");
 		if (file)
@@ -264,4 +267,5 @@ void RechargeSaves(void)
 		FindClose(h);
 	}
 	backup.gameSave.actualy = -1;
+	backup.gameSave.nameActualy[0] = 0;
 }
