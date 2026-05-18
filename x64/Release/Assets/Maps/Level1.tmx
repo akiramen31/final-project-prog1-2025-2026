@@ -634,7 +634,7 @@
   <object id="985" x="1552" y="208" width="32" height="16"/>
   <object id="986" x="1680" y="208" width="32" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point" visible="0">
+ <objectgroup id="37" name="Point">
   <object id="514" type="SpawnPlayer" x="232" y="320">
    <point/>
   </object>
@@ -1154,10 +1154,10 @@
   <object id="1009" name="3" type="Enemy" x="4480" y="863">
    <point/>
   </object>
-  <object id="1012" name="3" type="Enemy" x="5248" y="416">
+  <object id="1012" name="3" type="Enemy" x="5248" y="415">
    <point/>
   </object>
-  <object id="1013" name="3" type="Enemy" x="5584" y="416">
+  <object id="1013" name="3" type="Enemy" x="5584" y="415">
    <point/>
   </object>
   <object id="1014" name="0" type="Enemy" x="5344" y="320">

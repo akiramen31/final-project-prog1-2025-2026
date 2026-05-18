@@ -116,7 +116,7 @@ void UpdateEntity(float _dt)
 				rect = sfSprite_getGlobalBounds(entity.jetSteam.entity[i].sprite);
 				if (sfFloatRect_intersects(&playerRect, &rect, NULL))
 				{
-					SetPlayerVelocity((sfVector2f) { GetPlayerVelocity().x, -3.5f });
+					SetPlayerVelocity((sfVector2f) { GetPlayerVelocity().x, -1.0f * (int)(entity.jetSteam.entity[i].animation.timeActualy / entity.jetSteam.entity[i].animation.frameDuration) });
 				}
 			}
 		}

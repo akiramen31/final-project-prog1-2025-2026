@@ -286,10 +286,16 @@ void TransformIntToString(char* _buffer, int _value)
 			}
 			power /= 10;
 		}
+		while (_buffer[index])
+		{
+			_buffer[index] = 0;
+			index++;
+		}
 	}
 	else
 	{
 		_buffer[0] = '0';
+		_buffer[1] = 0;
 	}
 }
 
