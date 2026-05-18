@@ -49,47 +49,73 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 		weaponSprite = weapon.miSteal.sprite;
 		_isAttacking = sfFalse;
 	}
-
-	// --- PARTIE 1 : TOUJOURS ACTIVE (La Position) ---
-	// On veut que l'arme suive le joueur, même pendant une attaque
-	_posPlayer.y -= (float)WEAPON_ORIGIN;
-	sfVector2f gunPosition = _posPlayer;
-	sfSprite_setPosition(weaponSprite, gunPosition);
-
-	// --- PARTIE 2 : CONDITIONNELLE (La Rotation et l'Échelle) ---
-	// On n'exécute la visée QUE si on n'est pas en train d'attaquer
-	if (!_isAttacking)
+	else
 	{
-		float dx = _aimPos.x - _posPlayer.x;
-		float dy = _aimPos.y - _posPlayer.y;
-		float angleRect = atan2f(dy, dx) * (180.0f / (float)M_PI);
-
-		// Gestion du retournement (Scale)
-		if (angleRect > 90.0f || angleRect < -90.0f)
+		if (!_isAttacking)
 		{
+			float dx = _aimPos.x - _posPlayer.x;
+			float dy = _aimPos.y - _posPlayer.y;
+			float angleRect = atan2f(dy, dx) * (180.0f / (float)M_PI);
+
+			// Gestion du retournement (Scale)
+			if (angleRect > 90.0f || angleRect < -90.0f)
+			{
+				if (weapon.isRight)
+				{
+					weapon.isRight = sfFalse;
+				}
+			}
+			else
+			{
+				if (!weapon.isRight)
+				{
+					weapon.isRight = sfTrue;
+				}
+			}
+			return;
+		}
+
+		// --- PARTIE 1 : TOUJOURS ACTIVE (La Position) ---
+		// On veut que l'arme suive le joueur, même pendant une attaque
+		_posPlayer.y -= (float)WEAPON_ORIGIN;
+		sfVector2f gunPosition = _posPlayer;
+		sfSprite_setPosition(weaponSprite, gunPosition);
+
+		// --- PARTIE 2 : CONDITIONNELLE (La Rotation et l'Échelle) ---
+		// On n'exécute la visée QUE si on n'est pas en train d'attaquer
+		if (!_isAttacking)
+		{
+			float dx = _aimPos.x - _posPlayer.x;
+			float dy = _aimPos.y - _posPlayer.y;
+			float angleRect = atan2f(dy, dx) * (180.0f / (float)M_PI);
+
+			// Gestion du retournement (Scale)
+			if (angleRect > 90.0f || angleRect < -90.0f)
+			{
+				if (weapon.isRight)
+				{
+					sfSprite_setScale(weaponSprite, (sfVector2f) { 1.f, -1.f });
+					weapon.isRight = sfFalse;
+				}
+			}
+			else
+			{
+				if (!weapon.isRight)
+				{
+					sfSprite_setScale(weaponSprite, (sfVector2f) { 1.f, 1.f });
+					weapon.isRight = sfTrue;
+				}
+			}
+
+			// Application de la rotation de visée
 			if (weapon.isRight)
 			{
-				sfSprite_setScale(weaponSprite, (sfVector2f) { 1.f, -1.f });
-				weapon.isRight = sfFalse;
+				sfSprite_setRotation(weaponSprite, angleRect + angleOffset);
 			}
-		}
-		else
-		{
-			if (!weapon.isRight)
+			else
 			{
-				sfSprite_setScale(weaponSprite, (sfVector2f) { 1.f, 1.f });
-				weapon.isRight = sfTrue;
+				sfSprite_setRotation(weaponSprite, angleRect - angleOffset);
 			}
-		}
-
-		// Application de la rotation de visée
-		if (weapon.isRight)
-		{
-			sfSprite_setRotation(weaponSprite, angleRect + angleOffset);
-		}
-		else
-		{
-			sfSprite_setRotation(weaponSprite, angleRect - angleOffset);
 		}
 	}
 }
@@ -174,7 +200,7 @@ void ChangeAttackType(AttackType _attackType)
 	{
 		switch (_attackType)
 		{
-		case (LIGHT) :
+		case (LIGHT):
 			weapon.steamAxe.attackType = LIGHT;
 			break;
 		case (MEDIUM):

@@ -318,7 +318,7 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	_region.top -= TILE_SIZE;
 	_region.width += TILE_SIZE * 2;
 	_region.height += TILE_SIZE * 2;
-	if (_type = ALEATORY)
+	if (_type == ALEATORY)
 	{
 		_type = rand() % ALEATORY;
 	}

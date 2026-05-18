@@ -85,7 +85,7 @@ void LoadPlayer(void)
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
 
-	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfTransparent, 40.f);
+	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfRed, 40.f);
 	timerHit = PLAYER_HIT_COOLDOWN;
 	player.punching.frameCount = 10;
 	player.punching.frameDuration = PLAYER_HIT_COOLDOWN / player.punching.frameCount;
@@ -148,10 +148,10 @@ void UpdatePlayer(sfBool _intro, float _dt)
 		UpdateMovePlayer(_intro, _dt);
 		UpdateLockPlayerInRoomIfEnemyAlive();
 		UpdateAnimation(_dt);
-		if (GetWeapon().weaponType !=NO_WEAPON)
-		{
+
+		player.weapon = GetWeapon();
+
 		MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
-		}
 	}
 
 	if (timerHit > PLAYER_HIT_COOLDOWN)
@@ -185,7 +185,7 @@ void UpdatePlayer(sfBool _intro, float _dt)
 		UpdateAnimationAndGiveIfStop(player.punch, &player.punching, _dt);
 
 		sfVector2f posPlayer = GetPlayerPosition();
-		posPlayer.y -= WEAPON_ORIGIN + 4;
+		posPlayer.y -= WEAPON_ORIGIN + 2;
 		sfRectangleShape_setPosition(player.hitCollisionSize, posPlayer);
 		sfSprite_setPosition(player.punch, posPlayer);
 
