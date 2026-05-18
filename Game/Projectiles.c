@@ -758,12 +758,16 @@ void UpdateColdBreath(float _dt)
 
 void UpdateExplosion(float _dt)
 {
-	for (int i = explosionCount - 1; i >= 0; i--)
+	for (int i = 0; i < explosionCount; i++)
 	{
 		if (UpdateAnimationAndGiveIfStop(explosionList[i].sprite, &explosionList[i].explosionAnim, _dt))
 		{
 			DestroyVisualEntity(explosionList[i].sprite);
 			SortExplosionList(i);
+			if (i < explosionCount)
+			{
+				i--;
+			}
 		}
 	}
 }

@@ -35,6 +35,7 @@ void LoadSounds()
 	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/explosion.ogg"), 1.f };
 	sounds.buffer[GENERAL_BOX] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/box_break.ogg"), 0.125f };
 }
+
 sfSound* PlaySound(SoundIndex _index)
 {
 	if (sounds.currentPlayingCount < MAX_SOUNDS && _index < SOUND_INDEX_COUNT && sounds.buffer[_index].buffer && _index >= 0)
