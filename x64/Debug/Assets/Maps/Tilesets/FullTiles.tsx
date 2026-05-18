@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.12.1" name="FullTiles" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
  <image source="FullTiles.png" width="512" height="512"/>
+ <tile id="13" probability="0.1"/>
+ <tile id="15" probability="0.05"/>
  <wangsets>
-  <wangset name="Jeu de Tuiles Sans Nom" type="edge" tile="-1">
+  <wangset name="Jeu de Tuiles Sans Nom" type="edge" tile="111">
    <wangcolor name="Pipes" color="#ffaa00" tile="194" probability="1"/>
    <wangcolor name="Metal_plate" color="#000000" tile="8" probability="1"/>
    <wangcolor name="Metal_girder" color="#0000ff" tile="4" probability="1"/>
