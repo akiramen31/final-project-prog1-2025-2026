@@ -211,6 +211,7 @@ sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
 		{
 			if (_destroy)
 			{
+				AddIntToSave(CURRENT_SCORE, 10);
 				PlaySound(GENERAL_BOX);
 				entity.boxData.count--;
 				DestroyVisualEntity(entity.boxData.entity[i].sprite);
