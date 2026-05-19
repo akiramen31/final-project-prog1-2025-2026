@@ -42,9 +42,9 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 	sfTexture* texture = GetAsset("Assets/Sprites/player_sprite_sheet.png");
-	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40.f);
+	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 20.f);
 	texture = GetAsset("Assets/Sprites/player_punch.png");
-	player.punch = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 40.f);
+	player.punch = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 20.f);
 	player.direction = sfTrue;
 
 	player.collision = sfRectangleShape_create();
@@ -85,7 +85,7 @@ void LoadPlayer(void)
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
 
-	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfTransparent, 40.f);
+	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfTransparent, 20.f);
 	timerHit = PLAYER_HIT_COOLDOWN;
 	player.punching.frameCount = 10;
 	player.punching.frameDuration = PLAYER_HIT_COOLDOWN / player.punching.frameCount;
