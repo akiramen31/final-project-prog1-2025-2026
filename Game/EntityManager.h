@@ -58,7 +58,8 @@ typedef enum GameState
 	START_GAME,
 	MENU,
 	GAME,
-	GAME_OVER
+	GAME_OVER,
+	MENU_SELECTION_GAME
 }GameState;
 
 typedef struct EntityManager

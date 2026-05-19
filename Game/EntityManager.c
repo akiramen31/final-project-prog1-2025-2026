@@ -4,6 +4,7 @@
 #include "StartGame.h"
 #include "Camera.h"
 #include "GameOver.h"
+#include "MenuSelectionGame.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -36,7 +37,7 @@ void LoadGeneralAsset(void)
 void Draw(void)
 {
 	//sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
-	sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
+	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
 
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
@@ -709,7 +710,7 @@ void* Realloc(void* _block, size_t _size)
 	{
 		temp = Calloc(1, _size);
 	}
-	
+
 	return temp;
 }
 
@@ -965,12 +966,14 @@ void PollEvent(void)
 			case GAME_OVER:
 				PollEventGameOver(&event);
 				break;
+			case MENU_SELECTION_GAME:
+				PollEventMenuSelectionGame(&event);
+				break;
 			default:
 				break;
 			}
 		}
 	}
-
 }
 
 void Update(void)
@@ -1104,6 +1107,9 @@ void SetGameState(GameState _gameState)
 		break;
 	case GAME_OVER:
 		LoadGameOver();
+		break;
+	case MENU_SELECTION_GAME:
+		LoadMenuSelectionGame();
 		break;
 	default:
 		break;
