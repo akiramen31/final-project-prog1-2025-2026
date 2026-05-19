@@ -22,9 +22,9 @@ void LoadEnemy(void)
 
 	enemy.listeWait = CreateList();
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
-	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f, 50 };
-	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,100 };
-	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,200 };
+	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/box.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f, 50 };
+	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/drone_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,100 };
+	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/drone_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,200 };
 	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 50 };
 	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f,100 };
 	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 200 };
@@ -78,6 +78,11 @@ void UpdateEnemyI(float _dt, unsigned _i)
 			sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 255, 255));
 			enemy.entity[_i].domageTimer = 0;
 		}
+	}
+
+	if (enemy.entity[_i].animation.frameCount > 0)
+	{
+		UpdateAnimationAndGiveIfStop(enemy.entity[_i].sprite, &enemy.entity[_i].animation, _dt);
 	}
 
 	if (enemy.entity[_i].freezeTimer > 0)
@@ -324,7 +329,42 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	}
 	sfSprite* sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f);
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+	enemy.entity[enemy.count] = (EnemyEntity){ sprite,(struct Animation) { 0 } , _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+	switch (_type)
+	{
+	case DRONE_SMALL:
+		break;
+	case DRONE_SMALL_MEDIUM:
+		enemy.entity[enemy.count].animation.frameCount = 8;
+		enemy.entity[enemy.count].animation.frameDuration = 0.2;
+		enemy.entity[enemy.count].animation.isLooping = sfTrue;
+		enemy.entity[enemy.count].animation.rectActualy = (sfIntRect){ 0,0,22,11 };
+		enemy.entity[enemy.count].animation.timeActualy = 0;
+		break;
+	case DRONE_SMALL_LARGE:
+		enemy.entity[enemy.count].animation.frameCount = 8;
+		enemy.entity[enemy.count].animation.frameDuration = 0.2;
+		enemy.entity[enemy.count].animation.isLooping = sfTrue;
+		enemy.entity[enemy.count].animation.rectActualy = (sfIntRect){ 0,0,32,16 };
+		enemy.entity[enemy.count].animation.timeActualy = 0;
+		break;
+	case GROUND_HEAVY:
+		break;
+	case GROUND_HEAVY_MEDIUM:
+		break;
+	case GROUND_HEAVY_LARGE:
+		break;
+	case SOLDIER_SMALL:
+		break;
+	case SOLDIER_SMALL_MEDIUM:
+		break;
+	case SOLDIER_SMALL_LARGE:
+		break;
+	case ALEATORY:
+		break;
+	default:
+		break;
+	}
 
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;

@@ -66,6 +66,7 @@ typedef struct EnemyDataByType
 typedef struct EnemyEntity
 {
 	sfSprite* sprite;
+	struct Animation animation;
 	EnemyType type;
 	sfVector2f velocity;
 	ActionDemander action;
