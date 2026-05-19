@@ -108,6 +108,14 @@ void LoadPlayer(void)
 void UpdatePlayer(sfBool _intro, float _dt)
 {
 	player.weapon = GetWeapon();
+	if (player.weapon.isRight)
+	{
+		ChangeDrawPlan(player.weapon.railGun.sprite, 1.f);
+	}
+	else 
+	{
+		ChangeDrawPlan(player.weapon.railGun.sprite, 41.f);
+	}
 
 	if (!_intro)
 	{

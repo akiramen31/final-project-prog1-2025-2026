@@ -625,28 +625,29 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 
 void ChangeDrawPlan(void* _ptr, float _drawPlan)
 {
-	VisualEntity* element = NULL;
 	if (_ptr && entityManager.visual)
 	{
-		VisualEntity* elementActual = entityManager.visual;
-		VisualEntity* elementNext = (VisualEntity*)elementActual->next;
-		while (elementNext)
+		VisualEntity* element = NULL;
+		VisualEntity* actualy = entityManager.visual;
+		VisualEntity* next = actualy->next;
+
+		while (next)
 		{
-			if (elementNext->ptr == _ptr)
+			if (next->ptr == _ptr)
 			{
-				VisualEntity data = { 0, 0, 0, entityManager.visual };
-				VisualEntity* previous = &data;
-				while (previous->next && previous->next->drawPlan >= _drawPlan)
+				if (_drawPlan != next->drawPlan)
 				{
-					previous = previous->next;
+					element = next;
+					actualy->next = next->next;
+					AddVisual(element->type, element->ptr, _drawPlan);
 				}
-				*elementNext = (VisualEntity){ elementNext->type, elementNext->ptr ,_drawPlan, previous->next };
-				previous->next = elementNext;
-				elementActual->next = elementNext->next;
 				return;
 			}
-			elementActual = elementNext;
-			elementNext = (VisualEntity*)elementActual->next;
+			else
+			{
+				actualy = next;
+				next = actualy->next;
+			}
 		}
 	}
 }

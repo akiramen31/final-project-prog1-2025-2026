@@ -14,7 +14,7 @@ void LoadWeapons(void)
 	weapon = (Weapon){ 0 };
 	weapon.weaponType = temp;
 	weapon.secondaryData.secondaryType = temp2;
-	weapon.railGun.sprite = CreateSprite(GetAsset("Assets/Sprites/raygun.png"), (sfVector2f) { 0, 0 }, 1.f, 1);
+	weapon.railGun.sprite = CreateSprite(GetAsset("Assets/Sprites/raygun.png"), (sfVector2f) { 0, 0 }, 1.f, 41);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });
 
 	weapon.steamAxe.sprite = CreateSprite(GetAsset("Assets/Sprites/Axe.png"), (sfVector2f) { 0, 0 }, 1.f, 1);
