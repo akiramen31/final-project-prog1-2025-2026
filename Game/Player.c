@@ -85,7 +85,7 @@ void LoadPlayer(void)
 	player.isAttacking = sfFalse;
 	player.pressTime = 0.f;
 
-	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfRed, 40.f);
+	player.hitCollisionSize = CreateRectangleShape((sfFloatRect) { 0, 0, 18, 16 }, sfTransparent, sfTransparent, 40.f);
 	timerHit = PLAYER_HIT_COOLDOWN;
 	player.punching.frameCount = 10;
 	player.punching.frameDuration = PLAYER_HIT_COOLDOWN / player.punching.frameCount;
