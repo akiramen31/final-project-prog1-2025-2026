@@ -156,25 +156,26 @@ void MouseButtonPressedMenuSelectionGame(sfMouseButtonEvent* _mouseButtonEvent)
 				}
 				else if (selectionMenu.state == WEAPON)
 				{
-					SetWeapon(i);
+					SetWeapon(i + 1);
 				}
 				else if (selectionMenu.state == SECONRARY)
 				{
-					SetSecondaryType(i);
+					SetSecondaryType(i + 1);
 				}
 				for (int j = 0; j < MAP_COUNT; j++)
 				{
-					if (j != i && CompareIntRect(sfSprite_getTextureRect(selectionMenu.generalButton[i]), RECT_BOTTON(SELECT)))
+					if (j != i && CompareIntRect(sfSprite_getTextureRect(selectionMenu.generalButton[j]), RECT_BOTTON(SELECT)))
 					{
-						sfSprite_setTextureRect(selectionMenu.generalButton[i], RECT_BOTTON(UNSELECT));
+						sfSprite_setTextureRect(selectionMenu.generalButton[j], RECT_BOTTON(UNSELECT));
 					}
 				}
+				sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][i]);
 				return;
 			}
-			else
+			else if (selectionMenu.state != MAP && CompareIntRect(sfSprite_getTextureRect(selectionMenu.generalButton[i]), RECT_BOTTON(SELECT)))
 			{
-				hitbox = sfSprite_getGlobalBounds(selectionMenu.categoryButton[i]);
-				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y) && CompareIntRect(sfSprite_getTextureRect(selectionMenu.generalButton[i]), RECT_BOTTON(SELECT)))
+				hitbox = sfSprite_getGlobalBounds(selectionMenu.generalButton[i]);
+				if (sfFloatRect_contains(&hitbox, _mouseButtonEvent->x, _mouseButtonEvent->y))
 				{
 					sfSprite_setTextureRect(selectionMenu.generalButton[i], RECT_BOTTON(UNSELECT));
 					if (selectionMenu.state == MAP)
@@ -189,6 +190,8 @@ void MouseButtonPressedMenuSelectionGame(sfMouseButtonEvent* _mouseButtonEvent)
 					{
 						SetSecondaryType(NO_SECONDARY);
 					}
+					sfText_setString(selectionMenu.descriptionText, selectionMenu.description[2][2]);
+					return;
 				}
 			}
 		}
@@ -239,6 +242,24 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 	GameData* gameData = GetGameData();
 	selectionMenu.state = _state;
 
+	if (selectionMenu.state == SECONRARY)
+	{
+		sfText_setString(selectionMenu.bottomText[0], "Play");
+	}
+	else
+	{
+		sfText_setString(selectionMenu.bottomText[0], "Next");
+	}
+
+	if (selectionMenu.state == MAP)
+	{
+		sfText_setString(selectionMenu.bottomText[1], "MENU");
+	}
+	else
+	{
+		sfText_setString(selectionMenu.bottomText[1], "Back");
+	}
+
 	for (int i = 0; i < 3; i++)
 	{
 		if (selectionMenu.state == i)
@@ -255,7 +276,6 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 	{
 		temp = GetCurrentMap();
 		sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp]);
-		sfSprite_setTextureRect(selectionMenu.generalButton[temp - 1], RECT_BOTTON(SELECT));
 		for (int i = 0; i < MAP_COUNT; i++)
 		{
 			tempPos.y = 56 + (768 / (MAP_COUNT + 1) * (i + 1));
@@ -277,16 +297,6 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 	}
 	else if (selectionMenu.state == WEAPON)
 	{
-		temp = GetWeapon().weaponType;
-		if (temp)
-		{
-			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp - 1]);
-			sfSprite_setTextureRect(selectionMenu.generalButton[temp - 1], RECT_BOTTON(SELECT));
-		}
-		else
-		{
-			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[2][2]);
-		}
 		for (int i = 0; i < WEAPON_COUNT; i++)
 		{
 			tempPos.y = 56 + (768 / (WEAPON_COUNT + 1) * (i + 1));
@@ -304,12 +314,7 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 				sfSprite_setTextureRect(selectionMenu.generalIcon[i], (sfIntRect) { 0 });
 			}
 		}
-		sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp]);
-		sfSprite_setTextureRect(selectionMenu.generalButton[temp], RECT_BOTTON(SELECT));
-	}
-	else if (selectionMenu.state == SECONRARY)
-	{
-		temp = GetSecondaryType();
+		temp = GetWeapon().weaponType;
 		if (temp)
 		{
 			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp - 1]);
@@ -319,6 +324,9 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 		{
 			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[2][2]);
 		}
+	}
+	else if (selectionMenu.state == SECONRARY)
+	{
 		sfSprite_setTextureRect(selectionMenu.generalButton[2], (sfIntRect) { 0 });
 		sfSprite_setTextureRect(selectionMenu.generalIcon[2], (sfIntRect) { 0 });
 		for (int i = 0; i < SECONDARY_COUNT; i++)
@@ -337,7 +345,15 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 				sfSprite_setTextureRect(selectionMenu.generalButton[i], RECT_BOTTON(LOCKED));
 			}
 		}
-		sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp]);
-		sfSprite_setTextureRect(selectionMenu.generalButton[temp], RECT_BOTTON(SELECT));
+		temp = GetSecondaryType();
+		if (temp)
+		{
+			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp - 1]);
+			sfSprite_setTextureRect(selectionMenu.generalButton[temp - 1], RECT_BOTTON(SELECT));
+		}
+		else
+		{
+			sfText_setString(selectionMenu.descriptionText, selectionMenu.description[2][2]);
+		}
 	}
 }
