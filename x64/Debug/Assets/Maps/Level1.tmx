@@ -636,7 +636,7 @@
   <object id="1046" x="5392" y="288" width="48" height="16"/>
   <object id="1047" x="5488" y="352" width="64" height="16"/>
  </objectgroup>
- <objectgroup id="37" name="Point" visible="0">
+ <objectgroup id="37" name="Point">
   <object id="514" type="SpawnPlayer" x="232" y="320">
    <point/>
   </object>
