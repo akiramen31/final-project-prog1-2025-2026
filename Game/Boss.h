@@ -168,6 +168,7 @@ typedef struct Boss2
 	int chimneyTR;
 	int chimneyBL;
 	int chimneyBR;
+	sfSound* sound;
 }Boss2;
 
 typedef struct Boss

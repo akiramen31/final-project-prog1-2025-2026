@@ -1012,11 +1012,11 @@ void LoadMainData(void)
 
 	if (GetIntFromSave(FULL_SCREEN))
 	{
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "One more cog", sfDefaultStyle, NULL);
 	}
 	else
 	{
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "One more cog", sfFullscreen, NULL);
 	}
 
 	sfRenderWindow_setVerticalSyncEnabled(entityManager.renderWindow, sfTrue);
@@ -1031,6 +1031,15 @@ void LoadMainData(void)
 	sfVector2u cursorSize = sfImage_getSize(entityManager.cursorImage);
 	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2 });
 	sfRenderWindow_setMouseCursor(entityManager.renderWindow, entityManager.cursor);
+
+	sfImage* icon = sfImage_createFromFile("Assets/Sprites/title.png");
+	if (icon)
+	{
+		sfVector2u size = sfImage_getSize(icon);
+		const sfUint8* pixels = sfImage_getPixelsPtr(icon);
+		sfRenderWindow_setIcon(entityManager.renderWindow, size.x, size.y, pixels);
+		sfImage_destroy(icon);
+	}
 }
 
 void SetViewCenter(sfVector2f _centre)
@@ -1112,14 +1121,26 @@ void ChangeFullSceen(void)
 	if (GetIntFromSave(FULL_SCREEN))
 	{
 		sfRenderWindow_destroy(entityManager.renderWindow);
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfFullscreen, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "One more cog", sfFullscreen, NULL);
 		SetIntToSave(FULL_SCREEN, 0);
 	}
 	else
 	{
 		sfRenderWindow_destroy(entityManager.renderWindow);
-		entityManager.renderWindow = sfRenderWindow_create(videoMode, "Game", sfDefaultStyle, NULL);
+		entityManager.renderWindow = sfRenderWindow_create(videoMode, "One more cog", sfDefaultStyle, NULL);
 		SetIntToSave(FULL_SCREEN, 1);
+	}
+	sfVector2u cursorSize = sfImage_getSize(entityManager.cursorImage);
+	entityManager.cursor = sfCursor_createFromPixels(sfImage_getPixelsPtr(entityManager.cursorImage), cursorSize, (sfVector2u) { cursorSize.x / 2, cursorSize.y / 2 });
+	sfRenderWindow_setMouseCursor(entityManager.renderWindow, entityManager.cursor);
+
+	sfImage* icon = sfImage_createFromFile("Assets/Sprites/title.png");
+	if (icon)
+	{
+		sfVector2u size = sfImage_getSize(icon);
+		const sfUint8* pixels = sfImage_getPixelsPtr(icon);
+		sfRenderWindow_setIcon(entityManager.renderWindow, size.x, size.y, pixels);
+		sfImage_destroy(icon);
 	}
 }
 

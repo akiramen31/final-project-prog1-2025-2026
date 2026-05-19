@@ -48,6 +48,25 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 	}
 	else
 	{
+		float dx = _aimPos.x - _posPlayer.x;
+		float dy = _aimPos.y - _posPlayer.y;
+		float angleRect = atan2f(dy, dx) * (180.0f / (float)M_PI);
+
+		// Gestion du retournement (Scale)
+		if (angleRect > 90.0f || angleRect < -90.0f)
+		{
+			if (weapon.isRight)
+			{
+				weapon.isRight = sfFalse;
+			}
+		}
+		else
+		{
+			if (!weapon.isRight)
+			{
+				weapon.isRight = sfTrue;
+			}
+		}
 		return;
 	}
 
@@ -78,6 +97,7 @@ void MoveWeapon(sfVector2f _posPlayer, sfVector2f _aimPos, float _dt, sfBool _is
 			}
 		}
 	}
+
 
 
 	// --- PARTIE 2 : CONDITIONNELLE (La Rotation et l'Échelle) ---

@@ -150,6 +150,8 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->chimneyTR = 2;
 		boss.boss2->chimneyBL = 2;
 		boss.boss2->chimneyBR = 2;
+		boss.boss1->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
+		sfSound_setLoop(boss.boss2->sound, sfTrue);
 	default:
 		break;
 	}
@@ -1152,6 +1154,17 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 			{
 				boss.boss2->unhiddingReactionTimer = 0.f;
 			}
+		}
+		if (boss.boss2->boss2Reaction)
+		{
+			if (sfSound_getStatus(boss.boss2->sound) != sfPlaying)
+			{
+				sfSound_play(boss.boss2->sound);
+			}
+		}
+		else
+		{
+			sfSound_stop(boss.boss2->sound);
 		}
 	}
 }
