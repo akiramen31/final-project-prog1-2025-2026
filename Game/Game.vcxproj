@@ -24,6 +24,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="LoadGameSave.h" />
+    <ClInclude Include="MenuSelectionGame.h" />
     <ClInclude Include="Projectiles.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CjsonB.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="Entity.c" />
     <ClCompile Include="GameOver.c" />
     <ClCompile Include="LoadGameSave.c" />
+    <ClCompile Include="MenuSelectionGame.c" />
     <ClCompile Include="Projectiles.c" />
     <ClCompile Include="Camera.c" />
     <ClCompile Include="CjsonB.c" />
@@ -73,6 +75,7 @@
     <ProjectGuid>{1a590e2d-7a67-4e88-816f-e7c5ae766404}</ProjectGuid>
     <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>One more cog</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

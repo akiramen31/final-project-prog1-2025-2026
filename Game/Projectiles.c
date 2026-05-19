@@ -764,7 +764,8 @@ void UpdateExplosion(float _dt)
 		if (UpdateAnimationAndGiveIfStop(explosionList[i].sprite, &explosionList[i].explosionAnim, _dt))
 		{
 			DestroyVisualEntity(explosionList[i].sprite);
-			SortExplosionList(i);
+			explosionList[i] = explosionList[explosionCount - 1];
+			explosionCount--;
 			if (i < explosionCount)
 			{
 				i--;

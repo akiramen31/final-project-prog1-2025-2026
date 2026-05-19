@@ -4,6 +4,7 @@
 #include "StartGame.h"
 #include "Camera.h"
 #include "GameOver.h"
+#include "MenuSelectionGame.h"
 
 void LoadEntityManager(void);
 void LoadGeneralAsset(void);
@@ -36,7 +37,7 @@ void LoadGeneralAsset(void)
 void Draw(void)
 {
 	//sfRenderWindow_clear(entityManager.renderWindow, sfColor_fromRGBA(248, 171, 63, 255));
-	sfRenderWindow_clear(entityManager.renderWindow, sfBlack);
+	sfRenderWindow_clear(entityManager.renderWindow, sfBlue);
 
 	VisualEntity* elementActual = entityManager.visual;
 	float lightlevel = GetFloatFromSave(LIGHT_LEVEL);
@@ -625,28 +626,29 @@ void AddVisual(VisualEntityType _type, void* _ptr, float _drawPlan)
 
 void ChangeDrawPlan(void* _ptr, float _drawPlan)
 {
-	VisualEntity* element = NULL;
 	if (_ptr && entityManager.visual)
 	{
-		VisualEntity* elementActual = entityManager.visual;
-		VisualEntity* elementNext = (VisualEntity*)elementActual->next;
-		while (elementNext)
+		VisualEntity* element = NULL;
+		VisualEntity* actualy = entityManager.visual;
+		VisualEntity* next = actualy->next;
+
+		while (next)
 		{
-			if (elementNext->ptr == _ptr)
+			if (next->ptr == _ptr)
 			{
-				VisualEntity data = { 0, 0, 0, entityManager.visual };
-				VisualEntity* previous = &data;
-				while (previous->next && previous->next->drawPlan >= _drawPlan)
+				if (_drawPlan != next->drawPlan)
 				{
-					previous = previous->next;
+					element = next;
+					actualy->next = next->next;
+					AddVisual(element->type, element->ptr, _drawPlan);
 				}
-				*elementNext = (VisualEntity){ elementNext->type, elementNext->ptr ,_drawPlan, previous->next };
-				previous->next = elementNext;
-				elementActual->next = elementNext->next;
 				return;
 			}
-			elementActual = elementNext;
-			elementNext = (VisualEntity*)elementActual->next;
+			else
+			{
+				actualy = next;
+				next = actualy->next;
+			}
 		}
 	}
 }
@@ -708,7 +710,7 @@ void* Realloc(void* _block, size_t _size)
 	{
 		temp = Calloc(1, _size);
 	}
-	
+
 	return temp;
 }
 
@@ -964,12 +966,14 @@ void PollEvent(void)
 			case GAME_OVER:
 				PollEventGameOver(&event);
 				break;
+			case MENU_SELECTION_GAME:
+				PollEventMenuSelectionGame(&event);
+				break;
 			default:
 				break;
 			}
 		}
 	}
-
 }
 
 void Update(void)
@@ -1103,6 +1107,9 @@ void SetGameState(GameState _gameState)
 		break;
 	case GAME_OVER:
 		LoadGameOver();
+		break;
+	case MENU_SELECTION_GAME:
+		LoadMenuSelectionGame();
 		break;
 	default:
 		break;

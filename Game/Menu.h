@@ -15,29 +15,8 @@ typedef enum MenuState
 	PLAY,
 	SETTINGS,
 	CREDITS,
-	CONTROLS,
-	MAP,
-	WEAPON,
-	BONUS
+	CONTROLS
 }MenuState;
-
-typedef enum ButtonRect
-{
-	MAP_1,
-	WEAPON_1,
-	UNSELECT,
-	MAP_2,
-	WEAPON_2,
-	HIGHLIGHT,
-	MAP_3,
-	WEAPON_3,
-	SELECT,
-	SECONDARY_1,
-	SECONDARY_2,
-	LOCKED,
-	RECT_COUNT
-}ButtonRect;
-
 
 typedef struct MainMenu
 {
@@ -51,21 +30,6 @@ typedef struct MainMenu
 	char* name[5];
 }MainMenu;
 
-typedef struct SelectionMenu
-{
-	sfSprite* categoryButton[3];
-	sfSprite* categoryIcon[3];
-	sfSprite* generalButton[WEAPON_COUNT];
-	sfSprite* generalIcon[WEAPON_COUNT];
-	sfIntRect textureRect[RECT_COUNT];
-	int selectedOption;
-	sfText* bottomText[2];
-	sfText* descriptionText;
-	char* mapDesc[MAP_COUNT];
-	char* weaponDesc[WEAPON_COUNT];
-	char* secondaryDesc[SECONDARY_COUNT];
-}SelectionMenu;
-
 typedef struct Menu
 {
 	sfSprite* background;
@@ -75,7 +39,6 @@ typedef struct Menu
 	sfMusic* musics[MUSIC_COUNT];
 	MenuState state;
 	MainMenu mainMenu;
-	SelectionMenu selectionMenu;
 }Menu;
 
 void LoadMenu(void);
