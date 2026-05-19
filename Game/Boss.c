@@ -150,7 +150,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->chimneyTR = 2;
 		boss.boss2->chimneyBL = 2;
 		boss.boss2->chimneyBR = 2;
-		boss.boss1->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
+		boss.boss2->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
 		sfSound_setLoop(boss.boss2->sound, sfTrue);
 	default:
 		break;
