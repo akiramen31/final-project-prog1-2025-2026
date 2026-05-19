@@ -73,9 +73,10 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	if (enemy.entity[_i].domageTimer > 0)
 	{
 		enemy.entity[_i].domageTimer -= _dt;
-		if (enemy.entity[_i].domageTimer > 0)
+		sfSprite_setColor(enemy.entity[_i].sprite, sfRed);
+		if (enemy.entity[_i].domageTimer < 0)
 		{
-			sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 255, 255));
+			sfSprite_setColor(enemy.entity[_i].sprite, sfWhite);
 			enemy.entity[_i].domageTimer = 0;
 		}
 	}
@@ -84,11 +85,21 @@ void UpdateEnemyI(float _dt, unsigned _i)
 	{
 		enemy.entity[_i].freezeTimer -= _dt;
 		_dt /= enemy.entity[_i].freezePower;
+		if (CompareColor(sfSprite_getColor(enemy.entity[_i].sprite), sfRed))
+		{
+			sfSprite_setColor(enemy.entity[_i].sprite, COLOR_ORANGE);
+		}
+		else
+		{
+			sfSprite_setColor(enemy.entity[_i].sprite, sfBlue);
+		}
 		if (enemy.entity[_i].freezeTimer < 0)
 		{
 			enemy.entity[_i].freezeTimer = 0;
+			sfSprite_setColor(enemy.entity[_i].sprite, sfWhite);
 		}
 	}
+
 	enemy.entity[_i].shootTimer += _dt;
 	if (enemy.entity[_i].energy < enemy.dataByType[enemy.entity[_i].type].energyMax)
 	{
@@ -340,7 +351,7 @@ void DamageEnemyI(unsigned _i, float _degat, AttackType _type)
 
 	enemy.entity[_i].life -= _degat / (enemy.dataByType[enemy.entity[_i].type].armure + 1);
 	sfSprite_setColor(enemy.entity[_i].sprite, sfColor_fromRGB(255, 0, 0));
-	enemy.entity[_i].domageTimer = 0.1;
+	enemy.entity[_i].domageTimer = 0.2f;
 	if (enemy.entity[_i].life < 0)
 	{
 		AddIntToSave(CURRENT_SCORE, enemy.dataByType[enemy.entity[_i].type].scoreValue);
