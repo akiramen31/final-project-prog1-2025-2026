@@ -1033,6 +1033,7 @@ void DeleteBossMissile(unsigned _index)
 	sfSprite_setPosition(bossMissileList[_index].sprite, (sfVector2f) { 0 });
 	bossMissileList[_index].velocity = (sfVector2f){ 0 };
 	bossMissileList[_index].bossMissileState = BOSS_MISSILE_OUT;
+	sfSprite_setRotation(bossMissileList[_index].sprite, 0.f);
 	bossMissileList[_index].bossMissileTimer = 0;
 	DeleteDangerZone(_index);
 }
