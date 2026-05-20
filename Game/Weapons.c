@@ -211,7 +211,6 @@ void SwitchSecondaryDevMode(void)
 }
 #endif
 
-
 void ChangeAttackType(AttackType _attackType)
 {
 	if (weapon.weaponType == STEAMAXE)
