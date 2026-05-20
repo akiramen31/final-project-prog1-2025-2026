@@ -8,32 +8,25 @@ void LoadStartGame(void)
 {
 	startGame = (StartGame){ 0 };
 	LoadBackground(GetAsset("Assets/Sprites/fondNoir.png"), 8.f);
-	startGame.textureCrea[0] = GetAsset("Assets/Sprites/Creajeux_Logo.png");
-	startGame.textureCrea[1] = GetAsset("Assets/Sprites/Creajeux_Logo2.png");
+	sfTexture* texture = GetAsset("Assets/Sprites/LOGO_CREAJEUX_negatif_RVB.png");
+
 	sfIntRect rectI = { 0 };
-	if (rand() % 2)
-	{
-		startGame.crea1 = CreateSprite(startGame.textureCrea[1], CREA_POS, 0.65f, 1.f);
-	}
-	else
-	{
-		startGame.crea1 = CreateSprite(startGame.textureCrea[0], CREA_POS, 0.25f, 1.f);
-		rectI = sfSprite_getTextureRect(startGame.crea1);
-		sfSprite_setTextureRect(startGame.crea1, (sfIntRect) { rectI.left, rectI.top, rectI.width, 500 });
-	}
-	startGame.crea2 = CreateSprite(startGame.textureCrea[0], CREA_POS, 0.25f, 1.f);
+	startGame.crea1 = CreateSprite(texture, CREA_POS, 0.25f, 1.f);
+	rectI = sfSprite_getTextureRect(startGame.crea1);
+	sfSprite_setTextureRect(startGame.crea1, (sfIntRect) { rectI.left, rectI.top, rectI.width, 500 });
+	startGame.crea2 = CreateSprite(texture, CREA_POS, 0.25f, 1.f);
 	rectI = sfSprite_getTextureRect(startGame.crea2);
 	sfSprite_setTextureRect(startGame.crea2, (sfIntRect) { rectI.left, 500, rectI.width, rectI.height - 500 });
 	LoadLogoStartGame(startGame.crea1, startGame.crea2, CREA_POS);
 
-	sfTexture* texture = GetAsset("Assets/Sprites/studio.png");
+	texture = GetAsset("Assets/Sprites/studio.png");
 	startGame.rose1 = CreateSprite(texture, ROSE_POS, 3.0f, 1.f);
 	rectI = sfSprite_getTextureRect(startGame.rose1);
 	sfSprite_setTextureRect(startGame.rose1, (sfIntRect) { rectI.left, rectI.top, rectI.width, 45 });
 
 	startGame.rose2 = CreateSprite(texture, ROSE_POS, 3.0f, 1.f);
 	rectI = sfSprite_getTextureRect(startGame.rose2);
-	sfSprite_setTextureRect(startGame.rose2, (sfIntRect) { rectI.left, 45, rectI.width, rectI.height - 45});
+	sfSprite_setTextureRect(startGame.rose2, (sfIntRect) { rectI.left, 45, rectI.width, rectI.height - 45 });
 	LoadLogoStartGame(startGame.rose1, startGame.rose2, ROSE_POS);
 
 	startGame.update = 1;
@@ -80,12 +73,8 @@ void UpdateStartGame(float _dt)
 		else
 		{
 			sfSprite_setRotation(startGame.crea1, 0.f);
-			sfSprite_setTexture(startGame.crea1, startGame.textureCrea[0], sfTrue);
-			sfIntRect rectI = sfSprite_getTextureRect(startGame.crea1);
-			sfSprite_setTextureRect(startGame.crea1, (sfIntRect) { rectI.left, rectI.top, rectI.width, 500 });
 			SetSpriteOriginFoot(startGame.crea1);
 			sfSprite_setPosition(startGame.crea1, CREA_POS);
-			sfSprite_setScale(startGame.crea1, (sfVector2f) { 0.25f, 0.25f });
 
 			sfSprite_setPosition(startGame.crea2, CREA_POS);
 
