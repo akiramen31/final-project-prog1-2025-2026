@@ -50,7 +50,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		}
 		boss.boss1->cooldownBullet = 1.f / BOSS1_FIRERATE_BULLET;
 		boss.boss1->cooldownBallistic = 1.f / BOSS1_FIRERATE_DRONE;
-		boss.boss1->playerPositionToBoss1 = NOT_IN_ARENA1;
+		boss.playerPositionToBoss = NOT_IN_ARENA;
 		boss.boss1->hitboxes[0] = sfSprite_getGlobalBounds(boss.boss1->sprites[STEAM_TANK_BOSS1]);
 		boss.boss1->hitboxes[1] = sfSprite_getGlobalBounds(boss.boss1->sprites[L_CHAMBER]);
 		boss.boss1->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss1->sprites[R_CHAMBER]);
@@ -58,8 +58,6 @@ void LoadBoss(int _index, sfVector2f _position)
 		sfSprite_setRotation(boss.boss1->sprites[L_CANNON], 90);
 		sfSprite_setRotation(boss.boss1->sprites[R_CANNON], -90);
 		boss.life = -1;
-		boss.boss1->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
-		sfSound_setLoop(boss.boss1->sound, sfTrue);
 		break;
 	case 2:
 		boss.boss2 = Calloc(1, sizeof(Boss2));
@@ -122,7 +120,7 @@ void LoadBoss(int _index, sfVector2f _position)
 			}
 			SetSpriteOriginFoot(boss.boss2->sprites[i]);
 		}
-		boss.boss2->playerPositionToBoss2 = NOT_IN_ARENA2;
+		boss.playerPositionToBoss = NOT_IN_ARENA;
 		boss.boss2->hitboxes[0] = sfSprite_getGlobalBounds(boss.boss2->sprites[BODY]);
 		boss.boss2->hitboxes[1] = sfSprite_getGlobalBounds(boss.boss2->sprites[STEAM_TANK_COVERING]);
 		boss.boss2->hitboxes[2] = sfSprite_getGlobalBounds(boss.boss2->sprites[STEAM_TANK_BOSS2]);
@@ -138,7 +136,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->hitboxes[12] = sfSprite_getGlobalBounds(boss.boss2->sprites[BOTTOM_RIGHT_CHIMNEY]);
 		boss.life = -1;
 		boss.boss2->aimDestination = (sfVector2f){ GetBossPosition().x, GetBossPosition().y + 40.f };
-		boss.boss2->boss2Reaction = BOSS2_STARTING;
+		boss.bossReaction = BOSS2_STARTING;
 		boss.boss2->powerMultiplier = 1.f;
 		boss.boss2->reactionTimer = BOSS2_SWITCH_MODE_TIMER;
 		boss.boss2->unhiddingReactionTimer = 0.f,
@@ -150,11 +148,11 @@ void LoadBoss(int _index, sfVector2f _position)
 		boss.boss2->chimneyTR = 2;
 		boss.boss2->chimneyBL = 2;
 		boss.boss2->chimneyBR = 2;
-		boss.boss2->sound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
-		sfSound_setLoop(boss.boss2->sound, sfTrue);
 	default:
 		break;
 	}
+	boss.moveSound = CreateSound(GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f, sfFalse);
+	sfSound_setLoop(boss.moveSound, sfTrue);
 	boss.entity = boss.boss1;
 
 }
@@ -201,20 +199,20 @@ void UpdateBoss(sfVector2f _posPlayer, float _dt)
 		case 1:
 			break;
 		case 2:
-			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING || boss.boss2->boss2Reaction == BOSS2_BOMBING)
+			if (boss.bossReaction == BOSS2_SHOOTING || boss.bossReaction == BOSS2_BOMBING)
 			{
 				boss.boss2->reactionTimer -= _dt;
 				if (boss.boss2->reactionTimer < 0)
 				{
-					if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+					if (boss.bossReaction == BOSS2_BOMBING)
 					{
-						boss.boss2->boss2Reaction = BOSS2_SHOOTING;
-						boss.boss2->reactionTimer = ((2.f - boss.boss2->playerPositionToBoss2) * BOSS2_SWITCH_MODE_TIMER) + 1.f;
+						boss.bossReaction = BOSS2_SHOOTING;
+						boss.boss2->reactionTimer = ((2.f - boss.playerPositionToBoss) * BOSS2_SWITCH_MODE_TIMER) + 1.f;
 					}
-					else if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
+					else if (boss.bossReaction == BOSS2_SHOOTING)
 					{
-						boss.boss2->boss2Reaction = BOSS2_BOMBING;
-						boss.boss2->reactionTimer = ((2.f - boss.boss2->playerPositionToBoss2) * BOSS2_SWITCH_MODE_TIMER) + 1.f;
+						boss.bossReaction = BOSS2_BOMBING;
+						boss.boss2->reactionTimer = ((2.f - boss.playerPositionToBoss) * BOSS2_SWITCH_MODE_TIMER) + 1.f;
 					}
 				}
 			}
@@ -266,7 +264,6 @@ void MoveBoss(sfVector2f _move)
 		}
 		break;
 	case 2:
-		PlaySound(BOSS_MOVE);
 		for (int i = 0; i < PART_COUNT_BOSS2; i++)
 		{
 			sfSprite_move(boss.boss2->sprites[i], _move);
@@ -446,17 +443,17 @@ sfBool DamageBoss(float _damage)
 		boss.life -= _damage;
 		if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA1_CENTER)
 		{
-			if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT)
+			if (boss.playerPositionToBoss == SHOT_RANGE_LEFT || boss.playerPositionToBoss == SHOT_RANGE_RIGHT)
 			{
-				boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+				boss.bossReaction = SLOW_LEFT;
 				boss.boss1->boss1Reacting = sfTrue;
 			}
 		}
 		else if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x <= ARENA1_CENTER)
 		{
-			if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT)
+			if (boss.playerPositionToBoss == SHOT_RANGE_LEFT || boss.playerPositionToBoss == SHOT_RANGE_RIGHT)
 			{
-				boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+				boss.bossReaction = SLOW_RIGHT;
 				boss.boss1->boss1Reacting = sfTrue;
 			}
 		}
@@ -637,52 +634,52 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 
 		sfVector2f distance = (sfVector2f){ posFar.x - posClose.x, trackPosition.y - _posPlayer.y };
 
-		if (boss.boss1->playerPositionToBoss1 == NOT_IN_ARENA1 && _posPlayer.x > ARENA1_ENTRY)
+		if (boss.playerPositionToBoss == NOT_IN_ARENA && _posPlayer.x > ARENA1_ENTRY)
 		{
-			boss.boss1->playerPositionToBoss1 = AWAY_LEFT;
+			boss.playerPositionToBoss = AWAY_LEFT;
 		}
 		if (!boss.boss1->boss1Reacting)
 		{
-			if (boss.boss1->playerPositionToBoss1 != NOT_IN_ARENA1)
+			if (boss.playerPositionToBoss != NOT_IN_ARENA)
 			{
 				if (distance.x > BOSS1_SHOOT_DISTANCE_MAX && _posPlayer.x < trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss1 = AWAY_LEFT;
-					boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+					boss.playerPositionToBoss = AWAY_LEFT;
+					boss.bossReaction = SLOW_LEFT;
 				}
 				else if (distance.x > BOSS1_SHOOT_DISTANCE_MAX && _posPlayer.x > trackPosition.x)
 				{
-					boss.boss1->playerPositionToBoss1 = AWAY_RIGHT;
-					boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+					boss.playerPositionToBoss = AWAY_RIGHT;
+					boss.bossReaction = SLOW_RIGHT;
 				}
 				if (distance.x < BOSS1_SHOOT_DISTANCE_MAX && distance.x > BOSS1_SHOOT_DISTANCE_MIN)
 				{
 					if (_posPlayer.x < trackPosition.x)
 					{
-						boss.boss1->playerPositionToBoss1 = SHOT_RANGE_LEFT;
-						boss.boss1->boss1ReactionToPlayer = NONE1;
+						boss.playerPositionToBoss = SHOT_RANGE_LEFT;
+						boss.bossReaction = BOSS_NONE;
 
 					}
 					else if (_posPlayer.x > trackPosition.x)
 					{
-						boss.boss1->playerPositionToBoss1 = SHOT_RANGE_RIGHT;
-						boss.boss1->boss1ReactionToPlayer = NONE1;
+						boss.playerPositionToBoss = SHOT_RANGE_RIGHT;
+						boss.bossReaction = BOSS_NONE;
 					}
 				}
 				if (distance.x < 48 && distance.y < 32)
 				{
-					boss.boss1->playerPositionToBoss1 = UNDER;
+					boss.playerPositionToBoss = UNDER;
 					boss.boss1->runAwayTiming += _dt;
 					if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 					{
 						if (trackPosition.x > ARENA1_CENTER)
 						{
-							boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+							boss.bossReaction = SLOW_LEFT;
 							boss.boss1->boss1Reacting = sfTrue;
 						}
 						else if (trackPosition.x <= ARENA1_CENTER)
 						{
-							boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+							boss.bossReaction = SLOW_RIGHT;
 							boss.boss1->boss1Reacting = sfTrue;
 						}
 						boss.boss1->runAwayTiming = 0;
@@ -690,18 +687,18 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 				}
 				if (distance.x < BOSS1_SHOOT_DISTANCE_MAX && distance.y > 80)
 				{
-					boss.boss1->playerPositionToBoss1 = TOP;
+					boss.playerPositionToBoss = TOP;
 					boss.boss1->runAwayTiming += _dt;
 					if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 					{
 						if (trackPosition.x > ARENA1_CENTER)
 						{
-							boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+							boss.bossReaction = SLOW_LEFT;
 							boss.boss1->boss1Reacting = sfTrue;
 						}
 						else if (trackPosition.x <= ARENA1_CENTER)
 						{
-							boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+							boss.bossReaction = SLOW_RIGHT;
 							boss.boss1->boss1Reacting = sfTrue;
 						}
 					}
@@ -710,18 +707,18 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 				{
 					if (_posPlayer.x < trackPosition.x)
 					{
-						boss.boss1->playerPositionToBoss1 = TURRET_LEFT;
+						boss.playerPositionToBoss = TURRET_LEFT;
 						boss.boss1->runAwayTiming += _dt;
 						if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 						{
 							if (trackPosition.x > ARENA1_CENTER)
 							{
-								boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+								boss.bossReaction = SLOW_LEFT;
 								boss.boss1->boss1Reacting = sfTrue;
 							}
 							else if (trackPosition.x <= ARENA1_CENTER)
 							{
-								boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+								boss.bossReaction = SLOW_RIGHT;
 								boss.boss1->boss1Reacting = sfTrue;
 							}
 							boss.boss1->runAwayTiming = 0;
@@ -729,18 +726,18 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 					}
 					if (distance.x < BOSS1_SHOOT_DISTANCE_MAX && distance.y > 80)
 					{
-						boss.boss1->playerPositionToBoss1 = TURRET_RIGHT;
+						boss.playerPositionToBoss = TURRET_RIGHT;
 						boss.boss1->runAwayTiming += _dt;
 						if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 						{
 							if (trackPosition.x > ARENA1_CENTER)
 							{
-								boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+								boss.bossReaction = SLOW_LEFT;
 								boss.boss1->boss1Reacting = sfTrue;
 							}
 							else if (trackPosition.x <= ARENA1_CENTER)
 							{
-								boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+								boss.bossReaction = SLOW_RIGHT;
 								boss.boss1->boss1Reacting = sfTrue;
 							}
 							boss.boss1->runAwayTiming = 0;
@@ -750,18 +747,18 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 					{
 						if (_posPlayer.x < trackPosition.x)
 						{
-							boss.boss1->playerPositionToBoss1 = TURRET_LEFT;
+							boss.playerPositionToBoss = TURRET_LEFT;
 							boss.boss1->runAwayTiming += _dt;
 							if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 							{
 								if (trackPosition.x > ARENA1_CENTER)
 								{
-									boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+									boss.bossReaction = SLOW_LEFT;
 									boss.boss1->boss1Reacting = sfTrue;
 								}
 								else if (trackPosition.x <= ARENA1_CENTER)
 								{
-									boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+									boss.bossReaction = SLOW_RIGHT;
 									boss.boss1->boss1Reacting = sfTrue;
 								}
 								boss.boss1->runAwayTiming = 0;
@@ -769,18 +766,18 @@ void CheckBossPlayerState(sfVector2f _posPlayer, float _dt)
 						}
 						else if (_posPlayer.x > trackPosition.x)
 						{
-							boss.boss1->playerPositionToBoss1 = TURRET_RIGHT;
+							boss.playerPositionToBoss = TURRET_RIGHT;
 							boss.boss1->runAwayTiming += _dt;
 							if (boss.boss1->runAwayTiming >= BOSS1_RUNAWAY_TIMER)
 							{
 								if (trackPosition.x > ARENA1_CENTER)
 								{
-									boss.boss1->boss1ReactionToPlayer = SLOW_LEFT;
+									boss.bossReaction = SLOW_LEFT;
 									boss.boss1->boss1Reacting = sfTrue;
 								}
 								else if (trackPosition.x <= ARENA1_CENTER)
 								{
-									boss.boss1->boss1ReactionToPlayer = SLOW_RIGHT;
+									boss.bossReaction = SLOW_RIGHT;
 									boss.boss1->boss1Reacting = sfTrue;
 								}
 								boss.boss1->runAwayTiming = 0;
@@ -837,7 +834,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 {
 	if (boss.currentBoss == 1)
 	{
-		switch (boss.boss1->boss1ReactionToPlayer)
+		switch (boss.bossReaction)
 		{
 		case SLOW_LEFT:
 			if (sfSprite_getPosition(boss.boss1->sprites[TRACK]).x > ARENA1_LIMITE_LEFT)
@@ -853,7 +850,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 			}
 			else
 			{
-				boss.boss1->boss1ReactionToPlayer = NONE1;
+				boss.bossReaction = BOSS_NONE;
 				if (boss.boss1->boss1Reacting)
 				{
 					boss.boss1->boss1Reacting = sfFalse;
@@ -874,7 +871,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 			}
 			else
 			{
-				boss.boss1->boss1ReactionToPlayer = NONE1;
+				boss.bossReaction = BOSS_NONE;
 				if (boss.boss1->boss1Reacting)
 				{
 					boss.boss1->boss1Reacting = sfFalse;
@@ -886,14 +883,14 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 		}
 		if (boss.boss1->boss1Reacting)
 		{
-			if (sfSound_getStatus(boss.boss1->sound) != sfPlaying)
+			if (sfSound_getStatus(boss.moveSound) != sfPlaying)
 			{
-				sfSound_play(boss.boss1->sound);
+				sfSound_play(boss.moveSound);
 			}
 		}
 		else
 		{
-			sfSound_stop(boss.boss1->sound);
+			sfSound_stop(boss.moveSound);
 		}
 	}
 	else if (boss.currentBoss == 2)
@@ -904,7 +901,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 		{
 			if (m_wasPressed == sfFalse)
 			{
-				boss.boss2->boss2Reaction = BOSS2_UNHIDDING;
+				boss.bossReaction = BOSS2_UNHIDDING;
 				m_wasPressed = sfTrue;
 			}
 		}
@@ -928,7 +925,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 		float bossPlayerDistance = _posPlayer.x - sfSprite_getPosition(boss.boss2->sprites[BODY]).x;
 		if ((!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x < ARENA2_LIMITE_LEFT) || bossPlayerDistance > 0.f) && (!(sfSprite_getPosition(boss.boss2->sprites[BODY]).x > ARENA2_LIMITE_RIGHT) || bossPlayerDistance < 0.f))
 		{
-			if (boss.boss2->boss2Reaction == BOSS2_STARTING)
+			if (boss.bossReaction == BOSS2_STARTING)
 			{
 				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y > 16.f)
 				{
@@ -936,11 +933,11 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 				}
 				else if ((sfSprite_getPosition(boss.boss2->sprites[BODY]).y - sfSprite_getPosition(boss.boss2->sprites[STEAM_TANK_BOSS2]).y) <= 16.f)
 				{
-					boss.boss2->boss2Reaction = BOSS2_SHOOTING;
+					boss.bossReaction = BOSS2_SHOOTING;
 					boss.boss2->reactionTimer += BOSS2_SWITCH_MODE_TIMER + 1.f;
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+			if (boss.bossReaction == BOSS2_BOMBING)
 			{
 				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_BOMB_HEIGHT)
 				{
@@ -991,7 +988,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 					}
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
+			if (boss.bossReaction == BOSS2_SHOOTING)
 			{
 				if (sfSprite_getPosition(boss.boss2->sprites[BODY]).y > BOSS2_SHOOT_HEIGHT)
 				{
@@ -1043,7 +1040,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 				}
 			}
 		}
-		if (boss.boss2->boss2Reaction == BOSS2_UNHIDDING)
+		if (boss.bossReaction == BOSS2_UNHIDDING)
 		{
 			if (GetPlayerPosition().x > (ARENA2_LIMITE_RIGHT))
 			{
@@ -1102,7 +1099,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 			}
 			else
 			{
-				boss.boss2->boss2Reaction = BOSS2_SHOOTING;
+				boss.bossReaction = BOSS2_SHOOTING;
 			}
 			if ((GetPlayerPosition().x > (ARENA2_LIMITE_RIGHT) || GetPlayerPosition().x < (ARENA2_LIMITE_LEFT)) && !(boss.boss2->bombOut))
 			{
@@ -1134,7 +1131,7 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 				boss.boss2->unhiddingReactionTimer += _dt;
 				if (boss.boss2->unhiddingReactionTimer >= BOSS2_GO_UNHIDDING)
 				{
-					boss.boss2->boss2Reaction = BOSS2_UNHIDDING;
+					boss.bossReaction = BOSS2_UNHIDDING;
 					boss.boss2->unhiddingReactionTimer = 0.f;
 					boss.boss2->reactionTimer = 0.f;
 				}
@@ -1144,16 +1141,16 @@ void UpdateBossReaction(sfVector2f _posPlayer, float _dt)
 				boss.boss2->unhiddingReactionTimer = 0.f;
 			}
 		}
-		if (boss.boss2->boss2Reaction)
+		if (boss.bossReaction)
 		{
-			if (sfSound_getStatus(boss.boss2->sound) != sfPlaying)
+			if (sfSound_getStatus(boss.moveSound) != sfPlaying)
 			{
-				sfSound_play(boss.boss2->sound);
+				sfSound_play(boss.moveSound);
 			}
 		}
 		else
 		{
-			sfSound_stop(boss.boss2->sound);
+			sfSound_stop(boss.moveSound);
 		}
 	}
 }
@@ -1163,7 +1160,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 	switch (boss.currentBoss)
 	{
 	case 1:
-		if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT)
+		if (boss.playerPositionToBoss == SHOT_RANGE_LEFT || boss.playerPositionToBoss == SHOT_RANGE_RIGHT)
 		{
 			if (boss.boss1->cooldownBullet <= 0)
 			{
@@ -1175,7 +1172,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 				shooterType.isBoss2 = sfFalse;
 				sfVector2f playerPos = _posPlayer;
 				playerPos.y -= TILE_SIZE;
-				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.boss1->playerPositionToBoss1 % 2) * 2)]), playerPos, shooterType, 2.f);
+				AddBullet(sfSprite_getPosition(boss.boss1->sprites[5 + ((boss.playerPositionToBoss % 2) * 2)]), playerPos, shooterType, 2.f);
 			}
 			else
 			{
@@ -1184,7 +1181,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 		}
 		if (boss.boss1->cooldownBallistic <= 0)
 		{
-			if (boss.boss1->playerPositionToBoss1 == SHOT_RANGE_LEFT || boss.boss1->playerPositionToBoss1 == SHOT_RANGE_RIGHT || boss.boss1->playerPositionToBoss1 == AWAY_LEFT || boss.boss1->playerPositionToBoss1 == AWAY_RIGHT)
+			if (boss.playerPositionToBoss == SHOT_RANGE_LEFT || boss.playerPositionToBoss == SHOT_RANGE_RIGHT || boss.playerPositionToBoss == AWAY_LEFT || boss.playerPositionToBoss == AWAY_RIGHT)
 			{
 				boss.boss1->cooldownBallistic += 1.f / BOSS1_FIRERATE_BULLET;
 				SpawnBossMissile(sfSprite_getPosition(boss.boss1->sprites[MISSILE_LAUNCHER]), _posPlayer.x);
@@ -1196,7 +1193,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 		}
 		break;
 	case 2:
-		if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+		if (boss.bossReaction == BOSS2_BOMBING)
 		{
 			boss.boss2->cooldownBomb -= _dt;
 			if (boss.boss2->cooldownBomb < 0.f)
@@ -1209,7 +1206,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 
 			}
 		}
-		if (boss.boss2->boss2Reaction != BOSS2_STARTING)
+		if (boss.bossReaction != BOSS2_STARTING)
 		{
 			ShooterType bossShooter = { 0 };
 			bossShooter.weaponPos = 0;
@@ -1219,7 +1216,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 			bossShooter.isRighted = sfFalse;
 			bossShooter.isBoss2 = sfTrue;
 			boss.boss2->cooldownBullet -= _dt;
-			if (boss.boss2->boss2Reaction == BOSS2_SHOOTING)
+			if (boss.bossReaction == BOSS2_SHOOTING)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{
@@ -1227,7 +1224,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 					boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_SHOOTING * (1.f / boss.boss2->powerMultiplier);
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_BOMBING)
+			if (boss.bossReaction == BOSS2_BOMBING)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{
@@ -1235,7 +1232,7 @@ void BossShoot(sfVector2f _posPlayer, float _dt)
 					boss.boss2->cooldownBullet = 1.f / BOSS2_FIRERATE_BOMBING * (1.f / boss.boss2->powerMultiplier);
 				}
 			}
-			if (boss.boss2->boss2Reaction == BOSS2_UNHIDDING)
+			if (boss.bossReaction == BOSS2_UNHIDDING)
 			{
 				if (boss.boss2->cooldownBullet < 0.f)
 				{

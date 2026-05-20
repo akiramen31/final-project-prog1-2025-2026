@@ -56,10 +56,9 @@
 #define ARENA2_LIMITE_BOMBING_LEFT ARENA2_CENTER - 150.f
 #define ARENA2_LIMITE_BOMBING_RIGHT ARENA2_CENTER + 150.f
 
-
-typedef enum PlayerPositionToBoss1
+typedef enum PlayerPositionToBoss
 {
-	NOT_IN_ARENA1,
+	NOT_IN_ARENA,
 	AWAY_RIGHT,
 	AWAY_LEFT,
 	SHOT_RANGE_RIGHT,
@@ -67,37 +66,27 @@ typedef enum PlayerPositionToBoss1
 	UNDER,
 	TOP,
 	TURRET_RIGHT,
-	TURRET_LEFT
+	TURRET_LEFT,
 
-}PlayerPositionToBoss1;
+	HIDDEN			= AWAY_RIGHT,
+	ON_PLATFORM		= AWAY_LEFT,
+	EXPOSED			= SHOT_RANGE_RIGHT,
+	ON_BOSS			= SHOT_RANGE_LEFT,
+}PlayerPositionToBoss;
 
-
-typedef enum Boss1Reaction
+typedef enum BossReaction
 {
-	NONE1,
+	BOSS_NONE,
 	SLOW_LEFT,
 	SLOW_RIGHT,
 	FAST_LEFT,
-	FAST_RIGHT
-}Boss1Reaction;
+	FAST_RIGHT,
 
-typedef enum PlayerPositionToBoss2
-{
-	NOT_IN_ARENA2,
-	HIDDEN,
-	ON_PLATFORM,
-	EXPOSED,
-	ON_BOSS
-}PlayerPositionToBoss2;
-
-typedef enum Boss2Reaction
-{
-	BOSS2_NONE,
-	BOSS2_STARTING,
-	BOSS2_SHOOTING,
-	BOSS2_BOMBING,
-	BOSS2_UNHIDDING
-}Boss2Reaction;
+	BOSS2_STARTING = SLOW_LEFT,
+	BOSS2_SHOOTING = SLOW_RIGHT,
+	BOSS2_BOMBING = FAST_LEFT,
+	BOSS2_UNHIDDING = FAST_RIGHT,
+}BossReaction;
 
 typedef enum Boss1Parts
 {
@@ -140,26 +129,19 @@ typedef struct Boss1
 	float timerCanon;
 	float cooldownBullet;
 	float cooldownBallistic;
-	PlayerPositionToBoss1 playerPositionToBoss1;
-	Boss1Reaction boss1ReactionToPlayer;
 	sfBool boss1Reacting;
 	float runAwayTiming;
-	sfVector2f velocity;
-	sfSound* sound;
 }Boss1;
 
 typedef struct Boss2
 {
 	sfSprite* sprites[PART_COUNT_BOSS2];
 	sfFloatRect hitboxes[14];
-	PlayerPositionToBoss2 playerPositionToBoss2;
-	Boss2Reaction boss2Reaction;
 	float unhiddingReactionTimer;
 	float reactionTimer;
 	float powerMultiplier;
 	float cooldownBullet;
 	float cooldownBomb;
-	sfVector2f velocity;
 	sfVector2f aimDestination;
 	sfBool bombOut;
 
@@ -168,7 +150,6 @@ typedef struct Boss2
 	int chimneyTR;
 	int chimneyBL;
 	int chimneyBR;
-	sfSound* sound;
 }Boss2;
 
 typedef struct Boss
@@ -176,9 +157,14 @@ typedef struct Boss
 	void* entity;
 	Boss1* boss1;
 	Boss2* boss2;
+
 	int currentBoss;
 	float timerFrozen;
 	float life;
+	sfSound* moveSound;
+	BossReaction bossReaction;
+	PlayerPositionToBoss playerPositionToBoss;
+	sfVector2f velocity;
 }Boss;
 
 void LoadBoss(int _index, sfVector2f _position);
