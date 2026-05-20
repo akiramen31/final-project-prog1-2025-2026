@@ -42,7 +42,10 @@ void LoadPlayer(void)
 {
 	player = (Player){ 0 };
 	sfTexture* texture = GetAsset("Assets/Sprites/player_sprite_sheet.png");
+	sfTexture* textureArmRun = GetAsset("Assets/Sprites/arm_run.png");
 	player.sprite = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 20.f);
+	player.arm = CreateSprite(textureArmRun, (sfVector2f) { 0, 0 }, 1.f, 20.f);
+	sfSprite_setTextureRect(player.arm, (sfIntRect) { 0, 0, 32, 32 });
 	texture = GetAsset("Assets/Sprites/player_punch.png");
 	player.punch = CreateSprite(texture, (sfVector2f) { 0, 0 }, 1.f, 20.f);
 	player.direction = sfTrue;
@@ -59,6 +62,11 @@ void LoadPlayer(void)
 	player.running.frameDuration = 0.1f;
 	player.running.isLooping = sfTrue;
 	player.running.rectActualy = (sfIntRect){ 0,0,32,32 };
+
+	player.armRunning.frameCount = 8;
+	player.armRunning.frameDuration = 0.1f;
+	player.armRunning.isLooping = sfTrue;
+	player.armRunning.rectActualy = (sfIntRect){ 0,0,32,32 };
 
 	player.jumping.frameCount = 2;
 	player.jumping.frameDuration = 0.2f;
@@ -108,14 +116,6 @@ void LoadPlayer(void)
 void UpdatePlayer(sfBool _intro, float _dt)
 {
 	player.weapon = GetWeapon();
-	if (player.weapon.isRight)
-	{
-		ChangeDrawPlan(player.weapon.railGun.sprite, 1.f);
-	}
-	else 
-	{
-		ChangeDrawPlan(player.weapon.railGun.sprite, 41.f);
-	}
 
 	if (!_intro)
 	{
@@ -351,6 +351,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt)
 				{
 					PlaySound(PLAYER_JUMP);
 					sfSprite_move(player.sprite, (sfVector2f) { 0, -10 });
+					sfSprite_move(player.arm, (sfVector2f) { 0, -10 });
 					player.velocity.y -= PLAYER_JUMP_POWER;
 					timerFaling += PLAYER_JUMP_FORGIVE;
 					player.isGrounded = sfFalse;
@@ -523,6 +524,7 @@ void UpdateAnimation(float _dt)
 					StopSound(player.soundWalk);
 				}
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
+				UpdateAnimationAndGiveIfStop(player.arm, &player.armRunning, _dt);
 			}
 			else if (player.velocity.x == 0)
 			{
@@ -549,16 +551,19 @@ void UpdateAnimation(float _dt)
 		if (((int)(timerlastDamageReceive * 100) % 2) == 0)
 		{
 			sfSprite_setScale(player.sprite, (sfVector2f) { 0, 0 });
+			sfSprite_setScale(player.arm, (sfVector2f) { 0, 0 });
 		}
 		else
 		{
 			if (player.direction)
 			{
 				sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+				sfSprite_setScale(player.arm, (sfVector2f) { 1, 1 });
 			}
 			else
 			{
 				sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+				sfSprite_setScale(player.arm, (sfVector2f) { -1, 1 });
 			}
 		}
 	}
@@ -567,15 +572,34 @@ void UpdateAnimation(float _dt)
 		if (player.direction)
 		{
 			sfSprite_setScale(player.sprite, (sfVector2f) { 1, 1 });
+			sfSprite_setScale(player.arm, (sfVector2f) { 1, 1 });
 		}
 		else
 		{
 			sfSprite_setScale(player.sprite, (sfVector2f) { -1, 1 });
+			sfSprite_setScale(player.arm, (sfVector2f) { -1, 1 });
 		}
 	}
 	SetSpriteOriginFoot(player.sprite);
 
 	sfSprite_setPosition(player.sprite, GetPlayerPosition());
+	if (player.direction)
+	{
+	sfSprite_setPosition(player.arm, (sfVector2f) { GetPlayerPosition().x - 16.f , GetPlayerPosition().y - 32.f  });
+	ChangeDrawPlan(player.arm, 41.f);
+	ChangeDrawPlan(player.weapon.railGun.sprite, 1.f);
+	ChangeDrawPlan(player.weapon.steamAxe.sprite, 1.f);
+	ChangeDrawPlan(player.weapon.miSteal.sprite, 1.f);
+
+	}
+	else
+	{
+	sfSprite_setPosition(player.arm, (sfVector2f) { GetPlayerPosition().x + 16.f, GetPlayerPosition().y - 32.f });
+	ChangeDrawPlan(player.arm, 1.f);
+	ChangeDrawPlan(player.weapon.railGun.sprite, 41.f);
+	ChangeDrawPlan(player.weapon.steamAxe.sprite, 41.f);
+	ChangeDrawPlan(player.weapon.miSteal.sprite, 41.f);
+	}
 }
 
 void DamagePlayer(int _damage)
