@@ -347,6 +347,7 @@ void DamageEnemyI(unsigned _i, float _degat, AttackType _type)
 	{
 		enemy.entity[_i].freezePower = 2;
 		enemy.entity[_i].freezeTimer = 5;
+		PlaySound(FREEZE_EFFECT);
 	}
 
 	enemy.entity[_i].life -= _degat / (enemy.dataByType[enemy.entity[_i].type].armure + 1);

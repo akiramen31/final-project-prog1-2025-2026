@@ -108,9 +108,20 @@ void LoadGameOver(void)
 		highScore = gameData->score[map];
 	}
 
-	if (!gameOver.didPlayerLoose && gameData->levelUnlock == map + 1)
+	gameOver.button[2] = CreateText(font, (sfVector2f) { SCREEN_WIDTH / 2, SCREEN_HEIGHT - SCREEN_HEIGHT / 13 }, 1.f, 10);
+	sfText_setColor(gameOver.button[2], COLOR_ORANGE);
+
+	if (!gameOver.didPlayerLoose)
 	{
-		gameData->levelUnlock++;
+		sfText_setCharacterSize(gameOver.button[2], 60);
+		sfText_setString(gameOver.button[2], "CONTINUE");
+		sfFloatRect rect = sfText_getGlobalBounds(gameOver.button[2]);
+		sfText_setOrigin(gameOver.button[2], (sfVector2f) { rect.width / 2, rect.height });
+
+		if (gameData->levelUnlock == map + 1)
+		{
+			gameData->levelUnlock++;
+		}
 	}
 	SaveGameData();
 
@@ -236,17 +247,26 @@ void MouseButtonPressedGameOver(sfMouseButtonEvent* _mouseButtonEvent)
 	switch (_mouseButtonEvent->button)
 	{
 	case sfMouseLeft:
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < NB_BOTTON_GAMEOVER; i++)
 		{
 			if (CompareColor(sfText_getColor(gameOver.button[i]), sfWhite))
 			{
-				if (i)
-				{
-					SetGameState(GAME);
-				}
-				else
+				if (i == 0)
 				{
 					SetGameState(MENU);
+				}
+				else if (i == 1)
+				{
+					SetGameState(MENU_SELECTION_GAME);
+				}
+				else if (i == 2)
+				{
+					int temp = GetCurrentMap();
+					if (temp != 3)
+					{
+						SetCurrentMap(temp + 1);
+					}
+					SetGameState(MENU_SELECTION_GAME);
 				}
 				return;
 			}
@@ -261,27 +281,25 @@ void MouseMovedGameOver(sfMouseMoveEvent* _mouseMovedEvent)
 {
 	sfVector2f mouse = { _mouseMovedEvent->x,_mouseMovedEvent->y };
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < NB_BOTTON_GAMEOVER; i++)
 	{
-		sfFloatRect rect = sfText_getGlobalBounds(gameOver.button[i]);
-		if (IsColidingPointHitbox(&rect, mouse))
-		{
-			sfText_setColor(gameOver.button[i], sfWhite);
-		}
-		else
-		{
-			sfText_setColor(gameOver.button[i], (sfColor) { 255, 165, 0, 255 });
-		}
+		UpdateTextHighlightTextColor(gameOver.button[i], COLOR_ORANGE, sfWhite, mouse);
 	}
 }
 
 void UpdateGameOver(float _dt)
 {
 	tempScore += RAND_RANGE(1, 100);
-	tempScore = (tempScore > score) ? score : tempScore;
+	if (tempScore > score)
+	{
+		tempScore = score;
+	}
 
 	tempHighScore += RAND_RANGE(1, 100);
-	tempHighScore = (tempHighScore > highScore) ? highScore : tempHighScore;
+	if (tempHighScore > highScore)
+	{
+		tempHighScore = highScore;
+	}
 
 	char* text[50];
 	sprintf_s(text, sizeof(text), "%07d", tempScore);

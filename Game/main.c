@@ -1,6 +1,7 @@
 #include "Common.h"
 
-int WinMain(void)
+int main(void)
+//int WinMain(void)
 {
 	srand(_getpid());
 

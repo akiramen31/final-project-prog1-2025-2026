@@ -77,7 +77,7 @@ void LoadSecondary(void)
 		droneList[i].lifetime = 0;
 		droneList[i].rotation = 0;
 		droneList[i].isAlive = sfFalse;
-		droneList[i].ambientSound = CreateMusic("Assets/Sounds/drone_sound.ogg", 15.f, sfFalse);
+		droneList[i].ambientSound = CreateMusic("Assets/Sounds/drone_sound.ogg", 0.25f, sfFalse);
 	}
 }
 
@@ -297,11 +297,13 @@ void UpdateMisteal(float _dt)
 			hitboxMisteal = sfSprite_getGlobalBounds(mistealList[i].sprite);
 			if (ColisionWithPlayer(hitboxMisteal, sfFalse))
 			{
+				PlaySound(WEAPON_MISTEEL_RELOAD);
 				DeleteMisteal(i);
 				continue;
 			}
 			else if (mistealList[i].timer > MISTEAL_TIMER_IN_WALL)
 			{
+				PlaySound(WEAPON_MISTEEL_RELOAD);
 				DeleteMisteal(i);
 				continue;
 			}

@@ -4,11 +4,12 @@
 #include "Common.h"
 
 #define ANIM_FRAME_COUNT 20
+#define NB_BOTTON_GAMEOVER 3
 
 typedef struct
 {
 	int didPlayerLoose;
-	sfText* button[2];
+	sfText* button[NB_BOTTON_GAMEOVER];
 	sfText* text;
 	sfText* score[4];
 	sfSprite* background;
