@@ -68,11 +68,6 @@ void LoadMenuSelectionGame(void)
 	sfText_setColor(selectionMenu.bottomText[1], COLOR_BASE);
 	sfText_setString(selectionMenu.bottomText[0], "next");
 	sfText_setString(selectionMenu.bottomText[1], "menu");
-
-	SetCurrentMap(0);
-	SetWeapon(0);
-	SetSecondaryType(0);
-
 	SetMenuSelectionGame(MAP);
 }
 
@@ -275,7 +270,6 @@ void SetMenuSelectionGame(MenuSelectionGameState _state)
 	if (selectionMenu.state == MAP)
 	{
 		temp = GetCurrentMap();
-		sfText_setString(selectionMenu.descriptionText, selectionMenu.description[selectionMenu.state][temp]);
 		for (int i = 0; i < MAP_COUNT; i++)
 		{
 			tempPos.y = 56 + (768 / (MAP_COUNT + 1) * (i + 1));

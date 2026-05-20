@@ -737,6 +737,7 @@ void UpdateFireControlRailgun(void)
 	if (GetBulletCount() < BULLET_ALLY_MAX)
 	{
 		UseWeaponRailgun(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
+		PlaySound(WEAPON_RAYGUN_SHOOT);
 	}
 }
 
@@ -745,6 +746,11 @@ void UpdateFireControlMisteal(void)
 	if (GetBulletCount() < MISTEAL_ALLY_MAX)
 	{
 		UseWeaponMisteal(GetPlayerPosition(), GetMousePositionToOrigin(), player.weapon.isRight);
+		PlaySound(GEMERAL_JET_STEAM);
+	}
+	else
+	{
+		PlaySound(WEAPON_MISTEEL_NO_AMMO);
 	}
 }
 
@@ -788,14 +794,17 @@ void UpdateFireControlSteamAxe(float _dt)
 		if (player.weapon.steamAxe.attackType == LIGHT)
 		{
 			angleShift = STEAMAXE_ANGLE_LIGHT / 2.0f;
+			PlaySound(WEAPON_AXE_SMALL);
 		}
 		else if (player.weapon.steamAxe.attackType == MEDIUM)
 		{
 			angleShift = STEAMAXE_ANGLE_MEDIUM / 2.0f;
+			PlaySound(WEAPON_AXE_MEDIUM);
 		}
 		else
 		{
 			angleShift = STEAMAXE_ANGLE_HEAVY / 2.0f;
+			PlaySound(WEAPON_AXE_LONG);
 		}
 		if (player.weapon.isRight)
 		{
@@ -849,50 +858,26 @@ void UpdateSteamAxe(float _dt)
 
 			if (player.weapon.steamAxe.attackType == LIGHT)
 			{
-				if (HitEnemy(1.f, axeHitbox, LIGHT))
-				{
-					PlaySound(WEAPON_AXE_SMALL);
-				}
+				HitEnemy(1.f, axeHitbox, LIGHT);
 				if (HitBoss(5.f, axeHitbox, LIGHT))
 				{
-					PlaySound(WEAPON_AXE_MEDIUM);
 					CanHitBoss(sfFalse);
-				}
-				else
-				{
-					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 			else if (player.weapon.steamAxe.attackType == MEDIUM)
 			{
-				if (HitEnemy(2.f, axeHitbox, MEDIUM))
+				HitEnemy(2.f, axeHitbox, MEDIUM);
+				if (HitBoss(8.f, axeHitbox, MEDIUM))
 				{
-					PlaySound(WEAPON_AXE_MEDIUM);
-				}
-				else if (HitBoss(8.f, axeHitbox, MEDIUM))
-				{
-					PlaySound(WEAPON_AXE_MEDIUM);
 					CanHitBoss(sfFalse);
-				}
-				else
-				{
-					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 			else if (player.weapon.steamAxe.attackType == HEAVY)
 			{
-				if (HitEnemy(3.f, axeHitbox, HEAVY))
+				HitEnemy(3.f, axeHitbox, HEAVY);
+				if (HitBoss(14.f, axeHitbox, HEAVY))
 				{
-					PlaySound(WEAPON_AXE_LONG);
-				}
-				else if (HitBoss(14.f, axeHitbox, HEAVY))
-				{
-					PlaySound(WEAPON_AXE_LONG);
 					CanHitBoss(sfFalse);
-				}
-				else
-				{
-					PlaySound(WEAPON_AXE_MISS);
 				}
 			}
 		}

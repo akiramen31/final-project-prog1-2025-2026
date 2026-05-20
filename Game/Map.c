@@ -48,11 +48,12 @@ void LoadMap()
 		cjson = LoadCjsonB("Assets/Maps/Level3.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/Level3Front.png"), sfTrue);
 		sfSprite_setTexture(map.background, GetAsset("Assets/Maps/Level3Back.png"), sfTrue);
-
+		LoadBoss(1, (sfVector2f) { -1000.f, -1000.f });
 		break;
 	case LEVEL_TEST:
 		cjson = LoadCjsonB("Assets/Maps/LevelTest.json");
 		sfSprite_setTexture(map.foreground, GetAsset("Assets/Maps/LevelTest.png"), sfTrue);
+		LoadBoss(1, (sfVector2f) { -1000.f, -1000.f });
 		break;
 	default:
 		break;

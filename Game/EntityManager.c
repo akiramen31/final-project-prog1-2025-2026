@@ -938,6 +938,9 @@ void Load(void)
 	LoadBackup();
 	LoadEntityManager();
 	LoadMainData();
+	SetCurrentMap(0);
+	SetWeapon(0);
+	SetSecondaryType(0);
 	SetGameState(START_GAME);
 }
 

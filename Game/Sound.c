@@ -19,23 +19,23 @@ void LoadSounds()
 	//sounds.buffer[ENNEMY_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
 	//sounds.buffer[BOSS_DAMAGE] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[BOSS_MOVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f };
-	sounds.buffer[BOSS_SHOOT_MISSILE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/missile_launch.ogg"), 1.f };
+	sounds.buffer[BOSS_SHOOT_MISSILE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/missile_launch.ogg"), 0.125f };
 	//sounds.buffer[BOSS_MISSILE_EXPLODE] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[WEAPON_RAYGUN_SHOOT] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/raygun_shoot.ogg"), 1.f };
 	//sounds.buffer[WEAPON_RAYGUN_HIT] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[WEAPON_MISTEEL_NO_AMMO] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/mi-steel_no_ammo.ogg"), 1.f };
 	sounds.buffer[WEAPON_MISTEEL_RELOAD] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/mi-steel_reload.ogg"), 1.f };
 	//sounds.buffer[WEAPON_MISTEEL_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[WEAPON_AXE_MISS] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_miss.ogg"), 1.f };
-	sounds.buffer[WEAPON_AXE_SMALL] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
-	sounds.buffer[WEAPON_AXE_MEDIUM] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
-	sounds.buffer[WEAPON_AXE_LONG] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 1.f };
+	sounds.buffer[WEAPON_AXE_MISS] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_miss.ogg"), 0.5f };
+	sounds.buffer[WEAPON_AXE_SMALL] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_miss.ogg"), 0.5f };
+	sounds.buffer[WEAPON_AXE_MEDIUM] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 0.5f };
+	sounds.buffer[WEAPON_AXE_LONG] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/axe_hit.ogg"), 0.5f };
 	sounds.buffer[DRONE_PASSIVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/drone_sound.ogg"), 1.f };
-	//sounds.buffer[COLDBREATH_SHOOT] = GetAsset("Assets/Sounds/land.ogg");
+	sounds.buffer[FREEZE_EFFECT] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/Freeze.wav"), 1.f };
 	sounds.buffer[GENERAL_EXPLOSION] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/explosion.ogg"), 0.25f };
-	sounds.buffer[GENERAL_BOX] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/box_break.ogg"), 0.125f };
+	sounds.buffer[GENERAL_BOX] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/BreakBox.wav"), 0.125f };
+	sounds.buffer[GEMERAL_JET_STEAM] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/JetSteam.wav"), 0.125f };
 }
-
 sfSound* PlaySound(SoundIndex _index)
 {
 	if (sounds.currentPlayingCount < MAX_SOUNDS && _index < SOUND_INDEX_COUNT && sounds.buffer[_index].buffer && _index >= 0)

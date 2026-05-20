@@ -14,6 +14,7 @@ void LoadWeapons(void)
 	weapon = (Weapon){ 0 };
 	weapon.weaponType = temp;
 	weapon.secondaryData.secondaryType = temp2;
+
 	weapon.railGun.sprite = CreateSprite(GetAsset("Assets/Sprites/raygun.png"), (sfVector2f) { 0, 0 }, 1.f, 41);
 	sfSprite_setOrigin(weapon.railGun.sprite, (sfVector2f) { 4, 6 });
 
@@ -166,7 +167,6 @@ void UseWeaponMisteal(sfVector2f _posShooter, sfVector2f _posTarget, sfBool _isR
 
 Weapon GetWeapon(void)
 {
-	weapon.secondaryData.secondaryType = GetSecondaryType();
 	return weapon;
 }
 
