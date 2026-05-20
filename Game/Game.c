@@ -63,10 +63,9 @@ void LoadGame(void)
 		break;
 	}
 
-	if (DEV_MODE_CAMERA)
-	{
+#if DEV_MODE_CAMERA
 		game.cameraCenter = CreateCircleShape((sfFloatRect) { 0, 0, 2, 2 }, sfRed, sfBlue, 1.f);
-	}
+#endif
 
 	switch (GetCurrentMap())
 	{
@@ -320,11 +319,10 @@ void UpdateGame(float _dt)
 		UpdateHUD(_dt);
 		UpdateCamera(_dt);
 
-		if (DEV_MODE_CAMERA)
-		{
+#if DEV_MODE_CAMERA
 			sfVector2f pos = GetViewCenterPosition();
 			sfCircleShape_setPosition(game.cameraCenter, pos);
-		}
+#endif
 		UpdateParallax(_dt);
 	}
 }
