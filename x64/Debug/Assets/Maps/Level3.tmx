@@ -319,11 +319,8 @@
   <object id="1086" x="400" y="848" width="288" height="16"/>
   <object id="1087" x="736" y="848" width="128" height="16"/>
  </objectgroup>
- <objectgroup id="7" name="Point" visible="0" locked="1">
-  <object id="1080" type="SpawnPlayer" x="542.157" y="606.206">
-   <point/>
-  </object>
-  <object id="1095" name="9" type="Enemy" x="540" y="848">
+ <objectgroup id="7" name="Point">
+  <object id="1080" type="SpawnPlayer" x="543.157" y="750.206">
    <point/>
   </object>
   <object id="1117" name="8" type="Enemy" x="450.667" y="246.667">
@@ -351,9 +348,6 @@
    <point/>
   </object>
   <object id="1125" name="9" type="Enemy" x="673.333" y="338.667">
-   <point/>
-  </object>
-  <object id="1126" name="9" type="Enemy" x="424" y="342.667">
    <point/>
   </object>
   <object id="1127" name="9" type="Enemy" x="518.667" y="337.333">
@@ -386,12 +380,6 @@
   <object id="1136" name="9" type="Enemy" x="750.667" y="948">
    <point/>
   </object>
-  <object id="1137" name="9" type="Enemy" x="412" y="828">
-   <point/>
-  </object>
-  <object id="1138" name="9" type="Enemy" x="677.333" y="832">
-   <point/>
-  </object>
   <object id="1139" name="8" type="Enemy" x="457.334" y="346.667">
    <point/>
   </object>
@@ -408,24 +396,6 @@
    <point/>
   </object>
   <object id="1144" name="2" type="Enemy" x="332" y="350.667">
-   <point/>
-  </object>
-  <object id="1152" name="8" type="Enemy" x="596.667" y="244">
-   <point/>
-  </object>
-  <object id="1153" name="5" type="Enemy" x="544.667" y="248">
-   <point/>
-  </object>
-  <object id="1154" name="2" type="Enemy" x="471.333" y="248">
-   <point/>
-  </object>
-  <object id="1158" name="8" type="Enemy" x="481.334" y="255.333">
-   <point/>
-  </object>
-  <object id="1159" name="2" type="Enemy" x="593.334" y="250">
-   <point/>
-  </object>
-  <object id="1160" name="5" type="Enemy" x="536" y="251.333">
    <point/>
   </object>
  </objectgroup>

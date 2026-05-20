@@ -179,8 +179,6 @@ void SetPositionEntityPoint(InfoZone* _point, int _count)
 		{
 			SetTpPlayerBoss((sfVector2f) { _point[i].hitbox.left, _point[i].hitbox.top });
 		}
-
-
 	}
 }
 
