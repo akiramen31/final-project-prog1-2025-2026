@@ -36,6 +36,7 @@ typedef struct EnergyPlayerStruct
 typedef struct Player
 {
 	sfSprite* sprite;
+	sfSprite* arm;
 	sfSprite* punch;
 	sfSound* soundWalk;
 	sfRectangleShape* collision;
@@ -73,6 +74,8 @@ typedef struct Player
 	Animation falling;
 	Animation idling;
 	Animation dashing;
+
+	Animation armRunning;
 }Player;
 
 void LoadPlayer(void);
