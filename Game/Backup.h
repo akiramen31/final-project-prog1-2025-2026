@@ -29,7 +29,9 @@ typedef enum IntSave
 {
 	FULL_SCREEN,
 	TROPHY,
+#if DEV_MODE
 	DEV_MODE_FLY,
+#endif
 	CURRENT_MUSIC,
 	CURRENT_SCORE,
 	INT_COUNT

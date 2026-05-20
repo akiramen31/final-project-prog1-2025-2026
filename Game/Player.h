@@ -37,14 +37,13 @@ typedef struct Player
 {
 	sfSprite* sprite;
 	sfSprite* arm;
-	sfSprite* punch;
 	sfSound* soundWalk;
 	sfRectangleShape* collision;
+	sfRectangleShape* lockZone;
 
 	Weapon weapon;
 
 	sfRectangleShape* hitCollisionSize;
-	Animation punching;
 	sfBool hitBoss;
 	sfBool hitEnemy;
 
@@ -63,8 +62,8 @@ typedef struct Player
 
 	// if True direction is right
 	sfBool direction;
-
 	sfBool isGrounded;
+	sfBool playerInvicible;
 
 	sfVector2f spawn;
 	sfVector2f tpBoss;
@@ -74,8 +73,7 @@ typedef struct Player
 	Animation falling;
 	Animation idling;
 	Animation dashing;
-
-	Animation armRunning;
+	Animation punch;
 }Player;
 
 void LoadPlayer(void);

@@ -28,21 +28,13 @@
 #define SECONDARY_COUNT 2
 
 #define DEV_MODE sfTrue
-#define DEV_ENEMY sfTrue
-#define DEV_MAP_COLIDER sfFalse
 #define DEV_WEAPON sfTrue
-#define DEV_BOSS sfTrue
 #define DEBUG_MODE_A_STAR sfFalse
-#define DEV_PIERRE_ENEMY sfTrue
-#define DEV_ENEMY_BASIC sfFalse
 #define DEV_MODE_CAMERA sfFalse
 #define DEV_PRINT_ERROR sfTrue
 
 #define TILE_SIZE 16
-
-#define FREEZE_COLOR ((sfColor) {180, 180, 255, 255})
 #define FREEZE_TIMER 4.f
-#define FREEZE_DMG -1.f
 
 #define COLOR_ORANGE (sfColor){ 255, 165, 0 , 255 }
 

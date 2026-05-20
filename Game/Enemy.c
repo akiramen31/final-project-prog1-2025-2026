@@ -25,12 +25,12 @@ void LoadEnemy(void)
 	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f, 50 };
 	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,100 };
 	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,200 };
-	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 50 };
-	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), HEAVY_ARMOR, 1.f, 100.f, 6.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f,100 };
-	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), HEAVY_ARMOR, 1.f, 100.f, 9.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 200 };
-	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 5.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 50 };
-	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), MEDIUM, 2.f, 50.f, 10.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 100 };
-	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), MEDIUM, 2.f, 50.f, 15.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f,200 };
+	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 50 };
+	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f,100 };
+	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), HEAVY_ARMOR, 1.f, 100.f, 4.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 200 };
+	enemy.dataByType[SOLDIER_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), MEDIUM, 2.f, 50.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 50 };
+	enemy.dataByType[SOLDIER_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), MEDIUM, 2.f, 50.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f, 100 };
+	enemy.dataByType[SOLDIER_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), MEDIUM, 2.f, 50.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.f,200 };
 
 #if DEV_PRINT_ERROR
 	for (int i = 0; i < ALEATORY / GROUND_HEAVY; i++)
@@ -346,7 +346,7 @@ void DamageEnemyI(unsigned _i, float _degat, AttackType _type)
 	if (_type == FREEZE)
 	{
 		enemy.entity[_i].freezePower = 2;
-		enemy.entity[_i].freezeTimer = 5;
+		enemy.entity[_i].freezeTimer = FREEZE_TIMER;
 		PlaySound(FREEZE_EFFECT);
 	}
 
@@ -504,7 +504,7 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-#if 0 DEBUG_MODE_A_STAR
+#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
@@ -989,7 +989,7 @@ ActionDemander AStar3(EnemyEntity* _enemy, sfFloatRect _cible)
 			}
 		}
 		enemy.tableau.collision = grid;
-#if 0 DEBUG_MODE_A_STAR
+#if DEBUG_MODE_A_STAR
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{

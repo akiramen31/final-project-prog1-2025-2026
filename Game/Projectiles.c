@@ -744,7 +744,7 @@ void UpdateColdBreath(float _dt)
 		sfFloatRect hitboxColdBreath = { 0 };
 		hitboxColdBreath = sfSprite_getGlobalBounds(coldBreath.sprite);
 		sfVector2f reactionWall = Colision(sfSprite_getGlobalBounds(coldBreath.sprite), AXIS_BOTH);
-		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(FREEZE_DMG, hitboxColdBreath, FREEZE) || HitBoss(FREEZE_DMG, hitboxColdBreath, FREEZE))
+		if (reactionWall.x || reactionWall.y || ColisionBox(hitboxColdBreath, sfFalse, AXIS_BOTH).x || HitEnemy(1.f, hitboxColdBreath, FREEZE) || HitBoss(1.f, hitboxColdBreath, FREEZE))
 		{
 			coldBreath.isAlive = sfFalse;
 			sfSprite_setPosition(coldBreath.sprite, (sfVector2f) { 0 });
