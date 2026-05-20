@@ -10,7 +10,6 @@ typedef struct StartGame
 {
 	sfSprite* crea1;
 	sfSprite* crea2;
-	sfTexture* textureCrea[2];
 
 	sfSprite* rose1;
 	sfSprite* rose2;
