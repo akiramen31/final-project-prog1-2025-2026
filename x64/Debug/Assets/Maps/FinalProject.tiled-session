@@ -80,11 +80,14 @@
             }
         },
         "Level3.tmx": {
-            "scale": 2,
-            "selectedLayer": 6,
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 0.75,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 696.25,
-                "y": 722.5
+                "x": 348.66666666666663,
+                "y": 565.3333333333334
             }
         },
         "LevelTest.tmx": {
