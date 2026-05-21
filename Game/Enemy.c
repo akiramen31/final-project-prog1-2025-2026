@@ -333,12 +333,6 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity)); 
 	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, (Animation) { 0 }, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 
-	sfIntRect rectActualy;
-	sfBool isLooping;
-	int frameCount;
-	float frameDuration;
-	float timeActualy;
-
 	if (enemy.entity[enemy.count].type == DRONE_SMALL_MEDIUM)
 	{
 		enemy.entity[enemy.count].animation = (Animation){ (sfIntRect) { 0, 0, 22, 11 }, sfTrue, 8, 0.2f, (float)(rand() % 8 * 2) / 10.f};
