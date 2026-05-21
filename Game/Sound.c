@@ -21,7 +21,7 @@ void LoadSounds()
 	sounds.buffer[BOSS_MOVE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/tracks_move.ogg"), 1.f };
 	sounds.buffer[BOSS_SHOOT_MISSILE] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/missile_launch.ogg"), 0.125f };
 	//sounds.buffer[BOSS_MISSILE_EXPLODE] = GetAsset("Assets/Sounds/land.ogg");
-	sounds.buffer[WEAPON_RAYGUN_SHOOT] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/raygun_shoot.ogg"), 1.f };
+	sounds.buffer[WEAPON_RAYGUN_SHOOT] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/raygun_shoot.ogg"), 0.2f };
 	//sounds.buffer[WEAPON_RAYGUN_HIT] = GetAsset("Assets/Sounds/land.ogg");
 	sounds.buffer[WEAPON_MISTEEL_NO_AMMO] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/mi-steel_no_ammo.ogg"), 1.f };
 	sounds.buffer[WEAPON_MISTEEL_RELOAD] = (SoundBufferAndVolume){ GetAsset("Assets/Sounds/mi-steel_reload.ogg"), 1.f };
