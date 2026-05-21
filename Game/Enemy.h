@@ -70,6 +70,7 @@ typedef struct EnemyEntity
 	sfVector2f velocity;
 	ActionDemander action;
 	sfFloatRect region;
+	Animation animation;
 	float life;
 	float freezeTimer;
 	float freezePower;

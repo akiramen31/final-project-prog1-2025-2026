@@ -23,8 +23,8 @@ void LoadEnemy(void)
 	enemy.listeWait = CreateList();
 	enemy.entity = Calloc(1, sizeof(EnemyEntity));
 	enemy.dataByType[DRONE_SMALL] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), LIGHT_ARMOR, 5.f, 10.f, 1.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f, 50 };
-	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,100 };
-	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,200 };
+	enemy.dataByType[DRONE_SMALL_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/drone_medium.png"), LIGHT_ARMOR, 5.f, 10.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,100 };
+	enemy.dataByType[DRONE_SMALL_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/drone_large.png"), LIGHT_ARMOR, 5.f, 10.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 1.5f,200 };
 	enemy.dataByType[GROUND_HEAVY] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_small.png"), HEAVY_ARMOR, 1.f, 100.f, 2.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 50 };
 	enemy.dataByType[GROUND_HEAVY_MEDIUM] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_medium.png"), HEAVY_ARMOR, 1.f, 100.f, 3.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f,100 };
 	enemy.dataByType[GROUND_HEAVY_LARGE] = (EnemyDataByType){ GetAsset("Assets/Sprites/spider_large.png"), HEAVY_ARMOR, 1.f, 100.f, 4.f, (float)MAX_ENRGIE, 15.f, 1.f, 6 * TILE_SIZE / G / 3.5f, 0.f, 200 };
@@ -60,6 +60,10 @@ void UpdateEnemy(float _dt)
 	for (unsigned i = 0; i < enemy.count; i++)
 	{
 		UpdateEnemyI(_dt, i);
+		if (enemy.entity[i].animation.frameDuration)
+		{
+			UpdateAnimationAndGiveIfStop(enemy.entity[i].sprite, &enemy.entity[i].animation, _dt);
+		}
 	}
 
 	for (char i = 0; i < ALEATORY; i++)
@@ -117,9 +121,9 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		if (enemy.entity[_i].type < GROUND_HEAVY)
 		{
 			sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-			if (playerPos.x < rectEnemy.left + rectEnemy.width && playerPos.x > rectEnemy.left)
+			if (playerPos.x < rectEnemy.left + rectEnemy.width && playerPos.x > rectEnemy.left && PlayerVisibility(_i))
 			{
-				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+				if (enemy.entity[_i].shootTimer >= enemy.dataByType[(int)enemy.entity[_i].type].shootCooldown)
 				{
 					enemy.entity[_i].shootTimer = 0;
 					SpawnGrenade(sfSprite_getPosition(enemy.entity[_i].sprite), (rectEnemy.width + rectEnemy.height) / 24.f, (rectEnemy.width + rectEnemy.height) / 24.f * 3);
@@ -179,34 +183,21 @@ void UpdateEnemyI(float _dt, unsigned _i)
 
 void CalculMoveEnemy(float _dt, unsigned _i)
 {
+	// 1 = droite / -1 = gauche
+	char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
+	enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[(int)enemy.entity[_i].type].speedMax * _dt;
+	if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+	{
+		enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+	}
+
 	if (enemy.entity[_i].type < GROUND_HEAVY)
 	{
-		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
-		if (droitOuGauche)
-		{
-			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[(int)enemy.entity[_i].type].speedMax * _dt;
-			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.x = 0;
-		}
-
 		char basOuGauche = enemy.entity[_i].action.bas - enemy.entity[_i].action.saut;
-		if (basOuGauche)
+		enemy.entity[_i].velocity.y += basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt * 70 / 50;
+		if (basOuGauche * enemy.entity[_i].velocity.y > basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * 70 / 50)
 		{
-			enemy.entity[_i].velocity.y += basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
-			if (basOuGauche * enemy.entity[_i].velocity.y > basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.y = basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.y = 0;
+			enemy.entity[_i].velocity.y = basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * 70 / 50;
 		}
 	}
 	else
@@ -227,20 +218,6 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 					enemy.entity[_i].action.droite = 1;
 				}
 			}
-		}
-		// 1 = droite / -1 = gauche
-		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
-		if (droitOuGauche)
-		{
-			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
-			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.x = 0;
 		}
 
 		if (enemy.entity[_i].action.saut)
@@ -265,7 +242,7 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 			enemy.entity[_i].velocity.y = enemy.dataByType[enemy.entity[_i].type].jumForce;
 		}
 	}
-	sfSprite_move(enemy.entity[_i].sprite, enemy.entity[_i].velocity);
+	sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { enemy.entity[_i].velocity.x* _dt * 70, enemy.entity[_i].velocity.y* _dt * 50 });
 }
 
 void UpdateColisionEnemy(unsigned _i)
@@ -353,9 +330,23 @@ void AddEnemy(sfVector2f _position, EnemyType _type, sfFloatRect _region)
 		_type = rand() % ALEATORY;
 	}
 	sfSprite* sprite = CreateSprite(enemy.dataByType[_type].texture, _position, 1.f, 1.f);
-	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity));
-	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
+	enemy.entity = Realloc(enemy.entity, (size_t)(enemy.count + 1) * sizeof(EnemyEntity)); 
+	enemy.entity[enemy.count] = (EnemyEntity){ sprite, _type, (sfVector2f) { 0 }, (ActionDemander) { 0 },_region, (Animation) { 0 }, enemy.dataByType[_type].lifeMax, 0.f, 0.f, 0.f, 0.f, 0.f };
 
+	if (enemy.entity[enemy.count].type == DRONE_SMALL_MEDIUM)
+	{
+		enemy.entity[enemy.count].animation = (Animation){ (sfIntRect) { 0, 0, 22, 11 }, sfTrue, 8, 0.2f, (float)(rand() % 8 * 2) / 10.f};
+	}
+	else if (enemy.entity[enemy.count].type == DRONE_SMALL_LARGE)
+	{
+		enemy.entity[enemy.count].animation = (Animation){ (sfIntRect) { 0, 0, 28, 18 }, sfTrue, 8, 0.2f, (float)(rand() % 8 * 2) / 10.f };
+	}
+
+	if (enemy.entity[enemy.count].animation.frameDuration)
+	{
+		UpdateAnimationAndGiveIfStop(enemy.entity[enemy.count].sprite, &enemy.entity[enemy.count].animation, 0.f);
+	}
+	
 	SetSpriteOriginFoot(enemy.entity[enemy.count].sprite);
 	enemy.count++;
 }
@@ -879,54 +870,52 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			RetirerListWait(min);
 		}
 #if DEBUG_MODE_A_STAR
+		for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 		{
-			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+			for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
 			{
-				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				if (!enemy.tableau.grid[_enemy->type][y][x].direction)
 				{
-					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					if (enemy.tableau.collision[y][x])
 					{
-						if (enemy.tableau.collision[y][x])
-						{
-							printf("X");
-						}
-						else
-						{
-							printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
-						}
+						printf("X");
 					}
 					else
 					{
 						printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
 					}
 				}
-				printf("\n");
-			}
-			printf("\n\n\n");
-			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
-			{
-				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				else
 				{
-					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
+				}
+			}
+			printf("\n");
+		}
+		printf("\n\n\n");
+		for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+			{
+				if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+				{
+					if (enemy.tableau.collision[y][x])
 					{
-						if (enemy.tableau.collision[y][x])
-						{
-							printf(" X/");
-						}
-						else
-						{
-							printf(" M/");
-						}
+						printf(" X/");
 					}
 					else
 					{
-						printf("%2d/", enemy.tableau.grid[_enemy->type][y][x].compteur);
+						printf(" M/");
 					}
 				}
-				printf("\n");
+				else
+				{
+					printf("%2d/", enemy.tableau.grid[_enemy->type][y][x].compteur);
+				}
 			}
-			printf("\n\n\n");
+			printf("\n");
 		}
+		printf("\n\n\n");
 #endif
 	}
 
