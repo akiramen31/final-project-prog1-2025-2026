@@ -9,6 +9,7 @@ void UpdateMovePlayer(sfBool _intro, float _dt);
 
 void ColisionMapPlayer(float _dt);
 void MoveZonePlayer(float _dt);
+void UpdateHit(float _dt);
 
 void UpdateAnimation(float _dt);
 
@@ -79,7 +80,9 @@ void UpdatePlayer(sfBool _intro, float _dt)
 	if (!_intro)
 	{
 		UpdateWeaponPlayer(_dt);
+		UpdateHit(_dt);
 	}
+
 	UpdateEnergy(_dt);
 
 	if (GetIntFromSave(DEV_MODE_FLY))
@@ -118,49 +121,9 @@ void UpdatePlayer(sfBool _intro, float _dt)
 		MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 	}
 
-	if (timerHit > PLAYER_HIT_COOLDOWN)
-	{
-		if (IfControlKeyPressed(KEY_HIT))
-		{
-			timerHit = 0;
-			player.hitBoss = sfFalse;
-			player.hitEnemy = sfFalse;
-		}
-	}
-	else
-	{
-		timerHit += _dt;
-		UpdateAnimationAndGiveIfStop(player.arm, &player.punch, _dt);
-		SetSpriteOriginFoot(player.arm);
-		sfVector2f posPlayer = GetPlayerPosition();
-		sfSprite_setPosition(player.arm, posPlayer);
-
-		sfSprite_setScale(player.arm, (sfVector2f) { (player.weapon.isRight * 2 - 1), 1 });
-		sfFloatRect rect = { posPlayer.x, posPlayer.y, (player.weapon.isRight * 2 - 1) * 18, -16};
-		ColisionBox(rect, sfTrue, AXIS_BOTH);
-		ColisionElevatorButon(rect);
-
-		if (!player.hitBoss)
-		{
-			if (HitBoss(PLAYER_HIT_DAMAGE, rect, MEDIUM))
-			{
-				player.hitBoss = sfTrue;
-			}
-		}
-		if (!player.hitEnemy)
-		{
-			if (HitEnemy(PLAYER_HIT_DAMAGE, rect, MEDIUM))
-			{
-				player.hitEnemy = sfTrue;
-			}
-		}
-	}
-
-
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{
 		KillPlayer();
-		SetPlayerPosition(player.spawn);
 	}
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
@@ -440,6 +403,47 @@ void MoveZonePlayer(float _dt)
 			else if (StringCompare(zone[i].type, "UP"))
 			{
 				sfRectangleShape_move(player.collision, (sfVector2f) { 0, -speed * _dt });
+			}
+		}
+	}
+}
+
+void UpdateHit(float _dt)
+{
+	if (timerHit > PLAYER_HIT_COOLDOWN)
+	{
+		if (IfControlKeyPressed(KEY_HIT))
+		{
+			timerHit = 0;
+			player.hitBoss = sfFalse;
+			player.hitEnemy = sfFalse;
+		}
+	}
+	else
+	{
+		timerHit += _dt;
+		UpdateAnimationAndGiveIfStop(player.arm, &player.punch, _dt);
+		SetSpriteOriginFoot(player.arm);
+		sfVector2f posPlayer = GetPlayerPosition();
+		sfSprite_setPosition(player.arm, posPlayer);
+
+		sfSprite_setScale(player.arm, (sfVector2f) { (player.weapon.isRight * 2 - 1), 1 });
+		sfFloatRect rect = { posPlayer.x, posPlayer.y, (player.weapon.isRight * 2 - 1) * 18, -16 };
+		ColisionBox(rect, sfTrue, AXIS_BOTH);
+		ColisionElevatorButon(rect);
+
+		if (!player.hitBoss)
+		{
+			if (HitBoss(PLAYER_HIT_DAMAGE, rect, MEDIUM))
+			{
+				player.hitBoss = sfTrue;
+			}
+		}
+		if (!player.hitEnemy)
+		{
+			if (HitEnemy(PLAYER_HIT_DAMAGE, rect, MEDIUM))
+			{
+				player.hitEnemy = sfTrue;
 			}
 		}
 	}
