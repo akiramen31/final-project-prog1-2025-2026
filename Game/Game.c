@@ -55,6 +55,7 @@ void LoadGame(void)
 		break;
 	case 1:
 	case 2:
+		sfRectangleShape_setScale(game.startIntoRectangle, (sfVector2f) { 0, 0 });
 		game.timerDurationStartLevel = 1.5f;
 		game.timerDurationStartLevel = 1.5f;
 		break;
