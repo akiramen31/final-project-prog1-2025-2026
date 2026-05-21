@@ -60,6 +60,18 @@ typedef struct Press
 	int count;
 }Press;
 
+typedef struct ShadowEntity
+{
+	sfSprite* follow;
+	sfCircleShape* circle;
+}ShadowEntity;
+
+typedef struct Shadow
+{
+	ShadowEntity* entity;
+	int count;
+}Shadow;
+
 typedef struct Entity
 {
 	Press press;
@@ -67,6 +79,7 @@ typedef struct Entity
 	BluePrint bluePrint;
 	BoxData boxData;
 	ConveyorData conveyorData;
+	Shadow shadow;
 }Entity;
 
 void LoadEntity(void);
@@ -77,5 +90,6 @@ void AddConveyor(sfVector2f _position);
 void AddBluePrint(sfVector2f _position, int _type);
 void AddJetSteam(InfoZone* _infoZone);
 void AddPress(sfVector2f _position);
+void AddShadow(sfSprite* _entityFollow);
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis);
 #endif //ENTITY_H

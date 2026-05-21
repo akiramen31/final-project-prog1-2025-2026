@@ -301,7 +301,7 @@ void UpdateGameOver(float _dt)
 		tempHighScore = highScore;
 	}
 
-	char* text[50];
+	char* text[50] = { 0 };
 	sprintf_s(text, sizeof(text), "%07d", tempScore);
 	sfText_setString(gameOver.score[2], text);
 	sprintf_s(text, sizeof(text), "%07d", tempHighScore);

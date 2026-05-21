@@ -157,6 +157,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 {
 	sfVector2f invisible = { 0 };
 	sfVector2f visibleText = { 1,1 };
+	sfFloatRect rect = { 0 };
 	if (menu.state == CONTROLS)
 	{
 		for (int i = 0; i < KEY_COUNT; i++)
@@ -182,33 +183,80 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		{
 			SetGameState(MENU_SELECTION_GAME);
 		}
-		else
+		else if (menu.state == SETTINGS)
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				if (CompareColor(sfText_getColor(menu.mainMenu.topButtons[i]), menu.highlightTextColor))
+				if (CompareColor(sfText_getColor(menu.mainMenu.infoDisplay[i]), menu.highlightTextColor) || CompareColor(sfText_getColor(menu.mainMenu.infoDisplay[i]), sfRed))
 				{
-					if (i + 1 == menu.state)
+					if (i == 0)
 					{
-						SetMenuState(STARTING_MENU);
-						return;
+						rect = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
+						SetFloatToSave(LIGHT_LEVEL, (_mouseButtonEvent->x - rect.left) / rect.width * 0.75f + 0.25f);
 					}
-					else
+					else if (i == 1)
 					{
-						switch (i)
-						{
-						case 0:
-							SetMenuState(PLAY);
-							return;
-						case 1:
-							SetMenuState(SETTINGS);
-							return;
-						case 2:
-							SetMenuState(CREDITS);
-							return;
-						default:
-							break;
-						}
+						rect = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
+						ChangeVolume((_mouseButtonEvent->x - rect.left) / rect.width * 100.f);
+					}
+					else if (i == 2)
+					{
+						ChangeFullSceen();
+					}
+					else if (i == 3)
+					{
+						SetMenuState(CONTROLS);
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			if (CompareColor(sfText_getColor(menu.mainMenu.topButtons[i]), menu.highlightTextColor))
+			{
+				if (i + 1 == menu.state)
+				{
+					SetMenuState(STARTING_MENU);
+					return;
+				}
+				else
+				{
+					switch (i)
+					{
+					case 0:
+						SetMenuState(PLAY);
+						return;
+					case 1:
+						SetMenuState(SETTINGS);
+						return;
+					case 2:
+						SetMenuState(CREDITS);
+						return;
+					default:
+						break;
+					}
+				}
+			}
+		}
+	}
+	else if (_mouseButtonEvent->button == sfMouseRight)
+	{
+		if (menu.state == SETTINGS)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				if (CompareColor(sfText_getColor(menu.mainMenu.infoDisplay[i]), menu.highlightTextColor))
+				{
+					if (i == 0)
+					{
+						rect = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
+						SetFloatToSave(LIGHT_LEVEL, 0.25f);
+					}
+					else if (i == 1)
+					{
+						rect = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
+						ChangeVolume(0.f);
 					}
 				}
 			}

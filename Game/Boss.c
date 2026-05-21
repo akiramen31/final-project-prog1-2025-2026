@@ -20,14 +20,14 @@ void LoadBoss(int _index, sfVector2f _position)
 			DestroyBoss(1);
 		}
 		boss.boss1 = Calloc(1, sizeof(Boss1));
-		sfTexture* textureList[PART_COUNT_BOSS1 - 2];
+		sfTexture* textureList[PART_COUNT_BOSS1 - 2] = { 0 };
 		textureList[TRACK] = GetAsset("Assets/Sprites/tank_track.png");
 		textureList[STEAM_TANK_BOSS1] = GetAsset("Assets/Sprites/tank_steamtank.png");
 		textureList[CARIAGE] = GetAsset("Assets/Sprites/tank_carriage.png");
 		textureList[MISSILE_LAUNCHER] = GetAsset("Assets/Sprites/tank_missile_launcher.png");
 		textureList[L_CHAMBER] = GetAsset("Assets/Sprites/tank_chamber.png");
 		textureList[L_CANNON] = GetAsset("Assets/Sprites/tank_cannon.png");
-		sfVector2f positionListBoss1[PART_COUNT_BOSS1];
+		sfVector2f positionListBoss1[PART_COUNT_BOSS1] = { 0 };
 		positionListBoss1[TRACK] = _position;
 		positionListBoss1[STEAM_TANK_BOSS1] = (sfVector2f){ _position.x, _position.y - sfTexture_getSize(textureList[TRACK]).y };
 		positionListBoss1[CARIAGE] = (sfVector2f){ _position.x, _position.y - (sfTexture_getSize(textureList[TRACK]).y / 2) };
@@ -78,7 +78,7 @@ void LoadBoss(int _index, sfVector2f _position)
 		textureRectList[LEFT_KICKSTAND] = (sfIntRect){ 96, 0, 8, 32 };
 		textureRectList[TOP_LEFT_CHIMNEY] = (sfIntRect){ 32, 16, 8, 4 };
 
-		sfVector2f positionListBoss2[PART_COUNT_BOSS2];
+		sfVector2f positionListBoss2[PART_COUNT_BOSS2] = { 0 };
 		positionListBoss2[BODY] = _position;
 		positionListBoss2[STEAM_TANK_BOSS2] = (sfVector2f){ _position.x, _position.y - 32.f };
 		positionListBoss2[STEAM_TANK_COVERING] = (sfVector2f){ _position.x, _position.y - 48.f };
