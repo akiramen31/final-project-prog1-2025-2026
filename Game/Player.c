@@ -53,7 +53,7 @@ void LoadPlayer(void)
 	player.falling = (Animation){ (sfIntRect) { 64,32,32,32 }, sfTrue, 2, 0.3f, 0.f };
 	player.idling = (Animation){ (sfIntRect) { 0,64,16,32 }, sfTrue, 4, 0.2f, 0.f };
 	player.dashing = (Animation){ (sfIntRect) { 0,96,32,32 }, sfFalse, 1, 1.f, 0.f };
-	player.punch = (Animation){ (sfIntRect) { 0,128,32,32 }, sfFalse, 4, 0.125f, 0.f };
+	player.punch = (Animation){ (sfIntRect) { 0,128,32,32 }, sfFalse, 7, PLAYER_HIT_COOLDOWN / 7, 0.f };
 
 	player.canShoot = sfTrue;
 	player.cooldown = 1.f / FIRE_RATE_RAILGUN;
@@ -466,29 +466,44 @@ void UpdateAnimation(float _dt)
 					StopSound(player.soundWalk);
 				}
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.running, _dt);
-				UpdateAnimationAndGiveIfStop(player.arm, &player.running, _dt);
+				if (timerHit > PLAYER_HIT_COOLDOWN)
+				{
+					UpdateAnimationAndGiveIfStop(player.arm, &player.running, _dt);
+				}
 			}
 			else if (player.velocity.x == 0)
 			{
 				UpdateAnimationAndGiveIfStop(player.sprite, &player.idling, _dt);
-				UpdateAnimationAndGiveIfStop(player.arm, &player.idling, _dt);
+				if (timerHit > PLAYER_HIT_COOLDOWN)
+				{
+					UpdateAnimationAndGiveIfStop(player.arm, &player.idling, _dt);
+				}
 			}
 		}
 		else if (player.velocity.y < 0)
 		{
 			UpdateAnimationAndGiveIfStop(player.sprite, &player.jumping, _dt);
-			UpdateAnimationAndGiveIfStop(player.arm, &player.jumping, _dt);
+			if (timerHit > PLAYER_HIT_COOLDOWN)
+			{
+				UpdateAnimationAndGiveIfStop(player.arm, &player.jumping, _dt);
+			}
 		}
 		else if (player.velocity.y > 0)
 		{
 			UpdateAnimationAndGiveIfStop(player.sprite, &player.falling, _dt);
-			UpdateAnimationAndGiveIfStop(player.arm, &player.falling, _dt);
+			if (timerHit > PLAYER_HIT_COOLDOWN)
+			{
+				UpdateAnimationAndGiveIfStop(player.arm, &player.falling, _dt);
+			}
 		}
 	}
 	if (timerDash < PLAYER_DASH_DURATION)
 	{
 		UpdateAnimationAndGiveIfStop(player.sprite, &player.dashing, _dt);
-		UpdateAnimationAndGiveIfStop(player.arm, &player.dashing, _dt);
+		if (timerHit > PLAYER_HIT_COOLDOWN)
+		{
+			UpdateAnimationAndGiveIfStop(player.arm, &player.dashing, _dt);
+		}
 	}
 
 	if (timerlastDamageReceive < PLAYER_DAMAGE_IMUNITY_DURATION)
@@ -670,33 +685,33 @@ void UpdateFireControl(float _dt)
 		}
 	}
 #if DEV_WEAPON
-		static sfBool k_wasPressed = sfFalse;
-		static sfBool j_wasPressed = sfFalse;
+	static sfBool k_wasPressed = sfFalse;
+	static sfBool j_wasPressed = sfFalse;
 
-		if (sfKeyboard_isKeyPressed(sfKeyK))
+	if (sfKeyboard_isKeyPressed(sfKeyK))
+	{
+		if (k_wasPressed == sfFalse)
 		{
-			if (k_wasPressed == sfFalse)
-			{
-				SwitchGunDevMode();
-				k_wasPressed = sfTrue;
-			}
+			SwitchGunDevMode();
+			k_wasPressed = sfTrue;
 		}
-		else
+	}
+	else
+	{
+		k_wasPressed = sfFalse;
+	}
+	if (sfKeyboard_isKeyPressed(sfKeyJ))
+	{
+		if (j_wasPressed == sfFalse)
 		{
-			k_wasPressed = sfFalse;
+			SwitchSecondaryDevMode();
+			j_wasPressed = sfTrue;
 		}
-		if (sfKeyboard_isKeyPressed(sfKeyJ))
-		{
-			if (j_wasPressed == sfFalse)
-			{
-				SwitchSecondaryDevMode();
-				j_wasPressed = sfTrue;
-			}
-		}
-		else
-		{
-			j_wasPressed = sfFalse;
-		}
+	}
+	else
+	{
+		j_wasPressed = sfFalse;
+	}
 #endif
 }
 
