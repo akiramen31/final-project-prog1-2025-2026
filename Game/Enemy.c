@@ -184,7 +184,7 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
 		if (droitOuGauche)
 		{
-			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
+			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[(int)enemy.entity[_i].type].speedMax * _dt;
 			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
 			{
 				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
@@ -211,6 +211,23 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 	}
 	else
 	{
+		if (enemy.entity[_i].action.bas)
+		{
+			sfFloatRect enemyRect = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
+			enemyRect.top += 10;
+			sfVector2f collision = Colision(enemyRect, AXIS_X);
+			if (collision.x)
+			{
+				if (collision.x < 0)
+				{
+					enemy.entity[_i].action.gauche = 1;
+				}
+				else if (collision.x > 0)
+				{
+					enemy.entity[_i].action.droite = 1;
+				}
+			}
+		}
 		// 1 = droite / -1 = gauche
 		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
 		if (droitOuGauche)
@@ -921,11 +938,14 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 		break;
 	case DOWN_LEFT:
 		actionDemander.gauche = sfTrue;
+		actionDemander.bas = sfTrue;
 		break;
 	case DOWN:
+		actionDemander.bas = sfTrue;
 		break;
 	case DOWN_RIGHT:
 		actionDemander.droite = sfTrue;
+		actionDemander.bas = sfTrue;
 		break;
 	case LEFT:
 		actionDemander.gauche = sfTrue;
