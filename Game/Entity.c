@@ -1,5 +1,5 @@
-#include "Entity.h"
 #include "Player.h"
+#include "Entity.h"
 
 Entity entity;
 
@@ -166,6 +166,12 @@ void UpdateEntity(float _dt)
 			}
 		}
 	}
+
+	for (int i = 0; i < entity.shadow.count; i++)
+	{
+		sfCircleShape_setPosition(entity.shadow.entity[i].circle, sfSprite_getPosition(entity.shadow.entity[i].follow));
+		sfCircleShape_setRadius(entity.shadow.entity[i].circle, sfSprite_getGlobalBounds(entity.shadow.entity[i].follow).width / 4);
+	}
 }
 
 void AddBox(sfVector2f _position)
@@ -201,6 +207,14 @@ void AddPress(sfVector2f _position)
 	entity.press.entity = Realloc(entity.press.entity, (size_t)(entity.press.count + 1) * sizeof(PressEntity));
 	entity.press.entity[entity.press.count] = (PressEntity){ CreateSprite(GetAsset("Assets/Sprites/press.png"),_position, 1.f, 1.f), (rand() % 30000) / 30000.f * 6.f };
 	entity.press.count++;
+}
+
+void AddShadow(sfSprite* _entityFollow)
+{
+	entity.shadow.entity = Realloc(entity.shadow.entity, (size_t)(entity.shadow.count + 1) * sizeof(ShadowEntity));
+	sfVector2f pos = sfSprite_getPosition(_entityFollow);
+	entity.shadow.entity[entity.shadow.count] = (ShadowEntity){ _entityFollow, CreateCircleShape((sfFloatRect) { pos.x, pos.y, sfSprite_getGlobalBounds(_entityFollow).width, 0 }, (sfColor) { 0, 0, 0, 50 }, sfTransparent, 49.f) };
+	entity.shadow.count++;
 }
 
 sfVector2f ColisionBox(sfFloatRect _hitbox, sfBool _destroy, int _axis)
