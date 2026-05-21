@@ -117,9 +117,9 @@ void UpdateEnemyI(float _dt, unsigned _i)
 		if (enemy.entity[_i].type < GROUND_HEAVY)
 		{
 			sfFloatRect rectEnemy = sfSprite_getGlobalBounds(enemy.entity[_i].sprite);
-			if (playerPos.x < rectEnemy.left + rectEnemy.width && playerPos.x > rectEnemy.left)
+			if (playerPos.x < rectEnemy.left + rectEnemy.width && playerPos.x > rectEnemy.left && PlayerVisibility(_i))
 			{
-				if (enemy.entity[_i].shootTimer >= enemy.dataByType[enemy.entity[_i].type].shootCooldown)
+				if (enemy.entity[_i].shootTimer >= enemy.dataByType[(int)enemy.entity[_i].type].shootCooldown)
 				{
 					enemy.entity[_i].shootTimer = 0;
 					SpawnGrenade(sfSprite_getPosition(enemy.entity[_i].sprite), (rectEnemy.width + rectEnemy.height) / 24.f, (rectEnemy.width + rectEnemy.height) / 24.f * 3);
@@ -179,34 +179,21 @@ void UpdateEnemyI(float _dt, unsigned _i)
 
 void CalculMoveEnemy(float _dt, unsigned _i)
 {
+	// 1 = droite / -1 = gauche
+	char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
+	enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[(int)enemy.entity[_i].type].speedMax * _dt;
+	if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
+	{
+		enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
+	}
+
 	if (enemy.entity[_i].type < GROUND_HEAVY)
 	{
-		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
-		if (droitOuGauche)
-		{
-			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[(int)enemy.entity[_i].type].speedMax * _dt;
-			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.x = 0;
-		}
-
 		char basOuGauche = enemy.entity[_i].action.bas - enemy.entity[_i].action.saut;
-		if (basOuGauche)
+		enemy.entity[_i].velocity.y += basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt * 70 / 50;
+		if (basOuGauche * enemy.entity[_i].velocity.y > basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * 70 / 50)
 		{
-			enemy.entity[_i].velocity.y += basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
-			if (basOuGauche * enemy.entity[_i].velocity.y > basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.y = basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.y = 0;
+			enemy.entity[_i].velocity.y = basOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * 70 / 50;
 		}
 	}
 	else
@@ -227,20 +214,6 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 					enemy.entity[_i].action.droite = 1;
 				}
 			}
-		}
-		// 1 = droite / -1 = gauche
-		char droitOuGauche = enemy.entity[_i].action.droite - enemy.entity[_i].action.gauche;
-		if (droitOuGauche)
-		{
-			enemy.entity[_i].velocity.x += droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax * _dt;
-			if (droitOuGauche * enemy.entity[_i].velocity.x > droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax)
-			{
-				enemy.entity[_i].velocity.x = droitOuGauche * enemy.dataByType[enemy.entity[_i].type].speedMax;
-			}
-		}
-		else
-		{
-			enemy.entity[_i].velocity.x = 0;
 		}
 
 		if (enemy.entity[_i].action.saut)
@@ -265,7 +238,7 @@ void CalculMoveEnemy(float _dt, unsigned _i)
 			enemy.entity[_i].velocity.y = enemy.dataByType[enemy.entity[_i].type].jumForce;
 		}
 	}
-	sfSprite_move(enemy.entity[_i].sprite, enemy.entity[_i].velocity);
+	sfSprite_move(enemy.entity[_i].sprite, (sfVector2f) { enemy.entity[_i].velocity.x* _dt * 70, enemy.entity[_i].velocity.y* _dt * 50 });
 }
 
 void UpdateColisionEnemy(unsigned _i)
@@ -879,54 +852,52 @@ ActionDemander AStar2(EnemyEntity* _enemy, sfFloatRect _cible)
 			RetirerListWait(min);
 		}
 #if DEBUG_MODE_A_STAR
+		for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
 		{
-			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+			for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
 			{
-				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				if (!enemy.tableau.grid[_enemy->type][y][x].direction)
 				{
-					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					if (enemy.tableau.collision[y][x])
 					{
-						if (enemy.tableau.collision[y][x])
-						{
-							printf("X");
-						}
-						else
-						{
-							printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
-						}
+						printf("X");
 					}
 					else
 					{
 						printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
 					}
 				}
-				printf("\n");
-			}
-			printf("\n\n\n");
-			for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
-			{
-				for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+				else
 				{
-					if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+					printf("%d", enemy.tableau.grid[_enemy->type][y][x].direction);
+				}
+			}
+			printf("\n");
+		}
+		printf("\n\n\n");
+		for (int y = 0; y < (int) { _enemy->region.height / TILE_SIZE }; y++)
+		{
+			for (int x = 0; x < (int) { _enemy->region.width / TILE_SIZE }; x++)
+			{
+				if (!enemy.tableau.grid[_enemy->type][y][x].direction)
+				{
+					if (enemy.tableau.collision[y][x])
 					{
-						if (enemy.tableau.collision[y][x])
-						{
-							printf(" X/");
-						}
-						else
-						{
-							printf(" M/");
-						}
+						printf(" X/");
 					}
 					else
 					{
-						printf("%2d/", enemy.tableau.grid[_enemy->type][y][x].compteur);
+						printf(" M/");
 					}
 				}
-				printf("\n");
+				else
+				{
+					printf("%2d/", enemy.tableau.grid[_enemy->type][y][x].compteur);
+				}
 			}
-			printf("\n\n\n");
+			printf("\n");
 		}
+		printf("\n\n\n");
 #endif
 	}
 
