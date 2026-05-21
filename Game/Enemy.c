@@ -300,7 +300,9 @@ sfBool PlayerVisibility(unsigned _i)
 
 	for (int i = 0; i < 50; i++)
 	{
-		if (Colision((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 10, 10 }, AXIS_BOTH).x || Colision((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 10, 10 }, AXIS_BOTH).y)
+		sfVector2f colision = Colision((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 10, 10 }, AXIS_BOTH);
+		colision.y += CollisionPassThrough((sfFloatRect) { bounsEnemy.left + (pas.x * i), bounsEnemy.top + (pas.y * i), 10, 10 }).y;
+		if (colision.x || colision.y)
 		{
 			return 0;
 		}
