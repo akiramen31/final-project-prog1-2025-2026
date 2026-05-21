@@ -145,7 +145,6 @@ void UpdatePositionCameraLevel1(float _dt)
 		sfVector2f pos = { 0 };
 
 		if (sfFloatRect_intersects(&hitbox, &area[camera.index].hitbox, NULL) && camera.positionName != 0)
-			//if (IsPointInFloatRect(posPlayer, &area[camera.index].hitbox) && camera.positionName != 0)
 		{
 			switch (camera.positionName)
 			{
@@ -224,7 +223,7 @@ void UpdatePositionCameraLevel2(float _dt)
 	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
-	if (area != NULL)
+	if (area)
 	{
 		sfVector2f pos = { 0 };
 
@@ -362,7 +361,7 @@ void UpdatePositionCameraLevel3(float _dt)
 	sfVector2f posPlayer = { hitbox.left + hitbox.width / 2,hitbox.top + hitbox.height / 2 };
 	InfoZone* area = GetInfoZoneTriger(hitbox);
 
-	if (area != NULL)
+	if (area)
 	{
 		sfVector2f pos = { 0 };
 
