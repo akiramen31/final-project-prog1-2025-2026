@@ -197,6 +197,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 					else if (i == 1)
 					{
 						rect = sfText_getGlobalBounds(menu.mainMenu.infoDisplay[i]);
+						sfFloatRect_contains(&rect, _mouseButtonEvent->x, _mouseButtonEvent->y);
 						ChangeVolume((_mouseButtonEvent->x - rect.left) / rect.width * 100.f);
 					}
 					else if (i == 2)
