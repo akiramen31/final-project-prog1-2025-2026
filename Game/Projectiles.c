@@ -657,11 +657,18 @@ void SpawnExplosion(sfVector2f _explosionZone, sfBool _isAlly, float _range)
 
 void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn)
 {
-	PlaySound(GENERAL_EXPLOSION);
+	for (int i = -75.f; i <= 75.f; i += 15.f)
+	{
+		SpawnExplosion((sfVector2f) { _explosionSpawn.x + i * 2.6, _explosionSpawn.y }, sfFalse, 5.f);
+	}
+
+	/*PlaySound(GENERAL_EXPLOSION);
 	if (unhiddingExplosion.isOn)
 	{
 		return;
 	}
+
+	
 	if (_explosionSpawn.x >= ARENA2_CENTER)
 	{
 		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { ARENA2_LIMITE_BOMBING_RIGHT, _explosionSpawn.y });
@@ -671,7 +678,7 @@ void SpawnUnhiddingExplosion(sfVector2f _explosionSpawn)
 		sfSprite_setPosition(unhiddingExplosion.sprite, (sfVector2f) { ARENA2_LIMITE_BOMBING_LEFT, _explosionSpawn.y });
 	}
 	unhiddingExplosion.isOn = sfTrue;
-	TestCollisionUnhiddingExplosion();
+	TestCollisionUnhiddingExplosion();*/
 }
 
 void SortExplosionList(unsigned _index)
@@ -826,7 +833,7 @@ void UpdateUnhiddingBomb(float _dt)
 			unhiddingBomb.lifetime -= _dt;
 			if (unhiddingBomb.lifetime < 0.f)
 			{
- 				SpawnUnhiddingExplosion(sfSprite_getPosition(unhiddingBomb.sprite));
+				SpawnUnhiddingExplosion(sfSprite_getPosition(unhiddingBomb.sprite));
 				sfSprite_setPosition(unhiddingBomb.sprite, (sfVector2f) { 0.f, 0.f });
 				unhiddingBomb.isGrounded = sfFalse;
 				unhiddingBomb.lifetime = UNHIDDING_TIMER;
@@ -835,7 +842,7 @@ void UpdateUnhiddingBomb(float _dt)
 		}
 		else
 		{
-			sfSprite_move(unhiddingBomb.sprite, (sfVector2f) { 0.f, unhiddingBomb.velocity.y * _dt });
+			sfSprite_move(unhiddingBomb.sprite, (sfVector2f) { 0.f, unhiddingBomb.velocity.y* _dt });
 			sfFloatRect hitboxUnhiddingBomb = sfSprite_getGlobalBounds(unhiddingBomb.sprite);
 			sfVector2f reactionPassThrough = CollisionPassThrough(hitboxUnhiddingBomb);
 			sfVector2f reactionWall = Colision(hitboxUnhiddingBomb, AXIS_BOTH);
@@ -944,23 +951,26 @@ void CheckCollisionDronesList(void)
 
 sfBool CheckIfUnhiddingBombBlow(void)
 {
-	if (!(sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f) && !(sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f))
+	/*if (!(sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f) && !(sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f))
 	{
 		return sfFalse;
 	}
 	else
 	{
 		return sfTrue;
-	}
+	}*/
+	return sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f || sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f;
 }
 
 void TestCollisionExplosionList(unsigned _index, float _range)
 {
-	sfFloatRect hitboxExplosion = { 0 };
-	hitboxExplosion.left = sfSprite_getPosition(explosionList[_index].sprite).x;
-	hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
-	hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
-	hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
+	//sfFloatRect hitboxExplosion = { 0 };
+	//hitboxExplosion.left = sfSprite_getPosition(explosionList[_index].sprite).x;
+	//hitboxExplosion.top = sfSprite_getPosition(explosionList[_index].sprite).y;
+	//hitboxExplosion.width = EXPLOSION_BASIC_RANGE * _range;
+	//hitboxExplosion.height = EXPLOSION_BASIC_RANGE * _range;
+
+	sfFloatRect hitboxExplosion = sfSprite_getGlobalBounds(explosionList[_index].sprite);
 	if (explosionList[_index].isAlly)
 	{
 		HitEnemy(PLAYER_DRONE_DAMAGE, hitboxExplosion, HEAVY);
