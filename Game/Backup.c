@@ -26,8 +26,8 @@ void LoadBackup(void)
 		backup.parametre.valueKey[KEY_LEFT] = sfKeyQ;
 		backup.parametre.valueKey[KEY_GUN] = sfMouseLeft + sfKeyCount;
 		backup.parametre.valueKey[KEY_DASH] = sfMouseRight + sfKeyCount;
-		backup.parametre.valueKey[KEY_HIT] = sfKeyNum1;
-		backup.parametre.valueKey[KEY_SECOND] = sfKeyNum2;
+		backup.parametre.valueKey[KEY_HIT] = sfKeyF;
+		backup.parametre.valueKey[KEY_SECOND] = sfKeyG;
 		backup.parametre.valueFloat[LIGHT_LEVEL] = 1.f;
 		backup.parametre.valueFloat[SOUND_VOLUME] = 20.f;
 	}

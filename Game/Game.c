@@ -30,7 +30,7 @@ void LoadGame(void)
 	LoadParallax();
 	LoadPlayer();
 	LoadMap();
-	SetIntToSave(DEV_MODE_FLY, 0);
+	//SetIntToSave(DEV_MODE_FLY, 0);
 	LoadProjectiles(GetBossPosition().y);
 	LoadHUD();
 	LoadBossBar(GetBossLifeAdress(), GetBossMaxLife());
@@ -116,16 +116,6 @@ void PollEventGame(sfEvent* _event)
 		break;
 	case sfEvtMouseButtonPressed:
 		MouseButtonPressedGame(&_event->mouseButton);
-		break;
-	case sfEvtKeyReleased:
-		switch (_event->key.code)
-		{
-		case sfKeyO:
-			ChangePlayerInvicibility();
-			break;
-		default:
-			break;
-		}
 		break;
 	default:
 		break;

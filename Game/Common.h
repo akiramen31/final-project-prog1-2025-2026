@@ -27,11 +27,11 @@
 #define WEAPON_COUNT 3
 #define SECONDARY_COUNT 2
 
-#define DEV_MODE sfTrue
-#define DEV_WEAPON sfTrue
+#define DEV_MODE sfFalse
+#define DEV_WEAPON sfFalse
 #define DEBUG_MODE_A_STAR sfFalse
 #define DEV_MODE_CAMERA sfFalse
-#define DEV_PRINT_ERROR sfTrue
+#define DEV_PRINT_ERROR sfFalse
 
 #define TILE_SIZE 16
 #define FREEZE_TIMER 4.f

@@ -182,6 +182,7 @@ void MouseButtonPressedMenu(sfMouseButtonEvent* _mouseButtonEvent)
 		else if (MouseButtonPressedLoadGameSave(_mouseButtonEvent))
 		{
 			SetGameState(MENU_SELECTION_GAME);
+			return;
 		}
 		else if (menu.state == SETTINGS)
 		{

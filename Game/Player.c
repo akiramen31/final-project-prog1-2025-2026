@@ -85,41 +85,11 @@ void UpdatePlayer(sfBool _intro, float _dt)
 
 	UpdateEnergy(_dt);
 
-	if (GetIntFromSave(DEV_MODE_FLY))
-	{
-		sfVector2f posFly = GetPlayerPosition();
-
-		int flySpeed = 500;
-
-		SetViewCenter(posFly);
-
-		if (IfControlKeyPressed(KEY_RIGHT))
-		{
-			posFly.x += flySpeed * _dt;
-		}
-		else if (IfControlKeyPressed(KEY_LEFT))
-		{
-			posFly.x -= flySpeed * _dt;
-		}
-		if (IfControlKeyPressed(KEY_DOWN))
-		{
-			posFly.y += flySpeed * _dt;
-		}
-		else if (IfControlKeyPressed(KEY_JUMP))
-		{
-			posFly.y -= flySpeed * _dt;
-		}
-		sfRectangleShape_setPosition(player.collision, posFly);
-		sfSprite_setScale(player.sprite, (sfVector2f) { 0 });
-	}
-	else
-	{
-		MoveZonePlayer(_dt);
-		UpdateMovePlayer(_intro, _dt);
-		UpdateLockPlayerInRoomIfEnemyAlive();
-		UpdateAnimation(_dt);
-		MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
-	}
+	MoveZonePlayer(_dt);
+	UpdateMovePlayer(_intro, _dt);
+	UpdateLockPlayerInRoomIfEnemyAlive();
+	UpdateAnimation(_dt);
+	MoveWeapon(GetPlayerPosition(), GetMousePositionToOrigin(), _dt, player.isAttacking);
 
 	if (VerificationEntityIsNotInMap(GetPlayerRect()))
 	{

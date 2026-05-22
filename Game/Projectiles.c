@@ -959,7 +959,8 @@ sfBool CheckIfUnhiddingBombBlow(void)
 	{
 		return sfTrue;
 	}*/
-	return sfSprite_getPosition(unhiddingBomb.sprite).x < 3.f || sfSprite_getPosition(unhiddingBomb.sprite).y < 3.f;
+	sfVector2f pos = sfSprite_getPosition(unhiddingBomb.sprite);
+	return pos.x < 3.f || pos.y < 3.f;
 }
 
 void TestCollisionExplosionList(unsigned _index, float _range)
